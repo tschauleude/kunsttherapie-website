@@ -1,0 +1,292 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║        🚀 HOSTINGER DEPLOYMENT – QUICK CHECKLIST & SUMMARY               ║
+║                                                                            ║
+║              Website + CMS auf mkmpb.de in 30 Minuten!                   ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+
+🎯 KURZE ÜBERSICHT
+
+Du hast:
+  ✅ Website (kunsttherapie-site/)
+  ✅ Backend/CMS (kunsttherapie-cms/)
+  ✅ Dokumentation
+
+Du brauchst auf Hostinger:
+  ✅ FTP/SFTP Zugriff
+  ✅ SSH Zugriff
+  ✅ Node.js Support (überprüfen!)
+
+════════════════════════════════════════════════════════════════════════════
+
+DEPLOYMENT IN 6 SCHRITTEN:
+
+1️⃣  VORBEREITUNG
+    ☐ Hostinger hPanel öffnen
+    ☐ SSH aktivieren
+    ☐ FTP-Daten notieren
+    ☐ Node.js verfügbar? (Support fragen)
+
+2️⃣  WEBSITE HOCHLADEN (15 Min)
+    ☐ FileZilla öffnen
+    ☐ Mit FTP verbinden
+    ☐ Ordner erstellen: /public_html/kunsttherapie/
+    ☐ Alle Dateien von kunsttherapie-site/ hochladen
+    ☐ Testen: https://mkmpb.de/kunsttherapie
+
+3️⃣  BACKEND UPLOADEN (5 Min)
+    ☐ SSH öffnen
+    ☐ mkdir -p kunsttherapie-cms
+    ☐ FTP: server.js, package.json, .env hochladen
+    ☐ SSH: npm install
+
+4️⃣  KONFIGURATION (5 Min)
+    ☐ .env anpassen:
+      PORT=3000
+      CORS_ORIGIN=https://mkmpb.de
+    ☐ API URL in neuigkeiten.html ändern:
+      const API_URL = 'https://mkmpb.de:3000/api';
+    ☐ Neuigkeiten.html hochladen
+
+5️⃣  BACKEND STARTEN (5 Min)
+    ☐ SSH: npm install -g pm2
+    ☐ SSH: pm2 start server.js --name "kunsttherapie-cms"
+    ☐ SSH: pm2 startup
+    ☐ SSH: pm2 save
+
+6️⃣  TESTS (5 Min)
+    ☐ Website testen: https://mkmpb.de/kunsttherapie
+    ☐ Admin-Panel: https://mkmpb.de:3000/admin
+    ☐ Login: admin/admin123
+    ☐ News hinzufügen & überprüfen
+
+GESAMT: ~30-40 Minuten! ⏱️
+
+════════════════════════════════════════════════════════════════════════════
+
+SCHRITT-FÜR-SCHRITT COMMANDS
+
+# TERMINAL 1: SSH Verbindung
+ssh mkmpb@mkmpb.de
+# oder: ssh mkmpb@[deine-ip] -p [port]
+
+# TERMINAL 1: Backend-Ordner
+mkdir -p ~/kunsttherapie-cms
+cd ~/kunsttherapie-cms
+
+# (Nachdem du Dateien hochgeladen hast)
+npm install
+npm install -g pm2
+pm2 start server.js --name "kunsttherapie-cms"
+pm2 startup
+pm2 save
+
+# Überprüfung
+pm2 list
+pm2 logs kunsttherapie-cms
+
+════════════════════════════════════════════════════════════════════════════
+
+HOSTINGER EINSTELLUNGEN ÜBERPRÜFEN
+
+1. hPanel Login: https://hpanel.hostinger.com
+
+2. SSH aktivieren
+   → Advanced → SSH Keys
+   → Aktivieren/Generieren
+
+3. FTP Daten
+   → Advanced → FTP Accounts
+   → Benutzer: mkmpb (oder dein User)
+   → Host: ftp.mkmpb.de
+
+4. Node.js überprüfen
+   → Advanced → Node.js
+   → Sollte grüner Haken sein ✅
+   → Falls nicht: Support kontaktieren!
+
+5. SSL/HTTPS
+   → Security → SSL Certificate
+   → Sollte bereits aktiviert sein ✅
+
+════════════════════════════════════════════════════════════════════════════
+
+FILE LOCATIONS AUF HOSTINGER
+
+Website:   /public_html/kunsttherapie/
+           ├── index.html
+           ├── neuigkeiten.html (API_URL angepasst!)
+           ├── events.html (API_URL angepasst!)
+           └── assets/
+
+Backend:   ~/kunsttherapie-cms/
+           ├── server.js
+           ├── package.json
+           ├── .env (konfiguriert!)
+           ├── public/admin.html
+           └── node_modules/
+
+Database:  ~/kunsttherapie-cms/database.sqlite
+           (wird automatisch erstellt)
+
+════════════════════════════════════════════════════════════════════════════
+
+FINAL URLS (Nach Deployment)
+
+Website:     https://mkmpb.de/kunsttherapie
+Startseite:  https://mkmpb.de/kunsttherapie/index.html
+News:        https://mkmpb.de/kunsttherapie/neuigkeiten.html
+Events:      https://mkmpb.de/kunsttherapie/events.html
+Admin-Panel: https://mkmpb.de:3000/admin
+API:         https://mkmpb.de:3000/api
+
+════════════════════════════════════════════════════════════════════════════
+
+HÄUFIGE FEHLER & LÖSUNGEN
+
+❌ "npm: command not found"
+✅ Node.js nicht installiert/aktiviert
+   → Hostinger Support kontaktieren
+
+❌ "Connection refused Port 3000"
+✅ Backend läuft nicht
+   → SSH: pm2 status
+   → SSH: pm2 logs kunsttherapie-cms
+
+❌ Website lädt nicht
+✅ Dateien nicht hochgeladen
+   → FTP: Dateien im /public_html/kunsttherapie/ Ordner?
+   → Browser: Cache leeren (Ctrl+Shift+Del)
+
+❌ News zeigen sich nicht
+✅ API_URL falsch oder Backend läuft nicht
+   → neuigkeiten.html: API_URL überprüfen
+   → Backend: npm run dev testen
+   → API testen: curl http://localhost:3000/api/news
+
+❌ "403 Forbidden"
+✅ Dateirechte falsch
+   → SSH: chmod 755 ./public/
+   → SSH: chmod 600 .env
+
+════════════════════════════════════════════════════════════════════════════
+
+WICHTIGE FILES ANPASSEN
+
+1. kunsttherapie-site/neuigkeiten.html
+   Zeile ~46 (API_URL):
+   FROM: const API_URL = 'http://localhost:3000/api';
+   TO:   const API_URL = 'https://mkmpb.de:3000/api';
+
+2. kunsttherapie-site/events.html
+   Zeile ~58 (API_URL):
+   FROM: const API_URL = 'http://localhost:3000/api';
+   TO:   const API_URL = 'https://mkmpb.de:3000/api';
+
+3. kunsttherapie-cms/.env
+   NODE_ENV=production
+   PORT=3000
+   SESSION_SECRET=your-secret-key-change-this
+   CORS_ORIGIN=https://mkmpb.de
+   DATABASE_PATH=./database.sqlite
+
+════════════════════════════════════════════════════════════════════════════
+
+NOTWENDIGE SOFTWARE AUF COMPUTER
+
+✅ FTP Client: FileZilla (https://filezilla-project.org)
+✅ SSH Client: Terminal/PowerShell (vorinstalliert)
+✅ Text Editor: VSCode oder notepad++ (zum Bearbeiten)
+✅ Browser: Firefox/Chrome (zum Testen)
+
+════════════════════════════════════════════════════════════════════════════
+
+LOGIN CREDENTIALS
+
+Hostinger hPanel:
+  → https://hpanel.hostinger.com
+  → (Dein Hostinger Account)
+
+CMS Admin-Panel:
+  → https://mkmpb.de:3000/admin
+  → admin / admin123
+  → ⚠️ PASSWORT NACH LOGIN ÄNDERN!
+
+════════════════════════════════════════════════════════════════════════════
+
+PROBLEMBEHEBUNG
+
+Problem: "npm install" dauert sehr lange
+→ Normal, erste Installation dauert 1-2 Min
+
+Problem: Terminal friert ein
+→ SSH Verbindung: Neue Session öffnen
+
+Problem: Dateien hochladen ist langsam
+→ Nutze SFTP (sicherer & schneller)
+→ Lade assets/ im Batch hoch
+
+Problem: Backend startet, reagiert aber nicht
+→ SSH: curl http://localhost:3000
+→ Sollte HTML zurückgeben
+
+════════════════════════════════════════════════════════════════════════════
+
+NACH DEM DEPLOYMENT
+
+1. Sicherheit
+   ☐ Admin-Passwort ändern
+   ☐ SESSION_SECRET in .env ändern
+   ☐ HTTPS überprüfen
+
+2. Testen
+   ☐ Alle 8 Website-Seiten aufrufen
+   ☐ News/Events hinzufügen im Admin
+   ☐ Auf Website überprüfen
+   ☐ Bilder laden korrekt?
+
+3. Backup
+   ☐ Backup-Script einrichten
+   ☐ Erste Backup machen
+   ☐ Regelmäßig updaten
+
+4. Monitoring
+   ☐ PM2 Logs überprüfen
+   ☐ Fehler beheben falls nötig
+   ☐ Datenbankgröße checken
+
+════════════════════════════════════════════════════════════════════════════
+
+SUPPORT KONTAKTIEREN
+
+Hostinger Support:
+  1. hPanel → Support Chat (oben rechts)
+  2. Email: support@hostinger.com
+  3. Ticket System: Im hPanel
+
+Fragen stellen:
+  "Kann ich Node.js auf meinem Plan nutzen?"
+  "Kann ich Port 3000 für meine App nutzen?"
+  "Wie aktiviere ich SSH/PM2?"
+  "Wie richte ich Reverse Proxy ein?"
+
+════════════════════════════════════════════════════════════════════════════
+
+🎉 GLÜCKWUNSCH!
+
+Nach diesen Schritten ist deine Website LIVE! 🚀
+
+Website: https://mkmpb.de/kunsttherapie
+Admin:   https://mkmpb.de:3000/admin
+
+Viel Erfolg! 🎨✨
+
+════════════════════════════════════════════════════════════════════════════
+
+Detaillierte Anleitung: HOSTINGER-DEPLOYMENT-GUIDE.md
+Quick Start: START-HIER.md
+Support: Lese FINAL-SUMMARY.txt
+
+════════════════════════════════════════════════════════════════════════════
