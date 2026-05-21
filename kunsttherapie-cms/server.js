@@ -30,7 +30,10 @@ const LOGIN_WINDOW_MS = 15 * 60 * 1000;
 const LOGIN_MAX_ATTEMPTS = 8;
 
 app.use(helmet({
-  contentSecurityPolicy: false
+  contentSecurityPolicy: false,
+  strictTransportSecurity: isProduction
+    ? { maxAge: 31536000, includeSubDomains: true }
+    : false
 }));
 app.use(compression());
 app.use(morgan(isProduction ? "combined" : "dev"));
