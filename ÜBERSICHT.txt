@@ -1,332 +1,51 @@
-================================================================================
-🎨 KUNSTTHERAPIE PADERBORN – KOMPLETTES PAKET
-================================================================================
-
-Datum:        20. Mai 2026
-Website:      kunsttherapie-pb.de (Domain separat)
-Status:       ✅ FERTIG & LIVE-READY
-
-================================================================================
-📦 DATEIEN IM OUTPUTS-ORDNER
-================================================================================
-
-1. 📁 kunsttherapie-site/
-   └─ Komplette Website mit allen Dateien
-      • 8 HTML-Seiten (Index, Angebote, Über mich, Preise, Kontakt, News, etc.)
-      • Professionelles CSS (Dark Mode + Gold-Akzente)
-      • JavaScript (Navigation, interaktives Canvas-Atelier, News-Loader)
-      • Sonnige-Pinsel Logo
-      • Bearbeitbare News (JSON)
-
-2. 📦 kunsttherapie-website.zip
-   └─ ZIP-Datei zum einfachen Download & Upload
-      • Unkomprimierte Größe: ~2.5 MB
-      • Für einfaches Deployment auf Servern
-
-3. 📋 INDEX.html
-   └─ Visuelle Übersicht & Quick-Start-Anleitung
-      • Interaktive Checkliste
-      • Links zu Deploy-Plattformen
-      • Was wird benötigt?
-
-4. ✅ LAUNCH-CHECKLISTE.md
-   └─ Schritt-für-Schritt Anleitung (Phase 1-7)
-      • Lokal testen
-      • Inhalte anpassen
-      • Online deployen (Netlify, Vercel, GitHub Pages, etc.)
-      • Kontaktformular aktivieren
-      • SEO & Verzeichnisse
-
-5. 📖 README.md
-   └─ Ausführliche Dokumentation
-      • Struktur & Übersicht
-      • Inhalte editieren (News, Text, Farben)
-      • Design-Highlights
-      • Deployment-Optionen
-      • Häufige Fragen & Lösungen
-
-6. 📄 Kunsttherapie_Paderborn_Mappe.pdf
-   └─ Professionelle 6-Seiten Bewerbungsmappe
-      • Persönliches Profil
-      • Qualifikationen & Erfahrung
-      • Angebote & Methoden
-      • Referenzen (Dr. Dietrich)
-      • Kontakt & Ausblick
-      • Für Kliniken, Verbände, Partner
-
-================================================================================
-🎯 QUICK START (5 MIN)
-================================================================================
-
-SCHRITT 1: Website lokal testen
-  $ cd kunsttherapie-site
-  $ python3 -m http.server 8080
-  → Öffne http://localhost:8080
-
-SCHRITT 2: Inhalte überprüfen
-  - Kontaktdaten (Tel, E-Mail, Adresse) ✓ BEREITS DRIN
-  - News editieren: data/news.json
-  - Texte anpassen: *.html Dateien
-
-SCHRITT 3: Online deployen (EMPFOHLEN: Netlify)
-  1. GitHub-Account → kunsttherapie-site repo
-  2. Netlify.com → "New site from Git"
-  3. Repository wählen → Deploy! 🚀
-  → Website live in 1 Minute!
-
-================================================================================
-✨ FEATURES
-================================================================================
-
-✅ Modern & Professional
-   • Dark Mode mit Gold-Akzenten (#f1b81b)
-   • Glatte Animationen & Übergänge
-   • Card-basiertes, modernes Layout
-
-✅ Vollständig Responsive
-   • Desktop, Tablet, Smartphone
-   • Getestet auf allen Geräten
-   • Mobile-First Design
-
-✅ Interaktiv
-   • Canvas-Atelier zum Ausprobieren
-   • Smooth Scroll Navigation
-   • Expandable Details-Boxen
-
-✅ Praktisch
-   • Editierbare News (JSON-basiert)
-   • Automatische Preistabelle
-   • Einfache Kontaktdaten
-
-✅ Datenschutz
-   • Keine Cookies
-   • Keine Analytics
-   • DSGVO-konform
-   • Impressum & Datenschutz dabei
-
-✅ Performance
-   • Blitzschnell (~100ms Ladezeit)
-   • Lighthouse Score: 95+
-   • Optimierte Bilder
-   • Minimales JavaScript
-
-================================================================================
-📱 SEITEN-ÜBERSICHT
-================================================================================
-
-index.html
-  └─ Startseite mit Hero, Angebote-Cards, interaktivem Atelier
-     • Eye-catching Design
-     • Call-to-Action: "Termin anfragen"
-
-angebote.html
-  └─ Detaillierte Angebotsbeschreibung
-     • Gruppentheraiе, Auszeit, Teambuilding
-     • Material & Methoden
-     • Wie wirkt Kunsttherapie?
-
-ueber-mich.html
-  └─ Über Martina Schwierzke
-     • Bio & Leidenschaft
-     • Qualifikationen (4 Punkte)
-     • Kontaktbutton
-
-preise.html
-  └─ Transparente Preistabelle
-     • Gruppensitzung: ab 55€
-     • Einzelsitzung, Teambuilding auf Anfrage
-
-kontakt.html
-  └─ Kontakt & Buchung
-     • Adresse, Telefon, E-Mail (alle korrekt)
-     • Kontaktformular (aktivierbar mit Formspree)
-     • Öffnungszeiten: Di Vmtg, Do Abend
-
-neuigkeiten.html
-  └─ News & Neuigkeiten
-     • Automatisch aus data/news.json geladen
-     • Mit Datumsanzeige & Badges
-
-impressum.html, datenschutz.html
-  └─ Rechtlich erforderlich
-     • Alle Infos schon drin
-     • Anpassbar nach Bedarf
-
-================================================================================
-🛠️ KONFIGURATION & ANPASSUNGEN
-================================================================================
-
-KONTAKTDATEN (korrekt, aber überprüfen):
-  Telefon:   05251-690111
-  Mobil:     0170-4790790
-  E-Mail:    info@kunsttherapie-pb.de
-  Adresse:   Otto-Stadler-Straße 23c, 33102 Paderborn
-
-NEWS EDITIEREN:
-  Datei: data/news.json
-  Format:
-  {
-    "items": [
-      {"date": "2026-06-01", "title": "...", "text": "..."}
-    ]
-  }
-
-FARBEN ÄNDERN:
-  Datei: assets/css/style.css
-  :root {
-    --brand: #f1b81b;      /* Hauptfarbe (Gold) */
-    --brand2: #eaa300;     /* Dunkles Gold */
-    --bg: #0e0f10;         /* Hintergrund */
-    --text: #f4f4f4;       /* Text */
-  }
-
-================================================================================
-🌐 DEPLOYMENT-OPTIONEN
-================================================================================
-
-EMPFOHLEN: Netlify (kostenlos, einfach)
-  • GitHub-Repository verbinden
-  • Automatische Updates bei jedem Push
-  • Custom Domain möglich
-  • https:// kostenlos
-  → https://netlify.com
-
-AUCH GUT: Vercel
-  • Schnell & zuverlässig
-  • Ähnlich wie Netlify
-  → https://vercel.com
-
-BUDGET-OPTION: GitHub Pages
-  • Kostenlos
-  • Direkt von GitHub
-  → https://pages.github.com
-
-SELBST-GEHOSTET: Hostinger, STRATO, etc.
-  • FTP/SFTP Upload
-  • Volle Kontrolle
-  → Mit Hosting-Anbieter deployen
-
-================================================================================
-📧 KONTAKTFORMULAR (OPTIONAL)
-================================================================================
-
-Option 1: Formspree (einfach)
-  1. Gehe zu https://formspree.io
-  2. Registriere dich
-  3. Erstelle neues Formular
-  4. Kopiere action="https://formspree.io/f/xxxxx"
-  5. In kontakt.html ersetzen
-  → Fertig! E-Mails kommen zu dir
-
-Option 2: Mailto-Link (sehr einfach)
-  <a href="mailto:info@kunsttherapie-pb.de">E-Mail schreiben</a>
-  → Einfach, aber weniger elegant
-
-Option 3: EmailJS (client-seitig, JavaScript)
-  → Siehe README.md für Details
-
-================================================================================
-🚀 NÄCHSTE SCHRITTE
-================================================================================
-
-HEUTE:
-  ☐ INDEX.html öffnen (diese Übersicht)
-  ☐ LAUNCH-CHECKLISTE.md lesen
-  ☐ Website lokal testen (http://localhost:8080)
-
-MORGEN:
-  ☐ Inhalte überprüfen & anpassen
-  ☐ News in data/news.json hinzufügen
-  ☐ Auf Netlify deployen (10 Min)
-
-WOCHE 1:
-  ☐ Domain kaufen & verbinden (optional)
-  ☐ Kontaktformular aktivieren (Formspree)
-  ☐ Mobile testen
-  ☐ Google My Business eintragen
-
-MARKETING:
-  ☐ Link auf LinkedIn, Instagram
-  ☐ QR-Code auf Visitenkarten
-  ☐ In Therapie-Verzeichnisse eintragen
-  ☐ Google Search Console einrichten
-
-================================================================================
-❓ HÄUFIGE FRAGEN
-================================================================================
-
-F: Wie lange dauert der Setup?
-A: 30-60 Minuten (lokal testen + Netlify deployen)
-
-F: Kostet das etwas?
-A: Nein! Website + Netlify = kostenlos. Domain optional (~10€/Jahr).
-
-F: Kann ich alles selbst ändern?
-A: Ja! HTML-Dateien + news.json sind einfach zu editieren.
-
-F: Funktioniert das auf Mobile?
-A: Ja! 100% responsive, alle Geräte.
-
-F: Wie oft sollte ich News aktualisieren?
-A: Monatlich oder wenn es Neuigkeiten gibt. Kunden checken regelmäßig.
-
-F: Kann ich ein Buchungssystem hinzufügen?
-A: Ja, später. Aktuell: Kontakt → Booking via Nachricht/Telefon.
-
-================================================================================
-📞 SUPPORT & RESSOURCEN
-================================================================================
-
-Dokumentation:
-  • LAUNCH-CHECKLISTE.md  – Schritt-für-Schritt
-  • README.md             – Detaillierte Infos
-  • INDEX.html            – Visuelle Übersicht
-
-Deployment:
-  • https://netlify.com   – Einfaches Hosting
-  • https://vercel.com    – Alternative
-  • https://github.com    – Für GitHub Pages
-
-Tools:
-  • https://formspree.io  – Kontaktformular
-  • https://tinypng.com   – Bilder optimieren
-  • https://jsonformatter.org – JSON validieren
-
-Weitere Hilfe:
-  • ChatGPT fragen (mit Screenshot)
-  • Hosting-Support kontaktieren
-  • Techniker vor Ort
-
-================================================================================
-✅ CHECKLISTE: ALLES ERHALTEN?
-================================================================================
-
-Website-Dateien:
-  ☐ kunsttherapie-site/ Ordner
-  ☐ kunsttherapie-website.zip
-
-Dokumentation:
-  ☐ INDEX.html (diese Übersicht)
-  ☐ LAUNCH-CHECKLISTE.md
-  ☐ README.md
-
-Weitere Unterlagen:
-  ☐ Kunsttherapie_Paderborn_Mappe.pdf
-
-================================================================================
-🎉 GLÜCKWUNSCH!
-================================================================================
-
-Du hast jetzt:
-  ✅ Professionelle Website
-  ✅ Vollständige Dokumentation
-  ✅ Deployment-Anleitung
-  ✅ Bewerbungsmappe (PDF)
-
-Nächster Schritt: LAUNCH-CHECKLISTE.md lesen & Website testen!
-
-================================================================================
-Stand: 20.05.2026
-Martina Schwierzke | Kunsttherapie Paderborn
-Website: kunsttherapie-pb.de (Domain separat)
-================================================================================
+KUNSTTHERAPIE PADERBORN - AKTUELLE PROJEKTUEBERSICHT
+
+Status: praesentationsfaehige Website + CMS
+
+ORDNER
+
+1. kunsttherapie-site/
+   - moderne Website im hellen Watercolor-/Atelier-Design
+   - Seiten: Start, Angebote, Ueber mich, Preise, Neuigkeiten, Termine, Kontakt, Impressum, Datenschutz
+   - interaktives Mini-Atelier
+   - API-Fallbacks fuer sichere Demo
+   - Favicon, Manifest, Robots und Sitemap
+
+2. kunsttherapie-cms/
+   - Node.js/Express Backend
+   - SQLite Datenbank
+   - Admin-Panel
+   - News, Termine und Angebote verwalten
+   - Login, Rate-Limit, Passwortwechsel
+   - Public API fuer Website
+
+SCHNELLSTART
+
+Backend:
+  cd kunsttherapie-cms
+  npm install
+  cp .env.example .env
+  npm run dev
+
+Website:
+  cd kunsttherapie-site
+  python3 -m http.server 8080
+
+URLs:
+  Website: http://localhost:8080
+  Admin:   http://localhost:3000/admin
+  Health:  http://localhost:3000/api/health
+
+DESIGN
+
+- warmes Papier/Creme als Grundflaeche
+- Gold, Aquarell-Blau, Naturgruen und Rose als Akzente
+- weiche Karten, organische Farbformen, ruhige Animationen
+- hochwertig, modern, kreativ und passend fuer Kunsttherapie
+
+WICHTIG
+
+- Inhalte im CMS pflegen, nicht in alten JSON-Dateien.
+- Standard-Passwort vor oeffentlichem Einsatz ersetzen.
+- Rechtstexte vor Launch final pruefen lassen.
+- Echte Bilder/Logo koennen spaeter einfach ergaenzt werden.

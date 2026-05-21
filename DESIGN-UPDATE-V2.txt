@@ -17,7 +17,7 @@ Status:       ✅ FERTIG & READY TO DEPLOY
   --accent-green:  #7fb069  (Naturgrün)
   --bg:            #faf9f5  (Creme/Papier)
   
-  → Moderne, warme Palette statt Dark Mode
+  → Moderne, warme Palette statt dunklem Entwurf
   → Watercolor-inspirierte Farben aus deinem Briefkopf
   → Professionell & künstlerisch
 

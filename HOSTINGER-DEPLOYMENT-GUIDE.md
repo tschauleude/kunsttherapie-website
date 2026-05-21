@@ -104,7 +104,6 @@ Empfohlene Programme:
    │   ├── css/style.css
    │   ├── js/main.js
    │   └── img/
-   └── data/news.json
    ```
 
 ### 2.4 Überprüfung

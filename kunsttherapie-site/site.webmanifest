@@ -1,0 +1,17 @@
+{
+  "name": "Kunsttherapie Paderborn",
+  "short_name": "Kunsttherapie",
+  "description": "Moderne Kunsttherapie in Paderborn mit Atelier, Gruppen und Workshops.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbf8f1",
+  "theme_color": "#d4a574",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

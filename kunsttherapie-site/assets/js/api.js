@@ -1,4 +1,4 @@
-const API_BASE = window.KUNSTTHERAPIE_API_BASE || "http://localhost:3000/api";
+const API_BASE = window.KUNSTTHERAPIE_CONFIG?.apiBase || window.KUNSTTHERAPIE_API_BASE || "http://localhost:3000/api";
 
 const fallback = {
   news: [
@@ -68,8 +68,8 @@ async function fetchCollection(name) {
 function setState(target, source) {
   if (!target) return;
   target.textContent = source === "api"
-    ? "Live aus dem CMS geladen."
-    : "Demo-Daten aktiv - Backend starten fuer Live-Inhalte.";
+    ? "Aktuelle Inhalte aus dem Atelier-CMS."
+    : "Aktuelle Hinweise - auch ohne laufenden Server sauber vorbereitet.";
 }
 
 async function renderNews() {

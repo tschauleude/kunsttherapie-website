@@ -29,7 +29,7 @@
         <div>
           <p class="pill" style="display:inline-block">News, Termine und Angebote</p>
           <h1>Admin-Atelier</h1>
-          <p>Praesentationsfertige Verwaltung fuer die Kunsttherapie-Website. Standard-Login: admin / admin123.</p>
+          <p>Praesentationsfertige Verwaltung fuer Website-Inhalte, Termine und Angebote - klar, schnell und ohne Ablenkung.</p>
         </div>
         <button class="btn secondary hidden" id="logoutBtn" type="button">Abmelden</button>
       </section>
@@ -38,14 +38,22 @@
         <h2>Anmelden</h2>
         <form id="loginForm" class="grid grid-2">
           <label>Benutzername<input name="username" value="admin" required></label>
-          <label>Passwort<input name="password" type="password" value="admin123" required></label>
+          <label>Passwort<input name="password" type="password" autocomplete="current-password" required></label>
           <div class="actions"><button class="btn" type="submit">Login</button></div>
         </form>
-        <div class="notice">Bitte das Standard-Passwort vor einem oeffentlichen Einsatz ueber <code>ADMIN_PASSWORD</code> bzw. einen neuen Admin-Hash ersetzen.</div>
+        <div class="notice">Demo-Zugangsdaten stehen im Startdokument. Vor oeffentlichem Einsatz bitte direkt im Admin-Bereich ein neues Passwort setzen.</div>
       </section>
 
       <section id="appPanel" class="hidden">
         <div class="grid grid-3" id="stats"></div>
+        <section class="card" style="margin:1rem 0">
+          <h2>Passwort aktualisieren</h2>
+          <form id="passwordForm" class="grid grid-3">
+            <label>Aktuelles Passwort<input name="current_password" type="password" autocomplete="current-password" required></label>
+            <label>Neues Passwort<input name="new_password" type="password" minlength="10" autocomplete="new-password" required></label>
+            <div class="actions"><button class="btn secondary" type="submit">Passwort speichern</button></div>
+          </form>
+        </section>
         <div class="tabs">
           <button class="tab active" data-tab="news" type="button">News</button>
           <button class="tab" data-tab="events" type="button">Termine</button>
@@ -177,6 +185,18 @@
         try {
           await api("/api/login", { method: "POST", body: JSON.stringify(body) });
           await checkSession();
+        } catch (error) {
+          flash(error.message, true);
+        }
+      });
+
+      $("#passwordForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const body = Object.fromEntries(new FormData(event.currentTarget));
+        try {
+          await api("/api/change-password", { method: "POST", body: JSON.stringify(body) });
+          event.currentTarget.reset();
+          flash("Passwort aktualisiert.");
         } catch (error) {
           flash(error.message, true);
         }

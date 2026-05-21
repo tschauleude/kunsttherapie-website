@@ -15,6 +15,7 @@
   --line: rgba(38, 33, 29, 0.12);
   --shadow: 0 24px 70px rgba(75, 54, 34, 0.14);
   --shadow-soft: 0 16px 42px rgba(75, 54, 34, 0.1);
+  --shine: linear-gradient(135deg, rgba(255,255,255,.72), rgba(255,255,255,.24));
   --radius-xl: 32px;
   --radius-lg: 22px;
   --radius-md: 16px;
@@ -42,6 +43,17 @@ body {
   color: var(--ink);
   font-family: var(--font-body);
   line-height: 1.65;
+}
+
+
+::selection {
+  background: rgba(212, 165, 116, 0.32);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 3px solid rgba(91, 143, 196, 0.55);
+  outline-offset: 4px;
 }
 
 body::before {
@@ -790,5 +802,43 @@ p {
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
     animation-duration: 0.001ms !important;
+  }
+}
+
+
+.status-strip {
+  width: min(var(--max), calc(100% - 2rem));
+  margin: -1rem auto 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .85rem 1rem;
+  border: 1px solid rgba(255,255,255,.72);
+  border-radius: 999px;
+  background: rgba(255,253,248,.68);
+  box-shadow: 0 12px 32px rgba(75,54,34,.09);
+  color: #51483f;
+  font-weight: 700;
+}
+
+.status-pill::before {
+  content: "";
+  width: .72rem;
+  height: .72rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--gold), var(--green));
+  box-shadow: 0 0 0 5px rgba(127,176,105,.14);
+}
+
+@media (max-width: 980px) {
+  .status-strip {
+    grid-template-columns: 1fr;
+    margin-top: 0;
   }
 }

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kunsttherapie Paderborn">
+  <defs>
+    <linearGradient id="g" x1="8" y1="56" x2="56" y2="8" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d4a574"/>
+      <stop offset=".48" stop-color="#c9899d"/>
+      <stop offset="1" stop-color="#5b8fc4"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="#fbf8f1"/>
+  <path d="M14 39c8 10 22 11 34 2 9-7 5-20-7-23-9-2-15 2-20 8-5 5-10 8-7 13Z" fill="url(#g)" opacity=".9"/>
+  <circle cx="24" cy="23" r="7" fill="#fff7df" opacity=".88"/>
+  <path d="M22 43c8-9 16-15 27-18" fill="none" stroke="#26211d" stroke-width="4" stroke-linecap="round" opacity=".72"/>
+</svg>

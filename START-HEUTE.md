@@ -37,7 +37,7 @@ Website: <http://localhost:8080>
 - Interaktives Mini-Atelier auf der Startseite.
 - News, Termine und Angebote laden aus dem CMS; wenn das Backend nicht laeuft, erscheinen saubere Demo-Daten statt leerer Bereiche.
 - Kontaktformular erstellt eine vorbereitete E-Mail, damit in der Demo kein deaktivierter Button sichtbar ist.
-- Backend mit Seed-Daten, Health-Check, Login, CRUD-Endpunkten und Admin-Oberflaeche.
+- Backend mit Seed-Daten, Health-Check, Login-Rate-Limit, Passwortwechsel, CRUD-Endpunkten und Admin-Oberflaeche.
 - CORS ist fuer lokale Website-Ports vorkonfiguriert.
 
 ## Demo-Checkliste
@@ -53,7 +53,7 @@ Website: <http://localhost:8080>
 
 ## Wichtige Hinweise vor oeffentlichem Einsatz
 
-- Standard-Passwort `admin123` ersetzen.
+- Standard-Passwort `admin123` im Admin-Panel direkt nach dem Login ersetzen.
 - In Produktion `SESSION_SECRET` und `CORS_ORIGIN` in `.env` setzen.
 - Rechtstexte final pruefen lassen.
 - Echte Praxis-/Atelierbilder koennen die CSS-Kunstflaechen spaeter ersetzen.

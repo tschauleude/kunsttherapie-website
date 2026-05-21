@@ -11,6 +11,9 @@ const bcrypt = require("bcryptjs");
 const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
+if (process.env.TRUST_PROXY) {
+  app.set("trust proxy", process.env.TRUST_PROXY === "true" ? 1 : process.env.TRUST_PROXY);
+}
 const PORT = Number(process.env.PORT || 3000);
 const DATABASE_PATH = process.env.DATABASE_PATH || path.join(__dirname, "database.sqlite");
 const SESSION_SECRET = process.env.SESSION_SECRET || "change-this-before-production";
@@ -22,6 +25,9 @@ const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:8080,http:/
   .filter(Boolean);
 
 const db = new sqlite3.Database(DATABASE_PATH);
+const loginAttempts = new Map();
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const LOGIN_MAX_ATTEMPTS = 8;
 
 app.use(helmet({
   contentSecurityPolicy: false
@@ -178,6 +184,37 @@ function asyncHandler(handler) {
   return (req, res, next) => Promise.resolve(handler(req, res, next)).catch(next);
 }
 
+function loginKey(req) {
+  return req.ip || req.headers["x-forwarded-for"] || req.socket.remoteAddress || "local";
+}
+
+function assertLoginAllowed(req) {
+  const key = loginKey(req);
+  const now = Date.now();
+  const attempt = loginAttempts.get(key);
+  if (!attempt || attempt.resetAt <= now) {
+    loginAttempts.set(key, { count: 0, resetAt: now + LOGIN_WINDOW_MS });
+    return;
+  }
+  if (attempt.count >= LOGIN_MAX_ATTEMPTS) {
+    const error = new Error("Zu viele Login-Versuche. Bitte spaeter erneut versuchen.");
+    error.status = 429;
+    throw error;
+  }
+}
+
+function registerFailedLogin(req) {
+  const key = loginKey(req);
+  const now = Date.now();
+  const attempt = loginAttempts.get(key) || { count: 0, resetAt: now + LOGIN_WINDOW_MS };
+  attempt.count += 1;
+  loginAttempts.set(key, attempt);
+}
+
+function clearLoginAttempts(req) {
+  loginAttempts.delete(loginKey(req));
+}
+
 function requireFields(body, fields) {
   const missing = fields.filter((field) => !String(body[field] || "").trim());
   if (missing.length) {
@@ -206,15 +243,34 @@ app.get("/api/health", asyncHandler(async (req, res) => {
 }));
 
 app.post("/api/login", asyncHandler(async (req, res) => {
+  assertLoginAllowed(req);
   const { username, password } = req.body;
   requireFields(req.body, ["username", "password"]);
   const admin = await get("SELECT * FROM admins WHERE username = ?", [username]);
   if (!admin || !(await bcrypt.compare(password, admin.password_hash))) {
+    registerFailedLogin(req);
     return res.status(401).json({ error: "Login fehlgeschlagen" });
   }
+  clearLoginAttempts(req);
   req.session.adminId = admin.id;
   req.session.username = admin.username;
   return res.json({ ok: true, username: admin.username });
+}));
+
+app.post("/api/change-password", requireAuth, asyncHandler(async (req, res) => {
+  requireFields(req.body, ["current_password", "new_password"]);
+  if (String(req.body.new_password).length < 10) {
+    const error = new Error("Das neue Passwort muss mindestens 10 Zeichen lang sein.");
+    error.status = 400;
+    throw error;
+  }
+  const admin = await get("SELECT * FROM admins WHERE id = ?", [req.session.adminId]);
+  if (!admin || !(await bcrypt.compare(req.body.current_password, admin.password_hash))) {
+    return res.status(401).json({ error: "Aktuelles Passwort ist nicht korrekt" });
+  }
+  const passwordHash = await bcrypt.hash(req.body.new_password, 12);
+  await run("UPDATE admins SET password_hash = ? WHERE id = ?", [passwordHash, admin.id]);
+  res.json({ ok: true });
 }));
 
 app.post("/api/logout", (req, res) => {
@@ -334,6 +390,12 @@ app.use((error, req, res, next) => {
 initializeDatabase()
   .then(() => {
     app.listen(PORT, () => {
+      if (SESSION_SECRET === "change-this-before-production") {
+        console.warn("WARNUNG: SESSION_SECRET vor Produktion setzen.");
+      }
+      if ((process.env.ADMIN_PASSWORD || "admin123") === "admin123") {
+        console.warn("WARNUNG: Standard-Admin-Passwort nur lokal verwenden.");
+      }
       console.log("Kunsttherapie CMS Backend");
       console.log(`Server running on http://localhost:${PORT}`);
       console.log(`Admin Panel: http://localhost:${PORT}/admin`);
