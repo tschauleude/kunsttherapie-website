@@ -140,13 +140,13 @@ async function initializeDatabase() {
   if (newsCount.count === 0) {
     await run("INSERT INTO news (title, content, date, status) VALUES (?, ?, ?, ?)", [
       "Neue kreative Gruppen starten",
-      "Kleine, geschuetzte Gruppen fuer Menschen, die ueber Farbe, Ton und Collage wieder in Kontakt mit ihren Ressourcen kommen moechten.",
+      "Kleine, geschuetzte Gruppen: Hier ist jeder willkommen, der ueber Farbe, Ton und Collage wieder in Kontakt mit den eigenen Ressourcen kommen moechte.",
       "2026-06-04",
       "published"
     ]);
     await run("INSERT INTO news (title, content, date, status) VALUES (?, ?, ?, ?)", [
       "Offenes Atelier: Kunst als Auszeit",
-      "Ein Abend zum Ankommen, Ausprobieren und Kraft schoepfen. Keine kuenstlerische Vorerfahrung notwendig.",
+      "Ein Abend zum Ankommen, Ausprobieren und Kraft schoepfen. Hier ist jeder willkommen, keine kuenstlerische Vorerfahrung notwendig.",
       "2026-06-18",
       "published"
     ]);
@@ -168,8 +168,8 @@ async function initializeDatabase() {
   const serviceCount = await get("SELECT COUNT(*) AS count FROM services");
   if (serviceCount.count === 0) {
     const services = [
-      ["Einzelbegleitung", "Individuelle kunsttherapeutische Begleitung in einem achtsamen, ressourcenorientierten Rahmen.", "auf Anfrage", "60-90 Minuten", 1],
-      ["Gruppenangebote", "Kleine Gruppen mit Ton, Farbe, Collage und kreativen Methoden zur Staerkung von Ausdruck und Selbstwirksamkeit.", "ab 55 EUR", "fortlaufend", 2],
+      ["Einzelbegleitung", "Individuelle kunsttherapeutische Begleitung in einem achtsamen, ressourcenorientierten Rahmen. Hier ist jeder willkommen.", "auf Anfrage", "60-90 Minuten", 1],
+      ["Gruppenangebote", "Kleine Gruppen mit Ton, Farbe, Collage und kreativen Methoden zur Staerkung von Ausdruck und Selbstwirksamkeit. Offen fuer alle, die kreativ ankommen moechten.", "ab 55 EUR", "fortlaufend", 2],
       ["Workshops fuer Teams", "Kreative Auszeiten fuer Teams, Einrichtungen und Gruppen mit professioneller Prozessbegleitung.", "auf Anfrage", "halb-/ganztags", 3]
     ];
     for (const service of services) {

@@ -38,6 +38,7 @@ Die aktuelle Version nutzt eine helle, hochwertige Gestaltung:
 - Gold, Aquarell-Blau, Naturgruen und Rosé als Akzentfarben
 - grosszuegige Karten, weiche Schatten und organische Farbformen
 - interaktives Mini-Atelier auf der Startseite
+- inklusive Grundhaltung: Hier ist jeder willkommen
 - responsive Navigation und mobile-ready Layouts
 - keine externen Formularanbieter und keine Analytics
 

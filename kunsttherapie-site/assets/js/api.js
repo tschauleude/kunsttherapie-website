@@ -4,13 +4,13 @@ const fallback = {
   news: [
     {
       title: "Neue kreative Gruppen starten",
-      content: "Kleine, geschützte Gruppen für Menschen, die über Farbe, Ton und Collage wieder in Kontakt mit den eigenen Ressourcen kommen möchten.",
+      content: "Kleine, geschützte Gruppen: Hier ist jeder willkommen, der über Farbe, Ton und Collage wieder in Kontakt mit den eigenen Ressourcen kommen möchte.",
       date: "2026-06-04",
       status: "published"
     },
     {
       title: "Offenes Atelier: Kunst als Auszeit",
-      content: "Ein niedrigschwelliger Abend zum Ankommen, Ausprobieren und Kraft schöpfen. Keine Vorerfahrung nötig.",
+      content: "Ein niedrigschwelliger Abend zum Ankommen, Ausprobieren und Kraft schöpfen. Hier ist jeder willkommen, keine Vorerfahrung nötig.",
       date: "2026-06-18",
       status: "published"
     }

@@ -33,6 +33,7 @@ Website: <http://localhost:8080>
 ## Was fuer die heutige Praesentation verbessert wurde
 
 - Komplett neues, helles und edles Kunsttherapie-Design mit warmem Papierhintergrund, Gold-/Blau-/Gruen-Akzenten und Aquarell-Optik.
+- Die Haltung "Hier ist jeder willkommen" ist sichtbar in Startseite, Angeboten, Kontakt und Demo-Inhalten verankert.
 - Responsive Seiten fuer Start, Angebote, Ueber mich, Preise, Neuigkeiten, Termine, Kontakt, Impressum und Datenschutz.
 - Interaktives Mini-Atelier auf der Startseite.
 - News, Termine und Angebote laden aus dem CMS; wenn das Backend nicht laeuft, erscheinen saubere Demo-Daten statt leerer Bereiche.
