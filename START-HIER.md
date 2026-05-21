@@ -1,5 +1,10 @@
 # 🎨 KUNSTTHERAPIE WEBSITE + CMS – QUICK START
 
+> **Update fuer die aktuelle Version:** Die lauffaehigen Ordner `kunsttherapie-site/`
+> und `kunsttherapie-cms/` wurden im Repository neu erstellt. Fuer die heutige
+> Praesentation bitte zuerst `START-HEUTE.md` nutzen; diese Datei bleibt als
+> allgemeiner Quick-Start erhalten.
+
 ## Du hast folgende Dateien:
 
 ```

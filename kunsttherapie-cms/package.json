@@ -1,0 +1,33 @@
+{
+  "name": "kunsttherapie-cms",
+  "version": "1.0.0",
+  "description": "Express/SQLite CMS fuer die Kunsttherapie Paderborn Website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "check": "node --check server.js"
+  },
+  "keywords": [
+    "kunsttherapie",
+    "cms",
+    "express",
+    "sqlite"
+  ],
+  "author": "Kunsttherapie Paderborn",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

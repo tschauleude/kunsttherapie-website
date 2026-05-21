@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kunsttherapie CMS</title>
+    <style>
+      :root{--paper:#fbf8f1;--ink:#26211d;--muted:#6f655c;--gold:#d4a574;--blue:#5b8fc4;--green:#7fb069;--line:rgba(38,33,29,.14);--shadow:0 22px 60px rgba(75,54,34,.14)}
+      *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 10%,rgba(212,165,116,.22),transparent 26rem),radial-gradient(circle at 90% 0,rgba(91,143,196,.18),transparent 24rem),var(--paper);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+      header{position:sticky;top:0;z-index:2;border-bottom:1px solid var(--line);background:rgba(251,248,241,.86);backdrop-filter:blur(16px)}nav{max-width:1180px;margin:auto;padding:1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}.brand{font-weight:900;letter-spacing:-.04em}.pill{border:1px solid var(--line);border-radius:999px;padding:.45rem .75rem;background:rgba(255,255,255,.5);color:var(--muted);font-size:.9rem}
+      main{max-width:1180px;margin:auto;padding:2rem 1rem 4rem}.hero{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:end;margin:1.5rem 0 2rem}h1{font-size:clamp(2rem,5vw,4rem);line-height:1;margin:.2rem 0;font-family:Georgia,serif;letter-spacing:-.05em}h2{margin:0 0 1rem;font-family:Georgia,serif}p{color:var(--muted);margin:0}
+      .card{border:1px solid rgba(255,255,255,.75);border-radius:28px;background:rgba(255,253,248,.76);box-shadow:var(--shadow);padding:1.25rem}.grid{display:grid;gap:1rem}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+      input,textarea,select{width:100%;border:1px solid var(--line);border-radius:16px;background:#fffdf8;color:var(--ink);padding:.8rem;margin:.25rem 0 .8rem}textarea{min-height:120px;resize:vertical}label{font-weight:700;font-size:.92rem}.btn{border:0;border-radius:999px;background:linear-gradient(135deg,#a87944,var(--gold));color:white;font-weight:800;padding:.8rem 1rem;cursor:pointer}.btn.secondary{background:#fffdf8;color:#2f5f92;border:1px solid rgba(91,143,196,.28)}.btn.danger{background:#b95f5f}.actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+      .tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}.tab{border:1px solid var(--line);border-radius:999px;background:rgba(255,253,248,.65);padding:.65rem .9rem;cursor:pointer;font-weight:800}.tab.active{background:rgba(212,165,116,.22)}
+      .item{display:grid;gap:.5rem;border:1px solid var(--line);border-radius:20px;padding:1rem;background:rgba(255,255,255,.44)}.item strong{font-size:1.05rem}.item small{color:var(--muted)}.hidden{display:none!important}.notice{border-left:4px solid var(--gold);border-radius:16px;background:rgba(212,165,116,.13);padding:1rem;margin:1rem 0}.error{border-left-color:#b95f5f;background:rgba(185,95,95,.12)}
+      @media(max-width:800px){.hero,.grid-2,.grid-3{grid-template-columns:1fr}}
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="brand">Kunsttherapie CMS</div>
+        <div class="pill" id="sessionState">Session wird geprueft...</div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="pill" style="display:inline-block">News, Termine und Angebote</p>
+          <h1>Admin-Atelier</h1>
+          <p>Praesentationsfertige Verwaltung fuer die Kunsttherapie-Website. Standard-Login: admin / admin123.</p>
+        </div>
+        <button class="btn secondary hidden" id="logoutBtn" type="button">Abmelden</button>
+      </section>
+
+      <section class="card" id="loginPanel">
+        <h2>Anmelden</h2>
+        <form id="loginForm" class="grid grid-2">
+          <label>Benutzername<input name="username" value="admin" required></label>
+          <label>Passwort<input name="password" type="password" value="admin123" required></label>
+          <div class="actions"><button class="btn" type="submit">Login</button></div>
+        </form>
+        <div class="notice">Bitte das Standard-Passwort vor einem oeffentlichen Einsatz ueber <code>ADMIN_PASSWORD</code> bzw. einen neuen Admin-Hash ersetzen.</div>
+      </section>
+
+      <section id="appPanel" class="hidden">
+        <div class="grid grid-3" id="stats"></div>
+        <div class="tabs">
+          <button class="tab active" data-tab="news" type="button">News</button>
+          <button class="tab" data-tab="events" type="button">Termine</button>
+          <button class="tab" data-tab="services" type="button">Angebote</button>
+        </div>
+        <div id="message"></div>
+        <div class="grid grid-2">
+          <section class="card">
+            <h2 id="formTitle">News erstellen</h2>
+            <form id="entryForm"></form>
+          </section>
+          <section class="card">
+            <h2>Vorhandene Eintraege</h2>
+            <div class="grid" id="entries"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const state = { resource: "news", editing: null, data: { news: [], events: [], services: [] } };
+      const fields = {
+        news: [
+          ["title", "Titel", "text"],
+          ["content", "Inhalt", "textarea"],
+          ["date", "Datum", "date"],
+          ["image_url", "Bild-URL", "url"],
+          ["status", "Status", "select", ["published", "draft"]]
+        ],
+        events: [
+          ["title", "Titel", "text"],
+          ["description", "Beschreibung", "textarea"],
+          ["event_date", "Datum", "date"],
+          ["event_time", "Uhrzeit", "time"],
+          ["location", "Ort", "text"],
+          ["capacity", "Plaetze", "text"],
+          ["image_url", "Bild-URL", "url"],
+          ["status", "Status", "select", ["published", "draft"]]
+        ],
+        services: [
+          ["title", "Titel", "text"],
+          ["description", "Beschreibung", "textarea"],
+          ["price", "Preis", "text"],
+          ["duration", "Dauer", "text"],
+          ["image_url", "Bild-URL", "url"],
+          ["sort_order", "Sortierung", "number"],
+          ["active", "Aktiv", "select", ["1", "0"]]
+        ]
+      };
+
+      const $ = (selector) => document.querySelector(selector);
+
+      async function api(path, options = {}) {
+        const response = await fetch(path, {
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+          ...options
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || "Anfrage fehlgeschlagen");
+        return data;
+      }
+
+      async function checkSession() {
+        const session = await api("/api/session");
+        $("#sessionState").textContent = session.authenticated ? `Angemeldet als ${session.username}` : "Nicht angemeldet";
+        $("#loginPanel").classList.toggle("hidden", session.authenticated);
+        $("#appPanel").classList.toggle("hidden", !session.authenticated);
+        $("#logoutBtn").classList.toggle("hidden", !session.authenticated);
+        if (session.authenticated) await loadAll();
+      }
+
+      async function loadAll() {
+        for (const resource of Object.keys(fields)) {
+          state.data[resource] = await api(`/api/admin/${resource}`);
+        }
+        renderStats();
+        renderForm();
+        renderEntries();
+      }
+
+      function renderStats() {
+        $("#stats").innerHTML = Object.entries(state.data).map(([resource, rows]) => `
+          <article class="card"><strong>${rows.length}</strong><p>${label(resource)}</p></article>
+        `).join("");
+      }
+
+      function renderForm(item = {}) {
+        $("#formTitle").textContent = `${label(state.resource)} ${state.editing ? "bearbeiten" : "erstellen"}`;
+        $("#entryForm").innerHTML = fields[state.resource].map(([name, title, type, options]) => {
+          const value = item[name] ?? (name === "date" || name === "event_date" ? new Date().toISOString().slice(0, 10) : name === "status" ? "published" : name === "active" ? "1" : "");
+          if (type === "textarea") return `<label>${title}<textarea name="${name}" required>${escapeHtml(value)}</textarea></label>`;
+          if (type === "select") return `<label>${title}<select name="${name}">${options.map((option) => `<option value="${option}" ${String(value) === option ? "selected" : ""}>${option}</option>`).join("")}</select></label>`;
+          return `<label>${title}<input name="${name}" type="${type}" value="${escapeHtml(value)}" ${["title","content","description","date","event_date"].includes(name) ? "required" : ""}></label>`;
+        }).join("") + `<div class="actions"><button class="btn" type="submit">Speichern</button><button class="btn secondary" type="button" id="resetBtn">Neu</button></div>`;
+        $("#resetBtn").addEventListener("click", () => { state.editing = null; renderForm(); });
+      }
+
+      function renderEntries() {
+        const rows = state.data[state.resource];
+        $("#entries").innerHTML = rows.length ? rows.map((item) => `
+          <article class="item">
+            <strong>${escapeHtml(item.title)}</strong>
+            <small>${escapeHtml(item.date || item.event_date || item.duration || "")} ${escapeHtml(item.status || (item.active ? "aktiv" : "inaktiv"))}</small>
+            <p>${escapeHtml(item.content || item.description || "")}</p>
+            <div class="actions">
+              <button class="btn secondary" data-edit="${item.id}" type="button">Bearbeiten</button>
+              <button class="btn danger" data-delete="${item.id}" type="button">Loeschen</button>
+            </div>
+          </article>
+        `).join("") : "<p>Noch keine Eintraege.</p>";
+
+        document.querySelectorAll("[data-edit]").forEach((button) => button.addEventListener("click", () => {
+          const item = rows.find((row) => row.id === Number(button.dataset.edit));
+          state.editing = item.id;
+          renderForm(item);
+        }));
+        document.querySelectorAll("[data-delete]").forEach((button) => button.addEventListener("click", async () => {
+          if (!confirm("Eintrag wirklich loeschen?")) return;
+          await api(`/api/admin/${state.resource}/${button.dataset.delete}`, { method: "DELETE" });
+          await loadAll();
+          flash("Eintrag geloescht.");
+        }));
+      }
+
+      $("#loginForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const body = Object.fromEntries(new FormData(event.currentTarget));
+        try {
+          await api("/api/login", { method: "POST", body: JSON.stringify(body) });
+          await checkSession();
+        } catch (error) {
+          flash(error.message, true);
+        }
+      });
+
+      $("#logoutBtn").addEventListener("click", async () => {
+        await api("/api/logout", { method: "POST", body: "{}" });
+        await checkSession();
+      });
+
+      $("#entryForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const body = Object.fromEntries(new FormData(event.currentTarget));
+        if (state.resource === "services") {
+          body.active = body.active === "1";
+          body.sort_order = Number(body.sort_order || 0);
+        }
+        const path = state.editing ? `/api/admin/${state.resource}/${state.editing}` : `/api/admin/${state.resource}`;
+        const method = state.editing ? "PUT" : "POST";
+        try {
+          await api(path, { method, body: JSON.stringify(body) });
+          state.editing = null;
+          await loadAll();
+          flash("Gespeichert.");
+        } catch (error) {
+          flash(error.message, true);
+        }
+      });
+
+      document.querySelectorAll("[data-tab]").forEach((tab) => tab.addEventListener("click", () => {
+        document.querySelectorAll("[data-tab]").forEach((item) => item.classList.remove("active"));
+        tab.classList.add("active");
+        state.resource = tab.dataset.tab;
+        state.editing = null;
+        renderForm();
+        renderEntries();
+      }));
+
+      function label(resource) {
+        return ({ news: "News", events: "Termine", services: "Angebote" })[resource];
+      }
+
+      function flash(text, isError = false) {
+        $("#message").innerHTML = `<div class="notice ${isError ? "error" : ""}">${escapeHtml(text)}</div>`;
+        setTimeout(() => { $("#message").innerHTML = ""; }, 3500);
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+      }
+
+      checkSession().catch((error) => flash(error.message, true));
+    </script>
+  </body>
+</html>
