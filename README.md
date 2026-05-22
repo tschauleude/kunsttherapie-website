@@ -30,6 +30,17 @@ python3 -m http.server 8080
 
 Website: <http://localhost:8080>
 
+## GitHub Preview
+
+Für GitHub gibt es jetzt zusätzlich:
+
+- `index.html` im Repository-Root als Weiterleitung zur Website
+- `.nojekyll`, damit GitHub Pages Assets nicht filtert
+- `.github/workflows/pages.yml`, um `kunsttherapie-site/` als statische GitHub-Pages-Preview zu veröffentlichen
+- `GITHUB-PREVIEW.md` mit kurzer Erklärung
+
+Wichtig: GitHub Pages zeigt nur die öffentliche Website. Das CMS/Admin-Login benötigt weiterhin das Node.js-Backend und läuft lokal oder auf einem Backend-Host.
+
 ## Design
 
 Die aktuelle Version nutzt eine helle, hochwertige Gestaltung:
