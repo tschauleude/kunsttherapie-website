@@ -9,6 +9,26 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const ROOT_DIR = __dirname;
+const PUBLIC_SITE_FILES = new Set([
+  'index.html',
+  'angebote.html',
+  'ueber-mich.html',
+  'preise.html',
+  'kontakt.html',
+  'neuigkeiten.html',
+  'events.html',
+  'impressum.html',
+  'datenschutz.html',
+  'style.css',
+  'main.js',
+  'Bilder.jpg',
+  'Gruppen-und-Einzeltherapie-768x524.jpg',
+  'Potenziale-Kunsttherapie-Paderborn.jpg',
+  'Screenshot_2026-05-21_104753.jpg',
+  'Sonnige_Pinsel.jpg',
+  'logo.jpg'
+]);
 
 // ============================================================================
 // MIDDLEWARE
@@ -482,6 +502,24 @@ app.delete('/api/admin/services/:id', requireAuth, (req, res) => {
 // ============================================================================
 // SERVER START
 // ============================================================================
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(ROOT_DIR, 'index.html'));
+});
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(ROOT_DIR, 'admin.html'));
+});
+
+app.get('/:file', (req, res, next) => {
+  const requestedFile = req.params.file;
+
+  if (!PUBLIC_SITE_FILES.has(requestedFile)) {
+    return next();
+  }
+
+  res.sendFile(path.join(ROOT_DIR, requestedFile));
+});
 
 app.listen(PORT, () => {
   console.log(`\n╔════════════════════════════════════════╗`);
