@@ -3,21 +3,18 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Kunsttherapie Paderborn – Martina Schwierzke</title>
+  <title>Kunsttherapie Paderborn - Martina Schwierzke</title>
   <meta name="description" content="Kunsttherapie in Paderborn: Einzel & Gruppe, Auszeit am Abend, Teambuilding-Events. Ressourcen stärken, innere Mitte finden, neue Perspektiven entdecken."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 <header>
   <div class="container nav">
     <a class="brand" href="index.html">
-      <img src="assets/img/Sonnige_Pinsel.jpg" alt="Logo Kunsttherapie Paderborn"/>
+      <img src="Sonnige_Pinsel.jpg" alt="Logo Kunsttherapie Paderborn"/>
       <div>Kunsttherapie Paderborn</div>
     </a>
-    <nav>
+    <nav aria-label="Hauptnavigation">
       <ul>
         <li><a href="angebote.html">Angebote</a></li>
         <li><a href="ueber-mich.html">Über mich</a></li>
@@ -29,160 +26,191 @@
 </header>
 
 <main>
-  <!-- HERO SECTION -->
   <section class="hero container">
     <div class="hero-grid">
-      <div class="card hero-left">
-        <div>
-          <div class="kicker">Kunst ist Therapie</div>
-          <h1>Trauer, Zukunft & neue Kraft</h1>
-          <p class="sub">
-            Kunsttherapeutisches Gestalten schafft einen <strong>geschützten Raum</strong>, in dem du mutig und experimentell mit Farbe, Form und Material arbeiten darfst. 
-            Das Ziel ist nicht „schön malen" – sondern <strong>Wahrhaftigkeit, Selbstwirksamkeit und neue Perspektiven.</strong>
-          </p>
-
-          <div class="actions">
-            <a class="btn primary" href="kontakt.html">📞 Termin anfragen</a>
-            <a class="btn" href="angebote.html">💜 Angebote erkunden</a>
-            <a class="btn" href="#galerie">🎨 Galerie</a>
-          </div>
-
-          <hr class="sep"/>
-
-          <details>
-            <summary>Was Kunsttherapie wirklich bewirkt</summary>
-            <div class="inner">
-              <p>
-                Kunst hilft, innere Prozesse sichtbar zu machen – ohne alles sofort in Worte fassen zu müssen. Das Werk wird zum <strong>Vehikel</strong>: 
-                Es schafft Distanz und Nähe, sodass Gefühle, Wünsche und Ressourcen greifbarer werden.
-              </p>
-              <p>
-                <strong>Du musst nicht „malen können".</strong> Es geht darum, dass sich das Werk stimmig anfühlt – und dass du dich dabei selbst entdeckst. Freiheit entsteht, Ausdruck wird möglich.
-              </p>
-            </div>
-          </details>
-
-          <p class="note" style="margin-top:16px">
-            ✨ Neue Gruppen ab <strong>01.06.</strong> in der Otto-Stadler-Straße 23c (2× pro Woche)
-          </p>
+      <div class="hero-left">
+        <p class="atelier-word">atelier</p>
+        <div class="kicker">Kunsttherapie als Ressource</div>
+        <h1>Kunst<br/>Therapie</h1>
+        <p class="sub">
+          Ressourcenorientierte, visuelle Methoden, um innere Themen wahrzunehmen,
+          in Ausdruck zu bringen und neue Perspektiven entstehen zu lassen.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="kontakt.html">Termin anfragen</a>
+          <a class="btn" href="angebote.html">Angebote ansehen</a>
         </div>
       </div>
-
-      <div class="card hero-right">
-        <img src="assets/img/Screenshot_2026-05-21_104753.jpg" alt="Kunsttherapie in Aktion – Farbige Werke"/>
+      <div class="hero-right">
+        <img src="Screenshot_2026-05-21_104753.jpg" alt="Farbige Werke aus der Kunsttherapie"/>
       </div>
     </div>
   </section>
 
-  <!-- BILDERGALERIE -->
+  <section class="manifesto">
+    <div class="container manifesto-grid">
+      <div class="manifesto-image">
+        <img src="Gruppen-und-Einzeltherapie-768x524.jpg" alt="Kunsttherapeutisches Arbeiten in Gruppe und Einzelsetting"/>
+      </div>
+      <div class="manifesto-copy">
+        <h2>Vom Eindruck zum Ausdruck</h2>
+        <p class="manifesto-line">Wir tragen bewusste und unbewusste Themen in uns.</p>
+        <p class="manifesto-line">Bilder spiegeln, was uns bewegt, blockiert oder stärkt.</p>
+        <p class="manifesto-line">Kreative Lösungen schaffen Distanz, Nähe und Leichtigkeit.</p>
+        <p class="manifesto-line">Ein Perspektivwechsel hilft, den eigenen Weg klarer zu sehen.</p>
+      </div>
+    </div>
+  </section>
+
   <section id="galerie" class="section container">
-    <div style="margin-bottom: 32px">
-      <div class="kicker">Einblicke</div>
-      <h2>Kunsttherapie in Aktion</h2>
-      <p class="sub">Ein Blick in den Atelier-Alltag: Kreativität ohne Leistungsdruck, Experimentieren in einem geschützten Raum.</p>
+    <div class="kicker">Einblicke</div>
+    <h2>Farbe. Form. Resonanz.</h2>
+    <p class="lead">
+      Ein Atelier-Raum ohne Leistungsdruck: ausprobieren, verwerfen, weiterdenken
+      und dem eigenen Ausdruck Schritt für Schritt begegnen.
+    </p>
+    <div class="mosaic">
+      <div class="mosaic-item"><img src="Bilder.jpg" alt="Kunstwerke und Farben"/></div>
+      <div class="mosaic-item"><img src="Potenziale-Kunsttherapie-Paderborn.jpg" alt="Potenziale der Kunsttherapie"/></div>
+      <div class="mosaic-item"><img src="Sonnige_Pinsel.jpg" alt="Pinsel und sonnige Farben"/></div>
+      <div class="mosaic-item"><img src="Gruppen-und-Einzeltherapie-768x524.jpg" alt="Gruppen- und Einzeltherapie"/></div>
     </div>
+  </section>
 
-    <div class="image-gallery">
-      <div class="card gallery-item">
-        <img src="assets/img/Gruppen-und-Einzeltherapie-768x524.jpg" alt="Gruppen- und Einzeltherapie"/>
+  <section class="section container">
+    <div class="split">
+      <div class="split-copy">
+        <div class="kicker">Über mich</div>
+        <h2>Martina Schwierzke</h2>
+        <p>
+          Als psychosoziale und klinische Kunsttherapeutin und Heilpraktikerin für
+          Psychotherapie begleite ich Menschen in schwierigen Situationen - mit
+          Erfahrung aus Praxis, Klinik, Palliation und Psychoonkologie.
+        </p>
+        <p>
+          Kunst ist für mich ein existenzieller Freiraum. Natur, Material und die
+          eigene Wahrnehmung werden zu Kraftquellen, aus denen neue Handlungsspielräume wachsen.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="ueber-mich.html">Mehr erfahren</a>
+        </div>
       </div>
-      <div class="card gallery-item">
-        <img src="assets/img/Potenziale-Kunsttherapie-Paderborn.jpg" alt="Potenziale der Kunsttherapie"/>
-      </div>
-      <div class="card gallery-item">
-        <img src="assets/img/Bilder.jpg" alt="Kunstwerke und Farben"/>
-      </div>
-      <div class="card gallery-item">
-        <img src="assets/img/Screenshot_2026-05-21_104753.jpg" alt="Therapeutisches Malen"/>
+      <div class="image-frame">
+        <img src="Potenziale-Kunsttherapie-Paderborn.jpg" alt="Künstlerischer Ausdruck in der Kunsttherapie"/>
       </div>
     </div>
   </section>
 
-  <!-- ANGEBOTE -->
-  <section id="angebote" class="section container">
-    <div style="text-align: center; margin-bottom: 40px">
-      <div class="kicker">Leistungen</div>
+  <section id="angebote" class="section yellow-band">
+    <div class="container">
+      <div class="kicker">Meine Leistungen im Überblick</div>
       <h2>Wie ich dich begleite</h2>
-    </div>
-    
-    <div class="grid3">
-      <div class="card feature">
-        <h3>🌙 Auszeit am frühen Abend</h3>
-        <p>Feierabends-Atmosphäre, Tee, ankommen. Begleitetes Malen, Zeichnen, Collage oder Tonarbeit. Ohne Druck, ohne Erwartungen.</p>
-        <p class="note" style="margin-top: 12px">Für Privatpersonen • 90 Minuten</p>
-      </div>
-      <div class="card feature">
-        <h3>💜 Kunsttherapeutische Gruppen</h3>
-        <p>Krankheitsakzeptanz, Integration, Resilienzförderung & neue Perspektiven. In einem geschützten Rahmen, über mehrere Einheiten.</p>
-        <p class="note" style="margin-top: 12px">4–12 Personen • 90 Min × 4 Einh.</p>
-      </div>
-      <div class="card feature">
-        <h3>🤝 Teambuilding-Events</h3>
-        <p>Gemeinsames Kunstwerk, spielerische Regeln, Zusammenarbeit ohne Perfektionsdruck. Verbindend und stärkend.</p>
-        <p class="note" style="margin-top: 12px">Für Teams & Gruppen • Nach Bedarf</p>
+      <p class="lead">
+        Einzelne Sitzungen, Gruppen und kreative Teamformate - angepasst an Thema,
+        Ziel und den geschützten Rahmen, den es dafür braucht.
+      </p>
+
+      <div class="grid3" style="margin-top:34px">
+        <article class="feature">
+          <h3>Auszeit am frühen Abend</h3>
+          <p>Feierabend-Atmosphäre, Tee, Ankommen und begleitetes Gestalten mit Farbe, Collage oder Ton.</p>
+          <p class="note">Für Privatpersonen - 90 Minuten</p>
+        </article>
+        <article class="feature">
+          <h3>Kunsttherapeutische Gruppen</h3>
+          <p>Krankheitsakzeptanz, Resilienz, Integration und neue Perspektiven in einem sicheren Prozess.</p>
+          <p class="note">4-12 Personen - mehrere Einheiten</p>
+        </article>
+        <article class="feature">
+          <h3>Teambuilding-Events</h3>
+          <p>Gemeinsames Kunstwerk, spielerische Regeln und Zusammenarbeit ohne Perfektionsdruck.</p>
+          <p class="note">Für Teams & Gruppen - nach Bedarf</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- INTERAKTIVES ATELIER -->
+  <section class="section container">
+    <div class="teaser-grid">
+      <article class="teaser-card">
+        <img src="Bilder.jpg" alt="Offenes Atelier und farbige Arbeiten"/>
+        <div class="teaser-content">
+          <span class="badge">neu</span>
+          <h3>Auszeit & Atelierabend</h3>
+          <p>Ein ruhiger Ort, um in der Woche anzukommen, Material auszuprobieren und die eigene Spur zu finden.</p>
+          <a class="btn" href="kontakt.html">Interesse melden</a>
+        </div>
+      </article>
+      <article class="teaser-card">
+        <img src="Sonnige_Pinsel.jpg" alt="Pinsel und Kreativmaterial"/>
+        <div class="teaser-content">
+          <span class="badge">ab 01.06.</span>
+          <h3>Gruppen in Paderborn</h3>
+          <p>Dienstag vormittags und Donnerstag am frühen Abend in der Otto-Stadler-Straße 23c.</p>
+          <a class="btn" href="angebote.html">Details ansehen</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <section id="atelier" class="section container">
     <div class="card canvasWrap">
       <div class="kicker">Interaktiv</div>
-      <h2>Trau dich – ein Mini-Atelier im Browser</h2>
-      <p class="sub">Zieh Linien, setz Punkte, spiel mit Farbe. Es geht nicht um richtig oder falsch – sondern ums Entdecken.</p>
+      <h2>Mini-Atelier im Browser</h2>
+      <p class="sub">Zieh Linien, setz Punkte, spiel mit Farbe. Es geht nicht um richtig oder falsch - sondern ums Entdecken.</p>
 
       <div class="canvasBar">
-        <label class="label">🎨 Farbe</label>
-        <input data-color type="color" value="#d4a574"/>
-        <label class="label">✏️ Pinsel</label>
-        <input data-size type="range" min="2" max="18" value="8"/>
+        <label class="label">Farbe</label>
+        <input data-color type="color" value="#9c3ae8"/>
+        <label class="label">Pinsel</label>
+        <input data-size type="range" min="2" max="22" value="8"/>
         <button class="btn" data-clear>Leeren</button>
       </div>
 
       <canvas data-art></canvas>
-      <p class="note" style="margin-top:12px">Wenn du magst, bring ein Thema mit – oder komm einfach so. Du wirst überrascht sein, was entsteht.</p>
     </div>
   </section>
 
-  <!-- INFO & ZEITEN -->
   <section class="section container">
-    <div class="card hero-left">
-      <h2>📍 Ort & Zeiten (ab 01.06.)</h2>
-      <div class="twoCol">
-        <div>
-          <p><span class="pill">Adresse</span><br/><strong>Otto-Stadler-Straße 23c</strong><br/>33102 Paderborn</p>
-          <p><span class="pill">Dienstag</span><br/>Vormittag<br/>(Tonarbeiten / Gruppen)</p>
-        </div>
-        <div>
-          <p><span class="pill">Donnerstag</span><br/>Früher Abend<br/>(Auszeit / Kurse / Gruppen)</p>
-          <p class="note">Details & freie Plätze: Anfrage über Kontaktformular</p>
-        </div>
+    <div class="newsletter-contact">
+      <div class="newsletter-box">
+        <div class="kicker">Ort & Zeiten</div>
+        <h2>Atelier in Paderborn</h2>
+        <p><strong>Otto-Stadler-Straße 23c</strong><br/>33102 Paderborn</p>
+        <p>Dienstag Vormittag - Tonarbeiten / Gruppen<br/>Donnerstag früher Abend - Auszeit / Kurse / Gruppen</p>
       </div>
-      <div class="actions" style="margin-top:20px">
-        <a class="btn primary" href="kontakt.html">Buchung / Anfrage</a>
-        <a class="btn" href="preise.html">Preise ansehen</a>
+      <div class="contact-box">
+        <div class="kicker">Zur Kontaktaufnahme geht's hier entlang</div>
+        <h2>Kontakt</h2>
+        <p>Schreib kurz, worum es geht. Ich melde mich zeitnah zurück.</p>
+        <div class="actions">
+          <a class="btn primary" href="kontakt.html">Buchung / Anfrage</a>
+          <a class="btn" href="preise.html">Preise ansehen</a>
+        </div>
       </div>
     </div>
   </section>
 </main>
 
 <footer class="footer">
-  <div class="container">
-    <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:16px">
-      <div><strong>© <span id="y"></span> Kunsttherapie Paderborn</strong> – Martina Schwierzke</div>
-      <div style="display:flex; gap:12px; flex-wrap:wrap">
-        <a href="impressum.html">Impressum</a>
-        <a href="datenschutz.html">Datenschutz</a>
-        <a href="kontakt.html">Kontakt</a>
-      </div>
+  <div class="container footer-grid">
+    <div>
+      <strong>© <span id="y"></span> Kunsttherapie Paderborn</strong>
+      <p>Martina Schwierzke - Kunsttherapie als Weg zu Ressourcen, Resilienz und innerer Kraft.</p>
     </div>
-    <p class="note" style="margin:0; text-align:center; font-size:0.9rem">
-      🌻 Kunsttherapie als Weg zu Ressourcen, Resilienz & innerer Kraft
-    </p>
+    <div>
+      <strong>Wichtige Links</strong><br/>
+      <a href="impressum.html">Impressum</a><br/>
+      <a href="datenschutz.html">Datenschutz</a>
+    </div>
+    <div>
+      <strong>Kontakt</strong><br/>
+      <a href="kontakt.html">Anfragen / Buchen</a><br/>
+      <a href="neuigkeiten.html">Neuigkeiten</a>
+    </div>
   </div>
-  <script>document.getElementById("y").textContent = new Date().getFullYear();</script>
 </footer>
 
-<script src="assets/js/main.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
