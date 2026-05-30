@@ -37,7 +37,6 @@ const PUBLIC_SITE_FILES = new Set([
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-app.use(express.static('public'));
 
 // Session Configuration
 app.use(session({
