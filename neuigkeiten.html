@@ -6,79 +6,7 @@
   <title>Neuigkeiten – Kunsttherapie Paderborn</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
-  <style>
-    .news-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-
-    .news-card {
-      background: white;
-      border: 2px solid var(--primary);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: all 0.3s ease;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      box-shadow: var(--shadow);
-    }
-
-    .news-card:hover {
-      box-shadow: 0 12px 32px rgba(212, 165, 116, 0.2);
-      transform: translateY(-4px);
-    }
-
-    .news-image {
-      width: 100%;
-      height: 100%;
-      min-height: 280px;
-      object-fit: cover;
-      background: linear-gradient(135deg, rgba(212,165,116,.1), rgba(91,143,196,.08));
-    }
-
-    .news-content {
-      padding: 32px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .news-date {
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 0.85rem;
-      margin-bottom: 12px;
-    }
-
-    .news-card h2 {
-      margin: 0 0 16px 0;
-      font-size: 1.5rem;
-      line-height: 1.3;
-      color: var(--text);
-    }
-
-    .news-card p {
-      color: var(--text-light);
-      line-height: 1.7;
-      margin: 0 0 20px 0;
-    }
-
-    @media (max-width: 768px) {
-      .news-card {
-        grid-template-columns: 1fr;
-      }
-      .news-content {
-        padding: 24px;
-      }
-      .news-card h2 {
-        font-size: 1.3rem;
-      }
-    }
-  </style>
 </head>
 <body>
 <header>
