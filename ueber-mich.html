@@ -3,75 +3,114 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Über mich – Kunsttherapie Paderborn</title>
+  <title>Über mich - Kunsttherapie Paderborn</title>
+  <meta name="description" content="Martina Schwierzke: Kunsttherapeutin, Heilpraktikerin fuer Psychotherapie und langjaehrige Begleiterin in Palliativversorgung und Psychoonkologie."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
-<header>
+<header class="site-header">
   <div class="container nav">
-    <a class="brand" href="index.html">
-      <img src="assets/img/logo.jpg" alt="Logo"/>
-      <div>Kunsttherapie Paderborn</div>
+    <a class="brand" href="index.html" aria-label="Kunsttherapie Paderborn Startseite">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-copy"><strong>Kunsttherapie Paderborn</strong><span>Atelier Martina Schwierzke</span></span>
     </a>
-    <nav>
+    <nav aria-label="Hauptnavigation">
       <ul>
         <li><a href="angebote.html">Angebote</a></li>
         <li><a href="ueber-mich.html">Über mich</a></li>
         <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
-        <li><a href="kontakt.html" class="nav-cta">Anfragen / Buchen</a></li>
+        <li><a href="events.html">Termine</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Anfragen</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
-<main class="container section">
-  <div class="hero-grid">
-    <div class="card hero-left">
-      <div class="kicker">Über mich</div>
-      <h1>Martina Schwierzke</h1>
-      <p class="sub">
-        Als psychosoziale und klinische Kunsttherapeutin und Heilpraktikerin für Psychotherapie arbeite ich selbstständig. 
-        Mit über 16 Jahren Erfahrung begleite ich Menschen in schwierigen Situationen – im klinischen Kontext und in privater Praxis.
-      </p>
-
-      <hr class="sep"/>
-
-      <h3>Meine Leidenschaft</h3>
-      <p>
-        Ich bin seit vielen Jahren in der Palliativversorgung und Psychoonkologie tätig und leite kunsttherapeutische Gruppen im klinischen Umfeld. 
-        Regelmäßige Weiterbildungen und Supervisionen sind für mich selbstverständlich.
-      </p>
-      <p>
-        Kunst ist für mich ein existenzieller Freiraum. Natur ist eine wesentliche Inspirations- und Kraftquelle.
-      </p>
-      <p style="font-style:italic; color:var(--brand); margin-top:14px">
-        „Weil ich weiß, dass Zeit endlich ist, lebe ich lieber jetzt."
-      </p>
-
-      <hr class="sep"/>
-
-      <h3>Qualifikationen</h3>
-      <ul style="color:var(--muted); line-height:1.8">
-        <li>Psychosoziale Kunsttherapeutin (2006–2009, anerkanntes Institut)</li>
-        <li>Klinische Kunsttherapeutin (2010)</li>
-        <li>Heilpraktikerin für Psychotherapie (2011)</li>
-        <li>Gestalterin für visuelles Marketing, IHK (2007)</li>
-      </ul>
-
-      <div class="actions" style="margin-top:20px">
-        <a class="btn primary" href="kontakt.html">Kontakt aufnehmen</a>
-        <a class="btn" href="angebote.html">Angebote ansehen</a>
+<main class="page-shell">
+  <section class="container">
+    <div class="hero-grid">
+      <div class="card hero-left">
+        <div class="kicker">Über mich</div>
+        <h1>Martina Schwierzke</h1>
+        <p class="sub">
+          Als psychosoziale und klinische Kunsttherapeutin sowie Heilpraktikerin für Psychotherapie
+          begleite ich Menschen in schwierigen Lebenssituationen - mit Erfahrung, Achtsamkeit und Vertrauen in kreative Prozesse.
+        </p>
+        <hr class="sep"/>
+        <p class="lead">
+          Kunst ist für mich ein existenzieller Freiraum. Sie erlaubt Ausdruck, wenn Worte fehlen,
+          und öffnet oft einen neuen Blick auf das, was trägt.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="kontakt.html">Kontakt aufnehmen</a>
+          <a class="btn" href="angebote.html">Angebote ansehen</a>
+        </div>
+      </div>
+      <div class="card hero-right">
+        <div class="hero-art" aria-hidden="true">
+          <span class="stroke-1"></span>
+          <span class="stroke-2"></span>
+          <span class="stroke-3"></span>
+          <span class="stroke-4"></span>
+        </div>
+        <div class="atelier-note">
+          <strong>16+ Jahre Erfahrung</strong>
+          <p>in Kunsttherapie, Palliation, Psychoonkologie, Gruppensettings und privater Begleitung.</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="card hero-right">
-      <div style="text-align:center; color:var(--muted); padding:20px">
-        <div style="font-size:4em; margin-bottom:10px">✨</div>
-        <p style="margin:0"><strong>16+ Jahre Erfahrung</strong><br/>in Kunsttherapie & Palliation</p>
+  <section class="section container">
+    <div class="grid2">
+      <article class="card feature">
+        <div class="kicker">Haltung</div>
+        <h2>Ressourcen vor Bewertung</h2>
+        <p>
+          Ich arbeite mit dem, was vorhanden ist: Fähigkeiten, Bilder, Erinnerungen, Zweifel, Mut und Grenzen.
+          Dabei entsteht ein Raum, in dem nichts perfekt sein muss.
+        </p>
+      </article>
+      <article class="card feature">
+        <div class="kicker">Erfahrung</div>
+        <h2>Klinisch und persönlich</h2>
+        <p>
+          Meine Arbeit verbindet klinische Kunsttherapie, psychosoziale Begleitung, Supervisionserfahrung
+          und die Freude an Material, Natur und künstlerischem Experiment.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="soft-band">
+      <div class="section-head left">
+        <div class="kicker">Qualifikationen</div>
+        <h2>Fundierte Begleitung</h2>
       </div>
+      <ol class="numbered-list">
+        <li><span>1</span><div>Psychosoziale Kunsttherapeutin, Ausbildung 2006 bis 2009 an einem anerkannten Institut</div></li>
+        <li><span>2</span><div>Klinische Kunsttherapeutin seit 2010</div></li>
+        <li><span>3</span><div>Heilpraktikerin für Psychotherapie seit 2011</div></li>
+        <li><span>4</span><div>Gestalterin für visuelles Marketing, IHK</div></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div><strong>© <span id="y"></span> Kunsttherapie Paderborn</strong><br/>Martina Schwierzke</div>
+    <div class="actions" style="margin-top:0">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="kontakt.html">Kontakt</a>
     </div>
   </div>
-</main>
+</footer>
 
 <script src="assets/js/main.js"></script>
 </body>

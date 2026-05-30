@@ -3,81 +3,103 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Preise – Kunsttherapie Paderborn</title>
+  <title>Preise - Kunsttherapie Paderborn</title>
+  <meta name="description" content="Preise fuer Kunsttherapie, Gruppenangebote, Einzelsitzungen und Teambuilding in Paderborn."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
-<header>
+<header class="site-header">
   <div class="container nav">
-    <a class="brand" href="index.html">
-      <img src="assets/img/logo.jpg" alt="Logo"/>
-      <div>Kunsttherapie Paderborn</div>
+    <a class="brand" href="index.html" aria-label="Kunsttherapie Paderborn Startseite">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-copy"><strong>Kunsttherapie Paderborn</strong><span>Atelier Martina Schwierzke</span></span>
     </a>
-    <nav>
+    <nav aria-label="Hauptnavigation">
       <ul>
         <li><a href="angebote.html">Angebote</a></li>
         <li><a href="ueber-mich.html">Über mich</a></li>
         <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
-        <li><a href="kontakt.html" class="nav-cta">Anfragen / Buchen</a></li>
+        <li><a href="events.html">Termine</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Anfragen</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
-<main class="container section">
-  <div class="card hero-left">
-    <div class="kicker">Preise</div>
-    <h1>Transparent & fair</h1>
-    <p class="sub">Materialien sind inklusive. Einzelsitzungen sind möglich – bitte direkt anfragen.</p>
+<main class="page-shell">
+  <section class="container">
+    <div class="card hero-left">
+      <div class="kicker">Preise</div>
+      <h1>Transparent & fair</h1>
+      <p class="sub">
+        Materialien sind in der Regel inklusive. Da Anliegen, Gruppengröße und Umfang variieren,
+        werden manche Angebote individuell kalkuliert.
+      </p>
+      <div class="actions">
+        <a class="btn primary" href="kontakt.html">Preis anfragen</a>
+        <a class="btn" href="angebote.html">Angebote ansehen</a>
+      </div>
+    </div>
+  </section>
 
-    <hr class="sep"/>
+  <section class="section container">
+    <div class="card panel">
+      <table class="prices">
+        <thead>
+          <tr>
+            <th>Leistung</th>
+            <th>Dauer</th>
+            <th>Preis</th>
+            <th>Hinweis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Gruppensitzung</td>
+            <td>90 Minuten</td>
+            <td><strong>ab 55 €</strong></td>
+            <td>4 bis 12 Personen, Material inklusive</td>
+          </tr>
+          <tr>
+            <td>Gruppenprogramm</td>
+            <td>meist 4 Einheiten</td>
+            <td>auf Anfrage</td>
+            <td>je nach Thema, Umfang und Setting</td>
+          </tr>
+          <tr>
+            <td>Einzelsitzung</td>
+            <td>90 Minuten</td>
+            <td>auf Anfrage</td>
+            <td>individuelle Begleitung und Vorgespräch</td>
+          </tr>
+          <tr>
+            <td>Teambuilding-Event</td>
+            <td>nach Bedarf</td>
+            <td>auf Anfrage</td>
+            <td>inklusive Konzept, Material und Begleitung</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note" style="margin-top:18px">
+        Fragen zu Zuschüssen, Gruppengrößen oder individuellen Situationen klären wir am besten direkt im Gespräch.
+      </p>
+    </div>
+  </section>
+</main>
 
-    <table class="prices">
-      <thead>
-        <tr>
-          <th>Leistung</th>
-          <th>Dauer</th>
-          <th>Preis</th>
-          <th>Hinweis</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Gruppensitzung</td>
-          <td>90 Minuten</td>
-          <td><strong>ab 55 €</strong></td>
-          <td>4–12 Personen, Material inkl.</td>
-        </tr>
-        <tr>
-          <td>Gruppenprogramm (typisch)</td>
-          <td>4 Einheiten</td>
-          <td>auf Anfrage</td>
-          <td>je nach Thema/Setting</td>
-        </tr>
-        <tr>
-          <td>Einzelsitzung</td>
-          <td>90 Minuten</td>
-          <td>auf Anfrage</td>
-          <td>individuelle Begleitung</td>
-        </tr>
-        <tr>
-          <td>Teambuilding Event</td>
-          <td>nach Bedarf</td>
-          <td>auf Anfrage</td>
-          <td>inkl. Konzept & Material</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p class="note" style="margin-top:16px">
-      💡 Fragen zu Preisen oder Rabatten? Kontaktieren Sie mich direkt – jede Situation ist individuell.
-    </p>
-
-    <div class="actions" style="margin-top:20px">
-      <a class="btn primary" href="kontakt.html">Preis anfragen / buchen</a>
+<footer class="footer">
+  <div class="container footer-grid">
+    <div><strong>© <span id="y"></span> Kunsttherapie Paderborn</strong><br/>Martina Schwierzke</div>
+    <div class="actions" style="margin-top:0">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="kontakt.html">Kontakt</a>
     </div>
   </div>
-</main>
+</footer>
 
 <script src="assets/js/main.js"></script>
 </body>

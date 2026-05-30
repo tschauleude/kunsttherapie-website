@@ -3,79 +3,111 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Angebote – Kunsttherapie Paderborn</title>
+  <title>Angebote - Kunsttherapie Paderborn</title>
+  <meta name="description" content="Kunsttherapeutische Angebote in Paderborn: Einzelbegleitung, Gruppen, kreative Auszeiten und Teambuilding."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
-<header>
+<header class="site-header">
   <div class="container nav">
-    <a class="brand" href="index.html">
-      <img src="assets/img/logo.jpg" alt="Logo"/>
-      <div>Kunsttherapie Paderborn</div>
+    <a class="brand" href="index.html" aria-label="Kunsttherapie Paderborn Startseite">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-copy"><strong>Kunsttherapie Paderborn</strong><span>Atelier Martina Schwierzke</span></span>
     </a>
-    <nav>
+    <nav aria-label="Hauptnavigation">
       <ul>
         <li><a href="angebote.html">Angebote</a></li>
         <li><a href="ueber-mich.html">Über mich</a></li>
         <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
-        <li><a href="kontakt.html" class="nav-cta">Anfragen / Buchen</a></li>
+        <li><a href="events.html">Termine</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Anfragen</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
-<main class="container section">
-  <div class="card hero-left">
-    <div class="kicker">Angebote</div>
-    <h1>Dein Einstieg in kreative Stärke</h1>
-    <p class="sub">Malen, zeichnen, Collage, Acryl, Gouache, Kreide – und Tonarbeiten. Unter Anleitung, mit Raum zum Ausprobieren.</p>
-    <div class="actions">
-      <a class="btn primary" href="kontakt.html">Termin anfragen</a>
-      <a class="btn" href="preise.html">Preise</a>
-    </div>
-  </div>
-
-  <div class="section"></div>
-
-  <div class="grid3" id="gruppen">
-    <div class="card feature">
-      <h3>🎨 Kunsttherapeutische Gruppentherapie</h3>
-      <p>Krankheitsakzeptanz, Integration, neue Perspektiven, Resilienz – in einem geschützten Rahmen.</p>
-      <p class="note" style="margin-top:8px">90 Min · 4–12 Personen · meist 4 Einheiten</p>
-    </div>
-    <div class="card feature">
-      <h3>🌙 Auszeit am frühen Abend</h3>
-      <p>Für Privatpersonen: entspannte Feierabends-Atmosphäre, Tee, kreativ werden – und überrascht sein.</p>
-    </div>
-    <div class="card feature">
-      <h3>🤝 Teambuilding Events</h3>
-      <p>Gemeinsames Kunstwerk (Gemeinschaftswerk), spielerische Regeln, Zusammenarbeit, Verbindung.</p>
-    </div>
-  </div>
-
-  <div class="section"></div>
-
-  <div class="card hero-left">
-    <h2>Material & Methoden</h2>
-    <p class="sub">Begleitetes Malen, Collagen erstellen, Zeichnen – mit Acryl, Gouache und Kreide. Tonarbeiten sind ebenfalls möglich.</p>
-
-    <details>
-      <summary>Wie wirkt Kunsttherapie?</summary>
-      <div class="inner">
-        <p>
-          Kunst kann helfen, innere Prozesse sichtbar zu machen – ohne alles sofort in Worte fassen zu müssen. Das Werk wird zum „Vehikel":
-          Es schafft Distanz und zugleich Nähe, sodass Gefühle, Wünsche und Ressourcen greifbarer werden.
+<main class="page-shell">
+  <section class="container">
+    <div class="card split-card">
+      <div>
+        <div class="kicker">Angebote</div>
+        <h1>Dein Einstieg in kreative Stärke</h1>
+        <p class="sub">
+          Kunsttherapie schafft einen Raum, in dem du mit Farbe, Linie, Collage, Ton und Material
+          arbeiten kannst. Nicht das perfekte Ergebnis zählt, sondern das, was im Prozess sichtbar wird.
         </p>
-        <p>
-          Ziel ist, sich neu zu entdecken, die innere Mitte zu finden und den eigenen Ausdruck zu stärken. <strong>Trau dich – Überraschungseffekt inklusive.</strong>
+        <div class="actions">
+          <a class="btn primary" href="kontakt.html">Termin anfragen</a>
+          <a class="btn" href="preise.html">Preise ansehen</a>
+        </div>
+      </div>
+      <div class="art-swatch" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="grid3">
+      <article class="card feature">
+        <div class="kicker">Gruppen</div>
+        <h3>Kunsttherapeutische Gruppentherapie</h3>
+        <p>Krankheitsakzeptanz, Integration, Trauer, Resilienz und neue Perspektiven in einem geschützten Gruppenrahmen.</p>
+        <p class="note">90 Minuten, 4 bis 12 Personen, meist mehrere Einheiten</p>
+      </article>
+      <article class="card feature">
+        <div class="kicker">Auszeit</div>
+        <h3>Auszeit am frühen Abend</h3>
+        <p>Ankommen, Tee trinken, Material wählen und kreativ werden. Eine ruhige Feierabend-Zeit ohne Bewertung und ohne Druck.</p>
+        <p class="note">Für Privatpersonen und kleine Gruppen</p>
+      </article>
+      <article class="card feature">
+        <div class="kicker">Teams</div>
+        <h3>Teambuilding-Events</h3>
+        <p>Ein gemeinsames Kunstwerk, klare spielerische Regeln und ein Prozess, der Zusammenarbeit sichtbar macht.</p>
+        <p class="note">Konzept, Material und Begleitung nach Bedarf</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="soft-band">
+      <div class="section-head left">
+        <div class="kicker">Material & Methoden</div>
+        <h2>Vom Impuls zur Form</h2>
+        <p class="lead">
+          Ich arbeite ressourcenorientiert mit Malerei, Zeichnung, Collage, Acryl, Gouache, Kreide, Ton und einfachen
+          Materialexperimenten. Die Methode folgt dem Anliegen - nicht umgekehrt.
         </p>
       </div>
-    </details>
-
-    <h3 style="margin-top:20px">Einzelsitzungen</h3>
-    <p>Intensive, individuelle Begleitung in persönlichen Krisensituationen, Trauerprozessen oder Krankheitsverarbeitung. Nach Vereinbarung.</p>
-  </div>
+      <details>
+        <summary>Wie wirkt Kunsttherapie?</summary>
+        <div class="inner">
+          <p>
+            Ein Bild kann innere Prozesse sichtbar machen, ohne dass alles sofort in Worte gefasst werden muss.
+            Es schafft Abstand und zugleich Nähe. Dadurch werden Gefühle, Wünsche, Grenzen und Ressourcen greifbarer.
+          </p>
+          <p>
+            Ziel ist nicht, ein schönes Werk zu produzieren. Ziel ist, Orientierung zu finden, den eigenen Ausdruck zu stärken
+            und neue nächste Schritte zu entdecken.
+          </p>
+        </div>
+      </details>
+    </div>
+  </section>
 </main>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div><strong>© <span id="y"></span> Kunsttherapie Paderborn</strong><br/>Martina Schwierzke</div>
+    <div class="actions" style="margin-top:0">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="kontakt.html">Kontakt</a>
+    </div>
+  </div>
+</footer>
 
 <script src="assets/js/main.js"></script>
 </body>

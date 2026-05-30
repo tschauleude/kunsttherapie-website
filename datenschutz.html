@@ -3,62 +3,84 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Datenschutz – Kunsttherapie Paderborn</title>
+  <title>Datenschutz - Kunsttherapie Paderborn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
-<header>
+<header class="site-header">
   <div class="container nav">
-    <a class="brand" href="index.html">
-      <img src="assets/img/logo.jpg" alt="Logo"/>
-      <div>Kunsttherapie Paderborn</div>
+    <a class="brand" href="index.html" aria-label="Kunsttherapie Paderborn Startseite">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-copy"><strong>Kunsttherapie Paderborn</strong><span>Atelier Martina Schwierzke</span></span>
     </a>
+    <nav aria-label="Hauptnavigation">
+      <ul>
+        <li><a href="angebote.html">Angebote</a></li>
+        <li><a href="ueber-mich.html">Über mich</a></li>
+        <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
+        <li><a href="events.html">Termine</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Anfragen</a></li>
+      </ul>
+    </nav>
   </div>
 </header>
 
-<main class="container section">
-  <div class="card hero-left">
-    <h1>Datenschutzerklärung</h1>
-    <hr class="sep"/>
+<main class="page-shell">
+  <section class="container">
+    <div class="card hero-left">
+      <div class="kicker">Rechtliches</div>
+      <h1>Datenschutz</h1>
+      <hr class="sep"/>
 
-    <h3>Verantwortlicher</h3>
-    <p>
-      Martina Schwierzke, Konrad-Martin-Straße 11c, 33102 Paderborn<br/>
-      E-Mail: info@kunsttherapie-pb.de
-    </p>
+      <h3>Verantwortlicher</h3>
+      <p>
+        Martina Schwierzke, Konrad-Martin-Straße 11c, 33102 Paderborn<br/>
+        E-Mail: <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+      </p>
 
-    <h3>Datenschutz</h3>
-    <p>
-      Der Schutz Ihrer persönlichen Daten ist mir wichtig. Diese Website verarbeitet minimal Daten und speichert keine persönlichen 
-      Informationen auf Servern. Kontaktformulare (falls aktiviert) werden über externe, datenschutzkonforme Dienste verarbeitet.
-    </p>
+      <h3>Datenschutz</h3>
+      <p>
+        Der Schutz Ihrer persönlichen Daten ist mir wichtig. Diese Website verarbeitet minimal Daten und speichert keine persönlichen
+        Informationen auf Servern. Kontaktformulare werden, falls aktiviert, über externe datenschutzkonforme Dienste verarbeitet.
+      </p>
 
-    <h3>Cookies</h3>
-    <p>
-      Diese Website nutzt <strong>keine Tracking-Cookies</strong> und keine Analyse-Tools (wie Google Analytics). 
-      Es werden keine Daten zu statistischen Zwecken erfasst.
-    </p>
+      <h3>Cookies</h3>
+      <p>
+        Diese Website nutzt keine Tracking-Cookies und keine Analyse-Tools wie Google Analytics.
+        Es werden keine Daten zu statistischen Zwecken erfasst.
+      </p>
 
-    <h3>Externe Links</h3>
-    <p>
-      Diese Website kann Links zu externen Seiten enthalten. Für deren Inhalte übernehme ich keine Verantwortung.
-    </p>
+      <h3>Externe Links</h3>
+      <p>Diese Website kann Links zu externen Seiten enthalten. Für deren Inhalte übernehme ich keine Verantwortung.</p>
 
-    <h3>Ihre Rechte</h3>
-    <p>
-      Sie haben das Recht, Auskunft über Ihre personenbezogenen Daten zu erhalten, diese zu berichtigen oder zu löschen. 
-      Kontaktieren Sie mich unter info@kunsttherapie-pb.de.
-    </p>
+      <h3>Ihre Rechte</h3>
+      <p>
+        Sie haben das Recht, Auskunft über Ihre personenbezogenen Daten zu erhalten, diese zu berichtigen oder zu löschen.
+        Kontaktieren Sie mich unter info@kunsttherapie-pb.de.
+      </p>
 
-    <p class="note" style="margin-top:20px">
-      Stand: Mai 2026
-    </p>
+      <p class="note">Stand: Mai 2026</p>
 
-    <div class="actions" style="margin-top:20px">
-      <a class="btn" href="index.html">Zurück zur Startseite</a>
+      <div class="actions">
+        <a class="btn" href="index.html">Zurück zur Startseite</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div><strong>© <span id="y"></span> Kunsttherapie Paderborn</strong><br/>Martina Schwierzke</div>
+    <div class="actions" style="margin-top:0">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="kontakt.html">Kontakt</a>
     </div>
   </div>
-</main>
+</footer>
 
 <script src="assets/js/main.js"></script>
 </body>

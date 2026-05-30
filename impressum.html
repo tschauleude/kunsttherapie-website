@@ -3,63 +3,87 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Impressum – Kunsttherapie Paderborn</title>
+  <title>Impressum - Kunsttherapie Paderborn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
-<header>
+<header class="site-header">
   <div class="container nav">
-    <a class="brand" href="index.html">
-      <img src="assets/img/logo.jpg" alt="Logo"/>
-      <div>Kunsttherapie Paderborn</div>
+    <a class="brand" href="index.html" aria-label="Kunsttherapie Paderborn Startseite">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-copy"><strong>Kunsttherapie Paderborn</strong><span>Atelier Martina Schwierzke</span></span>
     </a>
+    <nav aria-label="Hauptnavigation">
+      <ul>
+        <li><a href="angebote.html">Angebote</a></li>
+        <li><a href="ueber-mich.html">Über mich</a></li>
+        <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
+        <li><a href="events.html">Termine</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Anfragen</a></li>
+      </ul>
+    </nav>
   </div>
 </header>
 
-<main class="container section">
-  <div class="card hero-left">
-    <h1>Impressum</h1>
-    <hr class="sep"/>
+<main class="page-shell">
+  <section class="container">
+    <div class="card hero-left">
+      <div class="kicker">Rechtliches</div>
+      <h1>Impressum</h1>
+      <hr class="sep"/>
 
-    <h3>Verantwortliche Person</h3>
-    <p>
-      <strong>Martina Schwierzke</strong><br/>
-      Konrad-Martin-Straße 11c<br/>
-      33102 Paderborn<br/>
-      Deutschland
-    </p>
+      <h3>Verantwortliche Person</h3>
+      <p>
+        <strong>Martina Schwierzke</strong><br/>
+        Konrad-Martin-Straße 11c<br/>
+        33102 Paderborn<br/>
+        Deutschland
+      </p>
 
-    <h3>Kontakt</h3>
-    <p>
-      Telefon: 05251-690111<br/>
-      Mobil: 0170-4790790<br/>
-      E-Mail: <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
-    </p>
+      <h3>Kontakt</h3>
+      <p>
+        Telefon: 05251-690111<br/>
+        Mobil: 0170-4790790<br/>
+        E-Mail: <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+      </p>
 
-    <h3>Berufsbezeichnung & Kammer</h3>
-    <p>
-      Heilpraktikerin für Psychotherapie (amtlich anerkannt)<br/>
-      Kunsttherapeutin (DGKT)<br/>
-      Registriert: Künstlersozialkasse (KSK)
-    </p>
+      <h3>Berufsbezeichnung & Kammer</h3>
+      <p>
+        Heilpraktikerin für Psychotherapie (amtlich anerkannt)<br/>
+        Kunsttherapeutin (DGKT)<br/>
+        Registriert: Künstlersozialkasse (KSK)
+      </p>
 
-    <h3>Haftungsausschluss</h3>
-    <p>
-      Die Inhalte dieser Website wurden mit größter Sorgfalt zusammengestellt. Für die Richtigkeit, Vollständigkeit und Aktualität 
-      der Inhalte wird jedoch keine Gewähr übernommen. Die Kunsttherapie ersetzt keine ärztliche oder psychologische Fachbehandlung, 
-      sondern wird als komplementärer Ansatz verstanden.
-    </p>
+      <h3>Haftungsausschluss</h3>
+      <p>
+        Die Inhalte dieser Website wurden mit größter Sorgfalt zusammengestellt. Für die Richtigkeit, Vollständigkeit und Aktualität
+        der Inhalte wird jedoch keine Gewähr übernommen. Die Kunsttherapie ersetzt keine ärztliche oder psychologische Fachbehandlung,
+        sondern wird als komplementärer Ansatz verstanden.
+      </p>
 
-    <h3>Urheberrecht</h3>
-    <p>
-      © 2026 Kunsttherapie Paderborn – Martina Schwierzke. Alle Inhalte, Texte und Bilder sind urheberrechtlich geschützt.
-    </p>
+      <h3>Urheberrecht</h3>
+      <p>© 2026 Kunsttherapie Paderborn - Martina Schwierzke. Alle Inhalte, Texte und Bilder sind urheberrechtlich geschützt.</p>
 
-    <div class="actions" style="margin-top:20px">
-      <a class="btn" href="index.html">Zurück zur Startseite</a>
+      <div class="actions">
+        <a class="btn" href="index.html">Zurück zur Startseite</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div><strong>© <span id="y"></span> Kunsttherapie Paderborn</strong><br/>Martina Schwierzke</div>
+    <div class="actions" style="margin-top:0">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="kontakt.html">Kontakt</a>
     </div>
   </div>
-</main>
+</footer>
 
 <script src="assets/js/main.js"></script>
 </body>
