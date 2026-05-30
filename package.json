@@ -1,23 +1,22 @@
 {
-  "name": "kunsttherapie-cms",
+  "name": "kunsttherapie-website",
   "version": "1.0.0",
-  "description": "CMS für Kunsttherapie Paderborn - Backend für News, Events, und Admin-Panel",
+  "description": "Website und optionales CMS fuer Kunsttherapie Paderborn",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "serve": "python3 -m http.server 8080"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "express-session": "^1.17.3",
-    "sqlite3": "^5.1.6",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "multer": "^1.4.5-lts.1",
-    "uuid": "^9.0.0",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "sqlite3": "^6.0.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^3.1.14"
   }
 }

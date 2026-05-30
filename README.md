@@ -19,27 +19,29 @@ Diese Website ist **statisch**, **schnell** und **datenschutzkonform**:
 ## 📁 Dateistruktur
 
 ```
-kunsttherapie-site/
-├── index.html                   # Startseite (Hero, Angebote, Atelier)
+kunsttherapie-website/
+├── index.html                  # Startseite (Hostinger-Einstiegspunkt)
 ├── angebote.html               # Detaillierte Angebotsbeschreibung
-├── ueber-mich.html            # Über Martina & Qualifikationen
+├── ueber-mich.html             # Über Martina & Qualifikationen
 ├── preise.html                 # Preistabelle
-├── kontakt.html               # Kontaktformular & Infos
-├── neuigkeiten.html           # News (aus JSON)
-├── impressum.html             # Rechtliche Infos
-├── datenschutz.html           # Datenschutzerklärung
+├── kontakt.html                # Kontaktformular & Infos
+├── neuigkeiten.html            # News aus CMS, mit JSON-Fallback
+├── events.html                 # Events aus CMS
+├── impressum.html              # Rechtliche Infos
+├── datenschutz.html            # Datenschutzerklärung
+├── server.js                   # Optionales Node/Express-CMS + API
+├── package.json                # Backend-Start über npm start
 │
 ├── assets/
-│   ├── css/
-│   │   └── style.css          # Komplettes Styling (Dark Mode)
-│   ├── js/
-│   │   ├── main.js            # Navigation, Canvas-Atelier
-│   │   └── news.js            # News-Loader
-│   └── img/
-│       └── logo.jpg           # Sonnige Pinsel Logo
+│   ├── css/style.css           # Komplettes Styling
+│   ├── js/main.js              # Jahr, Canvas-Atelier, Interaktion
+│   └── img/                    # Logos und Website-Bilder
 │
-└── data/
-    └── news.json              # News/Neuigkeiten (editierbar)
+├── data/
+│   └── news.json               # Statischer News-Fallback
+│
+└── public/
+    └── admin.html              # Admin-Panel unter /admin
 ```
 
 ---
@@ -58,14 +60,13 @@ kunsttherapie-site/
 
 ### Option 1: Python (einfach)
 ```bash
-cd kunsttherapie-site
 python3 -m http.server 8080
 ```
 Dann öffne: **http://localhost:8080**
 
 ### Option 2: Node.js
 ```bash
-npx http-server kunsttherapie-site -p 8080
+npx http-server . -p 8080
 ```
 
 ### Option 3: Live Server (VS Code)
@@ -162,15 +163,17 @@ vercel
 ```
 
 #### 4. **Hostinger / Andere Web-Hoster**
-- Upload via FTP/SFTP:
+- Bei Hostinger Git-Deployment dieses Repo direkt mit `public_html` verbinden.
+- Wichtig: `index.html` liegt bewusst im Repo-Root; `assets/` und `data/` müssen mit hochgeladen werden.
+- Für FTP/SFTP den Inhalt dieses Repo-Roots nach `public_html/` hochladen:
   ```bash
   sftp user@example.com
   > cd public_html
-  > put -r kunsttherapie-site/* .
+  > put -r index.html angebote.html ueber-mich.html preise.html kontakt.html neuigkeiten.html events.html impressum.html datenschutz.html assets data .
   > exit
   ```
 
-- Oder über Dateimanager im hPanel hochladen
+- Das optionale CMS läuft als Node-App mit `npm install` und `npm start`; das Admin-Panel ist dann unter `/admin` erreichbar.
 
 ---
 

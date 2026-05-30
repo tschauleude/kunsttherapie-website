@@ -9,6 +9,22 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const ROOT_DIR = __dirname;
+const ASSETS_DIR = path.join(ROOT_DIR, 'assets');
+const DATA_DIR = path.join(ROOT_DIR, 'data');
+const PUBLIC_DIR = path.join(ROOT_DIR, 'public');
+const DATABASE_PATH = process.env.DATABASE_PATH || path.join(ROOT_DIR, 'database.sqlite');
+const SITE_PAGES = new Set([
+  'index.html',
+  'angebote.html',
+  'ueber-mich.html',
+  'preise.html',
+  'kontakt.html',
+  'neuigkeiten.html',
+  'events.html',
+  'impressum.html',
+  'datenschutz.html'
+]);
 
 // ============================================================================
 // MIDDLEWARE
@@ -17,7 +33,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-app.use(express.static('public'));
+app.use('/assets', express.static(ASSETS_DIR));
+app.use('/data', express.static(DATA_DIR));
 
 // Session Configuration
 app.use(session({
@@ -35,7 +52,7 @@ app.use(session({
 // DATENBANK SETUP
 // ============================================================================
 
-const db = new sqlite3.Database('./database.sqlite', (err) => {
+const db = new sqlite3.Database(DATABASE_PATH, (err) => {
   if (err) {
     console.error('Database error:', err);
   } else {
@@ -133,6 +150,32 @@ const requireAuth = (req, res, next) => {
   }
   next();
 };
+
+// ============================================================================
+// STATIC WEBSITE ROUTES
+// ============================================================================
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(ROOT_DIR, 'index.html'));
+});
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'admin.html'));
+});
+
+app.get('/admin.html', (req, res) => {
+  res.redirect(301, '/admin');
+});
+
+app.get('/:page', (req, res, next) => {
+  const page = req.params.page;
+
+  if (!SITE_PAGES.has(page)) {
+    return next();
+  }
+
+  res.sendFile(path.join(ROOT_DIR, page));
+});
 
 // ============================================================================
 // AUTH ROUTES
@@ -320,6 +363,23 @@ app.get('/api/events', (req, res) => {
   );
 });
 
+// Get single event
+app.get('/api/events/:id', (req, res) => {
+  db.get(
+    `SELECT * FROM events WHERE id = ?`,
+    [req.params.id],
+    (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database error' });
+      }
+      if (!row) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      res.json(row);
+    }
+  );
+});
+
 // Get all events (admin)
 app.get('/api/admin/events', requireAuth, (req, res) => {
   db.all(
@@ -404,6 +464,23 @@ app.get('/api/services', (req, res) => {
         return res.status(500).json({ error: 'Database error' });
       }
       res.json(rows);
+    }
+  );
+});
+
+// Get single service
+app.get('/api/services/:id', (req, res) => {
+  db.get(
+    `SELECT * FROM services WHERE id = ?`,
+    [req.params.id],
+    (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database error' });
+      }
+      if (!row) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      res.json(row);
     }
   );
 });

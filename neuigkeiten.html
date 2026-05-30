@@ -137,12 +137,33 @@
 </footer>
 
 <script>
-const API_URL = 'http://localhost:3000/api';
+const API_URL = window.location.port === '8080' ? 'http://localhost:3000/api' : '/api';
+
+async function fetchNews() {
+  try {
+    const response = await fetch(`${API_URL}/news`);
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}`);
+    }
+    return await response.json();
+  } catch (apiError) {
+    const fallbackResponse = await fetch('data/news.json', { cache: 'no-store' });
+    if (!fallbackResponse.ok) {
+      throw apiError;
+    }
+
+    const fallbackData = await fallbackResponse.json();
+    return (fallbackData.items || []).map((item) => ({
+      title: item.title,
+      content: item.text,
+      createdAt: item.date
+    }));
+  }
+}
 
 async function loadNews() {
   try {
-    const response = await fetch(`${API_URL}/news`);
-    const news = await response.json();
+    const news = await fetchNews();
 
     document.getElementById('newsLoading').style.display = 'none';
 

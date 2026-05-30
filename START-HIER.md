@@ -1,95 +1,63 @@
-# 🎨 KUNSTTHERAPIE WEBSITE + CMS – QUICK START
+# KUNSTTHERAPIE WEBSITE + CMS - QUICK START
 
-## Du hast folgende Dateien:
+## Wichtig: Struktur fuer Hostinger
+
+Dieses Repository ist so aufgebaut, dass Hostinger es direkt aus Git in `public_html` ziehen kann:
 
 ```
-kunsttherapie-site/        ← WEBSITE FRONTEND
-kunsttherapie-cms/         ← CMS BACKEND (Admin-Panel)
-CMS-WEBSITE-INTEGRATION-GUIDE.md  ← Detailliertes Handbuch
+index.html            # Startseite direkt im Repo-Root
+assets/css/style.css  # Styling
+assets/js/main.js     # Interaktion / Canvas
+assets/img/           # Website-Bilder und Logo
+data/news.json        # Statischer News-Fallback
+server.js             # Optionales Node/Express-CMS
+public/admin.html     # Admin-Panel fuer das CMS
+```
+
+Wenn Hostinger dieses Repo direkt verbindet, muss als Zielordner `public_html` bzw. der Webroot der Domain genutzt werden. Es gibt keinen zusaetzlichen Unterordner `kunsttherapie-site/` mehr.
+
+---
+
+## Website lokal ansehen
+
+```bash
+python3 -m http.server 8080
+```
+
+Dann im Browser oeffnen:
+
+```text
+http://localhost:8080
 ```
 
 ---
 
-## 🚀 SOFORT STARTEN (3 SCHRITTE):
-
-### Schritt 1: Backend installieren
+## CMS lokal starten
 
 ```bash
-cd kunsttherapie-cms
 npm install
-```
-
-Dauert ca. 1-2 Minuten.
-
-### Schritt 2: Backend starten
-
-```bash
 npm run dev
 ```
 
-Du solltest sehen:
-```
-🎨 Kunsttherapie CMS Backend
-Server running on http://localhost:3000
-Admin Panel: http://localhost:3000/admin
-```
+Dann im Browser oeffnen:
 
-### Schritt 3: Admin-Panel öffnen
-
-Öffne Browser:
-```
+```text
 http://localhost:3000/admin
 ```
 
 Login:
-- **Benutzername:** admin
-- **Passwort:** admin123
+
+- Benutzername: `admin`
+- Passwort: `admin123`
+
+Wichtig: Das Passwort nach dem ersten produktiven Login aendern.
 
 ---
 
-## ✅ JETZT KANNST DU:
+## Online-Pfade
 
-- 📰 News hinzufügen
-- 📅 Events erstellen
-- 💜 Services verwalten
-
-**Alle Änderungen erscheinen sofort auf der Website!**
-
----
-
-## 🌐 WEBSITE ANSCHAUEN
-
-In neuer Terminal-Session:
-
-```bash
-cd kunsttherapie-site
-python3 -m http.server 8080
-```
-
-Öffne Browser:
-```
-http://localhost:8080
-```
-
-Du siehst:
-- Startseite mit Bildern
-- News-Seite (lädt von CMS)
-- Events-Seite (lädt von CMS)
-
----
-
-## ⚠️ WICHTIG
-
-- **Passwort ändern** nach dem ersten Login!
-- Beide Server müssen laufen (Port 3000 & 8080)
-- Regelmäßig Backups von `kunsttherapie-cms/database.sqlite` machen
-
----
-
-## 📖 Mehr Infos?
-
-Lies: `CMS-WEBSITE-INTEGRATION-GUIDE.md`
-
----
-
-🎉 **Du bist ready to go!** 🚀
+- Website: `https://deine-domain.de/`
+- News: `https://deine-domain.de/neuigkeiten.html`
+- Events: `https://deine-domain.de/events.html`
+- CMS/Admin, wenn Node-App aktiv ist: `https://deine-domain.de/admin`
+- API, wenn Node-App aktiv ist: `https://deine-domain.de/api`
