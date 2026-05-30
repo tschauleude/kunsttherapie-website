@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎨 Kunsttherapie Paderborn – Admin Panel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #faf9f5 0%, #f5f1e8 100%);
+      color: #2c2c2c;
+    }
+
+    /* LOGIN SCREEN */
+    .login-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #d4a574 0%, #5b8fc4 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .login-container.active {
+      display: flex;
+    }
+
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-box h1 {
+      color: #d4a574;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 1.8rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2c2c2c;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #d4a574;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #5b8fc4;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #d4a574 0%, #5b8fc4 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.3s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* MAIN LAYOUT */
+    .main-container {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .main-container.active {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: white;
+      border-right: 2px solid #d4a574;
+      padding: 20px;
+      height: 100vh;
+      overflow-y: auto;
+      position: sticky;
+      top: 0;
+    }
+
+    .sidebar h2 {
+      color: #d4a574;
+      margin-bottom: 30px;
+      font-size: 1.2rem;
+    }
+
+    .nav-item {
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: #d4a574;
+      color: white;
+      border-left-color: #5b8fc4;
+    }
+
+    .logout-btn {
+      margin-top: 40px;
+      background: #ff6b6b;
+      color: white;
+    }
+
+    .logout-btn:hover {
+      background: #ff5252;
+    }
+
+    /* CONTENT */
+    .content {
+      padding: 30px;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section h1 {
+      color: #d4a574;
+      margin-bottom: 30px;
+      font-size: 2rem;
+    }
+
+    /* FORMS */
+    .form-container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
+      max-width: 800px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-row.full {
+      grid-template-columns: 1fr;
+    }
+
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #d4a574;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      min-height: 150px;
+      resize: vertical;
+      transition: border-color 0.3s;
+    }
+
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #5b8fc4;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #d4a574 0%, #5b8fc4 100%);
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    .btn-cancel {
+      background: #e0e0e0;
+      color: #2c2c2c;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    /* ITEMS LIST */
+    .items-list {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .item {
+      padding: 20px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .item:hover {
+      background: #f5f5f5;
+    }
+
+    .item-info h3 {
+      color: #d4a574;
+      margin-bottom: 5px;
+    }
+
+    .item-info p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-small {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .btn-edit {
+      background: #5b8fc4;
+      color: white;
+    }
+
+    .btn-delete {
+      background: #ff6b6b;
+      color: white;
+    }
+
+    .btn-publish {
+      background: #7fb069;
+      color: white;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-left: 10px;
+    }
+
+    .badge.published {
+      background: #7fb069;
+      color: white;
+    }
+
+    .badge.draft {
+      background: #ffc107;
+      color: #333;
+    }
+
+    /* MESSAGE ALERTS */
+    .message {
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.active {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ADD BUTTON */
+    .btn-add {
+      background: linear-gradient(135deg, #d4a574 0%, #5b8fc4 100%);
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      margin-bottom: 30px;
+      font-size: 1rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @media (max-width: 768px) {
+      .main-container.active {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: absolute;
+        left: -250px;
+        transition: left 0.3s;
+      }
+
+      .sidebar.active {
+        left: 0;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-container active" id="loginScreen">
+  <div class="login-box">
+    <h1>🎨 Admin Panel</h1>
+    <div class="message" id="loginMessage"></div>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Benutzername</label>
+        <input type="text" id="username" required placeholder="admin">
+      </div>
+      <div class="form-group">
+        <label>Passwort</label>
+        <input type="password" id="password" required placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn">Anmelden</button>
+    </form>
+    <p style="margin-top: 20px; text-align: center; color: #999; font-size: 0.9rem;">
+      Standard: admin / admin123<br>
+      ⚠️ Nach dem Login Passwort ändern!
+    </p>
+  </div>
+</div>
+
+<!-- MAIN INTERFACE -->
+<div class="main-container" id="mainContainer">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <h2>🎨 Admin</h2>
+    <div class="nav-item active" onclick="switchSection('dashboard')">📊 Dashboard</div>
+    <div class="nav-item" onclick="switchSection('news')">📰 News</div>
+    <div class="nav-item" onclick="switchSection('events')">📅 Events</div>
+    <div class="nav-item" onclick="switchSection('services')">💜 Services</div>
+    <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- DASHBOARD -->
+    <section class="section active" id="dashboard">
+      <h1>📊 Dashboard</h1>
+      <div class="form-container">
+        <p>Willkommen im Admin-Panel von Kunsttherapie Paderborn!</p>
+        <p style="margin-top: 15px; color: #666;">
+          Verwalte hier deine News, Events und Services. Alle Änderungen werden sofort auf der Website angezeigt.
+        </p>
+        <div style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+          <h3>📈 Übersicht</h3>
+          <p>News: <strong id="newsCount">0</strong></p>
+          <p>Events: <strong id="eventsCount">0</strong></p>
+          <p>Services: <strong id="servicesCount">0</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWS SECTION -->
+    <section class="section" id="news">
+      <h1>📰 News & Updates</h1>
+      <button class="btn-add" onclick="openNewsForm()">➕ Neue News</button>
+      <div id="newsForm" class="form-container" style="display: none;">
+        <h2>News bearbeiten</h2>
+        <form onsubmit="saveNews(event)">
+          <input type="hidden" id="newsId">
+          <div class="form-group full">
+            <label>Titel</label>
+            <input type="text" id="newsTitle" required placeholder="z.B. Neue Gruppen starten">
+          </div>
+          <div class="form-group full">
+            <label>Inhalt</label>
+            <textarea id="newsContent" required placeholder="Beschreibe die Neuigkeit..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label>Bild URL (optional)</label>
+            <input type="text" id="newsImage" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="newsPublished">
+              Veröffentlichen
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-save">Speichern</button>
+            <button type="button" class="btn-cancel" onclick="closeNewsForm()">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+      <div id="newsList" class="items-list"></div>
+    </section>
+
+    <!-- EVENTS SECTION -->
+    <section class="section" id="events">
+      <h1>📅 Events & Termine</h1>
+      <button class="btn-add" onclick="openEventForm()">➕ Neuer Event</button>
+      <div id="eventForm" class="form-container" style="display: none;">
+        <h2>Event bearbeiten</h2>
+        <form onsubmit="saveEvent(event)">
+          <input type="hidden" id="eventId">
+          <div class="form-group full">
+            <label>Titel</label>
+            <input type="text" id="eventTitle" required placeholder="z.B. Workshop Acryl-Malerei">
+          </div>
+          <div class="form-group full">
+            <label>Beschreibung</label>
+            <textarea id="eventDescription" required placeholder="Details zum Event..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Datum</label>
+              <input type="date" id="eventDate" required>
+            </div>
+            <div class="form-group">
+              <label>Uhrzeit (optional)</label>
+              <input type="time" id="eventTime">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ort</label>
+              <input type="text" id="eventLocation" placeholder="Otto-Stadler-Str. 23c">
+            </div>
+            <div class="form-group">
+              <label>Plätze (optional)</label>
+              <input type="number" id="eventCapacity" placeholder="z.B. 12">
+            </div>
+          </div>
+          <div class="form-group full">
+            <label>Bild URL (optional)</label>
+            <input type="text" id="eventImage" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="eventPublished">
+              Veröffentlichen
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-save">Speichern</button>
+            <button type="button" class="btn-cancel" onclick="closeEventForm()">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+      <div id="eventsList" class="items-list"></div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section class="section" id="services">
+      <h1>💜 Services & Angebote</h1>
+      <button class="btn-add" onclick="openServiceForm()">➕ Neuer Service</button>
+      <div id="serviceForm" class="form-container" style="display: none;">
+        <h2>Service bearbeiten</h2>
+        <form onsubmit="saveService(event)">
+          <input type="hidden" id="serviceId">
+          <div class="form-group full">
+            <label>Titel</label>
+            <input type="text" id="serviceTitle" required placeholder="z.B. Einzeltherapie">
+          </div>
+          <div class="form-group full">
+            <label>Beschreibung</label>
+            <textarea id="serviceDescription" required placeholder="Beschreibe das Service..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Preis (optional)</label>
+              <input type="text" id="servicePrice" placeholder="z.B. ab 55 €">
+            </div>
+            <div class="form-group">
+              <label>Dauer (optional)</label>
+              <input type="text" id="serviceDuration" placeholder="z.B. 90 Minuten">
+            </div>
+          </div>
+          <div class="form-group full">
+            <label>Bild URL (optional)</label>
+            <input type="text" id="serviceImage" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="serviceActive" checked>
+              Aktiv
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-save">Speichern</button>
+            <button type="button" class="btn-cancel" onclick="closeServiceForm()">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+      <div id="servicesList" class="items-list"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+const API_URL = 'http://localhost:3000/api';
+
+// ============================================================================
+// AUTH FUNCTIONS
+// ============================================================================
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      showMessage('Anmeldung erfolgreich!', 'success', 'loginMessage');
+      document.getElementById('loginScreen').classList.remove('active');
+      document.getElementById('mainContainer').classList.add('active');
+      loadDashboard();
+      setTimeout(() => loadNewsList(), 500);
+    } else {
+      showMessage(data.error || 'Anmeldung fehlgeschlagen', 'error', 'loginMessage');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error', 'loginMessage');
+  }
+}
+
+async function handleLogout() {
+  try {
+    await fetch(`${API_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+
+    document.getElementById('loginScreen').classList.add('active');
+    document.getElementById('mainContainer').classList.remove('active');
+    document.getElementById('loginForm').reset();
+  } catch (err) {
+    alert('Logout failed: ' + err.message);
+  }
+}
+
+// ============================================================================
+// UI FUNCTIONS
+// ============================================================================
+
+function switchSection(sectionId) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(sectionId).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.target.classList.add('active');
+
+  if (sectionId === 'news') loadNewsList();
+  if (sectionId === 'events') loadEventsList();
+  if (sectionId === 'services') loadServicesList();
+}
+
+function showMessage(text, type, elementId) {
+  const msg = document.getElementById(elementId);
+  msg.textContent = text;
+  msg.className = `message ${type} active`;
+  if (type === 'success') {
+    setTimeout(() => msg.classList.remove('active'), 3000);
+  }
+}
+
+// ============================================================================
+// DASHBOARD
+// ============================================================================
+
+async function loadDashboard() {
+  try {
+    const [newsRes, eventsRes, servicesRes] = await Promise.all([
+      fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/services`, { credentials: 'include' })
+    ]);
+
+    const news = await newsRes.json();
+    const events = await eventsRes.json();
+    const services = await servicesRes.json();
+
+    document.getElementById('newsCount').textContent = news.length;
+    document.getElementById('eventsCount').textContent = events.length;
+    document.getElementById('servicesCount').textContent = services.length;
+  } catch (err) {
+    console.error('Dashboard load error:', err);
+  }
+}
+
+// ============================================================================
+// NEWS MANAGEMENT
+// ============================================================================
+
+function openNewsForm() {
+  document.getElementById('newsForm').style.display = 'block';
+  document.getElementById('newsId').value = '';
+  document.getElementById('newsTitle').value = '';
+  document.getElementById('newsContent').value = '';
+  document.getElementById('newsImage').value = '';
+  document.getElementById('newsPublished').checked = false;
+  document.getElementById('newsTitle').focus();
+}
+
+function closeNewsForm() {
+  document.getElementById('newsForm').style.display = 'none';
+}
+
+async function saveNews(e) {
+  e.preventDefault();
+  const id = document.getElementById('newsId').value;
+  const title = document.getElementById('newsTitle').value;
+  const content = document.getElementById('newsContent').value;
+  const image = document.getElementById('newsImage').value;
+  const published = document.getElementById('newsPublished').checked;
+
+  const url = id ? `${API_URL}/admin/news/${id}` : `${API_URL}/admin/news`;
+  const method = id ? 'PUT' : 'POST';
+
+  try {
+    const response = await fetch(url, {
+      method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, content, image, published })
+    });
+
+    if (response.ok) {
+      showMessage('Erfolgreich gespeichert!', 'success');
+      closeNewsForm();
+      loadNewsList();
+      loadDashboard();
+    } else {
+      const error = await response.json();
+      showMessage(error.error || 'Fehler beim Speichern', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function editNews(id) {
+  try {
+    const response = await fetch(`${API_URL}/news/${id}`);
+    const news = await response.json();
+
+    document.getElementById('newsId').value = news.id;
+    document.getElementById('newsTitle').value = news.title;
+    document.getElementById('newsContent').value = news.content;
+    document.getElementById('newsImage').value = news.image || '';
+    document.getElementById('newsPublished').checked = news.published;
+    openNewsForm();
+    document.getElementById('newsTitle').focus();
+  } catch (err) {
+    showMessage('Fehler beim Laden', 'error');
+  }
+}
+
+async function deleteNews(id) {
+  if (!confirm('Wirklich löschen?')) return;
+
+  try {
+    const response = await fetch(`${API_URL}/admin/news/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      showMessage('Gelöscht!', 'success');
+      loadNewsList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function loadNewsList() {
+  try {
+    const response = await fetch(`${API_URL}/admin/news`, { credentials: 'include' });
+    const news = await response.json();
+
+    let html = '';
+    news.forEach(item => {
+      const badge = item.published ? '<span class="badge published">Veröffentlicht</span>' : '<span class="badge draft">Entwurf</span>';
+      const date = new Date(item.createdAt).toLocaleDateString('de-DE');
+      html += `
+        <div class="item">
+          <div class="item-info">
+            <h3>${item.title} ${badge}</h3>
+            <p>${item.content.substring(0, 100)}...</p>
+            <p style="font-size: 0.85rem; color: #999;">${date}</p>
+          </div>
+          <div class="item-actions">
+            <button class="btn-small btn-edit" onclick="editNews(${item.id})">Bearbeiten</button>
+            <button class="btn-small btn-delete" onclick="deleteNews(${item.id})">Löschen</button>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById('newsList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">Keine News vorhanden</div>';
+  } catch (err) {
+    console.error('Error loading news:', err);
+  }
+}
+
+// ============================================================================
+// EVENTS MANAGEMENT
+// ============================================================================
+
+function openEventForm() {
+  document.getElementById('eventForm').style.display = 'block';
+  document.getElementById('eventId').value = '';
+  document.getElementById('eventTitle').value = '';
+  document.getElementById('eventDescription').value = '';
+  document.getElementById('eventDate').value = '';
+  document.getElementById('eventTime').value = '';
+  document.getElementById('eventLocation').value = '';
+  document.getElementById('eventCapacity').value = '';
+  document.getElementById('eventImage').value = '';
+  document.getElementById('eventPublished').checked = false;
+  document.getElementById('eventTitle').focus();
+}
+
+function closeEventForm() {
+  document.getElementById('eventForm').style.display = 'none';
+}
+
+async function saveEvent(e) {
+  e.preventDefault();
+  const id = document.getElementById('eventId').value;
+  const title = document.getElementById('eventTitle').value;
+  const description = document.getElementById('eventDescription').value;
+  const date = document.getElementById('eventDate').value;
+  const time = document.getElementById('eventTime').value;
+  const location = document.getElementById('eventLocation').value;
+  const capacity = document.getElementById('eventCapacity').value;
+  const image = document.getElementById('eventImage').value;
+  const published = document.getElementById('eventPublished').checked;
+
+  const url = id ? `${API_URL}/admin/events/${id}` : `${API_URL}/admin/events`;
+  const method = id ? 'PUT' : 'POST';
+
+  try {
+    const response = await fetch(url, {
+      method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, description, date, time, location, capacity, image, published })
+    });
+
+    if (response.ok) {
+      showMessage('Erfolgreich gespeichert!', 'success');
+      closeEventForm();
+      loadEventsList();
+      loadDashboard();
+    } else {
+      const error = await response.json();
+      showMessage(error.error || 'Fehler beim Speichern', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function editEvent(id) {
+  try {
+    const response = await fetch(`${API_URL}/events/${id}`);
+    const event = await response.json();
+
+    document.getElementById('eventId').value = event.id;
+    document.getElementById('eventTitle').value = event.title;
+    document.getElementById('eventDescription').value = event.description;
+    document.getElementById('eventDate').value = event.date;
+    document.getElementById('eventTime').value = event.time || '';
+    document.getElementById('eventLocation').value = event.location || '';
+    document.getElementById('eventCapacity').value = event.capacity || '';
+    document.getElementById('eventImage').value = event.image || '';
+    document.getElementById('eventPublished').checked = event.published;
+    openEventForm();
+  } catch (err) {
+    showMessage('Fehler beim Laden', 'error');
+  }
+}
+
+async function deleteEvent(id) {
+  if (!confirm('Wirklich löschen?')) return;
+
+  try {
+    const response = await fetch(`${API_URL}/admin/events/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      showMessage('Gelöscht!', 'success');
+      loadEventsList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function loadEventsList() {
+  try {
+    const response = await fetch(`${API_URL}/admin/events`, { credentials: 'include' });
+    const events = await response.json();
+
+    let html = '';
+    events.forEach(item => {
+      const badge = item.published ? '<span class="badge published">Veröffentlicht</span>' : '<span class="badge draft">Entwurf</span>';
+      const date = new Date(item.date).toLocaleDateString('de-DE');
+      html += `
+        <div class="item">
+          <div class="item-info">
+            <h3>${item.title} ${badge}</h3>
+            <p>${date}${item.time ? ' um ' + item.time : ''} ${item.location ? '| ' + item.location : ''}</p>
+            <p>${item.description.substring(0, 100)}...</p>
+          </div>
+          <div class="item-actions">
+            <button class="btn-small btn-edit" onclick="editEvent(${item.id})">Bearbeiten</button>
+            <button class="btn-small btn-delete" onclick="deleteEvent(${item.id})">Löschen</button>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById('eventsList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">Keine Events vorhanden</div>';
+  } catch (err) {
+    console.error('Error loading events:', err);
+  }
+}
+
+// ============================================================================
+// SERVICES MANAGEMENT
+// ============================================================================
+
+function openServiceForm() {
+  document.getElementById('serviceForm').style.display = 'block';
+  document.getElementById('serviceId').value = '';
+  document.getElementById('serviceTitle').value = '';
+  document.getElementById('serviceDescription').value = '';
+  document.getElementById('servicePrice').value = '';
+  document.getElementById('serviceDuration').value = '';
+  document.getElementById('serviceImage').value = '';
+  document.getElementById('serviceActive').checked = true;
+  document.getElementById('serviceTitle').focus();
+}
+
+function closeServiceForm() {
+  document.getElementById('serviceForm').style.display = 'none';
+}
+
+async function saveService(e) {
+  e.preventDefault();
+  const id = document.getElementById('serviceId').value;
+  const title = document.getElementById('serviceTitle').value;
+  const description = document.getElementById('serviceDescription').value;
+  const price = document.getElementById('servicePrice').value;
+  const duration = document.getElementById('serviceDuration').value;
+  const image = document.getElementById('serviceImage').value;
+  const active = document.getElementById('serviceActive').checked;
+
+  const url = id ? `${API_URL}/admin/services/${id}` : `${API_URL}/admin/services`;
+  const method = id ? 'PUT' : 'POST';
+
+  try {
+    const response = await fetch(url, {
+      method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, description, price, duration, image, active })
+    });
+
+    if (response.ok) {
+      showMessage('Erfolgreich gespeichert!', 'success');
+      closeServiceForm();
+      loadServicesList();
+      loadDashboard();
+    } else {
+      const error = await response.json();
+      showMessage(error.error || 'Fehler beim Speichern', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function editService(id) {
+  try {
+    const response = await fetch(`${API_URL}/services/${id}`);
+    const service = await response.json();
+
+    document.getElementById('serviceId').value = service.id;
+    document.getElementById('serviceTitle').value = service.title;
+    document.getElementById('serviceDescription').value = service.description;
+    document.getElementById('servicePrice').value = service.price || '';
+    document.getElementById('serviceDuration').value = service.duration || '';
+    document.getElementById('serviceImage').value = service.image || '';
+    document.getElementById('serviceActive').checked = service.active;
+    openServiceForm();
+  } catch (err) {
+    showMessage('Fehler beim Laden', 'error');
+  }
+}
+
+async function deleteService(id) {
+  if (!confirm('Wirklich löschen?')) return;
+
+  try {
+    const response = await fetch(`${API_URL}/admin/services/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      showMessage('Gelöscht!', 'success');
+      loadServicesList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function loadServicesList() {
+  try {
+    const response = await fetch(`${API_URL}/admin/services`, { credentials: 'include' });
+    const services = await response.json();
+
+    let html = '';
+    services.forEach(item => {
+      const badge = item.active ? '<span class="badge published">Aktiv</span>' : '<span class="badge draft">Inaktiv</span>';
+      html += `
+        <div class="item">
+          <div class="item-info">
+            <h3>${item.title} ${badge}</h3>
+            <p>${item.description.substring(0, 100)}...</p>
+            ${item.price ? '<p>' + item.price + (item.duration ? ' | ' + item.duration : '') + '</p>' : ''}
+          </div>
+          <div class="item-actions">
+            <button class="btn-small btn-edit" onclick="editService(${item.id})">Bearbeiten</button>
+            <button class="btn-small btn-delete" onclick="deleteService(${item.id})">Löschen</button>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById('servicesList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">Keine Services vorhanden</div>';
+  } catch (err) {
+    console.error('Error loading services:', err);
+  }
+}
+</script>
+
+</body>
+</html>
