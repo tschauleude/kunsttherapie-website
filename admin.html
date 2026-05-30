@@ -4,416 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎨 Kunsttherapie Paderborn – Admin Panel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f8f9fc;
-      color: #1a1a2e;
-    }
-
-    /* LOGIN SCREEN */
-    .login-container {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #673de6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    .login-container.active {
-      display: flex;
-    }
-
-    .login-box {
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .login-box h1 {
-      color: #673de6;
-      margin-bottom: 30px;
-      text-align: center;
-      font-size: 1.8rem;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #2c2c2c;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #673de6;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.3s;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: #5025d1;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 12px;
-      background: #673de6;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: transform 0.3s;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-    }
-
-    /* MAIN LAYOUT */
-    .main-container {
-      display: none;
-      min-height: 100vh;
-    }
-
-    .main-container.active {
-      display: grid;
-      grid-template-columns: 250px 1fr;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      background: white;
-      border-right: 1px solid #e8eaef;
-      padding: 20px;
-      height: 100vh;
-      overflow-y: auto;
-      position: sticky;
-      top: 0;
-    }
-
-    .sidebar h2 {
-      color: #673de6;
-      margin-bottom: 30px;
-      font-size: 1.2rem;
-    }
-
-    .nav-item {
-      padding: 12px 16px;
-      margin-bottom: 8px;
-      background: #f5f5f5;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s;
-      border-left: 3px solid transparent;
-    }
-
-    .nav-item:hover,
-    .nav-item.active {
-      background: #673de6;
-      color: white;
-      border-left-color: #5025d1;
-    }
-
-    .logout-btn {
-      margin-top: 40px;
-      background: #ff6b6b;
-      color: white;
-    }
-
-    .logout-btn:hover {
-      background: #ff5252;
-    }
-
-    /* CONTENT */
-    .content {
-      padding: 30px;
-      overflow-y: auto;
-      height: 100vh;
-    }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
-
-    .section h1 {
-      color: #673de6;
-      margin-bottom: 30px;
-      font-size: 2rem;
-    }
-
-    /* FORMS */
-    .form-container {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      margin-bottom: 30px;
-      max-width: 800px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .form-row.full {
-      grid-template-columns: 1fr;
-    }
-
-    .form-group textarea {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #673de6;
-      border-radius: 8px;
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      min-height: 150px;
-      resize: vertical;
-      transition: border-color 0.3s;
-    }
-
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #5025d1;
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .btn-save {
-      background: #673de6;
-      color: white;
-      padding: 12px 30px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 700;
-      flex: 1;
-    }
-
-    .btn-cancel {
-      background: #e0e0e0;
-      color: #2c2c2c;
-      padding: 12px 30px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 700;
-      flex: 1;
-    }
-
-    /* ITEMS LIST */
-    .items-list {
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    .item {
-      padding: 20px;
-      border-bottom: 1px solid #f0f0f0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: background 0.3s;
-    }
-
-    .item:hover {
-      background: #f5f5f5;
-    }
-
-    .item-info h3 {
-      color: #673de6;
-      margin-bottom: 5px;
-    }
-
-    .item-info p {
-      color: #666;
-      font-size: 0.9rem;
-    }
-
-    .item-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn-small {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: all 0.3s;
-    }
-
-    .btn-edit {
-      background: #5025d1;
-      color: white;
-    }
-
-    .btn-delete {
-      background: #ff6b6b;
-      color: white;
-    }
-
-    .btn-publish {
-      background: #7fb069;
-      color: white;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-left: 10px;
-    }
-
-    .badge.published {
-      background: #7fb069;
-      color: white;
-    }
-
-    .badge.draft {
-      background: #ffc107;
-      color: #333;
-    }
-
-    /* MESSAGE ALERTS */
-    .message {
-      padding: 15px 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      display: none;
-    }
-
-    .message.active {
-      display: block;
-      animation: slideDown 0.3s ease;
-    }
-
-    .message.success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .message.error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* ADD BUTTON */
-    .btn-add {
-      background: #673de6;
-      color: white;
-      padding: 12px 30px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 700;
-      margin-bottom: 30px;
-      font-size: 1rem;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    @media (max-width: 768px) {
-      .main-container.active {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        position: absolute;
-        left: -250px;
-        transition: left 0.3s;
-      }
-
-      .sidebar.active {
-        left: 0;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Advent+Pro:wght@400;500;600;700&family=Poiret+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/admin.css"/>
 </head>
-<body>
+<body class="admin-app">
 
 <!-- LOGIN SCREEN -->
 <div class="login-container active" id="loginScreen">
@@ -453,14 +50,14 @@
   <!-- CONTENT -->
   <div class="content">
     <!-- DASHBOARD -->
-    <section class="section active" id="dashboard">
+    <section class="admin-section active" id="dashboard">
       <h1>📊 Dashboard</h1>
       <div class="form-container">
         <p>Willkommen im Admin-Panel von Kunsttherapie Paderborn!</p>
         <p style="margin-top: 15px; color: #666;">
           Verwalte hier deine News, Events und Services. Alle Änderungen werden sofort auf der Website angezeigt.
         </p>
-        <div style="margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+        <div class="stats-box">
           <h3>📈 Übersicht</h3>
           <p>News: <strong id="newsCount">0</strong></p>
           <p>Events: <strong id="eventsCount">0</strong></p>
@@ -470,7 +67,7 @@
     </section>
 
     <!-- NEWS SECTION -->
-    <section class="section" id="news">
+    <section class="admin-section" id="news">
       <h1>📰 News & Updates</h1>
       <button class="btn-add" onclick="openNewsForm()">➕ Neue News</button>
       <div id="newsForm" class="form-container" style="display: none;">
@@ -505,7 +102,7 @@
     </section>
 
     <!-- EVENTS SECTION -->
-    <section class="section" id="events">
+    <section class="admin-section" id="events">
       <h1>📅 Events & Termine</h1>
       <button class="btn-add" onclick="openEventForm()">➕ Neuer Event</button>
       <div id="eventForm" class="form-container" style="display: none;">
@@ -560,7 +157,7 @@
     </section>
 
     <!-- SERVICES SECTION -->
-    <section class="section" id="services">
+    <section class="admin-section" id="services">
       <h1>💜 Services & Angebote</h1>
       <button class="btn-add" onclick="openServiceForm()">➕ Neuer Service</button>
       <div id="serviceForm" class="form-container" style="display: none;">
@@ -662,7 +259,7 @@ async function handleLogout() {
 // ============================================================================
 
 function switchSection(sectionId) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.getElementById(sectionId).classList.add('active');
 
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -800,7 +397,7 @@ async function loadNewsList() {
 
     let html = '';
     news.forEach(item => {
-      const badge = item.published ? '<span class="badge published">Veröffentlicht</span>' : '<span class="badge draft">Entwurf</span>';
+      const badge = item.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>';
       const date = new Date(item.createdAt).toLocaleDateString('de-DE');
       html += `
         <div class="item">
@@ -928,7 +525,7 @@ async function loadEventsList() {
 
     let html = '';
     events.forEach(item => {
-      const badge = item.published ? '<span class="badge published">Veröffentlicht</span>' : '<span class="badge draft">Entwurf</span>';
+      const badge = item.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>';
       const date = new Date(item.date).toLocaleDateString('de-DE');
       html += `
         <div class="item">
@@ -1050,7 +647,7 @@ async function loadServicesList() {
 
     let html = '';
     services.forEach(item => {
-      const badge = item.active ? '<span class="badge published">Aktiv</span>' : '<span class="badge draft">Inaktiv</span>';
+      const badge = item.active ? '<span class="status-badge published">Aktiv</span>' : '<span class="status-badge draft">Inaktiv</span>';
       html += `
         <div class="item">
           <div class="item-info">
