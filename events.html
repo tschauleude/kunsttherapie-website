@@ -3,165 +3,106 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Events & Termine – Kunsttherapie Paderborn</title>
+  <title>Events &amp; Termine – Kunsttherapie Paderborn</title>
+  <meta name="description" content="Kommende Events, Workshops und Gruppentherapien der Kunsttherapie Paderborn – Martina Schwierzke. Jetzt anmelden!"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Montserrat:wght@400;500;600&family=Poiret+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
   <style>
-    .events-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-    }
-
-    @media (max-width: 920px) {
-      .events-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .event-card {
-      background: white;
-      border: 2px solid var(--primary);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      box-shadow: var(--shadow);
-    }
-
-    .event-card:hover {
-      box-shadow: 0 12px 32px rgba(212, 165, 116, 0.2);
-      transform: translateY(-4px);
-    }
-
-    .event-image {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      background: linear-gradient(135deg, rgba(212,165,116,.1), rgba(91,143,196,.08));
-    }
-
-    .event-content {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-
-    .event-date {
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-    }
-
-    .event-card h3 {
-      margin: 0 0 12px 0;
-      font-size: 1.3rem;
-      color: var(--text);
-    }
-
-    .event-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
-      font-size: 0.95rem;
-      color: var(--text-light);
-    }
-
-    .event-meta span {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .event-card p {
-      color: var(--text-light);
-      line-height: 1.6;
-      margin: 0 0 16px 0;
-      flex: 1;
-    }
-
-    .event-cta {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-      color: white;
-      padding: 10px 16px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-    }
-
-    .event-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
-    }
+    .ev-image{width:100%; height:200px; object-fit:cover; border-radius:var(--radius-sm); margin-bottom:18px;
+      background:linear-gradient(135deg, var(--rose-soft), rgba(216,168,106,.15))}
+    .ev-meta{display:flex; flex-direction:column; gap:6px; margin:12px 0 16px; font-size:.92rem; color:var(--muted)}
+    .ev-cta{display:inline-flex; margin-top:6px}
   </style>
 </head>
 <body>
 <header>
   <div class="container nav">
     <a class="brand" href="index.html">
-      <img src="assets/img/Sonnige_Pinsel.jpg" alt="Logo Kunsttherapie Paderborn"/>
-      <div>Kunsttherapie Paderborn</div>
+      <img src="assets/img/Sonnige_Pinsel.jpg" alt="Kunsttherapie Paderborn – Logo"/>
+      <span class="brand-text">
+        <span class="brand-name">Kunst<b>therapie</b></span>
+        <span class="brand-sub">Paderborn · Martina Schwierzke</span>
+      </span>
     </a>
-    <nav>
+    <button class="nav-toggle" data-nav-toggle aria-label="Menü öffnen" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav data-nav>
       <ul>
         <li><a href="angebote.html">Angebote</a></li>
         <li><a href="ueber-mich.html">Über mich</a></li>
+        <li><a href="preise.html">Preise</a></li>
         <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
-        <li><a href="kontakt.html" class="nav-cta">Anfragen / Buchen</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Termin anfragen</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
 <main>
-  <section class="hero container">
-    <div class="card hero-left">
-      <div class="kicker">📅 Termine</div>
-      <h1>Events & Workshops</h1>
-      <p class="sub">
-        Kommende Events, Workshops und Gruppentherapien. Melde dich an und sei dabei!
-      </p>
-    </div>
+  <section class="page-hero container">
+    <span class="kicker">Termine</span>
+    <h1>Events &amp; Workshops</h1>
+    <p class="sub">Kommende Events, Workshops und Gruppentherapien. Melde dich an und sei dabei!</p>
   </section>
 
-  <section class="section container">
-    <div id="eventsLoading" style="text-align: center; padding: 40px;">
-      <p style="color: var(--text-light); font-size: 1.1rem;">⏳ Termine werden geladen...</p>
-    </div>
-    <div id="eventsList" class="events-grid"></div>
-    <div id="eventsEmpty" style="display: none; text-align: center; padding: 40px;">
-      <p style="color: var(--text-light);">Momentan sind keine Events geplant.</p>
-      <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 10px;">Schreib uns gerne, wenn du Interesse an einem Workshop hast!</p>
+  <section class="section-tight">
+    <div class="container">
+      <div id="eventsLoading" class="center" style="padding:40px">
+        <p class="sub">Termine werden geladen …</p>
+      </div>
+      <div id="eventsList" class="event-cards"></div>
+      <div id="eventsEmpty" class="center" style="display:none; padding:40px">
+        <p class="sub">Momentan sind keine Events geplant.</p>
+        <p class="note">Schreib mir gerne, wenn du Interesse an einem Workshop hast!</p>
+      </div>
     </div>
   </section>
 </main>
 
 <footer class="footer">
   <div class="container">
-    <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:16px">
-      <div><strong>© <span id="y"></span> Kunsttherapie Paderborn</strong> – Martina Schwierzke</div>
-      <div style="display:flex; gap:12px; flex-wrap:wrap">
-        <a href="impressum.html">Impressum</a>
-        <a href="datenschutz.html">Datenschutz</a>
-        <a href="kontakt.html">Kontakt</a>
+    <div class="footer-grid">
+      <div>
+        <span class="brand-name">Kunst<b>therapie</b> Paderborn</span>
+        <p style="margin-top:14px;font-size:.92rem">
+          Kunsttherapie als Weg zu Ressourcen, Resilienz und innerer Kraft.
+          Ein geschützter Raum für deinen Ausdruck.
+        </p>
+      </div>
+      <div>
+        <h4>Seiten</h4>
+        <ul>
+          <li><a href="angebote.html">Angebote</a></li>
+          <li><a href="ueber-mich.html">Über mich</a></li>
+          <li><a href="preise.html">Preise</a></li>
+          <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li>Otto-Stadler-Straße 23c</li>
+          <li>33102 Paderborn</li>
+          <li>05251-690111</li>
+          <li><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>
+        </ul>
       </div>
     </div>
-    <p class="note" style="margin:0; text-align:center; font-size:0.9rem;">
-      🌻 Kunsttherapie als Weg zu Ressourcen, Resilienz & innerer Kraft
-    </p>
+    <div class="footer-bottom">
+      <span>© <span data-year></span> Kunsttherapie Paderborn – Martina Schwierzke</span>
+      <span>
+        <a href="impressum.html">Impressum</a> ·
+        <a href="datenschutz.html">Datenschutz</a>
+      </span>
+    </div>
   </div>
 </footer>
 
+<script src="assets/js/main.js"></script>
 <script>
 const API_URL = 'http://localhost:3000/api';
 
@@ -169,65 +110,41 @@ async function loadEvents() {
   try {
     const response = await fetch(`${API_URL}/events`);
     const events = await response.json();
-
     document.getElementById('eventsLoading').style.display = 'none';
 
-    if (events.length === 0) {
+    if (!events.length) {
       document.getElementById('eventsEmpty').style.display = 'block';
       return;
     }
 
-    let html = '';
-    events.forEach(item => {
-      const date = new Date(item.date).toLocaleDateString('de-DE', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-
-      const imageHtml = item.image 
-        ? `<img src="${item.image}" alt="${item.title}" class="event-image"/>`
-        : `<div class="event-image" style="display: flex; align-items: center; justify-content: center;"><span style="color: var(--primary); font-size: 2.5rem;">📅</span></div>`;
-
+    document.getElementById('eventsList').innerHTML = events.map(item => {
+      const date = new Date(item.date).toLocaleDateString('de-DE', { year:'numeric', month:'long', day:'numeric' });
+      const image = item.image
+        ? `<img src="${item.image}" alt="${item.title}" class="ev-image"/>`
+        : `<div class="ev-image" style="display:grid;place-items:center"><span style="color:var(--rose);font-size:2.4rem">✿</span></div>`;
       const meta = [
         `📅 ${date}`,
         item.time ? `🕐 ${item.time}` : null,
         item.location ? `📍 ${item.location}` : null,
         item.capacity ? `👥 ${item.capacity} Plätze` : null
       ].filter(Boolean);
-
-      html += `
-        <div class="event-card">
-          ${imageHtml}
-          <div class="event-content">
-            <div class="event-date">${date}</div>
-            <h3>${item.title}</h3>
-            <div class="event-meta">
-              ${meta.map(m => `<span>${m}</span>`).join('')}
-            </div>
-            <p>${item.description}</p>
-            <a href="kontakt.html" class="event-cta">📞 Anmelden</a>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById('eventsList').innerHTML = html;
+      return `
+        <article class="event">
+          ${image}
+          <div class="what">${date}</div>
+          <h3>${item.title}</h3>
+          <div class="ev-meta">${meta.map(m => `<span>${m}</span>`).join('')}</div>
+          <p>${item.description}</p>
+          <a href="kontakt.html" class="btn primary ev-cta">Anmelden</a>
+        </article>`;
+    }).join('');
   } catch (err) {
-    document.getElementById('eventsLoading').innerHTML = `
-      <div style="color: var(--text-light); padding: 20px;">
-        <p>⚠️ Backend nicht erreichbar</p>
-        <p style="font-size: 0.9rem; margin-top: 10px;">Starte den CMS-Server:</p>
-        <code style="background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 5px;">cd kunsttherapie-cms && npm run dev</code>
-      </div>
-    `;
+    document.getElementById('eventsLoading').innerHTML =
+      `<p class="sub">⚠️ Termine werden geladen, sobald das CMS verbunden ist.</p>`;
     console.error('Events load error:', err);
   }
 }
-
 document.addEventListener('DOMContentLoaded', loadEvents);
-document.getElementById('y').textContent = new Date().getFullYear();
 </script>
-
 </body>
 </html>

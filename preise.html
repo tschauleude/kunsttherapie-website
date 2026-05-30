@@ -4,80 +4,133 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Preise – Kunsttherapie Paderborn</title>
+  <meta name="description" content="Preise der Kunsttherapie Paderborn: Gruppensitzungen, Gruppenprogramme, Einzelsitzungen und Teambuilding-Events. Material inklusive, transparent und fair."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Montserrat:wght@400;500;600&family=Poiret+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
 <header>
   <div class="container nav">
     <a class="brand" href="index.html">
-      <img src="assets/img/logo.jpg" alt="Logo"/>
-      <div>Kunsttherapie Paderborn</div>
+      <img src="assets/img/Sonnige_Pinsel.jpg" alt="Kunsttherapie Paderborn – Logo"/>
+      <span class="brand-text">
+        <span class="brand-name">Kunst<b>therapie</b></span>
+        <span class="brand-sub">Paderborn · Martina Schwierzke</span>
+      </span>
     </a>
-    <nav>
+    <button class="nav-toggle" data-nav-toggle aria-label="Menü öffnen" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav data-nav>
       <ul>
         <li><a href="angebote.html">Angebote</a></li>
         <li><a href="ueber-mich.html">Über mich</a></li>
+        <li><a href="preise.html">Preise</a></li>
         <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
-        <li><a href="kontakt.html" class="nav-cta">Anfragen / Buchen</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Termin anfragen</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
-<main class="container section">
-  <div class="card hero-left">
-    <div class="kicker">Preise</div>
-    <h1>Transparent & fair</h1>
-    <p class="sub">Materialien sind inklusive. Einzelsitzungen sind möglich – bitte direkt anfragen.</p>
+<main>
+  <section class="page-hero container">
+    <span class="kicker">Preise</span>
+    <h1>Transparent &amp; fair</h1>
+    <p class="sub">Materialien sind inklusive. Einzelsitzungen sind möglich – bitte einfach direkt anfragen.</p>
+  </section>
 
-    <hr class="sep"/>
+  <section class="section-tight">
+    <div class="container prose" style="max-width:920px">
+      <table class="price-table reveal">
+        <thead>
+          <tr>
+            <th>Leistung</th>
+            <th>Dauer</th>
+            <th>Preis</th>
+            <th>Hinweis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Gruppensitzung</td>
+            <td>90 Minuten</td>
+            <td><strong>ab 55 €</strong></td>
+            <td>4–12 Personen, Material inkl.</td>
+          </tr>
+          <tr>
+            <td>Gruppenprogramm (typisch)</td>
+            <td>4 Einheiten</td>
+            <td>auf Anfrage</td>
+            <td>je nach Thema / Setting</td>
+          </tr>
+          <tr>
+            <td>Einzelsitzung</td>
+            <td>90 Minuten</td>
+            <td>auf Anfrage</td>
+            <td>individuelle Begleitung</td>
+          </tr>
+          <tr>
+            <td>Teambuilding-Event</td>
+            <td>nach Bedarf</td>
+            <td>auf Anfrage</td>
+            <td>inkl. Konzept &amp; Material</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <table class="prices">
-      <thead>
-        <tr>
-          <th>Leistung</th>
-          <th>Dauer</th>
-          <th>Preis</th>
-          <th>Hinweis</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Gruppensitzung</td>
-          <td>90 Minuten</td>
-          <td><strong>ab 55 €</strong></td>
-          <td>4–12 Personen, Material inkl.</td>
-        </tr>
-        <tr>
-          <td>Gruppenprogramm (typisch)</td>
-          <td>4 Einheiten</td>
-          <td>auf Anfrage</td>
-          <td>je nach Thema/Setting</td>
-        </tr>
-        <tr>
-          <td>Einzelsitzung</td>
-          <td>90 Minuten</td>
-          <td>auf Anfrage</td>
-          <td>individuelle Begleitung</td>
-        </tr>
-        <tr>
-          <td>Teambuilding Event</td>
-          <td>nach Bedarf</td>
-          <td>auf Anfrage</td>
-          <td>inkl. Konzept & Material</td>
-        </tr>
-      </tbody>
-    </table>
+      <p class="note" style="margin-top:22px">
+        Fragen zu Preisen oder Ermäßigungen? Melde dich gerne direkt – jede Situation ist individuell.
+      </p>
 
-    <p class="note" style="margin-top:16px">
-      💡 Fragen zu Preisen oder Rabatten? Kontaktieren Sie mich direkt – jede Situation ist individuell.
-    </p>
+      <div class="actions">
+        <a class="btn primary" href="kontakt.html">Preis anfragen / buchen</a>
+      </div>
+    </div>
+  </section>
+</main>
 
-    <div class="actions" style="margin-top:20px">
-      <a class="btn primary" href="kontakt.html">Preis anfragen / buchen</a>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <span class="brand-name">Kunst<b>therapie</b> Paderborn</span>
+        <p style="margin-top:14px;font-size:.92rem">
+          Kunsttherapie als Weg zu Ressourcen, Resilienz und innerer Kraft.
+          Ein geschützter Raum für deinen Ausdruck.
+        </p>
+      </div>
+      <div>
+        <h4>Seiten</h4>
+        <ul>
+          <li><a href="angebote.html">Angebote</a></li>
+          <li><a href="ueber-mich.html">Über mich</a></li>
+          <li><a href="preise.html">Preise</a></li>
+          <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li>Otto-Stadler-Straße 23c</li>
+          <li>33102 Paderborn</li>
+          <li>05251-690111</li>
+          <li><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year></span> Kunsttherapie Paderborn – Martina Schwierzke</span>
+      <span>
+        <a href="impressum.html">Impressum</a> ·
+        <a href="datenschutz.html">Datenschutz</a>
+      </span>
     </div>
   </div>
-</main>
+</footer>
 
 <script src="assets/js/main.js"></script>
 </body>

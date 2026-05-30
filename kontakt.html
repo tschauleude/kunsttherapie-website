@@ -3,72 +3,134 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Kontakt & Buchung – Kunsttherapie Paderborn</title>
+  <title>Kontakt &amp; Buchung – Kunsttherapie Paderborn</title>
+  <meta name="description" content="Kontakt zur Kunsttherapie Paderborn – Martina Schwierzke. Termin anfragen für Gruppen, Auszeit, Teambuilding oder Einzelsitzungen. Kostenfreies Erstgespräch."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Montserrat:wght@400;500;600&family=Poiret+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
 <header>
   <div class="container nav">
     <a class="brand" href="index.html">
-      <img src="assets/img/logo.jpg" alt="Logo"/>
-      <div>Kunsttherapie Paderborn</div>
+      <img src="assets/img/Sonnige_Pinsel.jpg" alt="Kunsttherapie Paderborn – Logo"/>
+      <span class="brand-text">
+        <span class="brand-name">Kunst<b>therapie</b></span>
+        <span class="brand-sub">Paderborn · Martina Schwierzke</span>
+      </span>
     </a>
-    <nav>
+    <button class="nav-toggle" data-nav-toggle aria-label="Menü öffnen" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav data-nav>
       <ul>
         <li><a href="angebote.html">Angebote</a></li>
         <li><a href="ueber-mich.html">Über mich</a></li>
+        <li><a href="preise.html">Preise</a></li>
         <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
-        <li><a href="kontakt.html" class="nav-cta">Anfragen / Buchen</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Termin anfragen</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
-<main class="container section">
-  <div class="card hero-left">
-    <div class="kicker">Kontakt</div>
-    <h1>Anfragen & Terminbuchung</h1>
+<main>
+  <section class="page-hero container">
+    <span class="kicker">Kontakt</span>
+    <h1>Anfragen &amp; Terminbuchung</h1>
     <p class="sub">Schreib kurz, worum es geht (Gruppe, Auszeit, Teambuilding, Einzel). Ich melde mich zeitnah zurück.</p>
+  </section>
 
-    <hr class="sep"/>
+  <section class="section-tight">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info reveal">
+          <div class="row">
+            <div class="ico">📍</div>
+            <p><strong>Martina Schwierzke</strong>Otto-Stadler-Straße 23c<br/>33102 Paderborn</p>
+          </div>
+          <div class="row">
+            <div class="ico">📞</div>
+            <p><strong>Telefon</strong>05251-690111<br/>0170-4790790</p>
+          </div>
+          <div class="row">
+            <div class="ico">✉️</div>
+            <p><strong>E-Mail</strong><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></p>
+          </div>
+          <div class="row">
+            <div class="ico">🕊️</div>
+            <p><strong>Termine</strong>Dienstag vormittags · Donnerstag früher Abend</p>
+          </div>
+        </div>
 
-    <div class="twoCol">
-      <div>
-        <h2>📞 Kontakt</h2>
-        <p style="color:var(--text); line-height:1.8">
-          <strong>Martina Schwierzke</strong><br/>
-          Otto-Stadler-Straße 23c<br/>
-          33102 Paderborn
-        </p>
-        <p style="color:var(--muted); line-height:1.8">
-          <strong>Telefon:</strong><br/>
-          05251-690111<br/>
-          0170-4790790
-        </p>
-        <p style="color:var(--muted); line-height:1.8">
-          <strong>E-Mail:</strong><br/>
-          <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
-        </p>
-        <p class="note" style="margin-top:12px">
-          Termine: Dienstag Vormittag · Donnerstag Früher Abend
-        </p>
-      </div>
-
-      <div>
-        <h2>💬 Schreib mir</h2>
-        <form style="display:flex; flex-direction:column; gap:10px">
-          <input type="text" placeholder="Dein Name" required style="padding:8px 12px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text)"/>
-          <input type="email" placeholder="E-Mail" required style="padding:8px 12px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text)"/>
-          <textarea placeholder="Deine Nachricht (z.B. &#34;Interessiert für Gruppentherapie&#34;)" rows="4" required style="padding:8px 12px; border-radius:8px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text); font-family:inherit; resize:vertical"></textarea>
-          <button type="button" class="btn primary" onclick="alert('Formulare funktionieren auf dieser Demo-Website nicht. Bitte kontaktiere Martina direkt per Telefon oder E-Mail.')">Senden</button>
-        </form>
-        <p class="note" style="margin-top:12px; font-size:0.85rem">
-          Für eine vollständige Integration empfehle ich die Verbindung mit einem Emaildienst (z.B. Formspree oder emailjs).
-        </p>
+        <div class="card form-card reveal">
+          <h3 style="margin-bottom:18px">Schreib mir</h3>
+          <form data-demo-form="Danke für deine Nachricht! Ich melde mich zeitnah zurück.">
+            <div class="form-field">
+              <label for="cname">Name</label>
+              <input id="cname" type="text" name="name" placeholder="Dein Name" required/>
+            </div>
+            <div class="form-field">
+              <label for="cmail">E-Mail</label>
+              <input id="cmail" type="email" name="email" placeholder="deine@email.de" required/>
+            </div>
+            <div class="form-field">
+              <label for="cmsg">Nachricht</label>
+              <textarea id="cmsg" name="message" placeholder="z.B. „Interessiert für Gruppentherapie"" required></textarea>
+            </div>
+            <button class="btn primary" type="submit" style="width:100%;justify-content:center">Senden</button>
+            <small data-form-hint class="note" style="display:none;margin-top:14px"></small>
+            <p class="note" style="margin-top:14px;font-size:.82rem">
+              Hinweis: Für den Live-Betrieb empfiehlt sich die Anbindung eines E-Mail-Dienstes
+              (z.B. Formspree oder EmailJS).
+            </p>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 </main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <span class="brand-name">Kunst<b>therapie</b> Paderborn</span>
+        <p style="margin-top:14px;font-size:.92rem">
+          Kunsttherapie als Weg zu Ressourcen, Resilienz und innerer Kraft.
+          Ein geschützter Raum für deinen Ausdruck.
+        </p>
+      </div>
+      <div>
+        <h4>Seiten</h4>
+        <ul>
+          <li><a href="angebote.html">Angebote</a></li>
+          <li><a href="ueber-mich.html">Über mich</a></li>
+          <li><a href="preise.html">Preise</a></li>
+          <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li>Otto-Stadler-Straße 23c</li>
+          <li>33102 Paderborn</li>
+          <li>05251-690111</li>
+          <li><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year></span> Kunsttherapie Paderborn – Martina Schwierzke</span>
+      <span>
+        <a href="impressum.html">Impressum</a> ·
+        <a href="datenschutz.html">Datenschutz</a>
+      </span>
+    </div>
+  </div>
+</footer>
 
 <script src="assets/js/main.js"></script>
 </body>
