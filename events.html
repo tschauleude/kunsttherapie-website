@@ -163,62 +163,90 @@
 </footer>
 
 <script>
+// Optionales CMS-Backend; ist es nicht erreichbar, wird die statische
+// Datei assets/data/events.json verwendet (z. B. bei Hostinger-Hosting).
 const API_URL = 'http://localhost:3000/api';
+const STATIC_EVENTS = 'assets/data/events.json';
+
+function normalizeEvents(data) {
+  const list = Array.isArray(data) ? data : (data && data.items) || [];
+  return list.map(item => ({
+    title: item.title || '',
+    description: item.description || item.text || '',
+    date: item.date || null,
+    time: item.time || null,
+    location: item.location || null,
+    capacity: item.capacity || null,
+    image: item.image || null
+  }));
+}
+
+async function fetchEvents() {
+  try {
+    const response = await fetch(`${API_URL}/events`);
+    if (!response.ok) throw new Error('API not ok');
+    return normalizeEvents(await response.json());
+  } catch (err) {
+    const response = await fetch(STATIC_EVENTS, { cache: 'no-store' });
+    return normalizeEvents(await response.json());
+  }
+}
+
+function renderEvents(events) {
+  document.getElementById('eventsLoading').style.display = 'none';
+
+  if (!events.length) {
+    document.getElementById('eventsEmpty').style.display = 'block';
+    return;
+  }
+
+  let html = '';
+  events.forEach(item => {
+    const date = item.date
+      ? new Date(item.date).toLocaleDateString('de-DE', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      : '';
+
+    const imageHtml = item.image
+      ? `<img src="${item.image}" alt="${item.title}" class="event-image"/>`
+      : `<div class="event-image" style="display: flex; align-items: center; justify-content: center;"><span style="color: var(--primary); font-size: 2.5rem;">📅</span></div>`;
+
+    const meta = [
+      date ? `📅 ${date}` : null,
+      item.time ? `🕐 ${item.time}` : null,
+      item.location ? `📍 ${item.location}` : null,
+      item.capacity ? `👥 ${item.capacity} Plätze` : null
+    ].filter(Boolean);
+
+    html += `
+      <div class="event-card">
+        ${imageHtml}
+        <div class="event-content">
+          <div class="event-date">${date}</div>
+          <h3>${item.title}</h3>
+          <div class="event-meta">
+            ${meta.map(m => `<span>${m}</span>`).join('')}
+          </div>
+          <p>${item.description}</p>
+          <a href="kontakt.html" class="event-cta">📞 Anmelden</a>
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById('eventsList').innerHTML = html;
+}
 
 async function loadEvents() {
   try {
-    const response = await fetch(`${API_URL}/events`);
-    const events = await response.json();
-
-    document.getElementById('eventsLoading').style.display = 'none';
-
-    if (events.length === 0) {
-      document.getElementById('eventsEmpty').style.display = 'block';
-      return;
-    }
-
-    let html = '';
-    events.forEach(item => {
-      const date = new Date(item.date).toLocaleDateString('de-DE', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-
-      const imageHtml = item.image 
-        ? `<img src="${item.image}" alt="${item.title}" class="event-image"/>`
-        : `<div class="event-image" style="display: flex; align-items: center; justify-content: center;"><span style="color: var(--primary); font-size: 2.5rem;">📅</span></div>`;
-
-      const meta = [
-        `📅 ${date}`,
-        item.time ? `🕐 ${item.time}` : null,
-        item.location ? `📍 ${item.location}` : null,
-        item.capacity ? `👥 ${item.capacity} Plätze` : null
-      ].filter(Boolean);
-
-      html += `
-        <div class="event-card">
-          ${imageHtml}
-          <div class="event-content">
-            <div class="event-date">${date}</div>
-            <h3>${item.title}</h3>
-            <div class="event-meta">
-              ${meta.map(m => `<span>${m}</span>`).join('')}
-            </div>
-            <p>${item.description}</p>
-            <a href="kontakt.html" class="event-cta">📞 Anmelden</a>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById('eventsList').innerHTML = html;
+    renderEvents(await fetchEvents());
   } catch (err) {
     document.getElementById('eventsLoading').innerHTML = `
       <div style="color: var(--text-light); padding: 20px;">
-        <p>⚠️ Backend nicht erreichbar</p>
-        <p style="font-size: 0.9rem; margin-top: 10px;">Starte den CMS-Server:</p>
-        <code style="background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 5px;">cd kunsttherapie-cms && npm run dev</code>
+        <p>Termine konnten momentan nicht geladen werden.</p>
       </div>
     `;
     console.error('Events load error:', err);

@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "date": "2026-06-04",
+      "time": "18:00 – 19:30",
+      "title": "Auszeit am frühen Abend",
+      "location": "Otto-Stadler-Straße 23c, Paderborn",
+      "capacity": 8,
+      "description": "Feierabends-Atmosphäre, Tee, ankommen. Begleitetes Malen, Zeichnen, Collage oder Tonarbeit – ohne Druck, ohne Vorkenntnisse."
+    },
+    {
+      "date": "2026-06-09",
+      "time": "10:00 – 11:30",
+      "title": "Kunsttherapeutische Gruppe (Start)",
+      "location": "Otto-Stadler-Straße 23c, Paderborn",
+      "capacity": 12,
+      "description": "Krankheitsakzeptanz, Integration, Resilienzförderung & neue Perspektiven in einem geschützten Rahmen über mehrere Einheiten."
+    }
+  ]
+}
