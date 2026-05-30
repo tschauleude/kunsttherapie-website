@@ -19,8 +19,10 @@ fs.mkdirSync(path.join(PUBLIC_DIR, 'uploads'), { recursive: true });
 // MIDDLEWARE
 // ============================================================================
 
-const corsOrigin = process.env.CORS_ORIGIN;
-app.use(cors(corsOrigin ? { origin: corsOrigin, credentials: true } : undefined));
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean)
+  : [];
+app.use(cors(corsOrigins.length ? { origin: corsOrigins, credentials: true } : undefined));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -34,7 +36,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // Set to true if using HTTPS
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
@@ -517,6 +519,7 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/', (req, res) => sendPage(res, 'index'));
+app.get('/index.html', (req, res) => res.redirect(301, '/'));
 
 app.get('/admin', (req, res) => {
   const adminFile = path.join(PUBLIC_DIR, 'admin.html');
