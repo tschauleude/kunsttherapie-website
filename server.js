@@ -9,15 +9,24 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const ROOT = __dirname;
+const PUBLIC_DIR = path.join(ROOT, 'public');
+
+// Ensure upload directory exists (Hostinger redeploy may wipe empty dirs)
+fs.mkdirSync(path.join(PUBLIC_DIR, 'uploads'), { recursive: true });
 
 // ============================================================================
 // MIDDLEWARE
 // ============================================================================
 
-app.use(cors());
+const corsOrigin = process.env.CORS_ORIGIN;
+app.use(cors(corsOrigin ? { origin: corsOrigin, credentials: true } : undefined));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-app.use(express.static('public'));
+
+// Static: admin panel, uploads, assets (css/js/img)
+app.use('/assets', express.static(path.join(ROOT, 'assets')));
+app.use(express.static(PUBLIC_DIR));
 
 // Session Configuration
 app.use(session({
@@ -480,9 +489,61 @@ app.delete('/api/admin/services/:id', requireAuth, (req, res) => {
 });
 
 // ============================================================================
+// FRONTEND ROUTES (fixes "Cannot GET /" on Hostinger Node redeploy)
+// ============================================================================
+
+const SITE_PAGES = [
+  'index',
+  'angebote',
+  'ueber-mich',
+  'neuigkeiten',
+  'events',
+  'preise',
+  'kontakt',
+  'impressum',
+  'datenschutz'
+];
+
+function sendPage(res, name) {
+  const file = path.join(ROOT, `${name}.html`);
+  if (!fs.existsSync(file)) {
+    return res.status(404).send('Seite nicht gefunden');
+  }
+  return res.sendFile(file);
+}
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', service: 'kunsttherapie-cms' });
+});
+
+app.get('/', (req, res) => sendPage(res, 'index'));
+
+app.get('/admin', (req, res) => {
+  const adminFile = path.join(PUBLIC_DIR, 'admin.html');
+  const fallback = path.join(ROOT, 'admin.html');
+  res.sendFile(fs.existsSync(adminFile) ? adminFile : fallback);
+});
+
+SITE_PAGES.forEach((page) => {
+  if (page === 'index') return;
+  app.get(`/${page}`, (req, res) => sendPage(res, page));
+  app.get(`/${page}.html`, (req, res) => sendPage(res, page));
+});
+
+// PDFs and images in project root (Lebenslauf, etc.)
+app.get(/\.(pdf|jpg|jpeg|png|gif|webp)$/i, (req, res, next) => {
+  const file = path.join(ROOT, path.basename(req.path));
+  if (fs.existsSync(file)) {
+    return res.sendFile(file);
+  }
+  next();
+});
+
+// ============================================================================
 // SERVER START
 // ============================================================================
 
+if (require.main === module) {
 app.listen(PORT, () => {
   console.log(`\n╔════════════════════════════════════════╗`);
   console.log(`║  🎨 Kunsttherapie CMS Backend       ║`);
@@ -490,5 +551,6 @@ app.listen(PORT, () => {
   console.log(`║  Admin Panel: http://localhost:${PORT}/admin  ║`);
   console.log(`╚════════════════════════════════════════╝\n`);
 });
+}
 
 module.exports = app;
