@@ -3,231 +3,145 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Events & Termine – Kunsttherapie Paderborn</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css"/>
+  <title>Events &amp; Termine · atelier Kunsttherapie Paderborn</title>
+  <meta name="description" content="Kommende Events, Workshops und Gruppentherapien der Kunsttherapie Paderborn."/>
+  <link rel="stylesheet" href="style.css"/>
   <style>
-    .events-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+    .events-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:26px}
+    @media (max-width:820px){ .events-grid{grid-template-columns:1fr} }
+    .event-card{
+      background:var(--bg);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      overflow:hidden;
+      display:flex; flex-direction:column;
+      transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
     }
-
-    @media (max-width: 920px) {
-      .events-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .event-card {
-      background: white;
-      border: 2px solid var(--primary);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      box-shadow: var(--shadow);
-    }
-
-    .event-card:hover {
-      box-shadow: 0 12px 32px rgba(212, 165, 116, 0.2);
-      transform: translateY(-4px);
-    }
-
-    .event-image {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      background: linear-gradient(135deg, rgba(212,165,116,.1), rgba(91,143,196,.08));
-    }
-
-    .event-content {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-
-    .event-date {
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-    }
-
-    .event-card h3 {
-      margin: 0 0 12px 0;
-      font-size: 1.3rem;
-      color: var(--text);
-    }
-
-    .event-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
-      font-size: 0.95rem;
-      color: var(--text-light);
-    }
-
-    .event-meta span {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .event-card p {
-      color: var(--text-light);
-      line-height: 1.6;
-      margin: 0 0 16px 0;
-      flex: 1;
-    }
-
-    .event-cta {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-      color: white;
-      padding: 10px 16px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-    }
-
-    .event-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
-    }
+    .event-card:hover{transform:translateY(-5px); box-shadow:var(--shadow); border-color:var(--accent-soft)}
+    .event-image{width:100%; height:210px; object-fit:cover; background:var(--bg-soft)}
+    .event-content{padding:30px; display:flex; flex-direction:column; flex:1}
+    .event-date{font-family:var(--alt); text-transform:uppercase; letter-spacing:.14em; font-size:.78rem; color:var(--accent-deep); margin-bottom:8px}
+    .event-card h3{margin:0 0 14px}
+    .event-meta{display:flex; flex-direction:column; gap:6px; margin-bottom:18px; font-size:.92rem; color:var(--muted); font-weight:300}
+    .event-card p{font-weight:300; margin:0 0 20px; flex:1}
+    .event-cta{align-self:flex-start}
   </style>
 </head>
 <body>
 <header>
   <div class="container nav">
     <a class="brand" href="index.html">
-      <img src="assets/img/Sonnige_Pinsel.jpg" alt="Logo Kunsttherapie Paderborn"/>
-      <div>Kunsttherapie Paderborn</div>
+      <span class="brand-eyebrow">atelier</span>
+      <span class="brand-name">Kunsttherapie <b>Paderborn</b></span>
     </a>
-    <nav>
+    <nav aria-label="Hauptnavigation">
       <ul>
         <li><a href="angebote.html">Angebote</a></li>
         <li><a href="ueber-mich.html">Über mich</a></li>
+        <li><a href="preise.html">Preise</a></li>
         <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
-        <li><a href="kontakt.html" class="nav-cta">Anfragen / Buchen</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Termin anfragen</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
 <main>
-  <section class="hero container">
-    <div class="card hero-left">
-      <div class="kicker">📅 Termine</div>
-      <h1>Events & Workshops</h1>
-      <p class="sub">
-        Kommende Events, Workshops und Gruppentherapien. Melde dich an und sei dabei!
-      </p>
-    </div>
-  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="kicker">termine</div>
+        <h1>Events &amp; Workshops</h1>
+        <p class="lead">Kommende Events, Workshops und Gruppentherapien. Melde dich an und sei dabei.</p>
+      </div>
 
-  <section class="section container">
-    <div id="eventsLoading" style="text-align: center; padding: 40px;">
-      <p style="color: var(--text-light); font-size: 1.1rem;">⏳ Termine werden geladen...</p>
-    </div>
-    <div id="eventsList" class="events-grid"></div>
-    <div id="eventsEmpty" style="display: none; text-align: center; padding: 40px;">
-      <p style="color: var(--text-light);">Momentan sind keine Events geplant.</p>
-      <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 10px;">Schreib uns gerne, wenn du Interesse an einem Workshop hast!</p>
+      <div id="eventsLoading" style="padding:30px 0; color:var(--muted)">Termine werden geladen …</div>
+      <div id="eventsList" class="events-grid"></div>
+      <div id="eventsEmpty" style="display:none; padding:30px 0; color:var(--muted)">
+        Momentan sind keine Events geplant. Schreib gern, wenn du Interesse an einem Workshop hast!
+      </div>
     </div>
   </section>
 </main>
 
 <footer class="footer">
   <div class="container">
-    <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:16px">
-      <div><strong>© <span id="y"></span> Kunsttherapie Paderborn</strong> – Martina Schwierzke</div>
-      <div style="display:flex; gap:12px; flex-wrap:wrap">
+    <div class="footer-grid">
+      <div>
+        <span class="brand-eyebrow" style="color:var(--accent-soft)">atelier</span>
+        <div class="brand-name" style="font-family:var(--display); font-size:1.5rem; margin:6px 0 14px">Kunsttherapie Paderborn</div>
+        <p style="color:#b6abb3; max-width:34ch">Kunsttherapie als Weg zu Ressourcen, Resilienz und innerer Kraft.</p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="angebote.html">Angebote</a></li>
+          <li><a href="ueber-mich.html">Über mich</a></li>
+          <li><a href="preise.html">Preise</a></li>
+          <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li>Otto-Stadler-Straße 23c</li>
+          <li>33102 Paderborn</li>
+          <li><a href="tel:+4952516690111">05251-690111</a></li>
+          <li><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© <span data-year></span> Kunsttherapie Paderborn – Martina Schwierzke</div>
+      <div>
         <a href="impressum.html">Impressum</a>
         <a href="datenschutz.html">Datenschutz</a>
         <a href="kontakt.html">Kontakt</a>
       </div>
     </div>
-    <p class="note" style="margin:0; text-align:center; font-size:0.9rem;">
-      🌻 Kunsttherapie als Weg zu Ressourcen, Resilienz & innerer Kraft
-    </p>
   </div>
 </footer>
 
+<script src="main.js"></script>
 <script>
 const API_URL = 'http://localhost:3000/api';
 
+function escapeHtml(s){return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
 async function loadEvents() {
+  const loading = document.getElementById('eventsLoading');
   try {
     const response = await fetch(`${API_URL}/events`);
     const events = await response.json();
+    loading.style.display = 'none';
 
-    document.getElementById('eventsLoading').style.display = 'none';
+    if (!events.length) { document.getElementById('eventsEmpty').style.display = 'block'; return; }
 
-    if (events.length === 0) {
-      document.getElementById('eventsEmpty').style.display = 'block';
-      return;
-    }
-
-    let html = '';
-    events.forEach(item => {
-      const date = new Date(item.date).toLocaleDateString('de-DE', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-
-      const imageHtml = item.image 
-        ? `<img src="${item.image}" alt="${item.title}" class="event-image"/>`
-        : `<div class="event-image" style="display: flex; align-items: center; justify-content: center;"><span style="color: var(--primary); font-size: 2.5rem;">📅</span></div>`;
-
+    document.getElementById('eventsList').innerHTML = events.map(item => {
+      const date = new Date(item.date).toLocaleDateString('de-DE', { year:'numeric', month:'long', day:'numeric' });
+      const image = item.image
+        ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" class="event-image"/>`
+        : `<div class="event-image" style="display:flex; align-items:center; justify-content:center; color:var(--accent); font-family:var(--display); font-size:1.4rem">atelier</div>`;
       const meta = [
-        `📅 ${date}`,
-        item.time ? `🕐 ${item.time}` : null,
-        item.location ? `📍 ${item.location}` : null,
-        item.capacity ? `👥 ${item.capacity} Plätze` : null
+        item.time ? `${escapeHtml(item.time)} Uhr` : null,
+        item.location ? escapeHtml(item.location) : null,
+        item.capacity ? `${escapeHtml(String(item.capacity))} Plätze` : null
       ].filter(Boolean);
-
-      html += `
-        <div class="event-card">
-          ${imageHtml}
-          <div class="event-content">
-            <div class="event-date">${date}</div>
-            <h3>${item.title}</h3>
-            <div class="event-meta">
-              ${meta.map(m => `<span>${m}</span>`).join('')}
-            </div>
-            <p>${item.description}</p>
-            <a href="kontakt.html" class="event-cta">📞 Anmelden</a>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById('eventsList').innerHTML = html;
+      return `<article class="event-card">${image}
+        <div class="event-content">
+          <div class="event-date">${date}</div>
+          <h3>${escapeHtml(item.title)}</h3>
+          <div class="event-meta">${meta.map(m=>`<span>${m}</span>`).join('')}</div>
+          <p>${escapeHtml(item.description || '')}</p>
+          <a href="kontakt.html" class="btn primary event-cta">Anmelden</a>
+        </div></article>`;
+    }).join('');
   } catch (err) {
-    document.getElementById('eventsLoading').innerHTML = `
-      <div style="color: var(--text-light); padding: 20px;">
-        <p>⚠️ Backend nicht erreichbar</p>
-        <p style="font-size: 0.9rem; margin-top: 10px;">Starte den CMS-Server:</p>
-        <code style="background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 5px;">cd kunsttherapie-cms && npm run dev</code>
-      </div>
-    `;
+    loading.innerHTML = '<p style="color:var(--muted)">Aktuell sind keine Termine verfügbar. Schau bald wieder vorbei.</p>';
     console.error('Events load error:', err);
   }
 }
-
 document.addEventListener('DOMContentLoaded', loadEvents);
-document.getElementById('y').textContent = new Date().getFullYear();
 </script>
-
 </body>
 </html>
