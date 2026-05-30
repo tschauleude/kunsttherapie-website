@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎨 Kunsttherapie Paderborn – Admin Panel</title>
+  <title>Kunsttherapie Paderborn – Admin Panel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Advent+Pro:wght@400;500;600;700&family=Poiret+One&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 <!-- LOGIN SCREEN -->
 <div class="login-container active" id="loginScreen">
   <div class="login-box">
-    <h1>🎨 Admin Panel</h1>
+    <h1>Admin Panel</h1>
     <div class="message" id="loginMessage"></div>
     <form id="loginForm" onsubmit="handleLogin(event)">
       <div class="form-group">
@@ -30,7 +30,7 @@
     </form>
     <p style="margin-top: 20px; text-align: center; color: #999; font-size: 0.9rem;">
       Standard: admin / admin123<br>
-      ⚠️ Nach dem Login Passwort ändern!
+      Nach dem Login Passwort ändern!
     </p>
   </div>
 </div>
@@ -39,11 +39,11 @@
 <div class="main-container" id="mainContainer">
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
-    <h2>🎨 Admin</h2>
-    <div class="nav-item active" onclick="switchSection('dashboard')">📊 Dashboard</div>
-    <div class="nav-item" onclick="switchSection('news')">📰 News</div>
-    <div class="nav-item" onclick="switchSection('events')">📅 Events</div>
-    <div class="nav-item" onclick="switchSection('services')">💜 Services</div>
+    <h2>Admin</h2>
+    <div class="nav-item active" onclick="switchSection('dashboard')">Dashboard</div>
+    <div class="nav-item" onclick="switchSection('news')">News</div>
+    <div class="nav-item" onclick="switchSection('events')">Events</div>
+    <div class="nav-item" onclick="switchSection('services')">Services</div>
     <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
   </div>
 
@@ -51,14 +51,14 @@
   <div class="content">
     <!-- DASHBOARD -->
     <section class="admin-section active" id="dashboard">
-      <h1>📊 Dashboard</h1>
+      <h1>Dashboard</h1>
       <div class="form-container">
         <p>Willkommen im Admin-Panel von Kunsttherapie Paderborn!</p>
         <p style="margin-top: 15px; color: #666;">
           Verwalte hier deine News, Events und Services. Alle Änderungen werden sofort auf der Website angezeigt.
         </p>
         <div class="stats-box">
-          <h3>📈 Übersicht</h3>
+          <h3>Übersicht</h3>
           <p>News: <strong id="newsCount">0</strong></p>
           <p>Events: <strong id="eventsCount">0</strong></p>
           <p>Services: <strong id="servicesCount">0</strong></p>
@@ -68,8 +68,8 @@
 
     <!-- NEWS SECTION -->
     <section class="admin-section" id="news">
-      <h1>📰 News & Updates</h1>
-      <button class="btn-add" onclick="openNewsForm()">➕ Neue News</button>
+      <h1>News & Updates</h1>
+      <button class="btn-add" onclick="openNewsForm()">Neue News</button>
       <div id="newsForm" class="form-container" style="display: none;">
         <h2>News bearbeiten</h2>
         <form onsubmit="saveNews(event)">
@@ -103,8 +103,8 @@
 
     <!-- EVENTS SECTION -->
     <section class="admin-section" id="events">
-      <h1>📅 Events & Termine</h1>
-      <button class="btn-add" onclick="openEventForm()">➕ Neuer Event</button>
+      <h1>Events & Termine</h1>
+      <button class="btn-add" onclick="openEventForm()">Neuer Event</button>
       <div id="eventForm" class="form-container" style="display: none;">
         <h2>Event bearbeiten</h2>
         <form onsubmit="saveEvent(event)">
@@ -158,8 +158,8 @@
 
     <!-- SERVICES SECTION -->
     <section class="admin-section" id="services">
-      <h1>💜 Services & Angebote</h1>
-      <button class="btn-add" onclick="openServiceForm()">➕ Neuer Service</button>
+      <h1>Services & Angebote</h1>
+      <button class="btn-add" onclick="openServiceForm()">Neuer Service</button>
       <div id="serviceForm" class="form-container" style="display: none;">
         <h2>Service bearbeiten</h2>
         <form onsubmit="saveService(event)">

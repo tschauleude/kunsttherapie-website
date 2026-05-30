@@ -331,7 +331,7 @@ summary{
 summary::-webkit-details-marker{display:none}
 
 summary::before{
-  content:"▶ ";
+  content:"";
   color:var(--accent);
   margin-right:8px;
   font-size:0.8em;
@@ -525,6 +525,17 @@ table.prices td{color:var(--text-light)}
   min-height: 280px;
   object-fit: cover;
   background: linear-gradient(135deg, rgba(237,94,227,.1), rgba(155,83,232,.08));
+}
+
+.news-image-placeholder,
+.event-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.25rem;
 }
 
 .news-content {

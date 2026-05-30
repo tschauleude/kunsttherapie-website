@@ -331,7 +331,7 @@ summary{
 summary::-webkit-details-marker{display:none}
 
 summary::before{
-  content:"▶ "; 
+  content:""; 
   color:var(--accent); 
   margin-right:8px; 
   font-size:0.8em;

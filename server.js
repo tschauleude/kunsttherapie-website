@@ -123,15 +123,15 @@ function initializeDatabase() {
           if (err) {
             console.error('Error creating default admin:', err);
           } else {
-            console.log('✅ Default admin created (username: admin, password: admin123)');
-            console.log('⚠️  WICHTIG: Bitte Passwort nach dem ersten Login ändern!');
+            console.log(' Default admin created (username: admin, password: admin123)');
+            console.log('  WICHTIG: Bitte Passwort nach dem ersten Login ändern!');
           }
         }
       );
     }
   });
 
-  console.log('✅ Database initialized');
+  console.log(' Database initialized');
 }
 
 // ============================================================================
@@ -549,7 +549,7 @@ app.get(/\.(pdf|jpg|jpeg|png|gif|webp)$/i, (req, res, next) => {
 if (require.main === module) {
 app.listen(PORT, () => {
   console.log(`\n╔════════════════════════════════════════╗`);
-  console.log(`║  🎨 Kunsttherapie CMS Backend       ║`);
+  console.log(`║   Kunsttherapie CMS Backend       ║`);
   console.log(`║  Server running on http://localhost:${PORT}      ║`);
   console.log(`║  Admin Panel: http://localhost:${PORT}/admin  ║`);
   console.log(`╚════════════════════════════════════════╝\n`);
