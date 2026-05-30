@@ -606,7 +606,12 @@
 </div>
 
 <script>
-const API_URL = 'http://localhost:3000/api';
+const API_URL = (() => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3000/api';
+  }
+  return `${window.location.origin}/api`;
+})();
 
 // ============================================================================
 // AUTH FUNCTIONS
@@ -672,8 +677,12 @@ function switchSection(sectionId) {
   if (sectionId === 'services') loadServicesList();
 }
 
-function showMessage(text, type, elementId) {
+function showMessage(text, type, elementId = 'loginMessage') {
   const msg = document.getElementById(elementId);
+  if (!msg) {
+    console[type === 'error' ? 'error' : 'log'](text);
+    return;
+  }
   msg.textContent = text;
   msg.className = `message ${type} active`;
   if (type === 'success') {

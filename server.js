@@ -326,6 +326,23 @@ app.get('/api/events', (req, res) => {
   );
 });
 
+// Get single event
+app.get('/api/events/:id', (req, res) => {
+  db.get(
+    `SELECT * FROM events WHERE id = ?`,
+    [req.params.id],
+    (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database error' });
+      }
+      if (!row) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      res.json(row);
+    }
+  );
+});
+
 // Get all events (admin)
 app.get('/api/admin/events', requireAuth, (req, res) => {
   db.all(
@@ -410,6 +427,23 @@ app.get('/api/services', (req, res) => {
         return res.status(500).json({ error: 'Database error' });
       }
       res.json(rows);
+    }
+  );
+});
+
+// Get single service
+app.get('/api/services/:id', (req, res) => {
+  db.get(
+    `SELECT * FROM services WHERE id = ?`,
+    [req.params.id],
+    (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database error' });
+      }
+      if (!row) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      res.json(row);
     }
   );
 });
