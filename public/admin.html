@@ -61,6 +61,7 @@
     <div class="nav-item active" onclick="switchSection('dashboard')">Übersicht</div>
     <div class="nav-item" onclick="switchSection('news')">Neuigkeiten</div>
     <div class="nav-item" onclick="switchSection('bookings')">Buchungen</div>
+    <div class="nav-item" onclick="switchSection('atelier')">Mini-Atelier</div>
     <div class="nav-item" onclick="switchSection('events')">Veranstaltungen</div>
     <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
     <p class="sidebar-links">
@@ -82,6 +83,7 @@
           <ul>
             <li><strong>Neuigkeiten</strong> – Texte und Fotos für die Seite „Aktuelles“</li>
             <li><strong>Buchungen</strong> – Online-Termine von Kunden, Zeiten blockieren, Google Kalender</li>
+            <li><strong>Mini-Atelier</strong> – Werke von der Website (anonym oder mit Namen)</li>
             <li><strong>Veranstaltungen</strong> – Workshops &amp; Termine auf der Events-Seite</li>
           </ul>
         </div>
@@ -89,6 +91,7 @@
           <h3>Zahlen</h3>
           <p>Neuigkeiten: <strong id="newsCount">0</strong></p>
           <p>Buchungen: <strong id="bookingsCount">0</strong></p>
+          <p>Mini-Atelier: <strong id="atelierCount">0</strong> neu</p>
           <p>Veranstaltungen: <strong id="eventsCount">0</strong></p>
         </div>
         <hr class="sep" style="margin:1.5rem 0"/>
@@ -204,6 +207,12 @@
 
       <h2 style="margin-top:2rem">Alle Buchungen</h2>
       <div id="bookingsList" class="items-list"></div>
+    </section>
+
+    <section class="admin-section" id="atelier">
+      <h1>Mini-Atelier</h1>
+      <p class="sub section-desc">Einsendungen von der Startseite – Martina kann sie als Impuls für Kunst oder als Start einer Sitzung nutzen.</p>
+      <div id="atelierList" class="items-list atelier-admin-list"></div>
     </section>
 
     <!-- EVENTS SECTION -->
@@ -420,6 +429,7 @@ function switchSection(sectionId) {
     loadBookingsList();
     loadGoogleStatus();
   }
+  if (sectionId === 'atelier') loadAtelierList();
   if (sectionId === 'events') loadEventsList();
 }
 
@@ -482,18 +492,21 @@ function toggleManualBlockFields() {
 
 async function loadDashboard() {
   try {
-    const [newsRes, bookingsRes, eventsRes] = await Promise.all([
+    const [newsRes, bookingsRes, eventsRes, atelierRes] = await Promise.all([
       fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/atelier`, { credentials: 'include' }),
     ]);
 
     const news = await newsRes.json();
     const bookings = await bookingsRes.json();
     const events = await eventsRes.json();
+    const atelier = atelierRes.ok ? await atelierRes.json() : [];
 
     document.getElementById('newsCount').textContent = news.length;
     document.getElementById('bookingsCount').textContent = bookings.filter((b) => b.status !== 'cancelled').length;
+    document.getElementById('atelierCount').textContent = atelier.filter((a) => a.status === 'new').length;
     document.getElementById('eventsCount').textContent = events.length;
   } catch (err) {
     console.error('Dashboard load error:', err);
@@ -1062,6 +1075,86 @@ async function deleteBooking(id) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+// ============================================================================
+// MINI-ATELIER
+// ============================================================================
+
+async function loadAtelierList() {
+  const list = document.getElementById('atelierList');
+  if (!list) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/atelier`, { credentials: 'include' });
+    const items = await res.json();
+    const statusLabels = { new: 'Neu', viewed: 'Gesehen', archived: 'Archiv' };
+    const html = items
+      .map((item) => {
+        const img = `/uploads/${item.image_path.replace(/\\/g, '/')}`;
+        const who = item.is_anonymous
+          ? 'Anonym'
+          : [item.submitter_name, item.submitter_email].filter(Boolean).join(' · ') || 'Mit Kontakt';
+        const date = new Date(item.createdAt).toLocaleString('de-DE');
+        return `
+          <div class="item-card atelier-admin-card">
+            <a href="${img}" target="_blank" rel="noopener" class="atelier-admin-thumb">
+              <img src="${img}" alt="Atelier-Werk #${item.id}" loading="lazy"/>
+            </a>
+            <div class="item-content">
+              <h3>#${item.id} · ${statusLabels[item.status] || item.status}</h3>
+              <p>${date}</p>
+              <p><strong>${who}</strong></p>
+              ${item.note ? `<p class="note">${item.note}</p>` : ''}
+              <div class="item-actions">
+                ${item.status === 'new' ? `<button class="btn-small btn-edit" onclick="setAtelierStatus(${item.id}, 'viewed')">Als gesehen</button>` : ''}
+                ${item.status !== 'archived' ? `<button class="btn-small" onclick="setAtelierStatus(${item.id}, 'archived')">Archiv</button>` : ''}
+                <a class="btn-small btn-edit" href="${img}" download>Werk laden</a>
+                <button class="btn-small btn-cancel" onclick="deleteAtelierSubmission(${item.id})">Löschen</button>
+              </div>
+            </div>
+          </div>`;
+      })
+      .join('');
+    list.innerHTML =
+      html || '<div style="padding:20px;text-align:center;color:#999">Noch keine Einsendungen</div>';
+  } catch (err) {
+    console.error('Atelier load error:', err);
+  }
+}
+
+async function setAtelierStatus(id, status) {
+  try {
+    const res = await fetch(`${API_URL}/admin/atelier/${id}`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    if (res.ok) {
+      showMessage('Status aktualisiert', 'success');
+      loadAtelierList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function deleteAtelierSubmission(id) {
+  if (!confirm('Einsendung wirklich löschen?')) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/atelier/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (res.ok) {
+      showMessage('Gelöscht', 'success');
+      loadAtelierList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
   checkAuthOnLoad();
   bindImagePreview('newsImageFile', 'newsImage', 'newsImagePreview');
   bindImagePreview('eventImageFile', 'eventImage', 'eventImagePreview');

@@ -23,7 +23,11 @@ if (IS_PRODUCTION) {
 
 // Ensure upload directory exists (Hostinger redeploy may wipe empty dirs)
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(PUBLIC_DIR, 'uploads');
+const ATELIER_DIR = path.join(UPLOAD_DIR, 'atelier');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+fs.mkdirSync(ATELIER_DIR, { recursive: true });
+
+const atelierSubmitCounts = new Map();
 
 const imageUpload = multer({
   storage: multer.diskStorage({
@@ -39,6 +43,24 @@ const imageUpload = multer({
       cb(null, true);
     } else {
       cb(new Error('Nur Bilder (JPG, PNG, GIF, WebP)'));
+    }
+  },
+});
+
+const atelierUpload = multer({
+  storage: multer.diskStorage({
+    destination: ATELIER_DIR,
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname).toLowerCase() || '.png';
+      cb(null, `atelier-${Date.now()}-${uuidv4().slice(0, 8)}${ext}`);
+    },
+  }),
+  limits: { fileSize: parseInt(process.env.ATELIER_MAX_FILE_SIZE || '8388608', 10) },
+  fileFilter: (req, file, cb) => {
+    if (/^image\/(jpeg|png|gif|webp)$/.test(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Nur Bilddateien erlaubt'));
     }
   },
 });
@@ -148,6 +170,19 @@ function initializeDatabase() {
       message TEXT,
       status TEXT DEFAULT 'pending',
       google_event_id TEXT,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS atelier_submissions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      image_path TEXT NOT NULL,
+      is_anonymous INTEGER DEFAULT 1,
+      submitter_name TEXT,
+      submitter_email TEXT,
+      note TEXT,
+      status TEXT DEFAULT 'new',
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
@@ -971,6 +1006,132 @@ app.post('/api/bookings', async (req, res) => {
   } catch (e) {
     console.error('booking create error:', e);
     res.status(500).json({ error: 'Buchung fehlgeschlagen' });
+  }
+});
+
+function atelierRateLimit(req) {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const hour = 60 * 60 * 1000;
+  let entry = atelierSubmitCounts.get(ip);
+  if (!entry || now - entry.start > hour) {
+    entry = { start: now, count: 0 };
+    atelierSubmitCounts.set(ip, entry);
+  }
+  entry.count += 1;
+  return entry.count <= parseInt(process.env.ATELIER_RATE_LIMIT || '8', 10);
+}
+
+app.post('/api/atelier/submit', (req, res) => {
+  if (!atelierRateLimit(req)) {
+    return res.status(429).json({ error: 'Zu viele Einsendungen – bitte später erneut versuchen.' });
+  }
+
+  atelierUpload.single('image')(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: 'Bitte ein fertiges Werk (Bild) mitsenden' });
+    }
+
+    const anonymous = req.body.anonymous === '1' || req.body.anonymous === 'true';
+    const name = (req.body.name || '').trim().slice(0, 120);
+    const emailAddr = (req.body.email || '').trim().slice(0, 200);
+    const note = (req.body.note || '').trim().slice(0, 2000);
+
+    if (!anonymous && !name && !emailAddr) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch {
+        /* ignore */
+      }
+      return res.status(400).json({
+        error: 'Bitte Name oder E-Mail angeben – oder anonym senden.',
+      });
+    }
+
+    if (emailAddr && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddr)) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch {
+        /* ignore */
+      }
+      return res.status(400).json({ error: 'Ungültige E-Mail-Adresse' });
+    }
+
+    const relPath = path.join('atelier', req.file.filename).replace(/\\/g, '/');
+
+    try {
+      const result = await dbRun(
+        `INSERT INTO atelier_submissions (image_path, is_anonymous, submitter_name, submitter_email, note, status)
+         VALUES (?, ?, ?, ?, ?, 'new')`,
+        [
+          relPath,
+          anonymous ? 1 : 0,
+          anonymous ? null : name || null,
+          anonymous ? null : emailAddr || null,
+          note || null,
+        ]
+      );
+
+      const row = await dbGet(`SELECT * FROM atelier_submissions WHERE id = ?`, [result.lastID]);
+
+      try {
+        await email.sendAtelierSubmissionNotice(row, publicBaseUrl(req));
+      } catch (mailErr) {
+        console.error('Atelier notify email failed:', mailErr.message);
+      }
+
+      res.json({
+        success: true,
+        id: row.id,
+        message:
+          'Vielen Dank! Dein Werk ist bei Martina eingegangen. Sie kann es vertraulich als Impuls nutzen.',
+      });
+    } catch (e) {
+      console.error('atelier submit:', e);
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch {
+        /* ignore */
+      }
+      res.status(500).json({ error: 'Einsendung konnte nicht gespeichert werden' });
+    }
+  });
+});
+
+app.get('/api/admin/atelier', requireAuth, (req, res) => {
+  db.all(`SELECT * FROM atelier_submissions ORDER BY createdAt DESC`, (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    res.json(rows);
+  });
+});
+
+app.patch('/api/admin/atelier/:id', requireAuth, async (req, res) => {
+  const { status } = req.body;
+  const allowed = ['new', 'viewed', 'archived'];
+  if (!allowed.includes(status)) {
+    return res.status(400).json({ error: 'Ungültiger Status' });
+  }
+  try {
+    await dbRun(`UPDATE atelier_submissions SET status = ? WHERE id = ?`, [status, req.params.id]);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Update fehlgeschlagen' });
+  }
+});
+
+app.delete('/api/admin/atelier/:id', requireAuth, async (req, res) => {
+  try {
+    const row = await dbGet(`SELECT * FROM atelier_submissions WHERE id = ?`, [req.params.id]);
+    if (!row) return res.status(404).json({ error: 'Nicht gefunden' });
+    const fullPath = path.join(UPLOAD_DIR, row.image_path);
+    if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+    await dbRun(`DELETE FROM atelier_submissions WHERE id = ?`, [req.params.id]);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Löschen fehlgeschlagen' });
   }
 });
 

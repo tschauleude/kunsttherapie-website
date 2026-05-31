@@ -137,18 +137,77 @@
   </section>
 
   <section id="atelier" class="section container">
-    <div class="card canvasWrap">
+    <div class="card canvasWrap" id="atelierApp" data-reveal-skip>
       <div class="kicker">Interaktiv</div>
       <h2>Mini-Atelier im Browser</h2>
-      <p class="sub">Zieh Linien, setz Farbe – es geht ums Entdecken, nicht um richtig oder falsch.</p>
-      <div class="canvasBar">
-        <label class="label" for="atelierColor">Farbe</label>
-        <input id="atelierColor" data-color type="color" value="#557a76"/>
-        <label class="label" for="atelierSize">Pinsel</label>
-        <input id="atelierSize" data-size type="range" min="2" max="18" value="8"/>
-        <button type="button" class="btn outline" data-clear>Leeren</button>
+      <p class="sub">Malen, Formen setzen, Fotos zur Kollage legen – und optional an Martina senden. Sie kann dein Werk als Impuls für ein eigenes Kunstwerk oder als Start einer Sitzung nutzen.</p>
+
+      <div class="atelier-toolbar" role="toolbar" aria-label="Werkzeuge">
+        <div class="atelier-tool-group">
+          <button type="button" class="atelier-tool active" data-tool="brush" aria-pressed="true" title="Pinsel">Pinsel</button>
+          <button type="button" class="atelier-tool" data-tool="line" aria-pressed="false" title="Linie">Linie</button>
+          <button type="button" class="atelier-tool" data-tool="rect" aria-pressed="false" title="Rechteck">Rechteck</button>
+          <button type="button" class="atelier-tool" data-tool="circle" aria-pressed="false" title="Kreis/Oval">Oval</button>
+          <button type="button" class="atelier-tool" data-tool="select" aria-pressed="false" title="Kollage verschieben">Verschieben</button>
+        </div>
+        <div class="atelier-tool-group atelier-options">
+          <label class="label" for="atelierColor">Farbe</label>
+          <input id="atelierColor" data-color type="color" value="#557a76"/>
+          <label class="label" for="atelierSize">Stärke</label>
+          <input id="atelierSize" data-size type="range" min="2" max="24" value="8"/>
+          <label class="atelier-check"><input type="checkbox" data-fill/> Fläche füllen</label>
+        </div>
+        <div class="atelier-tool-group">
+          <button type="button" class="btn outline btn-sm" data-undo disabled>Rückgängig</button>
+          <button type="button" class="btn outline btn-sm" data-redo disabled>Wiederholen</button>
+          <button type="button" class="btn outline btn-sm" data-save-draft>Speichern</button>
+          <button type="button" class="btn outline btn-sm" data-load-draft>Laden</button>
+          <button type="button" class="btn outline btn-sm" data-clear>Leeren</button>
+        </div>
       </div>
-      <canvas data-art role="img" aria-label="Mini-Atelier: Hier kannst du frei malen und experimentieren"></canvas>
+
+      <div class="atelier-collage-controls">
+        <label class="btn outline btn-sm atelier-upload-btn">
+          Bild hochladen (Kollage)
+          <input type="file" data-upload accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden/>
+        </label>
+        <button type="button" class="btn outline btn-sm" data-collage-smaller title="Ausgewähltes Bild verkleinern">−</button>
+        <button type="button" class="btn outline btn-sm" data-collage-bigger title="Ausgewähltes Bild vergrößern">+</button>
+        <button type="button" class="btn outline btn-sm" data-collage-remove>Bild entfernen</button>
+        <span class="note">Max. 6 Bilder · „Verschieben“ zum Positionieren</span>
+      </div>
+
+      <div class="atelier-canvas-wrap">
+        <canvas id="atelierCanvas" role="img" aria-label="Mini-Atelier: Zeichenfläche"></canvas>
+      </div>
+      <div class="atelier-collage-bar" data-collage-bar hidden></div>
+      <p class="atelier-status" data-atelier-status hidden role="status"></p>
+
+      <details class="atelier-submit-panel">
+        <summary>An Martina senden</summary>
+        <form class="atelier-submit-form" data-submit-form>
+          <p class="note">Dein Werk wird als Bild übermittelt. Martina nutzt es vertraulich – z.&nbsp;B. als Ausgangspunkt für Kunst oder eine Therapiesitzung.</p>
+          <label class="atelier-check">
+            <input type="checkbox" name="anonymous" checked/>
+            Anonym senden (ohne Name und E-Mail)
+          </label>
+          <div class="atelier-identity" data-identity-fields hidden>
+            <div class="form-row">
+              <label for="atelierName">Name</label>
+              <input id="atelierName" name="name" type="text" autocomplete="name"/>
+            </div>
+            <div class="form-row">
+              <label for="atelierEmail">E-Mail</label>
+              <input id="atelierEmail" name="email" type="email" autocomplete="email"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="atelierNote">Kurze Nachricht (optional)</label>
+            <textarea id="atelierNote" name="note" rows="3" maxlength="2000" placeholder="Was soll Martina wissen?"></textarea>
+          </div>
+          <button type="submit" class="btn primary">Werk absenden</button>
+        </form>
+      </details>
     </div>
   </section>
 
@@ -212,6 +271,7 @@
 <script src="assets/js/reveal.js"></script>
 <script src="assets/js/scroll-top.js"></script>
 <script src="assets/js/main.js"></script>
+<script src="assets/js/atelier.js"></script>
 <script src="assets/js/news.js"></script>
 </body>
 </html>

@@ -76,6 +76,34 @@
   z-index: 5;
 }
 
+.atelier-admin-card {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.atelier-admin-thumb {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(85, 122, 118, 0.2);
+}
+
+.atelier-admin-thumb img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 160px;
+  object-fit: cover;
+}
+
+@media (max-width: 600px) {
+  .atelier-admin-card {
+    grid-template-columns: 1fr;
+  }
+}
+
 .admin-app .main-container.active {
   display: grid;
   grid-template-columns: 250px 1fr;
