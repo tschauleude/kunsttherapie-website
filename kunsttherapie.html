@@ -3,10 +3,21 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Kunsttherapie – Angebote in Paderborn | Martina Schwierzke</title>
+  <title>Kunsttherapie & Angebote – Paderborn</title>
   <meta name="theme-color" content="#557a76"/>
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
-  <meta name="description" content="Kunsttherapie in Paderborn ab Juni: Gruppen, Auszeit am Abend, Teambuilding, Einzel. Otto-Stadler-Straße 23c. Termin online buchen."/>
+  <meta name="description" content="Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn."/>
+  
+  <link rel="canonical" href="https://kunsttherapie.mkmpb.de/kunsttherapie"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:locale" content="de_DE"/>
+  <meta property="og:site_name" content="Kunsttherapie Paderborn – Martina Schwierzke"/>
+  <meta property="og:title" content="Kunsttherapie & Angebote – Paderborn"/>
+  <meta property="og:description" content="Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn."/>
+  <meta property="og:url" content="https://kunsttherapie.mkmpb.de/kunsttherapie"/>
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:title" content="Kunsttherapie & Angebote – Paderborn"/>
+  <meta name="twitter:description" content="Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn."/>
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body class="page-kunsttherapie">
@@ -19,12 +30,12 @@
       </a>
       <nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
         <ul>
-          <li><a href="ueber-mich.html" data-nav="ansatz">Mein Ansatz</a></li>
-          <li><a href="kunsttherapie.html" data-nav="kunsttherapie">Kunsttherapie</a></li>
-          <li><a href="kunsttherapie.html#praxis" data-nav="praxis">Die Praxis</a></li>
-          <li><a href="neuigkeiten.html" data-nav="neuigkeiten">Neuigkeiten</a></li>
-          <li><a href="buchung.html" class="nav-cta" data-nav="termin">Termin</a></li>
-          <li><a href="kontakt.html" data-nav="kontakt">Kontakt</a></li>
+          <li><a href="ueber-mich.html" data-nav="ansatz" data-i18n="nav.ansatz">Mein Ansatz</a></li>
+          <li><a href="kunsttherapie.html" data-nav="kunsttherapie" data-i18n="nav.therapy">Kunsttherapie</a></li>
+          <li><a href="kunsttherapie.html#praxis" data-nav="praxis" data-i18n="nav.practice">Die Praxis</a></li>
+          <li><a href="neuigkeiten.html" data-nav="neuigkeiten" data-i18n="nav.news">Neuigkeiten</a></li>
+          <li><a href="buchung.html" class="nav-cta" data-nav="termin" data-i18n="nav.booking">Termin</a></li>
+          <li><a href="kontakt.html" data-nav="kontakt" data-i18n="nav.contact">Kontakt</a></li>
         </ul>
       </nav>
     </div>
@@ -33,19 +44,19 @@
 <main id="main">
   <section class="container section kt-hero">
     <div class="card hero-copy kt-hero-card">
-      <div class="kicker">Ab 1. Juni in Paderborn</div>
-      <h1>Kunst, die <span class="text-accent">trägt</span> – nicht nur schmückt</h1>
-      <p class="sub lead">
-        In meinem Atelier an der Otto-Stadler-Straße entsteht Raum zum Malen, Zeichnen und Gestalten – mit Anleitung, ohne Leistungsdruck.
-        Du entdeckst Ressourcen, die du schon in dir trägst.
+      <div class="kicker" data-i18n="kt.hero.kicker">Ab 1. Juni in Paderborn</div>
+      <h1 data-i18n-html="kt.hero.title">Kunst, die <span class="text-accent">trägt</span> – nicht nur schmückt</h1>
+      <p class="sub lead" data-i18n="kt.hero.sub">
+        Dienstag morgens und Donnerstag abends – zwei gleichwertige Wege in die Kunsttherapie. Für Privatpersonen, Unternehmen und klinische Einrichtungen.
       </p>
-      <ul class="kt-facts" aria-label="Auf einen Blick">
-        <li><span class="pill">Di</span> Vormittag · Gruppen &amp; Ton</li>
-        <li><span class="pill">Do</span> früher Abend · Auszeit &amp; Workshops</li>
-        <li><span class="pill">90 Min</span> · 4–12 Personen · ab 55&nbsp;€</li>
+      <p class="sub center kt-audience-line" data-i18n="kt.audience">Für dich privat · für Unternehmen · für Kliniken &amp; Einrichtungen</p>
+      <ul class="kt-facts kt-facts--center" aria-label="Auf einen Blick">
+        <li><span class="pill">Di</span> <span data-i18n="kt.facts.di">Dienstag morgens · Gruppen &amp; Therapie</span></li>
+        <li><span class="pill">Do</span> <span data-i18n="kt.facts.do">Donnerstag abends · Auszeit &amp; Workshops</span></li>
+        <li><span class="pill">90 Min</span> <span data-i18n="kt.facts.meta">· 4–12 Personen · ab 55&nbsp;€</span></li>
       </ul>
       <div class="actions">
-        <a class="btn primary" href="buchung.html">Termin buchen</a>
+        <a class="btn primary" href="buchung.html" data-i18n="btn.book">Termin buchen</a>
         <a class="btn outline" href="kontakt.html">Anfrage stellen</a>
       </div>
     </div>
@@ -54,103 +65,48 @@
   <section class="container section" id="angebote">
     <div class="section-intro center">
       <div class="kicker">Formate</div>
-      <h2>Was passt zu dir?</h2>
-      <p class="sub center">Kurz erklärt – Details per Klick. Jedes Format hat seinen eigenen Rhythmus.</p>
+      <h2 data-i18n="kt.offers.title">Was passt zu dir?</h2>
+      <p class="sub center" data-i18n="kt.offers.sub">Vier Angebote – ausführliche Beschreibung per Klick.</p>
     </div>
 
-    <div class="kt-offers">
+    <div class="kt-offers kt-offers--four">
       <article class="kt-offer card" data-offer>
         <div class="kt-offer-head">
-          <span class="kt-offer-tag">Gruppe</span>
-          <h3>Kunstgruppentherapie</h3>
-          <p class="kt-offer-teaser">90 Minuten, 4–12 Menschen – Ressourcen finden, wenn Worte nicht reichen.</p>
-          <button type="button" class="btn outline kt-toggle" aria-expanded="false">Mehr erfahren</button>
+          <h3 data-i18n="offer.1.title">Kunstgruppentherapie</h3>
+          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
-        <div class="kt-offer-body" hidden>
-          <p>
-            In der Gruppe entsteht ein geschützter Rahmen für Krankheitsakzeptanz, Integration und neue Perspektiven.
-            Begleitetes Malen, Collagen, Zeichnen – mit Acryl, Gouache und Kreide. Tonarbeiten am Dienstagvormittag.
-          </p>
-          <p class="note">Üblicherweise 4 Einheiten · Materialien inklusive · Einzelsitzungen nach Vereinbarung möglich</p>
-          <p class="note">Erfahrung u.&nbsp;a. im MZG und Brüderkrankenhaus – jetzt in eigener Praxis.</p>
+        <div class="kt-offer-body" hidden data-i18n-html="offer.1.body">
+          <p><strong>Dienstag morgens.</strong> In der Gruppe entsteht ein geschützter Rahmen …</p>
         </div>
       </article>
 
       <article class="kt-offer card" data-offer>
         <div class="kt-offer-head">
-          <span class="kt-offer-tag">Abend</span>
-          <h3>Auszeit am frühen Abend</h3>
-          <p class="kt-offer-teaser">Feierabend-Feeling, Tee, entspanntes Gestalten – für alle, die einfach mal abschalten wollen.</p>
-          <button type="button" class="btn outline kt-toggle" aria-expanded="false">Mehr erfahren</button>
+          <h3 data-i18n="offer.2.title">Auszeit</h3>
+          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
-        <div class="kt-offer-body" hidden>
-          <p>
-            Recreational und einladend: Malen und Zeichnen unter Anleitung, ohne therapeutischen Druck.
-            Viele sagen danach: „Hätte nie gedacht, dass ich das Bild so gut hinbekomme.“
-          </p>
-          <p><strong>Donnerstag, früher Abend</strong> – auch mit Familie oder Freunden buchbar.</p>
+        <div class="kt-offer-body" hidden data-i18n-html="offer.2.body">
+          <p><strong>Donnerstag abends.</strong> Entspanntes Gestalten …</p>
         </div>
       </article>
 
       <article class="kt-offer card" data-offer>
         <div class="kt-offer-head">
-          <span class="kt-offer-tag">Team</span>
-          <h3>Teambuilding-Events</h3>
-          <p class="kt-offer-teaser">Kolleginnen und Kollegen neu erleben – ein Gemeinschaftswerk statt Einzelkämpfer.</p>
-          <button type="button" class="btn outline kt-toggle" aria-expanded="false">Mehr erfahren</button>
+          <h3 data-i18n="offer.3.title">Einzelsitzungen</h3>
+          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
-        <div class="kt-offer-body" hidden>
-          <p>
-            Ihr malt nicht „über die Linien“, sondern an einem gemeinsamen Kunstwerk – spielerische Regeln, echte Verbindung.
-            Ideal für Unternehmen, die Zusammenarbeit kreativ stärken wollen.
-          </p>
-          <p class="note">Dauer und Preis nach Absprache – Konzept und Material inklusive.</p>
+        <div class="kt-offer-body" hidden data-i18n-html="offer.3.body">
+          <p>Intensiv und persönlich …</p>
         </div>
       </article>
 
       <article class="kt-offer card" data-offer>
         <div class="kt-offer-head">
-          <span class="kt-offer-tag">Morgen</span>
-          <h3>Gruppen &amp; Senioren</h3>
-          <p class="kt-offer-teaser">Professionelles Setting am Vormittag – auch draußen möglich.</p>
-          <button type="button" class="btn outline kt-toggle" aria-expanded="false">Mehr erfahren</button>
+          <h3 data-i18n="offer.4.title">Unternehmen, Kliniken &amp; Einrichtungen</h3>
+          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
-        <div class="kt-offer-body" hidden>
-          <p>
-            <strong>Dienstagvormittag:</strong> strukturierte Kunsttherapie-Gruppen, u.&nbsp;a. mit Ton.
-            Lassen Sie sich von Ihrem eigenen Talent überraschen – innere Mitte finden, sich neu entdecken.
-          </p>
-          <p class="note">Mindestens 4, maximal 12 Teilnehmende pro Einheit.</p>
-        </div>
-      </article>
-
-      <article class="kt-offer card" data-offer>
-        <div class="kt-offer-head">
-          <span class="kt-offer-tag">Einzel</span>
-          <h3>Einzelsitzungen</h3>
-          <p class="kt-offer-teaser">Intensiv und persönlich – in Krisen, Trauer oder Krankheitsverarbeitung.</p>
-          <button type="button" class="btn outline kt-toggle" aria-expanded="false">Mehr erfahren</button>
-        </div>
-        <div class="kt-offer-body" hidden>
-          <p>
-            Psychosoziale und klinische Kunsttherapie, individuell auf deine Situation abgestimmt.
-            Termine nach Vereinbarung – Preis auf Anfrage.
-          </p>
-        </div>
-      </article>
-
-      <article class="kt-offer card" data-offer>
-        <div class="kt-offer-head">
-          <span class="kt-offer-tag">Spezial</span>
-          <h3>Palliativ &amp; Vorträge</h3>
-          <p class="kt-offer-teaser">Begleitung in sensiblen Settings – und Impulse für Veranstaltungen.</p>
-          <button type="button" class="btn outline kt-toggle" aria-expanded="false">Mehr erfahren</button>
-        </div>
-        <div class="kt-offer-body" hidden>
-          <p>
-            Palliative Kunsttherapie aus langjähriger Klinikerfahrung. Vorträge über Wirkung und Praxis der Kunsttherapie –
-            für Einrichtungen, Teams oder interessierte Gruppen.
-          </p>
+        <div class="kt-offer-body" hidden data-i18n-html="offer.4.body">
+          <p>Für Teams und Organisationen …</p>
         </div>
       </article>
     </div>
@@ -185,8 +141,9 @@
         <summary>Materialien &amp; Methoden</summary>
         <div class="inner">
           <p>
-            Begleitetes Malen, Collagen erstellen, Zeichnen mit Acryl, Gouache und Kreide; Tonarbeiten am Dienstagvormittag.
-            Kunstworkshops und thematische Abendreihen nach Absprache.
+            Begleitetes Malen, Collagen erstellen, Zeichnen mit Acryl, Gouache und Kreide.
+            Regelmäßige Gruppen <strong>Dienstag morgens</strong>, Auszeit und Workshops <strong>Donnerstag abends</strong>.
+            Kunstworkshops nach Absprache – z.&nbsp;B. Donnerstag abends.
           </p>
         </div>
       </details>
@@ -220,15 +177,16 @@
         <p>
           Die Praxis ist ein <strong>angemieteter Raum</strong> – kein improvisiertes Zimmer, sondern ein bewusst gewählter
           Ort für Kunsttherapie, Gruppen und Auszeiten. Martina richtet den Raum so ein, dass du dich schnell geborgen fühlst:
-          Platz zum Malen, für Gespräche dazwischen, für Ton am Dienstag und für entspannte Abende am Donnerstag.
+          Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag morgens</strong> für Gruppen,
+          <strong>Donnerstag abends</strong> für Auszeit und Workshops.
         </p>
         <p>
           <strong>Was du erwarten kannst:</strong> helle, ruhige Atmosphäre, Materialien vor Ort, kleine Gruppen,
           klare Struktur ohne Leistungsdruck. Parken und Anreise mit ÖPNV sind unkompliziert – Details zur Anfahrt findest du unten.
         </p>
         <ul class="kt-schedule">
-          <li><strong>Dienstag</strong> · Vormittag · Gruppentherapie, Ton, professionelles Setting</li>
-          <li><strong>Donnerstag</strong> · früher Abend · Auszeit, Malabende, Workshops, Teambuilding</li>
+          <li><strong>Dienstag morgens</strong> · Gruppentherapie, professionelles Setting</li>
+          <li><strong>Donnerstag abends</strong> · Auszeit, Workshops, Teambuilding</li>
         </ul>
         <div class="actions">
           <a class="btn primary" href="buchung.html">Online-Termin wählen</a>
@@ -252,7 +210,7 @@
       </div>
       <div class="card kt-praxis-highlight">
         <h3>Ab Juni 2026</h3>
-        <p>Regelmäßige Zeiten Di vormittags und Do abends – Termine online oder per Anfrage.</p>
+        <p>Regelmäßig <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> – Termine online oder per Anfrage.</p>
       </div>
     </div>
 
@@ -341,7 +299,10 @@
     </div>
   </footer>
 
-<script src="assets/js/consent.js"></script>
+<script src="assets/js/i18n-messages.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/seo.js"></script>
+  <script src="assets/js/consent.js"></script>
   <script src="assets/js/accessibility.js"></script>
   <script src="assets/js/site.js"></script>
 <script src="assets/js/reveal.js"></script>

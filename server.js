@@ -1392,6 +1392,7 @@ const SITE_PAGES = [
   'preise',
   'kontakt',
   'buchung',
+  'atelier',
   'impressum',
   'datenschutz'
 ];
@@ -1403,6 +1404,18 @@ function sendPage(res, name) {
   }
   return res.sendFile(file);
 }
+
+app.get('/robots.txt', (req, res) => {
+  const file = path.join(ROOT, 'robots.txt');
+  if (fs.existsSync(file)) return res.type('text/plain').sendFile(file);
+  res.type('text/plain').send('User-agent: *\nAllow: /\n');
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  const file = path.join(ROOT, 'sitemap.xml');
+  if (fs.existsSync(file)) return res.type('application/xml').sendFile(file);
+  res.status(404).send('Not found');
+});
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'kunsttherapie-cms' });

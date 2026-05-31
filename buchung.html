@@ -6,7 +6,18 @@
   <title>Termin buchen – Kunsttherapie Paderborn</title>
   <meta name="theme-color" content="#557a76"/>
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
-  <meta name="description" content="Online-Terminbuchung für Kunsttherapie in Paderborn. Freie Zeiten im Kalender wählen – ausgebuchte Termine sind nicht verfügbar."/>
+  <meta name="description" content="Online-Termin anfragen: Dienstag morgens und Donnerstag abends. Freie Zeiten im Kalender – Bestätigung per E-Mail."/>
+  
+  <link rel="canonical" href="https://kunsttherapie.mkmpb.de/buchung"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:locale" content="de_DE"/>
+  <meta property="og:site_name" content="Kunsttherapie Paderborn – Martina Schwierzke"/>
+  <meta property="og:title" content="Termin buchen – Kunsttherapie Paderborn"/>
+  <meta property="og:description" content="Online-Termin anfragen: Dienstag morgens und Donnerstag abends. Freie Zeiten im Kalender – Bestätigung per E-Mail."/>
+  <meta property="og:url" content="https://kunsttherapie.mkmpb.de/buchung"/>
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:title" content="Termin buchen – Kunsttherapie Paderborn"/>
+  <meta name="twitter:description" content="Online-Termin anfragen: Dienstag morgens und Donnerstag abends. Freie Zeiten im Kalender – Bestätigung per E-Mail."/>
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
@@ -34,7 +45,7 @@
   <div class="section-intro center page-hero">
     <div class="kicker">Terminbuchung</div>
     <h1>Kennenlernen oder Sitzung buchen</h1>
-    <p class="sub center">Nur <strong>Dienstag vormittags</strong> und <strong>Donnerstag abends</strong> sind buchbar (grüne Tage). Deine Anfrage geht an Martina – sie bestätigt den Termin per E-Mail. Danach kannst du ihn in Apple- oder Google-Kalender speichern.</p>
+    <p class="sub center">Nur <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> sind buchbar (grüne Tage). Deine Anfrage geht an Martina – sie bestätigt den Termin per E-Mail. Danach kannst du ihn in Apple- oder Google-Kalender speichern.</p>
   </div>
 
   <div class="booking-layout" data-reveal-skip>
@@ -59,7 +70,7 @@
     <div class="card booking-slots-panel">
       <h2 id="selectedDayLabel">Bitte einen Tag wählen</h2>
       <div id="slotsList" class="slots-list"></div>
-      <p id="slotsHint" class="sub" style="margin-top:1rem">Nur <strong>Dienstag vormittags</strong> und <strong>Donnerstag am frühen Abend</strong> – Termine à 90 Minuten.</p>
+      <p id="slotsHint" class="sub" style="margin-top:1rem">Nur <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> – Termine à 90 Minuten.</p>
     </div>
   </div>
 
@@ -77,7 +88,7 @@
       <input type="tel" id="bookPhone" name="phone" autocomplete="tel"/>
 
       <label for="bookMessage">Nachricht (optional)</label>
-      <textarea id="bookMessage" name="message" rows="4" placeholder="z.B. Erstgespräch, Gruppe, Auszeit am Abend …"></textarea>
+      <textarea id="bookMessage" name="message" rows="4" placeholder="z.B. Erstgespräch, Gruppe Dienstag morgens, Auszeit Donnerstag abends …"></textarea>
 
       <input type="hidden" id="bookDate" name="date"/>
       <input type="hidden" id="bookStart" name="startTime"/>
@@ -128,7 +139,8 @@
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 </script>
-<script src="assets/js/consent.js"></script>
+<script src="assets/js/seo.js"></script>
+  <script src="assets/js/consent.js"></script>
   <script src="assets/js/accessibility.js"></script>
   <script src="assets/js/site.js"></script>
 <script src="assets/js/reveal.js"></script>

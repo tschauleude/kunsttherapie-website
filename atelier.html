@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Mini-Atelier – Kunsttherapie Paderborn</title>
+  <meta name="description" content="Probier dich aus: Mini-Atelier zum Malen, Zeichnen und Kollage – optional anonym an Martina senden."/>
+  <meta name="theme-color" content="#557a76"/>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
+  <link rel="canonical" href="https://kunsttherapie.mkmpb.de/atelier"/>
+  <link rel="alternate" hreflang="de" href="https://kunsttherapie.mkmpb.de/atelier"/>
+  <link rel="alternate" hreflang="en" href="https://kunsttherapie.mkmpb.de/atelier"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body class="page-atelier">
+  <a class="skip-link" href="#main" data-i18n="a11y.skip">Zum Inhalt springen</a>
+  <header>
+    <div class="container header-inner">
+      <a class="brand logo-text" href="index.html">
+        <span class="name">Martina Schwierzke</span>
+        <span class="title" data-i18n="brand.subtitle">Kunsttherapie Paderborn</span>
+      </a>
+      <nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
+        <ul>
+          <li><a href="ueber-mich.html" data-nav="ansatz" data-i18n="nav.ansatz">Mein Ansatz</a></li>
+          <li><a href="kunsttherapie.html" data-nav="kunsttherapie" data-i18n="nav.therapy">Kunsttherapie</a></li>
+          <li><a href="kunsttherapie.html#praxis" data-nav="praxis" data-i18n="nav.practice">Die Praxis</a></li>
+          <li><a href="neuigkeiten.html" data-nav="neuigkeiten" data-i18n="nav.news">Neuigkeiten</a></li>
+          <li><a href="buchung.html" class="nav-cta" data-nav="termin" data-i18n="nav.booking">Termin</a></li>
+          <li><a href="kontakt.html" data-nav="kontakt" data-i18n="nav.contact">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<main id="main" class="container section">
+  <div class="card canvasWrap" id="atelierApp" data-reveal-skip>
+    <div class="kicker" data-i18n="atelier.kicker">Probier's aus</div>
+    <h1 data-i18n="atelier.title">Mini-Atelier – <span class="text-accent">einfach loslegen</span></h1>
+    <p class="atelier-invite" data-i18n="atelier.intro">Malen, Linien und Formen setzen, Fotos zur Kollage legen. Es geht ums Ausprobieren – nichts muss „schön“ werden. Wenn du magst, schickst du dein Werk später an Martina.</p>
+
+    <div class="atelier-canvas-wrap">
+      <canvas id="atelierCanvas" role="img" aria-label="Mini-Atelier Zeichenfläche"></canvas>
+      <p class="atelier-canvas-hint" aria-hidden="true" data-i18n="atelier.hint">Hier starten …</p>
+    </div>
+    <div class="atelier-collage-bar" data-collage-bar hidden></div>
+    <p class="atelier-status" data-atelier-status hidden role="status"></p>
+
+    <p class="atelier-tools-label" data-i18n="atelier.tools">Werkzeuge</p>
+    <div class="atelier-toolbar" role="toolbar" aria-label="Werkzeuge">
+      <div class="atelier-tool-group">
+        <button type="button" class="atelier-tool active" data-tool="brush" aria-pressed="true" data-i18n="atelier.tool.brush">Pinsel</button>
+        <button type="button" class="atelier-tool" data-tool="line" aria-pressed="false" data-i18n="atelier.tool.line">Linie</button>
+        <button type="button" class="atelier-tool" data-tool="rect" aria-pressed="false" data-i18n="atelier.tool.rect">Rechteck</button>
+        <button type="button" class="atelier-tool" data-tool="circle" aria-pressed="false" data-i18n="atelier.tool.circle">Oval</button>
+        <button type="button" class="atelier-tool" data-tool="select" aria-pressed="false" data-i18n="atelier.tool.move">Verschieben</button>
+      </div>
+      <div class="atelier-tool-group atelier-options">
+        <label class="label" for="atelierColor" data-i18n="atelier.color">Farbe</label>
+        <input id="atelierColor" data-color type="color" value="#557a76"/>
+        <label class="label" for="atelierSize" data-i18n="atelier.size">Stärke</label>
+        <input id="atelierSize" data-size type="range" min="2" max="24" value="8"/>
+        <label class="atelier-check"><input type="checkbox" data-fill/> <span data-i18n="atelier.fill">Fläche füllen</span></label>
+      </div>
+      <div class="atelier-tool-group">
+        <button type="button" class="btn outline btn-sm" data-undo disabled data-i18n="atelier.undo">Rückgängig</button>
+        <button type="button" class="btn outline btn-sm" data-redo disabled data-i18n="atelier.redo">Wiederholen</button>
+        <button type="button" class="btn outline btn-sm" data-save-draft data-i18n="atelier.save">Speichern</button>
+        <button type="button" class="btn outline btn-sm" data-load-draft data-i18n="atelier.load">Laden</button>
+        <button type="button" class="btn outline btn-sm" data-clear data-i18n="atelier.clear">Leeren</button>
+      </div>
+    </div>
+
+    <div class="atelier-collage-controls">
+      <label class="btn outline btn-sm atelier-upload-btn">
+        <span data-i18n="atelier.upload">Bild hochladen (Kollage)</span>
+        <input type="file" data-upload accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden/>
+      </label>
+      <button type="button" class="btn outline btn-sm" data-collage-smaller>−</button>
+      <button type="button" class="btn outline btn-sm" data-collage-bigger>+</button>
+      <button type="button" class="btn outline btn-sm" data-collage-remove data-i18n="atelier.remove">Bild entfernen</button>
+    </div>
+
+    <details class="atelier-submit-panel">
+      <summary data-i18n="atelier.send">An Martina senden</summary>
+      <form class="atelier-submit-form" data-submit-form>
+        <p class="note" data-i18n="atelier.sendNote">Dein Werk wird als Bild übermittelt. Martina nutzt es vertraulich.</p>
+        <label class="atelier-check">
+          <input type="checkbox" name="anonymous" checked/>
+          <span data-i18n="atelier.anonymous">Anonym senden</span>
+        </label>
+        <div class="atelier-identity" data-identity-fields hidden>
+          <div class="form-row">
+            <label for="atelierName" data-i18n="form.name">Name</label>
+            <input id="atelierName" name="name" type="text" autocomplete="name"/>
+          </div>
+          <div class="form-row">
+            <label for="atelierEmail" data-i18n="form.email">E-Mail</label>
+            <input id="atelierEmail" name="email" type="email" autocomplete="email"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="atelierNote" data-i18n="form.message">Nachricht (optional)</label>
+          <textarea id="atelierNote" name="note" rows="3" maxlength="2000"></textarea>
+        </div>
+        <button type="submit" class="btn primary" data-i18n="atelier.submit">Werk absenden</button>
+      </form>
+    </details>
+
+    <p class="note" style="margin-top:1.5rem">
+      <a href="kunsttherapie.html" data-i18n="atelier.back">Zurück zu Kunsttherapie &amp; Angeboten</a>
+    </p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-col">
+      <h4 data-i18n="footer.practice">Praxis</h4>
+      <p><strong>Martina Schwierzke</strong></p>
+      <p data-i18n="footer.role">Psychosoziale &amp; Klinische Kunsttherapeutin</p>
+      <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer.contact">Kontakt</h4>
+      <p><a href="tel:+495251690111">Tel. 05251-690111</a></p>
+      <p><a href="tel:+491704790790">Mobil 0170-4790790</a></p>
+      <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer.offer">Angebot</h4>
+      <a href="kunsttherapie.html" data-i18n="nav.therapy">Kunsttherapie</a>
+      <a href="atelier.html" data-i18n="nav.atelier">Mini-Atelier</a>
+      <a href="buchung.html" data-i18n="nav.booking">Termin buchen</a>
+      <a href="preise.html" data-i18n="footer.prices">Preise</a>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer.legal">Rechtliches</h4>
+      <a href="impressum.html" data-i18n="footer.imprint">Impressum</a>
+      <a href="datenschutz.html" data-i18n="footer.privacy">Datenschutz</a>
+    </div>
+  </div>
+  <div class="container legal-footer">
+    &copy; <span id="y"></span> Martina Schwierzke · Kunsttherapie Paderborn
+  </div>
+</footer>
+
+<script src="assets/js/i18n-messages.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/seo.js"></script>
+<script src="assets/js/consent.js"></script>
+<script src="assets/js/accessibility.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/atelier.js"></script>
+</body>
+</html>
