@@ -1679,30 +1679,37 @@ body.consent-settings-open {
 
 .kt-offers {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+  gap: 0.85rem;
   align-items: stretch;
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (min-width: 640px) {
   .kt-offers {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
   .kt-offers {
     grid-template-columns: repeat(3, 1fr);
+    max-width: none;
   }
 }
 
 .kt-offers .kt-offer.is-open { border-color: #557a76; }
 
+.page-kunsttherapie .kt-offer.card {
+  padding: 1.1rem 1.2rem;
+}
+
 .kt-offer {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 100%;
   transition: border-color 0.35s, box-shadow 0.35s;
   border: 2px solid transparent;
 }
@@ -1710,15 +1717,9 @@ body.consent-settings-open {
 .kt-offer-head {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 11.5rem;
-}
-
-.kt-offer-teaser {
-  flex: 1;
-  margin: 0 0 1rem;
-  color: var(--text-light);
-  line-height: 1.55;
+  flex: 0 0 auto;
+  gap: 0.65rem;
+  min-height: 4.75rem;
 }
 
 .kt-offer-head .kt-toggle {
@@ -1727,24 +1728,28 @@ body.consent-settings-open {
 }
 
 .kt-offer.is-open {
-  box-shadow: 0 16px 40px rgba(85, 122, 118, 0.15);
-}
-
-.kt-offer-tag {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-pill);
-  background: rgba(85, 122, 118, 0.2);
-  color: var(--color-teal-dark);
-  margin-bottom: 0.5rem;
+  box-shadow: 0 12px 32px rgba(85, 122, 118, 0.12);
 }
 
 .kt-offer h3 {
-  margin: 0 0 0.5rem;
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.35;
+  color: var(--color-teal-dark);
+}
+
+.kt-offer-body {
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(85, 122, 118, 0.15);
+  margin-top: 0.65rem;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-main);
+  animation: ktReveal 0.35s ease;
+}
+
+.kt-offer-body .note {
+  margin-top: 0.65rem;
 }
 
 .kt-praxis-grid {
@@ -1817,13 +1822,6 @@ body.consent-settings-open {
 
 .kt-location-grid {
   align-items: stretch;
-}
-
-.kt-offer-body {
-  padding-top: 1rem;
-  border-top: 1px solid rgba(85, 122, 118, 0.15);
-  margin-top: 0.5rem;
-  animation: ktReveal 0.35s ease;
 }
 
 @keyframes ktReveal {
