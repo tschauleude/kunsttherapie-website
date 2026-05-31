@@ -942,49 +942,31 @@ app.post('/api/bookings', async (req, res) => {
 
     const result = await dbRun(
       `INSERT INTO bookings (name, email, phone, date, start_time, end_time, message, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed')`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')`,
       [name.trim(), email.trim(), phone ? phone.trim() : null, date, slot.start, slot.end, message ? message.trim() : null]
     );
 
     const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
-    const baseUrl = publicBaseUrl(req);
-    const calendarLinks = ical.buildCalendarLinks(row, baseUrl);
 
     let emailSent = false;
     try {
-      const emailResult = await email.sendBookingEmails(row, baseUrl);
+      const emailResult = await email.sendBookingRequestEmails(row);
       emailSent = Boolean(emailResult.sent);
     } catch (mailErr) {
-      console.error('Booking email failed:', mailErr.message);
+      console.error('Booking request email failed:', mailErr.message);
     }
-
-    getGoogleRefreshToken(async (err, token) => {
-      if (!err && token) {
-        try {
-          const googleEventId = await googleCalendar.createCalendarEvent(token, row);
-          if (googleEventId) {
-            await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [
-              googleEventId,
-              row.id,
-            ]);
-          }
-        } catch (e) {
-          console.error('Google event create failed:', e.message);
-        }
-      }
-    });
 
     res.json({
       success: true,
       id: row.id,
+      status: 'pending',
       date: row.date,
       startTime: row.start_time,
       endTime: row.end_time,
-      calendarLinks,
       emailSent,
       message: emailSent
-        ? 'Termin bestätigt! Du erhältst in Kürze eine E-Mail – darin kannst du den Termin in Apple- oder Google-Kalender speichern.'
-        : 'Termin gespeichert! Füge ihn über die Kalender-Buttons unten in Apple oder Google ein.',
+        ? 'Anfrage eingegangen! Martina bestätigt deinen Termin per E-Mail – danach kannst du ihn in deinen Kalender übernehmen.'
+        : 'Anfrage gespeichert! Martina meldet sich zur Bestätigung bei dir.',
     });
   } catch (e) {
     console.error('booking create error:', e);
@@ -1098,6 +1080,34 @@ app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {
     if (!row) return res.status(404).json({ error: 'Nicht gefunden' });
 
     await dbRun(`UPDATE bookings SET status = ? WHERE id = ?`, [status, req.params.id]);
+    const updated = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [req.params.id]);
+
+    if (status === 'confirmed' && row.status !== 'confirmed') {
+      const baseUrl = publicBaseUrl(req);
+      try {
+        await email.sendBookingEmails(updated, baseUrl);
+      } catch (mailErr) {
+        console.error('Booking confirmation email failed:', mailErr.message);
+      }
+
+      if (!updated.google_event_id) {
+        getGoogleRefreshToken(async (err, token) => {
+          if (!err && token) {
+            try {
+              const googleEventId = await googleCalendar.createCalendarEvent(token, updated);
+              if (googleEventId) {
+                await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [
+                  googleEventId,
+                  updated.id,
+                ]);
+              }
+            } catch (e) {
+              console.error('Google event create failed:', e.message);
+            }
+          }
+        });
+      }
+    }
 
     if (status === 'cancelled' && row.google_event_id) {
       getGoogleRefreshToken(async (err, token) => {
@@ -1111,7 +1121,13 @@ app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {
       });
     }
 
-    res.json({ success: true, message: 'Buchung aktualisiert' });
+    res.json({
+      success: true,
+      message:
+        status === 'confirmed' && row.status !== 'confirmed'
+          ? 'Termin bestätigt – Bestätigungs-E-Mail wurde versendet.'
+          : 'Buchung aktualisiert',
+    });
   } catch (e) {
     res.status(500).json({ error: 'Update fehlgeschlagen' });
   }

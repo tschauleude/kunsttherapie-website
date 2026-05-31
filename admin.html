@@ -980,7 +980,8 @@ async function confirmBooking(id) {
       body: JSON.stringify({ status: 'confirmed' }),
     });
     if (response.ok) {
-      showMessage('Termin bestätigt', 'success');
+      const data = await response.json().catch(() => ({}));
+      showMessage(data.message || 'Termin bestätigt', 'success');
       loadBookingsList();
       loadDashboard();
     }

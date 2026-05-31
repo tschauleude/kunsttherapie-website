@@ -1349,6 +1349,11 @@ body.consent-settings-open {
 /* === KUNSTTHERAPIE LANDING === */
 .page-kunsttherapie .kt-hero {
   padding-top: 2rem;
+  padding-bottom: 1rem;
+}
+
+.page-kunsttherapie #angebote {
+  padding-top: 1.25rem;
 }
 
 .page-kunsttherapie .kt-hero-card {

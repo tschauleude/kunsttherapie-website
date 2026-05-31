@@ -258,10 +258,12 @@ async function submitBooking(e) {
     if (!res.ok) {
       throw new Error(data.error || 'Buchung fehlgeschlagen');
     }
-    msg.textContent = data.message || 'Termin bestätigt. Vielen Dank!';
+    msg.textContent = data.message || 'Anfrage eingegangen. Vielen Dank!';
     msg.className = 'booking-alert booking-alert-success';
     msg.hidden = false;
-    if (data.calendarLinks) {
+    const linksBox = document.getElementById('bookingCalendarLinks');
+    if (linksBox) linksBox.hidden = true;
+    if (data.calendarLinks && data.status === 'confirmed') {
       showCalendarLinks(data.calendarLinks, data.emailSent);
     }
     document.getElementById('bookingForm').reset();
