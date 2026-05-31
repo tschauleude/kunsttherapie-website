@@ -87,63 +87,7 @@
 </footer>
 <script>document.getElementById("y").textContent = new Date().getFullYear();</script>
 
-<script>
-const API_URL = window.location.origin + '/api';
-
-async function loadNews() {
-  try {
-    const response = await fetch(`${API_URL}/news`);
-    const news = await response.json();
-
-    document.getElementById('newsLoading').style.display = 'none';
-
-    if (news.length === 0) {
-      document.getElementById('newsEmpty').style.display = 'block';
-      return;
-    }
-
-    let html = '';
-    news.forEach(item => {
-      const date = new Date(item.createdAt).toLocaleDateString('de-DE', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-
-      const imageHtml = item.image 
-        ? `<img src="${item.image}" alt="${item.title}" class="news-image"/>`
-        : `<div class="news-image news-image-placeholder">News</div>`;
-
-      html += `
-        <div class="news-card">
-          ${imageHtml}
-          <div class="news-content">
-            <div>
-              <div class="news-date">${date}</div>
-              <h2>${item.title}</h2>
-              <p>${item.content.substring(0, 200)}${item.content.length > 200 ? '...' : ''}</p>
-            </div>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById('newsList').innerHTML = html;
-  } catch (err) {
-    document.getElementById('newsLoading').innerHTML = `
-      <div style="color: var(--text-light); padding: 20px;">
-        <p>Backend nicht erreichbar</p>
-        <p style="font-size: 0.9rem; margin-top: 10px;">Starte den CMS-Server:</p>
-        <code style="background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 5px;">cd kunsttherapie-cms && npm run dev</code>
-      </div>
-    `;
-    console.error('News load error:', err);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', loadNews);
-document.getElementById('y').textContent = new Date().getFullYear();
-</script>
+<script src="assets/js/news.js"></script>
 
 </body>
 </html>
