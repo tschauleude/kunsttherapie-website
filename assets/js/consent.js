@@ -93,6 +93,7 @@
     const b = document.getElementById('consentBanner');
     if (b) b.hidden = true;
     window.dispatchEvent(new CustomEvent('consent-banner-closed'));
+    emitConsentSettled();
   }
 
   function showBanner() {
@@ -105,10 +106,47 @@
     return Boolean(b && !b.hidden);
   };
 
+  window.isConsentSettingsVisible = function isConsentSettingsVisible() {
+    const s = document.getElementById('consentSettings');
+    return Boolean(s && !s.hidden);
+  };
+
+  function isConsentUiBlocking() {
+    return window.isConsentBannerVisible() || window.isConsentSettingsVisible();
+  }
+
+  function emitConsentSettled() {
+    if (!isConsentUiBlocking()) {
+      window.dispatchEvent(new CustomEvent('consent-settled'));
+    }
+  }
+
+  /**
+   * Callback wenn Cookie-Banner und Einstellungen-Dialog geschlossen sind.
+   * @param {Function} callback
+   * @param {number} delayMs Pause danach (z. B. bevor Neuigkeiten-Popup)
+   */
+  window.whenConsentSettled = function whenConsentSettled(callback, delayMs = 500) {
+    const run = () => window.setTimeout(callback, delayMs);
+
+    const tryRun = () => {
+      if (!isConsentUiBlocking()) run();
+    };
+
+    if (!isConsentUiBlocking()) {
+      tryRun();
+      return;
+    }
+
+    window.addEventListener('consent-settled', tryRun, { once: true });
+    window.addEventListener('consent-updated', tryRun, { once: true });
+  };
+
   function hideSettings() {
     const s = document.getElementById('consentSettings');
     if (s) s.hidden = true;
     document.body.classList.remove('consent-settings-open');
+    emitConsentSettled();
   }
 
   function showSettings() {

@@ -1,7 +1,7 @@
 const NEWS_API_URL = window.location.origin + '/api';
 const NEWS_POPUP_STORAGE_KEY = 'kunsttherapie_news_popup_id';
+const POPUP_AFTER_CONSENT_MS = 700;
 let cachedHomeNews = [];
-let pendingNewsPopup = null;
 
 function escapeHtml(text) {
   const div = document.createElement('div');
@@ -72,8 +72,11 @@ async function fetchPublishedNews() {
 function closeNewsPopup() {
   const popup = document.getElementById('newsPopup');
   if (!popup) return;
-  popup.hidden = true;
-  document.body.classList.remove('news-popup-open');
+  popup.classList.remove('news-popup-visible');
+  window.setTimeout(() => {
+    popup.hidden = true;
+    document.body.classList.remove('news-popup-open');
+  }, 280);
 }
 
 function openNewsPopup(items) {
@@ -87,7 +90,10 @@ function openNewsPopup(items) {
 
   popup.hidden = false;
   document.body.classList.add('news-popup-open');
-  popup.querySelector('.news-popup-close')?.focus();
+  requestAnimationFrame(() => {
+    popup.classList.add('news-popup-visible');
+    popup.querySelector('.news-popup-close')?.focus();
+  });
 
   const latestId = String(items[0].id);
   try {
@@ -105,29 +111,29 @@ function shouldShowNewsPopup(latestId) {
   }
 }
 
-function tryShowPendingNewsPopup() {
-  if (!pendingNewsPopup?.length) return;
-  if (typeof window.isConsentBannerVisible === 'function' && window.isConsentBannerVisible()) {
-    return;
-  }
-  const items = pendingNewsPopup;
-  pendingNewsPopup = null;
-  if (shouldShowNewsPopup(items[0].id)) {
-    openNewsPopup(items);
+function showNewsPopupWhenReady(popupItems) {
+  if (!popupItems?.length || !shouldShowNewsPopup(popupItems[0].id)) return;
+
+  const present = () => openNewsPopup(popupItems);
+
+  const afterConsent = () => {
+    if (typeof window.whenConsentSettled === 'function') {
+      window.whenConsentSettled(present, POPUP_AFTER_CONSENT_MS);
+    } else {
+      window.setTimeout(present, POPUP_AFTER_CONSENT_MS);
+    }
+  };
+
+  if (typeof window.whenRevealIdle === 'function') {
+    window.whenRevealIdle().then(afterConsent);
+  } else {
+    afterConsent();
   }
 }
 
 function scheduleNewsPopup(popupItems) {
   if (!popupItems.length || !shouldShowNewsPopup(popupItems[0].id)) return;
-
-  if (typeof window.isConsentBannerVisible === 'function' && window.isConsentBannerVisible()) {
-    pendingNewsPopup = popupItems;
-    window.addEventListener('consent-updated', tryShowPendingNewsPopup, { once: true });
-    window.addEventListener('consent-banner-closed', tryShowPendingNewsPopup, { once: true });
-    return;
-  }
-
-  openNewsPopup(popupItems);
+  showNewsPopupWhenReady(popupItems);
 }
 
 function initNewsPopupControls() {
@@ -169,9 +175,7 @@ async function loadHomeNews() {
       const intro = section.querySelector('.section-intro');
       const actions = section.querySelector(':scope > .center');
       const cards = list.querySelectorAll('.news-card');
-      window.revealStagger(
-        [intro, ...cards, actions].filter(Boolean)
-      );
+      window.revealStagger([intro, ...cards, actions].filter(Boolean));
     }
 
     const popupLimit = parseInt(section.dataset.popupLimit || '2', 10);

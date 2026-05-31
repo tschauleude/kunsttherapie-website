@@ -4,8 +4,9 @@
 (function () {
   if (document.body.classList.contains('admin-app')) return;
 
-  const STEP_MS = 90;
-  const SECTION_GAP_MS = 140;
+  const STEP_MS = 155;
+  const SECTION_GAP_MS = 320;
+  const INITIAL_DELAY_MS = 320;
   const SKIP_SELECTOR =
     '.consent-banner, .consent-settings, #newsPopup, .lightbox, [hidden], script, style, noscript';
 
@@ -128,7 +129,7 @@
         delay += STEP_MS;
       });
 
-      window.setTimeout(resolve, delay + 80);
+      window.setTimeout(resolve, delay + 120);
     });
   }
 
@@ -158,12 +159,15 @@
     requestAnimationFrame(() => {
       targets.forEach((el) => prepareElement(el));
       requestAnimationFrame(() => {
-        runSequence(targets, 120);
+        runSequence(targets, INITIAL_DELAY_MS);
       });
     });
   }
 
   window.revealStagger = revealStagger;
+  window.whenRevealIdle = function whenRevealIdle() {
+    return queue;
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initPage);
