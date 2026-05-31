@@ -1,5 +1,5 @@
 /**
- * Gemeinsame UI: Skip-Link, Mobile-Menü, aktuelle Navigation.
+ * Gemeinsame UI: Skip-Link, Mobile-Menü, dynamische Navigation.
  */
 (function () {
   if (document.body.classList.contains('admin-app')) return;
@@ -17,6 +17,13 @@
     index: 'home',
   };
 
+  /** Startseite: Abschnitt → Nav-Schlüssel */
+  const HOME_SECTIONS = [
+    { id: 'neuigkeiten', nav: 'neuigkeiten' },
+    { id: 'angebote', nav: 'kunsttherapie' },
+    { id: 'praxis', nav: 'praxis' },
+  ];
+
   function currentNavKey() {
     const path = window.location.pathname.replace(/\/$/, '');
     if (path === '' || path.endsWith('/index') || path.endsWith('/index.html')) return 'home';
@@ -24,17 +31,74 @@
     return NAV_PATHS[base] || null;
   }
 
-  function markCurrentNav() {
-    const key = currentNavKey();
-    if (!key) return;
-
+  function setActiveNav(key) {
     document.querySelectorAll('nav[data-site-nav] a[data-nav]').forEach((link) => {
-      if (link.dataset.nav === key) {
+      const active = Boolean(key && link.dataset.nav === key);
+      if (active) {
         link.setAttribute('aria-current', 'page');
       } else {
         link.removeAttribute('aria-current');
       }
     });
+  }
+
+  function markCurrentNav() {
+    const pageKey = currentNavKey();
+    if (pageKey !== 'home') {
+      setActiveNav(pageKey);
+      return;
+    }
+
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      const match = HOME_SECTIONS.find((s) => s.id === hash);
+      if (match) {
+        setActiveNav(match.nav);
+        return;
+      }
+    }
+
+    updateHomeScrollNav();
+  }
+
+  function updateHomeScrollNav() {
+    if (currentNavKey() !== 'home') return;
+
+    const headerOffset = 100;
+    const scrollPos = window.scrollY + headerOffset;
+
+    if (scrollPos < 180) {
+      setActiveNav(null);
+      return;
+    }
+
+    let activeNav = null;
+    HOME_SECTIONS.forEach(({ id, nav }) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.offsetTop <= scrollPos) {
+        activeNav = nav;
+      }
+    });
+
+    setActiveNav(activeNav);
+  }
+
+  function initHomeScrollSpy() {
+    if (currentNavKey() !== 'home') return;
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        updateHomeScrollNav();
+        ticking = false;
+      });
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('hashchange', markCurrentNav);
   }
 
   function initSkipLink() {
@@ -60,7 +124,8 @@
     toggle.className = 'nav-toggle';
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-controls', 'site-nav');
-    toggle.innerHTML = '<span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-label">Menü</span>';
+    toggle.innerHTML =
+      '<span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-label">Menü</span>';
 
     const navId = nav.id || 'site-nav';
     nav.id = navId;
@@ -100,6 +165,7 @@
     initSkipLink();
     initMobileNav();
     markCurrentNav();
+    initHomeScrollSpy();
     setFooterYear();
   }
 
