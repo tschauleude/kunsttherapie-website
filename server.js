@@ -232,6 +232,14 @@ const requireAuth = (req, res, next) => {
 
 const booking = require('./lib/booking');
 const googleCalendar = require('./lib/google-calendar');
+const ical = require('./lib/ical');
+const email = require('./lib/email');
+
+function publicBaseUrl(req) {
+  const fromEnv = process.env.PUBLIC_SITE_URL;
+  if (fromEnv) return fromEnv.replace(/\/$/, '');
+  return `${req.protocol}://${req.get('host')}`;
+}
 
 function getGoogleRefreshToken(callback) {
   if (process.env.GOOGLE_REFRESH_TOKEN) {
@@ -280,11 +288,13 @@ async function getBusyForRange(fromStr, toStr) {
   );
   const localBusy = booking.bookingsToIntervals(rows);
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     getGoogleRefreshToken(async (err, token) => {
-      if (err) return reject(err);
+      if (err) {
+        console.error('Google token lookup:', err.message);
+      }
       let googleBusy = [];
-      if (token) {
+      if (!err && token) {
         try {
           const timeMin = booking.parseDateTime(fromStr, '00:00');
           const timeMax = booking.parseDateTime(toStr, '23:59');
@@ -766,6 +776,8 @@ app.get('/api/bookings/config', (req, res) => {
     schedule: booking.getScheduleForApi(),
     minAdvanceHours: booking.MIN_ADVANCE_HOURS,
     timezone: process.env.BOOKING_TIMEZONE || 'Europe/Berlin',
+    emailConfigured: email.isEmailConfigured(),
+    googleCalendarOptional: true,
   });
 });
 
@@ -795,14 +807,15 @@ app.get('/api/bookings/availability', async (req, res) => {
 
     getGoogleRefreshToken((err, token) => {
       if (err) {
-        return res.status(500).json({ error: 'Database error' });
+        console.error('Google token lookup:', err.message);
       }
       res.json({
         month,
         from,
         to,
         days,
-        googleCalendarConnected: Boolean(token),
+        googleCalendarConnected: Boolean(!err && token),
+        emailConfigured: email.isEmailConfigured(),
       });
     });
   } catch (e) {
@@ -823,17 +836,41 @@ app.get('/api/bookings/slots', async (req, res) => {
     const slots = booking.slotsWithAvailability(dateStr, intervals);
 
     getGoogleRefreshToken((err, token) => {
-      if (err) return res.status(500).json({ error: 'Database error' });
+      if (err) {
+        console.error('Google token lookup:', err.message);
+      }
       res.json({
         date: dateStr,
         workingDay: booking.isWorkingDay(dateStr),
         slots,
-        googleCalendarConnected: Boolean(token),
+        googleCalendarConnected: Boolean(!err && token),
       });
     });
   } catch (e) {
     console.error('slots error:', e);
     res.status(500).json({ error: 'Slots konnten nicht geladen werden' });
+  }
+});
+
+app.get('/api/bookings/:id/calendar.ics', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const { token } = req.query;
+
+  if (!id || !ical.verifyBookingToken(id, token)) {
+    return res.status(403).send('Ungültiger Kalender-Link');
+  }
+
+  try {
+    const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [id]);
+    if (!row || row.status === 'cancelled') {
+      return res.status(404).send('Termin nicht gefunden');
+    }
+    res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="termin-kunsttherapie-${id}.ics"`);
+    res.send(ical.buildIcs(row));
+  } catch (e) {
+    console.error('ics error:', e);
+    res.status(500).send('Kalenderdatei konnte nicht erstellt werden');
   }
 });
 
@@ -875,28 +912,44 @@ app.post('/api/bookings', async (req, res) => {
     );
 
     const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
+    const baseUrl = publicBaseUrl(req);
+    const calendarLinks = ical.buildCalendarLinks(row, baseUrl);
+
+    let emailSent = false;
+    try {
+      const emailResult = await email.sendBookingEmails(row, baseUrl);
+      emailSent = Boolean(emailResult.sent);
+    } catch (mailErr) {
+      console.error('Booking email failed:', mailErr.message);
+    }
 
     getGoogleRefreshToken(async (err, token) => {
-      let googleEventId = null;
       if (!err && token) {
         try {
-          googleEventId = await googleCalendar.createCalendarEvent(token, row);
+          const googleEventId = await googleCalendar.createCalendarEvent(token, row);
           if (googleEventId) {
-            await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [googleEventId, row.id]);
+            await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [
+              googleEventId,
+              row.id,
+            ]);
           }
         } catch (e) {
           console.error('Google event create failed:', e.message);
         }
       }
-      res.json({
-        success: true,
-        id: row.id,
-        date: row.date,
-        startTime: row.start_time,
-        endTime: row.end_time,
-        googleSynced: Boolean(googleEventId),
-        message: 'Terminanfrage eingegangen. Martina bestätigt den Termin per E-Mail.',
-      });
+    });
+
+    res.json({
+      success: true,
+      id: row.id,
+      date: row.date,
+      startTime: row.start_time,
+      endTime: row.end_time,
+      calendarLinks,
+      emailSent,
+      message: emailSent
+        ? 'Termin bestätigt! Du erhältst in Kürze eine E-Mail – darin kannst du den Termin in Apple- oder Google-Kalender speichern.'
+        : 'Termin gespeichert! Füge ihn über die Kalender-Buttons unten in Apple oder Google ein.',
     });
   } catch (e) {
     console.error('booking create error:', e);

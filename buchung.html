@@ -7,7 +7,9 @@
   <meta name="description" content="Online-Terminbuchung für Kunsttherapie in Paderborn. Freie Zeiten im Kalender wählen – ausgebuchte Termine sind nicht verfügbar."/>
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
-<body><header>
+<body>
+
+<header>
   <div class="container header-inner">
     <a class="brand logo-text" href="index.html">
       <span class="name">Martina Schwierzke</span>
@@ -30,10 +32,10 @@
   <div class="section-intro center page-hero">
     <div class="kicker">Terminbuchung</div>
     <h1>Kennenlernen oder Sitzung buchen</h1>
-    <p class="sub center">Grau markierte Zeiten sind bereits belegt. Wähle einen freien Termin – Martina erhält die Anfrage und bestätigt sie per E-Mail.</p>
+    <p class="sub center">Nur <strong>Dienstag vormittags</strong> und <strong>Donnerstag abends</strong> sind buchbar (grüne Tage). Nach der Buchung erhältst du eine Bestätigung per E-Mail und kannst den Termin in Apple- oder Google-Kalender speichern – ohne Google-Konto der Praxis.</p>
   </div>
 
-  <div class="booking-layout">
+  <div class="booking-layout" data-reveal-skip>
     <div class="card booking-calendar-panel">
       <div class="booking-month-nav">
         <button type="button" class="btn outline btn-icon" id="prevMonth" aria-label="Vorheriger Monat">&larr;</button>
@@ -41,9 +43,9 @@
         <button type="button" class="btn outline btn-icon" id="nextMonth" aria-label="Nächster Monat">&rarr;</button>
       </div>
       <p class="booking-legend">
-        <span class="legend-dot legend-free"></span> Frei
-        <span class="legend-dot legend-busy"></span> Belegt
-        <span class="legend-dot legend-off"></span> Kein Angebot
+        <span class="legend-dot legend-free"></span> Frei (Di / Do)
+        <span class="legend-dot legend-busy"></span> Ausgebucht
+        <span class="legend-dot legend-off"></span> Kein Praxistag
       </p>
       <div class="booking-weekdays" aria-hidden="true">
         <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>

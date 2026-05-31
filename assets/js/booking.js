@@ -30,6 +30,11 @@ function pad2(n) {
   return String(n).padStart(2, '0');
 }
 
+function nextMonthStr(monthStr) {
+  const [y, m] = monthStr.split('-').map(Number);
+  return formatMonth(new Date(y, m, 1));
+}
+
 function getMondayBasedCells(monthStr) {
   const [y, m] = monthStr.split('-').map(Number);
   const first = new Date(y, m - 1, 1);
@@ -47,29 +52,59 @@ function getMondayBasedCells(monthStr) {
   return cells;
 }
 
-async function loadMonth(monthStr) {
+function monthHasBookableDays(data) {
+  if (!data?.days) return false;
+  return Object.values(data.days).some((day) => day.workingDay && day.hasAvailability);
+}
+
+async function fetchMonth(monthStr) {
+  const res = await fetch(`${API_URL}/bookings/availability?month=${monthStr}`);
+  if (!res.ok) throw new Error('Laden fehlgeschlagen');
+  return res.json();
+}
+
+async function loadMonth(monthStr, prefetched) {
   const status = document.getElementById('calendarStatus');
   if (!status) return;
   status.textContent = 'Kalender wird geladen …';
 
   try {
-    const res = await fetch(`${API_URL}/bookings/availability?month=${monthStr}`);
-    if (!res.ok) throw new Error('Laden fehlgeschlagen');
-    monthData = await res.json();
+    monthData = prefetched || (await fetchMonth(monthStr));
     currentMonth = monthStr;
     document.getElementById('monthLabel').textContent = monthLabel(monthStr);
     renderCalendar();
-    status.textContent = monthData.googleCalendarConnected
-      ? 'Kalender synchronisiert mit Google.'
-      : 'Belegte Zeiten aus Website-Buchungen. Google Kalender kann im Admin verbunden werden.';
+    const bookable = monthHasBookableDays(monthData);
+    status.textContent = bookable
+      ? 'Wähle einen grünen Tag (Dienstag oder Donnerstag), dann eine freie Uhrzeit. Google Kalender ist optional – die Buchung läuft über unsere Website.'
+      : 'In diesem Monat sind keine freien Termine mehr sichtbar – bitte den nächsten Monat wählen (nur Di vormittags & Do abends).';
   } catch (e) {
     status.textContent = 'Kalender konnte nicht geladen werden. Bitte später erneut versuchen.';
     console.error(e);
   }
 }
 
+async function loadInitialMonth() {
+  let month = formatMonth(new Date());
+  for (let i = 0; i < 8; i += 1) {
+    try {
+      const data = await fetchMonth(month);
+      if (monthHasBookableDays(data)) {
+        await loadMonth(month, data);
+        return;
+      }
+      month = nextMonthStr(month);
+    } catch (e) {
+      await loadMonth(month);
+      return;
+    }
+  }
+  await loadMonth(month);
+}
+
 function renderCalendar() {
   const grid = document.getElementById('calendarGrid');
+  if (!grid || !monthData) return;
+
   const cells = getMondayBasedCells(currentMonth);
   const today = new Date();
   const todayStr = `${today.getFullYear()}-${pad2(today.getMonth() + 1)}-${pad2(today.getDate())}`;
@@ -83,14 +118,20 @@ function renderCalendar() {
       const day = monthData.days[cell.date];
       let cls = 'booking-day';
       let disabled = true;
+      let hint = 'Kein Angebot';
 
       if (!day || !day.workingDay) {
         cls += ' booking-day-off';
-      } else if (day.hasAvailability) {
-        cls += ' booking-day-free';
-        disabled = false;
+        hint = 'Kein Praxistag (nur Di & Do)';
       } else {
-        cls += ' booking-day-busy';
+        disabled = false;
+        if (day.hasAvailability) {
+          cls += ' booking-day-free';
+          hint = 'Freie Termine – klicken';
+        } else {
+          cls += ' booking-day-busy';
+          hint = 'Ausgebucht oder Vorlauf – trotzdem Zeiten anzeigen';
+        }
       }
 
       if (cell.date === todayStr) cls += ' booking-day-today';
@@ -99,7 +140,7 @@ function renderCalendar() {
       const label = parseInt(cell.date.split('-')[2], 10);
       return `<button type="button" class="${cls}" data-date="${cell.date}" ${
         disabled ? 'disabled' : ''
-      } role="gridcell" aria-label="${cell.date}">${label}</button>`;
+      } role="gridcell" aria-label="${hint}: ${cell.date}">${label}</button>`;
     })
     .join('');
 
@@ -122,12 +163,19 @@ async function selectDay(dateStr) {
     const res = await fetch(`${API_URL}/bookings/slots?date=${dateStr}`);
     const data = await res.json();
     if (!data.workingDay) {
-      list.innerHTML = '<p class="sub">An diesem Tag gibt es keine Termine.</p>';
+      list.innerHTML = '<p class="sub">An diesem Tag gibt es keine Termine (nur Dienstag vormittags & Donnerstag abends).</p>';
       return;
     }
 
     if (!data.slots.length) {
       list.innerHTML = '<p class="sub">Keine Slots an diesem Tag.</p>';
+      return;
+    }
+
+    const freeCount = data.slots.filter((s) => s.available).length;
+    if (!freeCount) {
+      list.innerHTML =
+        '<p class="sub">An diesem Tag sind alle Zeiten belegt oder liegen zu nah in der Zukunft (mind. 24&nbsp;Std. Vorlauf). Bitte einen anderen Tag wählen.</p>';
       return;
     }
 
@@ -160,6 +208,30 @@ function selectSlot(dateStr, startTime) {
   document.getElementById('bookingFormPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+function showCalendarLinks(links, emailSent) {
+  const panel = document.getElementById('bookingFormPanel');
+  let box = document.getElementById('bookingCalendarLinks');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'bookingCalendarLinks';
+    box.className = 'booking-calendar-links';
+    panel.appendChild(box);
+  }
+
+  const mailNote = emailSent
+    ? '<p class="note">Eine Bestätigung wurde an deine E-Mail-Adresse gesendet (mit Kalender-Anhang).</p>'
+    : '<p class="note">Speichere den Termin direkt in deinem Kalender:</p>';
+
+  box.innerHTML = `
+    ${mailNote}
+    <div class="booking-calendar-actions">
+      <a class="btn outline" href="${links.googleUrl}" target="_blank" rel="noopener noreferrer">Google Kalender</a>
+      <a class="btn outline" href="${links.icsUrl}" download>In Apple / Outlook (.ics)</a>
+    </div>
+  `;
+  box.hidden = false;
+}
+
 async function submitBooking(e) {
   e.preventDefault();
   const msg = document.getElementById('bookingMessage');
@@ -186,9 +258,12 @@ async function submitBooking(e) {
     if (!res.ok) {
       throw new Error(data.error || 'Buchung fehlgeschlagen');
     }
-    msg.textContent = data.message || 'Termin angefragt. Vielen Dank!';
+    msg.textContent = data.message || 'Termin bestätigt. Vielen Dank!';
     msg.className = 'booking-alert booking-alert-success';
     msg.hidden = false;
+    if (data.calendarLinks) {
+      showCalendarLinks(data.calendarLinks, data.emailSent);
+    }
     document.getElementById('bookingForm').reset();
     selectedStart = null;
     await loadMonth(currentMonth);
@@ -212,7 +287,7 @@ async function loadBookingConfig() {
       const parts = cfg.schedule.map(
         (s) => `${s.label || dayNames[s.day]} ${s.start}–${s.end}`
       );
-      hint.innerHTML = `Buchbar: ${parts.join(' · ')} (je ${cfg.slotMinutes} Minuten).`;
+      hint.innerHTML = `Buchbar: ${parts.join(' · ')} (je ${cfg.slotMinutes} Minuten). <strong>Nur grüne Tage</strong> im Kalender anklicken.`;
     }
   } catch (e) {
     /* Standard-Hinweis in HTML bleibt */
@@ -232,14 +307,12 @@ function initBookingPage() {
   });
 
   nextMonth.addEventListener('click', () => {
-    const [y, m] = currentMonth.split('-').map(Number);
-    const d = new Date(y, m, 1);
-    loadMonth(formatMonth(d));
+    loadMonth(nextMonthStr(currentMonth));
   });
 
   form.addEventListener('submit', submitBooking);
   loadBookingConfig();
-  loadMonth(currentMonth);
+  loadInitialMonth();
 }
 
 document.addEventListener('DOMContentLoaded', initBookingPage);

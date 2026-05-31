@@ -17,6 +17,7 @@
     if (!el || !(el instanceof Element)) return true;
     if (el.matches(SKIP_SELECTOR)) return true;
     if (el.closest(SKIP_SELECTOR)) return true;
+    if (el.closest('[data-reveal-skip]')) return true;
     if (el.offsetParent === null) return true;
     return false;
   }

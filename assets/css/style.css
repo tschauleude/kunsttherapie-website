@@ -1438,9 +1438,13 @@ nav a[aria-current='page'] {
 }
 
 .booking-day-busy {
-  background: rgba(0, 0, 0, 0.08);
-  color: var(--text-light);
-  cursor: not-allowed;
+  background: rgba(209, 141, 137, 0.12);
+  color: var(--color-rose-dark);
+  cursor: pointer;
+}
+
+.booking-day-busy:hover:not(:disabled) {
+  background: rgba(209, 141, 137, 0.2);
 }
 
 .booking-day-free {
@@ -1523,6 +1527,19 @@ nav a[aria-current='page'] {
 .booking-alert-error {
   background: rgba(209, 141, 137, 0.2);
   color: #8b4542;
+}
+
+.booking-calendar-links {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(85, 122, 118, 0.15);
+}
+
+.booking-calendar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 /* === Sequenzielles Einblenden (reveal.js) === */
