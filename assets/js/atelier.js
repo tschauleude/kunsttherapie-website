@@ -9,6 +9,7 @@
   const ctx = canvas.getContext('2d');
   const statusEl = root.querySelector('[data-atelier-status]');
   const collageBar = root.querySelector('[data-collage-bar]');
+  const canvasWrap = root.querySelector('.atelier-canvas-wrap');
 
   const STORAGE_KEY = 'kunsttherapie-atelier-draft-v1';
   const MAX_COLLAGE = 6;

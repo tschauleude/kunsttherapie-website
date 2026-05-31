@@ -449,9 +449,10 @@ h3 {
   display: block;
 }
 
-/* Über mich: Person/Foto vollständig sichtbar, nicht beschnitten */
+/* Über mich: groß wie Hero, Martina vollständig im Bild (kein Zuschnitt) */
 .hero-right--full {
-  min-height: 0;
+  min-height: 420px;
+  align-self: stretch;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -460,11 +461,10 @@ h3 {
 
 .hero-right--full img {
   width: 100%;
-  height: auto;
-  min-height: 0;
-  max-height: min(520px, 70vh);
+  height: 100%;
+  min-height: 420px;
   object-fit: contain;
-  object-position: center top;
+  object-position: center center;
 }
 
 /* === BUTTONS === */
@@ -852,6 +852,26 @@ body.lightbox-open {
   color: var(--text-light);
 }
 
+.atelier-invite {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-main);
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.15rem;
+  border-radius: var(--radius-card);
+  background: rgba(162, 212, 196, 0.2);
+  border: 1px solid rgba(85, 122, 118, 0.2);
+}
+
+.atelier-tools-label {
+  margin: 1.25rem 0 0.65rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-teal-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .atelier-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -920,17 +940,37 @@ body.lightbox-open {
 }
 
 .atelier-canvas-wrap {
+  position: relative;
   border-radius: var(--radius-card);
-  border: 1px dashed rgba(85, 122, 118, 0.35);
-  background: rgba(255, 255, 255, 0.6);
+  border: 2px dashed rgba(85, 122, 118, 0.4);
+  background: rgba(255, 255, 255, 0.75);
   overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+.atelier-canvas-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-size: clamp(1.1rem, 3vw, 1.35rem);
+  font-weight: 600;
+  color: rgba(85, 122, 118, 0.45);
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.atelier-canvas-wrap.has-started .atelier-canvas-hint {
+  opacity: 0;
 }
 
 #atelierCanvas {
   display: block;
   width: 100%;
-  height: min(420px, 55vh);
-  min-height: 280px;
+  height: min(440px, 58vh);
+  min-height: 300px;
   cursor: crosshair;
   touch-action: none;
 }

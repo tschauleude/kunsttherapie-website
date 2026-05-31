@@ -138,10 +138,18 @@
 
   <section id="atelier" class="section container">
     <div class="card canvasWrap" id="atelierApp" data-reveal-skip>
-      <div class="kicker">Interaktiv</div>
-      <h2>Mini-Atelier im Browser</h2>
-      <p class="sub">Malen, Formen setzen, Fotos zur Kollage legen – und optional an Martina senden. Sie kann dein Werk als Impuls für ein eigenes Kunstwerk oder als Start einer Sitzung nutzen.</p>
+      <div class="kicker">Probier's aus</div>
+      <h2>Fang direkt an – <span class="text-accent">probier dich aus</span></h2>
+      <p class="atelier-invite">Einfach loslegen: malen, Linien und Formen setzen, Fotos zur Kollage legen. Es geht ums Ausprobieren – nichts muss „schön“ werden. Wenn du magst, schickst du dein Werk später an Martina.</p>
 
+      <div class="atelier-canvas-wrap">
+        <canvas id="atelierCanvas" role="img" aria-label="Mini-Atelier: Zeichenfläche – einfach draufloslegen"></canvas>
+        <p class="atelier-canvas-hint" aria-hidden="true">Hier starten …</p>
+      </div>
+      <div class="atelier-collage-bar" data-collage-bar hidden></div>
+      <p class="atelier-status" data-atelier-status hidden role="status"></p>
+
+      <p class="atelier-tools-label">Werkzeuge – einfach ausprobieren</p>
       <div class="atelier-toolbar" role="toolbar" aria-label="Werkzeuge">
         <div class="atelier-tool-group">
           <button type="button" class="atelier-tool active" data-tool="brush" aria-pressed="true" title="Pinsel">Pinsel</button>
@@ -176,12 +184,6 @@
         <button type="button" class="btn outline btn-sm" data-collage-remove>Bild entfernen</button>
         <span class="note">Max. 6 Bilder · „Verschieben“ zum Positionieren</span>
       </div>
-
-      <div class="atelier-canvas-wrap">
-        <canvas id="atelierCanvas" role="img" aria-label="Mini-Atelier: Zeichenfläche"></canvas>
-      </div>
-      <div class="atelier-collage-bar" data-collage-bar hidden></div>
-      <p class="atelier-status" data-atelier-status hidden role="status"></p>
 
       <details class="atelier-submit-panel">
         <summary>An Martina senden</summary>
