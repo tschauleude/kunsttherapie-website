@@ -165,6 +165,15 @@ async function loadHomeNews() {
     list.innerHTML = items.map((item) => renderNewsCard(item, 160)).join('');
     section.hidden = false;
 
+    if (window.revealStagger) {
+      const intro = section.querySelector('.section-intro');
+      const actions = section.querySelector(':scope > .center');
+      const cards = list.querySelectorAll('.news-card');
+      window.revealStagger(
+        [intro, ...cards, actions].filter(Boolean)
+      );
+    }
+
     const popupLimit = parseInt(section.dataset.popupLimit || '2', 10);
     const popupItems = news.slice(0, popupLimit);
     scheduleNewsPopup(popupItems);
@@ -196,6 +205,9 @@ async function loadNewsPage() {
     }
 
     list.innerHTML = news.map((item) => renderNewsCard(item, 200)).join('');
+    if (window.revealStagger) {
+      window.revealStagger(list.querySelectorAll('.news-card'));
+    }
   } catch (err) {
     if (loading) {
       loading.innerHTML =

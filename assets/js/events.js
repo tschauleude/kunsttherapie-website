@@ -62,6 +62,9 @@ async function loadEvents() {
     }
 
     list.innerHTML = events.map(renderEventCard).join('');
+    if (window.revealStagger) {
+      window.revealStagger(list.querySelectorAll('.event-card'));
+    }
   } catch (err) {
     if (loading) {
       loading.innerHTML =

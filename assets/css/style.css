@@ -1527,6 +1527,41 @@ nav a[aria-current='page'] {
   color: #8b4542;
 }
 
+/* === Sequenzielles Einblenden (reveal.js) === */
+html.reveal-active .reveal-item {
+  opacity: 0;
+  transform: translateY(1.35rem) scale(0.98);
+  filter: blur(6px);
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.5s ease;
+  will-change: opacity, transform, filter;
+}
+
+html.reveal-active .reveal-item.reveal-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+html.reveal-active .blob.reveal-item {
+  transform: scale(0.92);
+}
+
+html.reveal-active .blob.reveal-item.reveal-visible {
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.reveal-active .reveal-item {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
+
 @media (max-width: 768px) {
   .header-inner {
     flex-direction: column;
