@@ -750,8 +750,7 @@ table.prices th {
 
 /* === NEWS & EVENTS === */
 /* News popup (Startseite) */
-body.news-popup-open,
-body.consent-banner-open {
+body.news-popup-open {
   overflow: hidden;
 }
 

@@ -1,6 +1,7 @@
 const NEWS_API_URL = window.location.origin + '/api';
 const NEWS_POPUP_STORAGE_KEY = 'kunsttherapie_news_popup_id';
 let cachedHomeNews = [];
+let pendingNewsPopup = null;
 
 function escapeHtml(text) {
   const div = document.createElement('div');
@@ -104,6 +105,30 @@ function shouldShowNewsPopup(latestId) {
   }
 }
 
+function tryShowPendingNewsPopup() {
+  if (!pendingNewsPopup?.length) return;
+  if (typeof window.isConsentBannerVisible === 'function' && window.isConsentBannerVisible()) {
+    return;
+  }
+  const items = pendingNewsPopup;
+  pendingNewsPopup = null;
+  if (shouldShowNewsPopup(items[0].id)) {
+    openNewsPopup(items);
+  }
+}
+
+function scheduleNewsPopup(popupItems) {
+  if (!popupItems.length || !shouldShowNewsPopup(popupItems[0].id)) return;
+
+  if (typeof window.isConsentBannerVisible === 'function' && window.isConsentBannerVisible()) {
+    pendingNewsPopup = popupItems;
+    window.addEventListener('consent-updated', tryShowPendingNewsPopup, { once: true });
+    return;
+  }
+
+  openNewsPopup(popupItems);
+}
+
 function initNewsPopupControls() {
   const popup = document.getElementById('newsPopup');
   if (!popup) return;
@@ -141,9 +166,7 @@ async function loadHomeNews() {
 
     const popupLimit = parseInt(section.dataset.popupLimit || '2', 10);
     const popupItems = news.slice(0, popupLimit);
-    if (shouldShowNewsPopup(popupItems[0].id)) {
-      openNewsPopup(popupItems);
-    }
+    scheduleNewsPopup(popupItems);
 
     const reopenBtn = document.getElementById('openNewsPopupBtn');
     if (reopenBtn) {
@@ -181,19 +204,10 @@ async function loadNewsPage() {
   }
 }
 
-function whenConsentReady(fn) {
-  if (window.__consentReady) {
-    fn();
-    return;
-  }
-  window.addEventListener('consent-ready', () => fn(), { once: true });
-  window.addEventListener('consent-updated', () => fn(), { once: true });
-}
-
 if (document.getElementById('homeNewsList')) {
   document.addEventListener('DOMContentLoaded', () => {
     initNewsPopupControls();
-    whenConsentReady(loadHomeNews);
+    loadHomeNews();
   });
 }
 if (document.getElementById('newsList') && !document.getElementById('homeNewsList')) {

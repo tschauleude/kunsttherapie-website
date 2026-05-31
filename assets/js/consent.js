@@ -92,16 +92,17 @@
   function hideBanner() {
     const b = document.getElementById('consentBanner');
     if (b) b.hidden = true;
-    document.body.classList.remove('consent-banner-open');
   }
 
   function showBanner() {
     const b = document.getElementById('consentBanner');
-    if (b) {
-      b.hidden = false;
-      document.body.classList.add('consent-banner-open');
-    }
+    if (b) b.hidden = false;
   }
+
+  window.isConsentBannerVisible = function isConsentBannerVisible() {
+    const b = document.getElementById('consentBanner');
+    return Boolean(b && !b.hidden);
+  };
 
   function hideSettings() {
     const s = document.getElementById('consentSettings');
@@ -215,11 +216,16 @@
     if (existing) {
       applyConsent(existing);
       hideBanner();
-      window.__consentReady = true;
-      window.dispatchEvent(new CustomEvent('consent-ready', { detail: existing }));
     } else {
       showBanner();
     }
+
+    window.__consentReady = true;
+    window.dispatchEvent(
+      new CustomEvent('consent-ready', {
+        detail: existing || { necessary: true, external: false },
+      })
+    );
   }
 
   if (document.readyState === 'loading') {
