@@ -74,7 +74,7 @@ window.I18N_MESSAGES = {
     'kt.facts.meta': '90 Min · 4–12 Personen · ab 55 €',
     'kt.audience': 'Für dich privat · für Unternehmen · für Kliniken & Einrichtungen',
     'kt.offers.title': 'Was passt zu dir?',
-    'kt.offers.sub': 'Vier Angebote – tippe auf den Farbtropfen, die Beschreibung öffnet sich als Blase.',
+    'kt.offers.sub': 'Vier Angebote – ausführliche Beschreibung per Klick.',
     'offer.1.title': 'Kunstgruppentherapie',
     'offer.1.body':
       '<p><strong>Dienstag morgens.</strong> In der Gruppe (4–12 Menschen, 90 Minuten) entsteht ein geschützter Rahmen für Krankheitsakzeptanz, Integration und neue Perspektiven – auch wenn Worte nicht reichen.</p><p>Begleitetes Malen, Collagen und Zeichnen mit Acryl, Gouache und Kreide. Materialien sind inklusive. Üblicherweise vier Einheiten; Einzelsitzungen nach Vereinbarung möglich.</p><p class="note">Für dich privat und im therapeutischen Setting – Erfahrung u. a. aus dem klinischen Umfeld.</p>',
@@ -186,7 +186,7 @@ window.I18N_MESSAGES = {
     'kt.facts.meta': '90 min · 4–12 people · from €55',
     'kt.audience': 'For individuals · for companies · for clinics & institutions',
     'kt.offers.title': 'What suits you?',
-    'kt.offers.sub': 'Four services – tap the paint drop; the description opens in a bubble.',
+    'kt.offers.sub': 'Four services – click for the full description.',
     'offer.1.title': 'Group art therapy',
     'offer.1.body':
       '<p><strong>Tuesday mornings.</strong> In a group (4–12 people, 90 minutes) you find a safe space for acceptance, integration, and new perspectives – even when words fail.</p><p>Guided painting, collage, and drawing with acrylic, gouache, and chalk. Materials included. Usually four sessions; one-to-one by arrangement.</p><p class="note">For private clients in a therapeutic setting – extensive clinical experience.</p>',
