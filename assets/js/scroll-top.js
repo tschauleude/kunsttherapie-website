@@ -49,6 +49,9 @@
     createButton();
     updateVisibility();
     window.addEventListener('scroll', updateVisibility, { passive: true });
+    window.addEventListener('consent-settled', updateBottomOffset);
+    window.addEventListener('consent-updated', updateBottomOffset);
+    window.addEventListener('consent-banner-closed', updateBottomOffset);
   }
 
   if (document.readyState === 'loading') {
