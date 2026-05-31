@@ -18,7 +18,8 @@ const META = {
 
 const HEAD_EXTRA = `
   <meta name="theme-color" content="#557a76"/>
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>`;
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
+  <link rel="apple-touch-icon" href="assets/img/favicon.svg"/>`;
 
 const ROOT = path.join(__dirname, '..');
 
