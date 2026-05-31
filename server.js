@@ -763,9 +763,7 @@ app.delete('/api/admin/services/:id', requireAuth, (req, res) => {
 app.get('/api/bookings/config', (req, res) => {
   res.json({
     slotMinutes: booking.SLOT_MINUTES,
-    startHour: booking.START_HOUR,
-    endHour: booking.END_HOUR,
-    workDays: booking.WORK_DAYS,
+    schedule: booking.getScheduleForApi(),
     minAdvanceHours: booking.MIN_ADVANCE_HOURS,
     timezone: process.env.BOOKING_TIMEZONE || 'Europe/Berlin',
   });

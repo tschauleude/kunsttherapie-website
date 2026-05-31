@@ -215,4 +215,24 @@ document.getElementById('nextMonth').addEventListener('click', () => {
 
 document.getElementById('bookingForm').addEventListener('submit', submitBooking);
 
-document.addEventListener('DOMContentLoaded', () => loadMonth(currentMonth));
+async function loadBookingConfig() {
+  try {
+    const res = await fetch(`${API_URL}/bookings/config`);
+    const cfg = await res.json();
+    const dayNames = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+    const hint = document.getElementById('slotsHint');
+    if (cfg.schedule?.length && hint) {
+      const parts = cfg.schedule.map(
+        (s) => `${s.label || dayNames[s.day]} ${s.start}–${s.end}`
+      );
+      hint.innerHTML = `Buchbar: ${parts.join(' · ')} (je ${cfg.slotMinutes} Minuten).`;
+    }
+  } catch (e) {
+    /* Standard-Hinweis in HTML bleibt */
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadBookingConfig();
+  loadMonth(currentMonth);
+});
