@@ -63,6 +63,21 @@
     </div>
   </section>
 
+  <section id="neuigkeiten" class="section container home-news" hidden data-limit="3">
+    <div class="section-intro center">
+      <div class="kicker">Aktuelles</div>
+      <h2>Neuigkeiten</h2>
+      <p class="sub center">Was gerade ansteht – direkt aus der Praxis.</p>
+    </div>
+    <div id="homeNewsLoading" class="home-news-loading">
+      <p class="sub">Neuigkeiten werden geladen …</p>
+    </div>
+    <div id="homeNewsList" class="news-grid news-grid-home"></div>
+    <p class="center" style="margin-top:1.5rem">
+      <a class="btn outline" href="neuigkeiten.html">Alle Neuigkeiten</a>
+    </p>
+  </section>
+
   <section id="galerie" class="section container">
     <div class="section-intro center">
       <div class="kicker">Einblicke</div>
@@ -180,5 +195,6 @@
 
 <script>document.getElementById("y").textContent = new Date().getFullYear();</script>
 <script src="assets/js/main.js"></script>
+<script src="assets/js/news.js"></script>
 </body>
 </html>

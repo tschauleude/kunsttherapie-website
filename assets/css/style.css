@@ -744,6 +744,16 @@ table.prices th {
 }
 
 /* === NEWS & EVENTS === */
+.home-news-loading {
+  text-align: center;
+  padding: 1rem;
+}
+
+.news-grid-home {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
 .news-grid {
   display: grid;
   gap: 1.5rem;
