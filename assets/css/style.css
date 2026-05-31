@@ -1828,12 +1828,18 @@ body.consent-settings-open {
   }
 }
 
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .lang-switch {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  margin-left: auto;
-  margin-right: 0.35rem;
   padding: 0.28rem 0.35rem 0.28rem 0.65rem;
   background: #fff;
   border: 2px solid var(--color-teal);
@@ -1885,14 +1891,19 @@ body.consent-settings-open {
   outline-offset: 2px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .header-inner {
     flex-wrap: wrap;
+    align-items: center;
   }
 
-  .lang-switch {
-    order: 3;
-    margin: 0.35rem 0 0 auto;
+  .header-tools {
+    order: 2;
+    margin-left: auto;
+  }
+
+  nav[data-site-nav] {
+    order: 4;
   }
 }
 
@@ -1919,184 +1930,60 @@ body.consent-settings-open {
   }
 }
 
+.kt-offers .kt-offer.is-open {
+  border-color: #557a76;
+}
+
 .kt-offer {
-  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
   height: 100%;
-  min-height: 10.5rem;
+  min-height: 100%;
   transition: border-color 0.35s, box-shadow 0.35s;
   border: 2px solid transparent;
-  overflow: visible;
 }
 
 .page-kunsttherapie .kt-offer.card {
-  padding: 1.15rem 1rem 1.25rem;
+  padding: 1.1rem 1.2rem;
+}
+
+.kt-offer-head {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  gap: 0.65rem;
+  min-height: 0;
+}
+
+.kt-offer-head .kt-toggle {
+  margin-top: auto;
+  align-self: flex-start;
 }
 
 .kt-offer.is-open {
-  border-color: rgba(85, 122, 118, 0.35);
+  box-shadow: 0 12px 32px rgba(85, 122, 118, 0.12);
 }
 
-.kt-offer-title {
-  margin: 0 0 0.35rem;
+.kt-offer h3 {
+  margin: 0;
   font-size: 1.02rem;
   line-height: 1.35;
   color: var(--color-teal-dark);
 }
 
-.kt-offer-drop-wrap {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 0.5rem 0 0.25rem;
-}
-
-.kt-drop-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.55rem;
-  margin: 0;
-  padding: 0.35rem;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-family: var(--font-body);
-  color: var(--color-teal-dark);
-  transition: transform 0.2s ease;
-}
-
-.kt-drop-btn:hover .kt-drop-btn__shape,
-.kt-drop-btn:focus-visible .kt-drop-btn__shape {
-  filter: brightness(1.06);
-}
-
-.kt-drop-btn:focus-visible {
-  outline: 2px solid var(--color-teal);
-  outline-offset: 4px;
-  border-radius: 12px;
-}
-
-.kt-drop-btn__shape {
-  display: block;
-  width: 2.75rem;
-  height: 3.35rem;
-  background: radial-gradient(circle at 35% 28%, #8eb5b0 0%, #557a76 42%, #3d5c58 100%);
-  border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
-  box-shadow:
-    inset -3px -6px 12px rgba(255, 255, 255, 0.22),
-    inset 2px 3px 8px rgba(0, 0, 0, 0.1),
-    0 4px 12px rgba(85, 122, 118, 0.28);
-  transition: filter 0.2s ease, opacity 0.2s ease;
-}
-
-.kt-drop-btn.is-active .kt-drop-btn__shape {
-  opacity: 0.72;
-  filter: brightness(0.95);
-}
-
-.kt-drop-btn__label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: rgba(85, 122, 118, 0.45);
-}
-
-/* Beschreibungs-Blase (Modal) */
-.kt-offer-bubble {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  pointer-events: none;
-}
-
-.kt-offer-bubble:not([hidden]) {
-  pointer-events: auto;
-}
-
-.kt-offer-bubble__backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(45, 62, 60, 0.45);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.kt-offer-bubble.is-visible .kt-offer-bubble__backdrop {
-  opacity: 1;
-}
-
-.kt-offer-bubble__panel {
-  position: relative;
-  z-index: 1;
-  width: min(32rem, 100%);
-  max-height: min(78vh, 36rem);
-  overflow: auto;
-  padding: 1.35rem 1.5rem 1.25rem;
-  background: var(--bg-surface, #fff);
-  border: 2px solid var(--color-teal);
-  border-radius: calc(var(--radius-card, 16px) + 4px);
-  box-shadow: 0 20px 50px rgba(45, 62, 60, 0.28);
-  transform: scale(0.55);
-  opacity: 0;
-  transition: transform 0.38s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.28s ease;
-}
-
-.kt-offer-bubble.is-visible .kt-offer-bubble__panel {
-  transform: scale(1);
-  opacity: 1;
-}
-
-.kt-offer-bubble__close {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.55rem;
-  width: 2.25rem;
-  height: 2.25rem;
-  border: none;
-  border-radius: 50%;
-  background: rgba(85, 122, 118, 0.12);
-  color: var(--color-teal-dark);
-  font-size: 1.35rem;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.kt-offer-bubble__close:hover {
-  background: rgba(85, 122, 118, 0.22);
-}
-
-.kt-offer-bubble__content {
-  font-size: 0.96rem;
+.kt-offer-body {
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(85, 122, 118, 0.15);
+  margin-top: 0.65rem;
+  font-size: 0.95rem;
   line-height: 1.65;
-  color: var(--text-main);
   text-align: left;
-  padding-right: 1.5rem;
-}
-
-body.kt-offer-modal-open {
-  overflow: hidden;
+  animation: ktReveal 0.35s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .kt-offer-bubble__panel {
-    transition: opacity 0.2s ease;
-    transform: none;
-  }
-
-  .kt-offer-bubble.is-visible .kt-offer-bubble__panel {
-    transform: none;
+  .kt-offer-body {
+    animation: none;
   }
 }
 
@@ -2536,7 +2423,6 @@ html.reveal-active .reveal-item.reveal-visible {
   nav[data-site-nav] {
     display: none;
     width: 100%;
-    order: 3;
   }
 
   body.nav-open nav[data-site-nav] {

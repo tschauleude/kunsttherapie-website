@@ -28,7 +28,17 @@
         <span class="name">Martina Schwierzke</span>
         <span class="title" data-i18n="brand.subtitle">Kunsttherapie Paderborn</span>
       </a>
-      <nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
+      <div class="header-tools">
+        <div class="lang-switch" role="group" aria-label="Sprache wählen">
+          <span class="lang-switch-hint" data-i18n="lang.hint">Sprache</span>
+          <div class="lang-switch-btns">
+            <button type="button" class="lang-switch-btn is-active" data-lang="de" aria-pressed="true">DE</button>
+            <button type="button" class="lang-switch-btn" data-lang="en" aria-pressed="false">EN</button>
+          </div>
+        </div>
+      </div>
+
+<nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
         <ul>
           <li><a href="ueber-mich.html" data-nav="ansatz" data-i18n="nav.ansatz"><span data-i18n="nav.ansatz">Mein Ansatz</span></a></li>
           <li><a href="kunsttherapie.html" data-nav="kunsttherapie" data-i18n="nav.therapy"><span data-i18n="nav.therapy">Kunsttherapie</span></a></li>
@@ -71,71 +81,35 @@
 
     <div class="kt-offers kt-offers--four" data-reveal-skip>
       <article class="kt-offer card" data-offer>
-        <h3 class="kt-offer-title" id="kt-offer-title-1" data-i18n="offer.1.title">Kunstgruppentherapie</h3>
-        <div class="kt-offer-drop-wrap">
-          <button type="button" class="kt-drop-btn" aria-expanded="false" aria-controls="kt-bubble-1">
-            <span class="kt-drop-btn__shape" aria-hidden="true"></span>
-            <span class="kt-drop-btn__label" data-i18n="btn.learnMore">Mehr erfahren</span>
-          </button>
+        <div class="kt-offer-head">
+          <h3 data-i18n="offer.1.title">Kunstgruppentherapie</h3>
+          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
-        <div class="kt-offer-bubble" id="kt-bubble-1" hidden>
-          <div class="kt-offer-bubble__backdrop" data-offer-close tabindex="-1" aria-hidden="true"></div>
-          <div class="kt-offer-bubble__panel" role="dialog" aria-modal="true" aria-labelledby="kt-offer-title-1">
-            <button type="button" class="kt-offer-bubble__close" data-offer-close data-i18n-aria-label="btn.close" aria-label="Schließen">&times;</button>
-            <div class="kt-offer-bubble__content" data-i18n-html="offer.1.body"></div>
-          </div>
-        </div>
+        <div class="kt-offer-body" hidden data-i18n-html="offer.1.body"></div>
       </article>
 
       <article class="kt-offer card" data-offer>
-        <h3 class="kt-offer-title" id="kt-offer-title-2" data-i18n="offer.2.title">Auszeit</h3>
-        <div class="kt-offer-drop-wrap">
-          <button type="button" class="kt-drop-btn" aria-expanded="false" aria-controls="kt-bubble-2">
-            <span class="kt-drop-btn__shape" aria-hidden="true"></span>
-            <span class="kt-drop-btn__label" data-i18n="btn.learnMore">Mehr erfahren</span>
-          </button>
+        <div class="kt-offer-head">
+          <h3 data-i18n="offer.2.title">Auszeit</h3>
+          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
-        <div class="kt-offer-bubble" id="kt-bubble-2" hidden>
-          <div class="kt-offer-bubble__backdrop" data-offer-close tabindex="-1" aria-hidden="true"></div>
-          <div class="kt-offer-bubble__panel" role="dialog" aria-modal="true" aria-labelledby="kt-offer-title-2">
-            <button type="button" class="kt-offer-bubble__close" data-offer-close data-i18n-aria-label="btn.close" aria-label="Schließen">&times;</button>
-            <div class="kt-offer-bubble__content" data-i18n-html="offer.2.body"></div>
-          </div>
-        </div>
+        <div class="kt-offer-body" hidden data-i18n-html="offer.2.body"></div>
       </article>
 
       <article class="kt-offer card" data-offer>
-        <h3 class="kt-offer-title" id="kt-offer-title-3" data-i18n="offer.3.title">Einzelsitzungen</h3>
-        <div class="kt-offer-drop-wrap">
-          <button type="button" class="kt-drop-btn" aria-expanded="false" aria-controls="kt-bubble-3">
-            <span class="kt-drop-btn__shape" aria-hidden="true"></span>
-            <span class="kt-drop-btn__label" data-i18n="btn.learnMore">Mehr erfahren</span>
-          </button>
+        <div class="kt-offer-head">
+          <h3 data-i18n="offer.3.title">Einzelsitzungen</h3>
+          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
-        <div class="kt-offer-bubble" id="kt-bubble-3" hidden>
-          <div class="kt-offer-bubble__backdrop" data-offer-close tabindex="-1" aria-hidden="true"></div>
-          <div class="kt-offer-bubble__panel" role="dialog" aria-modal="true" aria-labelledby="kt-offer-title-3">
-            <button type="button" class="kt-offer-bubble__close" data-offer-close data-i18n-aria-label="btn.close" aria-label="Schließen">&times;</button>
-            <div class="kt-offer-bubble__content" data-i18n-html="offer.3.body"></div>
-          </div>
-        </div>
+        <div class="kt-offer-body" hidden data-i18n-html="offer.3.body"></div>
       </article>
 
       <article class="kt-offer card" data-offer>
-        <h3 class="kt-offer-title" id="kt-offer-title-4" data-i18n="offer.4.title">Unternehmen, Kliniken &amp; Einrichtungen</h3>
-        <div class="kt-offer-drop-wrap">
-          <button type="button" class="kt-drop-btn" aria-expanded="false" aria-controls="kt-bubble-4">
-            <span class="kt-drop-btn__shape" aria-hidden="true"></span>
-            <span class="kt-drop-btn__label" data-i18n="btn.learnMore">Mehr erfahren</span>
-          </button>
+        <div class="kt-offer-head">
+          <h3 data-i18n="offer.4.title">Unternehmen, Kliniken &amp; Einrichtungen</h3>
+          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
-        <div class="kt-offer-bubble" id="kt-bubble-4" hidden>
-          <div class="kt-offer-bubble__backdrop" data-offer-close tabindex="-1" aria-hidden="true"></div>
-          <div class="kt-offer-bubble__panel" role="dialog" aria-modal="true" aria-labelledby="kt-offer-title-4">
-            <button type="button" class="kt-offer-bubble__close" data-offer-close data-i18n-aria-label="btn.close" aria-label="Schließen">&times;</button>
-            <div class="kt-offer-bubble__content" data-i18n-html="offer.4.body"></div>
-          </div>
-        </div>
+        <div class="kt-offer-body" hidden data-i18n-html="offer.4.body"></div>
       </article>
     </div>
   </section>
@@ -315,6 +289,7 @@
         <a href="events.html"><span data-i18n="nav.events">Veranstaltungen</span></a>
         <a href="neuigkeiten.html"><span data-i18n="nav.news">Neuigkeiten</span></a>
         <a href="preise.html"><span data-i18n="footer.prices">Preise</span></a>
+        <a href="atelier.html"><span data-i18n="footer.atelier">Live-Atelier</span></a>
       </div>
       <div class="footer-col">
         <h4 data-i18n="footer.legal">Rechtliches</h4>

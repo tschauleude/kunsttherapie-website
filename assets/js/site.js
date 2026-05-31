@@ -127,7 +127,7 @@
     ['.site-footer .footer-col:nth-child(3) a[href*="events"]', 'nav.events'],
     ['.site-footer .footer-col:nth-child(3) a[href*="neuigkeiten"]', 'nav.news'],
     ['.site-footer .footer-col:nth-child(3) a[href*="preise"]', 'footer.prices'],
-    ['.site-footer .footer-col:nth-child(3) a[href*="atelier"]', 'nav.atelier'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="atelier"]', 'footer.atelier'],
     ['.site-footer .footer-col:nth-child(4) h4', 'footer.legal'],
     ['.site-footer .footer-col:nth-child(4) a[href*="impressum"]', 'footer.imprint'],
     ['.site-footer .footer-col:nth-child(4) a[href*="datenschutz"]', 'footer.privacy'],
@@ -260,7 +260,12 @@
     nav.id = navId;
     toggle.setAttribute('aria-controls', navId);
 
-    header.insertBefore(toggle, nav);
+    const tools = header.querySelector('.header-tools');
+    if (tools) {
+      tools.appendChild(toggle);
+    } else {
+      header.insertBefore(toggle, nav);
+    }
 
     toggle.addEventListener('click', () => {
       const open = document.body.classList.toggle('nav-open');
@@ -290,11 +295,29 @@
     });
   }
 
+  function bindLangSwitchButtons(wrap) {
+    wrap.querySelectorAll('.lang-switch-btn[data-lang]').forEach((btn) => {
+      if (btn.dataset.langBound === '1') return;
+      btn.dataset.langBound = '1';
+      btn.addEventListener('click', () => {
+        if (window.ktI18n) window.ktI18n.setLang(btn.dataset.lang);
+      });
+    });
+  }
+
   function initLangSwitch() {
     const header = document.querySelector('header .header-inner');
-    if (!header || header.querySelector('.lang-switch')) return;
+    if (!header) return;
 
-    const wrap = document.createElement('div');
+    let wrap = header.querySelector('.lang-switch');
+    if (wrap) {
+      bindLangSwitchButtons(wrap);
+      const label = window.ktI18n?.t('lang.switch');
+      if (label) wrap.setAttribute('aria-label', label);
+      return;
+    }
+
+    wrap = document.createElement('div');
     wrap.className = 'lang-switch';
     wrap.setAttribute('role', 'group');
     wrap.setAttribute('aria-label', window.ktI18n?.t('lang.switch') || 'Sprache');
@@ -302,7 +325,7 @@
     const hint = document.createElement('span');
     hint.className = 'lang-switch-hint';
     hint.setAttribute('data-i18n', 'lang.hint');
-    hint.textContent = window.ktI18n?.t('lang.hint') || 'DE · EN';
+    hint.textContent = window.ktI18n?.t('lang.hint') || 'Sprache';
 
     const btns = document.createElement('div');
     btns.className = 'lang-switch-btns';
@@ -313,19 +336,25 @@
       btn.className = 'lang-switch-btn';
       btn.dataset.lang = code;
       btn.textContent = code.toUpperCase();
-      btn.addEventListener('click', () => {
-        if (window.ktI18n) window.ktI18n.setLang(code);
-      });
       btns.appendChild(btn);
     });
 
     wrap.appendChild(hint);
     wrap.appendChild(btns);
+    bindLangSwitchButtons(wrap);
 
+    const tools = header.querySelector('.header-tools');
     const nav = header.querySelector('nav[data-site-nav]');
-    if (nav) header.insertBefore(wrap, nav);
-    else header.appendChild(wrap);
+    if (tools) {
+      tools.prepend(wrap);
+    } else if (nav) {
+      header.insertBefore(wrap, nav);
+    } else {
+      header.appendChild(wrap);
+    }
   }
+
+  window.ktInitLangSwitch = initLangSwitch;
 
   function init() {
     initSkipLink();
