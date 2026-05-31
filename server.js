@@ -1392,6 +1392,7 @@ const SITE_PAGES = [
   'preise',
   'kontakt',
   'buchung',
+  'atelier',
   'impressum',
   'datenschutz'
 ];

@@ -12,6 +12,7 @@
     neuigkeiten: 'neuigkeiten',
     events: 'events',
     preise: 'preise',
+    atelier: 'atelier',
     impressum: 'impressum',
     datenschutz: 'datenschutz',
     index: 'home',
@@ -167,13 +168,47 @@
     });
   }
 
+  function initLangSwitch() {
+    const header = document.querySelector('header .header-inner');
+    if (!header || header.querySelector('.lang-switch')) return;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'lang-switch';
+    wrap.setAttribute('role', 'group');
+    wrap.setAttribute('aria-label', window.ktI18n?.t('lang.switch') || 'Sprache');
+
+    ['de', 'en'].forEach((code) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'lang-switch-btn';
+      btn.dataset.lang = code;
+      btn.textContent = code.toUpperCase();
+      btn.addEventListener('click', () => {
+        if (window.ktI18n) window.ktI18n.setLang(code);
+      });
+      wrap.appendChild(btn);
+    });
+
+    const nav = header.querySelector('nav[data-site-nav]');
+    if (nav) header.insertBefore(wrap, nav);
+    else header.appendChild(wrap);
+  }
+
   function init() {
     initSkipLink();
     initMobileNav();
+    initLangSwitch();
     markCurrentNav();
     initHomeScrollSpy();
     setFooterYear();
   }
+
+  document.addEventListener('kt-lang-change', () => {
+    const group = document.querySelector('.lang-switch');
+    if (group && window.ktI18n) {
+      group.setAttribute('aria-label', window.ktI18n.t('lang.switch') || 'Sprache');
+    }
+  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

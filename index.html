@@ -46,12 +46,12 @@
       </a>
       <nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
         <ul>
-          <li><a href="ueber-mich.html" data-nav="ansatz">Mein Ansatz</a></li>
-          <li><a href="kunsttherapie.html" data-nav="kunsttherapie">Kunsttherapie</a></li>
-          <li><a href="kunsttherapie.html#praxis" data-nav="praxis">Die Praxis</a></li>
-          <li><a href="neuigkeiten.html" data-nav="neuigkeiten">Neuigkeiten</a></li>
-          <li><a href="buchung.html" class="nav-cta" data-nav="termin">Termin</a></li>
-          <li><a href="kontakt.html" data-nav="kontakt">Kontakt</a></li>
+          <li><a href="ueber-mich.html" data-nav="ansatz" data-i18n="nav.ansatz">Mein Ansatz</a></li>
+          <li><a href="kunsttherapie.html" data-nav="kunsttherapie" data-i18n="nav.therapy">Kunsttherapie</a></li>
+          <li><a href="kunsttherapie.html#praxis" data-nav="praxis" data-i18n="nav.practice">Die Praxis</a></li>
+          <li><a href="neuigkeiten.html" data-nav="neuigkeiten" data-i18n="nav.news">Neuigkeiten</a></li>
+          <li><a href="buchung.html" class="nav-cta" data-nav="termin" data-i18n="nav.booking">Termin</a></li>
+          <li><a href="kontakt.html" data-nav="kontakt" data-i18n="nav.contact">Kontakt</a></li>
         </ul>
       </nav>
     </div>
@@ -61,23 +61,20 @@
   <section class="hero container hero-intro">
     <div class="hero-grid">
       <div class="card hero-copy">
-        <div class="kicker">Martina Schwierzke</div>
-        <h1>Psychosoziale Kunsttherapie in <span class="text-accent">Paderborn</span></h1>
-        <p class="sub">
-          Ein geschützter Raum, in dem du mit Farbe, Form und Material arbeiten kannst – ohne Leistungsdruck. Nicht „schön malen", sondern innere Prozesse sichtbar machen und neue Perspektiven finden.
+        <div class="kicker" data-i18n="home.hero.kicker">Martina Schwierzke · Paderborn</div>
+        <h1 data-i18n-html="home.hero.titleHtml">Psychosoziale Kunsttherapie in <span class="text-accent">Paderborn</span></h1>
+        <p class="sub" data-i18n="home.hero.sub">
+          Zwei feste Angebotszeiten, ein geschützter Raum: Gruppen und therapeutische Begleitung am Vormittag, Auszeit und Gestalten am Abend – ohne Leistungsdruck. Für dich privat, für Teams in Unternehmen und für Kliniken.
         </p>
-        <div class="actions">
-          <a class="btn primary" href="buchung.html">Termin buchen</a>
-          <a class="btn outline" href="kunsttherapie.html">Kunsttherapie</a>
+        <div class="hero-times">
+          <span class="pill" data-i18n="home.times.di">Dienstag morgens</span>
+          <span class="pill" data-i18n="home.times.do">Donnerstag abends</span>
         </div>
-        <details style="margin-top:1.5rem">
-          <summary>Was Kunsttherapie bewirkt</summary>
-          <div class="inner">
-            <p>Kunst hilft, Gefühle und Ressourcen greifbar zu machen – auch wenn Worte fehlen. Das entstandene Werk wird zum Spiegel und Begleiter deines Prozesses.</p>
-            <p><strong>Vorkenntnisse sind nicht nötig.</strong> Entscheidend ist, dass sich das Gestalten für dich stimmig anfühlt.</p>
-          </div>
-        </details>
-        <p class="note" style="margin-top:1rem">Neue Gruppen ab <strong>01.06.</strong> · Otto-Stadler-Straße 23c, Paderborn</p>
+        <div class="actions">
+          <a class="btn primary" href="buchung.html" data-i18n="btn.book">Termin buchen</a>
+          <a class="btn outline" href="kunsttherapie.html" data-i18n="nav.therapy">Kunsttherapie</a>
+        </div>
+        <p class="note" style="margin-top:1rem" data-i18n="home.hero.note">Neue Gruppen ab 01.06. · Otto-Stadler-Straße 23c, Paderborn</p>
       </div>
       <div class="hero-right hero-right--landing">
         <img src="assets/img/Gruppen-und-Einzeltherapie-768x524.jpg" alt="Atelier – gemeinsam malen und gestalten in Paderborn"/>
@@ -117,104 +114,50 @@
     </div>
   </section>
 
-  <section id="angebote" class="section container">
+  <section id="zielgruppen" class="section container">
     <div class="section-intro center">
-      <div class="kicker">Leistungen</div>
-      <h2>Wie ich dich begleite</h2>
+      <h2 data-i18n="home.audience.title">Für wen ist das Angebot?</h2>
     </div>
-    <div class="services-grid">
-      <div class="card">
-        <h3>Lebenskrisen</h3>
-        <p>Wenn Worte nicht ausreichen, hilft die Kunst, Gefühle greifbar zu machen. Gemeinsam finden wir neue, kreative Wege.</p>
-        <p class="note" style="margin-top:0.75rem">Donnerstag abends · 90 Minuten</p>
+    <div class="audience-grid">
+      <div class="card audience-card">
+        <h3 data-i18n="home.audience.privat">Privat</h3>
+        <p data-i18n="home.audience.privat.desc">Gruppe, Auszeit oder Einzel – wenn Worte nicht reichen und du Ressourcen finden willst.</p>
       </div>
-      <div class="card">
-        <h3>Gruppen &amp; Klinik</h3>
-        <p>Ressourcenorientierte Begleitung in Gruppen – Krankheitsakzeptanz, Integration und neue Perspektiven im geschützten Rahmen.</p>
-        <p class="note" style="margin-top:0.75rem">4–12 Personen · 4 Einheiten</p>
+      <div class="card audience-card">
+        <h3 data-i18n="home.audience.firmen">Unternehmen</h3>
+        <p data-i18n="home.audience.firmen.desc">Teambuilding und kreative Teamtage – Verbindung statt Konkurrenz.</p>
       </div>
-      <div class="card">
-        <h3>Achtsamkeit</h3>
-        <p>Intuitives Malen und Gestalten: zur Ruhe kommen, den Alltag loslassen und die eigene Intuition stärken.</p>
-        <p class="note" style="margin-top:0.75rem">Teambuilding &amp; Einzel · nach Bedarf</p>
+      <div class="card audience-card">
+        <h3 data-i18n="home.audience.klinik">Kliniken &amp; Einrichtungen</h3>
+        <p data-i18n="home.audience.klinik.desc">Gruppen, Palliativbegleitung, Vorträge – langjährige Klinikerfahrung.</p>
       </div>
     </div>
   </section>
 
-  <section id="atelier" class="section container">
-    <div class="card canvasWrap" id="atelierApp" data-reveal-skip>
-      <div class="kicker">Probier's aus</div>
-      <h2>Fang direkt an – <span class="text-accent">probier dich aus</span></h2>
-      <p class="atelier-invite">Einfach loslegen: malen, Linien und Formen setzen, Fotos zur Kollage legen. Es geht ums Ausprobieren – nichts muss „schön“ werden. Wenn du magst, schickst du dein Werk später an Martina.</p>
-
-      <div class="atelier-canvas-wrap">
-        <canvas id="atelierCanvas" role="img" aria-label="Mini-Atelier: Zeichenfläche – einfach draufloslegen"></canvas>
-        <p class="atelier-canvas-hint" aria-hidden="true">Hier starten …</p>
+  <section id="angebote" class="section container">
+    <div class="section-intro center">
+      <div class="kicker">Leistungen</div>
+      <h2 data-i18n="home.services.title">Zwei Wege – gleich wichtig</h2>
+    </div>
+    <div class="services-grid services-grid--dual">
+      <div class="card">
+        <h3 data-i18n="home.services.di.title">Dienstag morgens · Gruppen &amp; Therapie</h3>
+        <p data-i18n="home.services.di.text">Kunstgruppentherapie in kleinen Gruppen: begleitetes Malen, Collage und Zeichnen.</p>
+        <a class="btn outline btn-sm" href="kunsttherapie.html#angebote" data-i18n="btn.learnMore">Mehr erfahren</a>
       </div>
-      <div class="atelier-collage-bar" data-collage-bar hidden></div>
-      <p class="atelier-status" data-atelier-status hidden role="status"></p>
-
-      <p class="atelier-tools-label">Werkzeuge – einfach ausprobieren</p>
-      <div class="atelier-toolbar" role="toolbar" aria-label="Werkzeuge">
-        <div class="atelier-tool-group">
-          <button type="button" class="atelier-tool active" data-tool="brush" aria-pressed="true" title="Pinsel">Pinsel</button>
-          <button type="button" class="atelier-tool" data-tool="line" aria-pressed="false" title="Linie">Linie</button>
-          <button type="button" class="atelier-tool" data-tool="rect" aria-pressed="false" title="Rechteck">Rechteck</button>
-          <button type="button" class="atelier-tool" data-tool="circle" aria-pressed="false" title="Kreis/Oval">Oval</button>
-          <button type="button" class="atelier-tool" data-tool="select" aria-pressed="false" title="Kollage verschieben">Verschieben</button>
-        </div>
-        <div class="atelier-tool-group atelier-options">
-          <label class="label" for="atelierColor">Farbe</label>
-          <input id="atelierColor" data-color type="color" value="#557a76"/>
-          <label class="label" for="atelierSize">Stärke</label>
-          <input id="atelierSize" data-size type="range" min="2" max="24" value="8"/>
-          <label class="atelier-check"><input type="checkbox" data-fill/> Fläche füllen</label>
-        </div>
-        <div class="atelier-tool-group">
-          <button type="button" class="btn outline btn-sm" data-undo disabled>Rückgängig</button>
-          <button type="button" class="btn outline btn-sm" data-redo disabled>Wiederholen</button>
-          <button type="button" class="btn outline btn-sm" data-save-draft>Speichern</button>
-          <button type="button" class="btn outline btn-sm" data-load-draft>Laden</button>
-          <button type="button" class="btn outline btn-sm" data-clear>Leeren</button>
-        </div>
+      <div class="card">
+        <h3 data-i18n="home.services.do.title">Donnerstag abends · Auszeit</h3>
+        <p data-i18n="home.services.do.text">Entspanntes Gestalten nach dem Feierabend – ohne therapeutischen Druck.</p>
+        <a class="btn outline btn-sm" href="kunsttherapie.html#angebote" data-i18n="btn.learnMore">Mehr erfahren</a>
       </div>
+    </div>
+  </section>
 
-      <div class="atelier-collage-controls">
-        <label class="btn outline btn-sm atelier-upload-btn">
-          Bild hochladen (Kollage)
-          <input type="file" data-upload accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden/>
-        </label>
-        <button type="button" class="btn outline btn-sm" data-collage-smaller title="Ausgewähltes Bild verkleinern">−</button>
-        <button type="button" class="btn outline btn-sm" data-collage-bigger title="Ausgewähltes Bild vergrößern">+</button>
-        <button type="button" class="btn outline btn-sm" data-collage-remove>Bild entfernen</button>
-        <span class="note">Max. 6 Bilder · „Verschieben“ zum Positionieren</span>
-      </div>
-
-      <details class="atelier-submit-panel">
-        <summary>An Martina senden</summary>
-        <form class="atelier-submit-form" data-submit-form>
-          <p class="note">Dein Werk wird als Bild übermittelt. Martina nutzt es vertraulich – z.&nbsp;B. als Ausgangspunkt für Kunst oder eine Therapiesitzung.</p>
-          <label class="atelier-check">
-            <input type="checkbox" name="anonymous" checked/>
-            Anonym senden (ohne Name und E-Mail)
-          </label>
-          <div class="atelier-identity" data-identity-fields hidden>
-            <div class="form-row">
-              <label for="atelierName">Name</label>
-              <input id="atelierName" name="name" type="text" autocomplete="name"/>
-            </div>
-            <div class="form-row">
-              <label for="atelierEmail">E-Mail</label>
-              <input id="atelierEmail" name="email" type="email" autocomplete="email"/>
-            </div>
-          </div>
-          <div class="form-row">
-            <label for="atelierNote">Kurze Nachricht (optional)</label>
-            <textarea id="atelierNote" name="note" rows="3" maxlength="2000" placeholder="Was soll Martina wissen?"></textarea>
-          </div>
-          <button type="submit" class="btn primary">Werk absenden</button>
-        </form>
-      </details>
+  <section id="vertrauen" class="section container">
+    <div class="card trust-card">
+      <h2 data-i18n="home.trust.title">Erfahrung &amp; Vertrauen</h2>
+      <p data-i18n="home.trust.text">Über 16 Jahre in Palliativversorgung, Psychoonkologie und klinischen Gruppen – u. a. MZG und Brüderkrankenhaus.</p>
+      <p class="note" data-i18n="home.trust.note">Kundenstimmen und Kooperationslogos folgen nach Freigabe.</p>
     </div>
   </section>
 
@@ -268,6 +211,7 @@
         <a href="events.html">Veranstaltungen</a>
         <a href="neuigkeiten.html">Neuigkeiten</a>
         <a href="preise.html">Preise</a>
+        <a href="atelier.html" data-i18n="nav.atelier">Mini-Atelier</a>
       </div>
       <div class="footer-col">
         <h4>Rechtliches</h4>
@@ -280,6 +224,8 @@
     </div>
   </footer>
 
+<script src="assets/js/i18n-messages.js"></script>
+<script src="assets/js/i18n.js"></script>
 <script src="assets/js/seo.js"></script>
   <script src="assets/js/consent.js"></script>
   <script src="assets/js/accessibility.js"></script>
@@ -287,7 +233,6 @@
 <script src="assets/js/reveal.js"></script>
 <script src="assets/js/scroll-top.js"></script>
 <script src="assets/js/main.js"></script>
-<script src="assets/js/atelier.js"></script>
 <script src="assets/js/news.js"></script>
 </body>
 </html>
