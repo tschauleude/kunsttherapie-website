@@ -881,6 +881,7 @@ app.get('/api/admin/google/callback', async (req, res) => {
 
 const SITE_PAGES = [
   'index',
+  'kunsttherapie',
   'angebote',
   'ueber-mich',
   'neuigkeiten',
@@ -918,6 +919,9 @@ SITE_PAGES.forEach((page) => {
   app.get(`/${page}`, (req, res) => sendPage(res, page));
   app.get(`/${page}.html`, (req, res) => sendPage(res, page));
 });
+
+app.get('/angebote', (req, res) => res.redirect(301, '/kunsttherapie'));
+app.get('/angebote.html', (req, res) => res.redirect(301, '/kunsttherapie'));
 
 // PDFs and images in project root (Lebenslauf, etc.)
 app.get(/\.(pdf|jpg|jpeg|png|gif|webp)$/i, (req, res, next) => {

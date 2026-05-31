@@ -882,6 +882,192 @@ table.prices th {
   padding: 3rem 0 1rem;
 }
 
+/* === KUNSTTHERAPIE LANDING === */
+.page-kunsttherapie .kt-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1.5rem;
+  align-items: stretch;
+  padding-top: 2rem;
+}
+
+@media (max-width: 900px) {
+  .page-kunsttherapie .kt-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kt-hero-card .lead {
+  font-size: 1.08rem;
+  max-width: 38rem;
+}
+
+.kt-facts {
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.25rem;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.kt-facts .pill {
+  margin-right: 0.35rem;
+}
+
+.kt-palette-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.kt-palette-label {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-light);
+}
+
+.kt-palette {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.kt-swatch {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  background: var(--swatch);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.kt-swatch:hover {
+  transform: scale(1.1);
+}
+
+.kt-swatch.active {
+  outline: 2px solid var(--color-teal-dark);
+  outline-offset: 3px;
+}
+
+.kt-scribble {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px dashed rgba(85, 122, 118, 0.35);
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.kt-offers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.kt-offers[data-accent-theme='teal'] .kt-offer.is-open { border-color: #557a76; }
+.kt-offers[data-accent-theme='rose'] .kt-offer.is-open { border-color: #d18d89; }
+.kt-offers[data-accent-theme='sage'] .kt-offer.is-open { border-color: #8fad9e; }
+.kt-offers[data-accent-theme='clay'] .kt-offer.is-open { border-color: #c4a574; }
+.kt-offers[data-accent-theme='violet'] .kt-offer.is-open { border-color: #9b8aa8; }
+
+.kt-offers[data-accent-theme='rose'] .kt-offer-tag { background: rgba(209, 141, 137, 0.25); }
+.kt-offers[data-accent-theme='sage'] .kt-offer-tag { background: rgba(143, 173, 158, 0.3); }
+.kt-offers[data-accent-theme='clay'] .kt-offer-tag { background: rgba(196, 165, 116, 0.3); }
+.kt-offers[data-accent-theme='violet'] .kt-offer-tag { background: rgba(155, 138, 168, 0.25); }
+
+.kt-offer {
+  transition: border-color 0.35s, box-shadow 0.35s;
+  border: 2px solid transparent;
+}
+
+.kt-offer.is-open {
+  box-shadow: 0 16px 40px rgba(85, 122, 118, 0.15);
+}
+
+.kt-offer-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: rgba(85, 122, 118, 0.2);
+  color: var(--color-teal-dark);
+  margin-bottom: 0.5rem;
+}
+
+.kt-offer h3 {
+  margin: 0 0 0.5rem;
+}
+
+.kt-offer-teaser {
+  margin: 0 0 1rem;
+  color: var(--text-light);
+  line-height: 1.55;
+}
+
+.kt-offer-body {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(85, 122, 118, 0.15);
+  margin-top: 0.5rem;
+  animation: ktReveal 0.35s ease;
+}
+
+@keyframes ktReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kt-details {
+  margin-top: 0.75rem;
+}
+
+.kt-schedule {
+  margin: 1rem 0 1.5rem;
+  padding-left: 1.1rem;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
+.kt-map-wrap {
+  padding: 0;
+  overflow: hidden;
+}
+
+.kt-map {
+  display: block;
+  width: 100%;
+  min-height: 280px;
+  border: 0;
+}
+
+.kt-map-wrap .note {
+  padding: 0.75rem 1rem 1rem;
+}
+
+.kt-cta-band {
+  padding: 2.5rem 2rem;
+}
+
+nav a[aria-current='page'] {
+  color: var(--color-teal-dark);
+  font-weight: 700;
+}
+
 /* === BOOKING CALENDAR === */
 .booking-page {
   padding-bottom: 4rem;
