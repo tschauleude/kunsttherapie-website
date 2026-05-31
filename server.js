@@ -11,6 +11,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, 'public');
+const DB_PATH = process.env.DATABASE_PATH || path.join(ROOT, 'database.sqlite');
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+// Hostinger / reverse proxy: HTTPS erkennen, damit Session-Cookies gesetzt werden
+if (IS_PRODUCTION) {
+  app.set('trust proxy', 1);
+}
 
 // Ensure upload directory exists (Hostinger redeploy may wipe empty dirs)
 fs.mkdirSync(path.join(PUBLIC_DIR, 'uploads'), { recursive: true });
@@ -35,9 +42,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'kunsttherapie-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
+  proxy: IS_PRODUCTION,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: IS_PRODUCTION,
     httpOnly: true,
+    sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
@@ -46,7 +55,7 @@ app.use(session({
 // DATENBANK SETUP
 // ============================================================================
 
-const db = new sqlite3.Database('./database.sqlite', (err) => {
+const db = new sqlite3.Database(DB_PATH, (err) => {
   if (err) {
     console.error('Database error:', err);
   } else {
@@ -137,26 +146,56 @@ function initializeDatabase() {
     )
   `);
 
-  // Create default admin if not exists
-  db.get(`SELECT * FROM admins WHERE username = ?`, ['admin'], (err, row) => {
-    if (!row) {
-      const hashedPassword = bcryptjs.hashSync('admin123', 10);
-      db.run(
-        `INSERT INTO admins (username, password, email) VALUES (?, ?, ?)`,
-        ['admin', hashedPassword, 'info@kunsttherapie-pb.de'],
-        (err) => {
-          if (err) {
-            console.error('Error creating default admin:', err);
-          } else {
-            console.log(' Default admin created (username: admin, password: admin123)');
-            console.log('  WICHTIG: Bitte Passwort nach dem ersten Login ändern!');
-          }
-        }
-      );
-    }
-  });
-
+  ensureAdminAccounts();
   console.log(' Database initialized');
+}
+
+function ensureAdminAccounts() {
+  const envUser = process.env.ADMIN_USERNAME;
+  const envPass = process.env.ADMIN_PASSWORD;
+  const envEmail = process.env.ADMIN_EMAIL || 'info@kunsttherapie-pb.de';
+
+  if (envUser && envPass) {
+    const hash = bcryptjs.hashSync(envPass, 10);
+    db.get(`SELECT id FROM admins WHERE username = ?`, [envUser], (err, row) => {
+      if (err) {
+        console.error('Admin env setup error:', err);
+        return;
+      }
+      if (row) {
+        db.run(`UPDATE admins SET password = ?, email = ? WHERE username = ?`, [hash, envEmail, envUser]);
+        console.log(` Admin "${envUser}" Passwort aus .env aktualisiert`);
+      } else {
+        db.run(
+          `INSERT INTO admins (username, password, email) VALUES (?, ?, ?)`,
+          [envUser, hash, envEmail],
+          (insertErr) => {
+            if (insertErr) console.error('Admin env insert error:', insertErr);
+            else console.log(` Admin "${envUser}" aus .env angelegt`);
+          }
+        );
+      }
+    });
+    return;
+  }
+
+  db.get(`SELECT COUNT(*) AS count FROM admins`, (err, row) => {
+    if (err || (row && row.count > 0)) return;
+
+    const hashedPassword = bcryptjs.hashSync('admin123', 10);
+    db.run(
+      `INSERT INTO admins (username, password, email) VALUES (?, ?, ?)`,
+      ['admin', hashedPassword, envEmail],
+      (insertErr) => {
+        if (insertErr) {
+          console.error('Error creating default admin:', insertErr);
+        } else {
+          console.log(' Standard-Admin angelegt: Benutzername admin, Passwort admin123');
+          console.log('  Bitte ADMIN_USERNAME und ADMIN_PASSWORD in .env setzen!');
+        }
+      }
+    );
+  });
 }
 
 // ============================================================================
@@ -320,6 +359,72 @@ app.get('/api/auth/status', (req, res) => {
   } else {
     res.json({ authenticated: false });
   }
+});
+
+// Einmalige Ersteinrichtung (nur wenn noch kein Admin existiert)
+app.post('/api/auth/setup', (req, res) => {
+  const setupToken = process.env.SETUP_TOKEN;
+  const { token, username, password, email } = req.body;
+
+  if (!setupToken) {
+    return res.status(503).json({
+      error: 'SETUP_TOKEN ist nicht konfiguriert. Bitte ADMIN_USERNAME und ADMIN_PASSWORD in .env setzen.',
+    });
+  }
+  if (token !== setupToken) {
+    return res.status(403).json({ error: 'Ungültiger Setup-Token' });
+  }
+  if (!username || !password || password.length < 8) {
+    return res.status(400).json({ error: 'Benutzername und Passwort (min. 8 Zeichen) erforderlich' });
+  }
+
+  db.get(`SELECT COUNT(*) AS count FROM admins`, (err, row) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    if (row.count > 0) {
+      return res.status(409).json({ error: 'Es existiert bereits ein Admin-Konto' });
+    }
+
+    const hash = bcryptjs.hashSync(password, 10);
+    db.run(
+      `INSERT INTO admins (username, password, email) VALUES (?, ?, ?)`,
+      [username, hash, email || 'info@kunsttherapie-pb.de'],
+      function onInsert(insertErr) {
+        if (insertErr) {
+          return res.status(500).json({ error: 'Admin konnte nicht angelegt werden' });
+        }
+        req.session.userId = this.lastID;
+        req.session.username = username;
+        res.json({
+          success: true,
+          message: 'Admin-Konto erstellt. Du bist jetzt angemeldet.',
+          username,
+        });
+      }
+    );
+  });
+});
+
+app.post('/api/admin/change-password', requireAuth, (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword || newPassword.length < 8) {
+    return res.status(400).json({ error: 'Aktuelles und neues Passwort (min. 8 Zeichen) erforderlich' });
+  }
+
+  db.get(`SELECT * FROM admins WHERE id = ?`, [req.session.userId], (err, admin) => {
+    if (err || !admin) {
+      return res.status(500).json({ error: 'Benutzer nicht gefunden' });
+    }
+    if (!bcryptjs.compareSync(currentPassword, admin.password)) {
+      return res.status(401).json({ error: 'Aktuelles Passwort ist falsch' });
+    }
+
+    const hash = bcryptjs.hashSync(newPassword, 10);
+    db.run(`UPDATE admins SET password = ? WHERE id = ?`, [hash, admin.id], (updateErr) => {
+      if (updateErr) return res.status(500).json({ error: 'Passwort konnte nicht gespeichert werden' });
+      res.json({ success: true, message: 'Passwort geändert' });
+    });
+  });
 });
 
 // ============================================================================
@@ -913,6 +1018,8 @@ app.get('/admin', (req, res) => {
   const fallback = path.join(ROOT, 'admin.html');
   res.sendFile(fs.existsSync(adminFile) ? adminFile : fallback);
 });
+
+app.get('/admin.html', (req, res) => res.redirect(301, '/admin'));
 
 SITE_PAGES.forEach((page) => {
   if (page === 'index') return;

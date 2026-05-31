@@ -32,10 +32,29 @@
       </div>
       <button type="submit" class="btn">Anmelden</button>
     </form>
-    <p style="margin-top: 20px; text-align: center; color: #999; font-size: 0.9rem;">
-      Standard: admin / admin123<br>
-      Nach dem Login Passwort ändern!
+    <p id="loginHint" style="margin-top: 20px; text-align: center; color: #666; font-size: 0.9rem;">
+      Zugangsdaten erhältst du von der Website-Betreuung.<br>
+      Nach dem ersten Login: Passwort unter Dashboard ändern.
     </p>
+    <details id="firstSetupBox" style="margin-top:16px; font-size:0.9rem; display:none">
+      <summary style="cursor:pointer; color:var(--color-teal)">Erstes Admin-Konto anlegen</summary>
+      <div style="margin-top:12px">
+        <p class="note">Nur wenn noch kein Konto existiert. SETUP_TOKEN muss in Hostinger .env stehen.</p>
+        <div class="form-group">
+          <label>Setup-Token</label>
+          <input type="password" id="setupToken" autocomplete="off"/>
+        </div>
+        <div class="form-group">
+          <label>Benutzername</label>
+          <input type="text" id="setupUsername" placeholder="martina"/>
+        </div>
+        <div class="form-group">
+          <label>Passwort (min. 8 Zeichen)</label>
+          <input type="password" id="setupPassword"/>
+        </div>
+        <button type="button" class="btn" onclick="runFirstSetup()">Konto erstellen</button>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -69,6 +88,20 @@
           <p>Events: <strong id="eventsCount">0</strong></p>
           <p>Services: <strong id="servicesCount">0</strong></p>
         </div>
+        <hr class="sep" style="margin:1.5rem 0"/>
+        <h3>Passwort ändern</h3>
+        <form onsubmit="changePassword(event)" style="max-width:400px">
+          <div class="form-group">
+            <label>Aktuelles Passwort</label>
+            <input type="password" id="currentPassword" required autocomplete="current-password"/>
+          </div>
+          <div class="form-group">
+            <label>Neues Passwort (min. 8 Zeichen)</label>
+            <input type="password" id="newPassword" required autocomplete="new-password"/>
+          </div>
+          <button type="submit" class="btn-save">Passwort speichern</button>
+        </form>
+        <p id="passwordChangeMsg" class="message" style="margin-top:12px"></p>
       </div>
     </section>
 
@@ -234,6 +267,106 @@ const API_URL = window.location.origin + '/api';
 // AUTH FUNCTIONS
 // ============================================================================
 
+function showAdminApp(username) {
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('mainContainer').classList.add('active');
+  loadDashboard();
+  if (username) {
+    const welcome = document.querySelector('#dashboard .form-container > p');
+    if (welcome) welcome.textContent = `Willkommen, ${username}!`;
+  }
+}
+
+async function checkAuthOnLoad() {
+  try {
+    const response = await fetch(`${API_URL}/auth/status`, { credentials: 'include' });
+    const data = await response.json();
+    if (data.authenticated) {
+      showAdminApp(data.username);
+      return;
+    }
+    document.getElementById('loginScreen').classList.add('active');
+    document.getElementById('mainContainer').classList.remove('active');
+    showLoginHelp();
+  } catch (err) {
+    document.getElementById('loginMessage').textContent =
+      'Backend nicht erreichbar. Läuft auf Hostinger „npm start“ (server.js)?';
+    document.getElementById('loginMessage').className = 'message error active';
+  }
+}
+
+async function checkSetupAvailable() {
+  try {
+    const res = await fetch(`${API_URL}/auth/status`);
+    const setupBox = document.getElementById('firstSetupBox');
+    const hint = document.getElementById('loginHint');
+    const testLogin = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: '__probe__', password: '__probe__' }),
+    });
+    if (testLogin.status === 401) {
+      hint.innerHTML =
+        'Noch kein eigenes Konto? Falls eingerichtet: Benutzername <strong>admin</strong>, Passwort <strong>admin123</strong> (einmal testen), danach sofort ändern.<br>Oder Konto über Hostinger .env (ADMIN_USERNAME / ADMIN_PASSWORD).';
+    }
+    setupBox.style.display = 'block';
+  } catch (e) {
+    /* ignore */
+  }
+}
+
+async function runFirstSetup() {
+  const token = document.getElementById('setupToken').value;
+  const username = document.getElementById('setupUsername').value.trim();
+  const password = document.getElementById('setupPassword').value;
+  try {
+    const res = await fetch(`${API_URL}/auth/setup`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, username, password }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showMessage('Konto erstellt – du bist angemeldet.', 'success', 'loginMessage');
+      showAdminApp(data.username);
+    } else {
+      showMessage(data.error || 'Setup fehlgeschlagen', 'error', 'loginMessage');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error', 'loginMessage');
+  }
+}
+
+async function changePassword(e) {
+  e.preventDefault();
+  const msg = document.getElementById('passwordChangeMsg');
+  try {
+    const res = await fetch(`${API_URL}/admin/change-password`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        currentPassword: document.getElementById('currentPassword').value,
+        newPassword: document.getElementById('newPassword').value,
+      }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      msg.textContent = data.message || 'Passwort gespeichert';
+      msg.className = 'message success active';
+      e.target.reset();
+    } else {
+      msg.textContent = data.error || 'Fehler';
+      msg.className = 'message error active';
+    }
+  } catch (err) {
+    msg.textContent = 'Fehler: ' + err.message;
+    msg.className = 'message error active';
+  }
+}
+
 async function handleLogin(e) {
   e.preventDefault();
   const username = document.getElementById('username').value;
@@ -251,12 +384,13 @@ async function handleLogin(e) {
 
     if (response.ok) {
       showMessage('Anmeldung erfolgreich!', 'success', 'loginMessage');
-      document.getElementById('loginScreen').classList.remove('active');
-      document.getElementById('mainContainer').classList.add('active');
-      loadDashboard();
+      showAdminApp(data.username);
       setTimeout(() => loadNewsList(), 500);
     } else {
-      showMessage(data.error || 'Anmeldung fehlgeschlagen', 'error', 'loginMessage');
+      const hint = response.status === 401
+        ? 'Benutzername oder Passwort falsch – oder Session-Cookie blockiert (HTTPS/Hostinger .env prüfen).'
+        : (data.error || 'Anmeldung fehlgeschlagen');
+      showMessage(hint, 'error', 'loginMessage');
     }
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error', 'loginMessage');
@@ -814,6 +948,8 @@ async function deleteBooking(id) {
     showMessage('Fehler: ' + err.message, 'error');
   }
 }
+
+document.addEventListener('DOMContentLoaded', checkAuthOnLoad);
 </script>
 
 </body>
