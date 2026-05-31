@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+/**
+ * Fügt Canonical- und Open-Graph-Meta-Tags in öffentliche HTML-Seiten ein.
+ * Ausführen nach neuen Seiten: node scripts/apply-seo-head.js
+ */
+const fs = require('fs');
+const path = require('path');
+
+const ORIGIN = 'https://kunsttherapie.mkmpb.de';
+const SITE_NAME = 'Kunsttherapie Paderborn – Martina Schwierzke';
+
+const PAGES = [
+  { file: 'index.html', path: '/', title: 'Kunsttherapie Paderborn | Martina Schwierzke', desc: 'Kunsttherapie in Paderborn: Dienstag morgens und Donnerstag abends. Gruppen, Auszeit, Einzel, Teambuilding – Termin online buchen.' },
+  { file: 'kunsttherapie.html', path: '/kunsttherapie', title: 'Kunsttherapie & Angebote – Paderborn', desc: 'Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn.' },
+  { file: 'ueber-mich.html', path: '/ueber-mich', title: 'Über Martina Schwierzke – Kunsttherapeutin Paderborn', desc: 'Psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, eigene Praxis in Paderborn.' },
+  { file: 'buchung.html', path: '/buchung', title: 'Termin buchen – Kunsttherapie Paderborn', desc: 'Online-Termin anfragen: Dienstag morgens und Donnerstag abends. Freie Zeiten im Kalender – Bestätigung per E-Mail.' },
+  { file: 'kontakt.html', path: '/kontakt', title: 'Kontakt – Kunsttherapie Paderborn', desc: 'Nachricht senden, anrufen oder Anfahrt zur Praxis Otto-Stadler-Straße 23c, Paderborn.' },
+  { file: 'preise.html', path: '/preise', title: 'Preise – Kunsttherapie Paderborn', desc: 'Transparente Preise für Gruppensitzungen ab 55 €, Programme und Einzelsitzungen auf Anfrage.' },
+  { file: 'neuigkeiten.html', path: '/neuigkeiten', title: 'Neuigkeiten – Kunsttherapie Paderborn', desc: 'Aktuelles aus der Praxis: Termine, Raum und Ankündigungen.' },
+  { file: 'events.html', path: '/events', title: 'Veranstaltungen – Kunsttherapie Paderborn', desc: 'Workshops, Teambuilding und Veranstaltungen in Paderborn.' },
+  { file: 'impressum.html', path: '/impressum', title: 'Impressum – Martina Schwierzke', desc: 'Impressum der Website Kunsttherapie Paderborn.' },
+  { file: 'datenschutz.html', path: '/datenschutz', title: 'Datenschutz – Kunsttherapie Paderborn', desc: 'Datenschutzerklärung der Website Kunsttherapie Paderborn.' },
+];
+
+const ROOT = path.join(__dirname, '..');
+
+function buildSeoBlock(page) {
+  const url = ORIGIN + (page.path === '/' ? '/' : page.path);
+  return `
+  <link rel="canonical" href="${url}"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:locale" content="de_DE"/>
+  <meta property="og:site_name" content="${SITE_NAME}"/>
+  <meta property="og:title" content="${page.title}"/>
+  <meta property="og:description" content="${page.desc}"/>
+  <meta property="og:url" content="${url}"/>
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:title" content="${page.title}"/>
+  <meta name="twitter:description" content="${page.desc}"/>`;
+}
+
+PAGES.forEach((page) => {
+  const filePath = path.join(ROOT, page.file);
+  if (!fs.existsSync(filePath)) return;
+  let html = fs.readFileSync(filePath, 'utf8');
+
+  if (html.includes('rel="canonical"')) {
+    console.log('Skip (canonical exists):', page.file);
+    return;
+  }
+
+  const titleMatch = html.match(/<title>([^<]*)<\/title>/);
+  if (titleMatch && titleMatch[1] !== page.title) {
+    html = html.replace(/<title>[^<]*<\/title>/, `<title>${page.title}</title>`);
+  }
+
+  if (!html.includes('name="description"')) {
+    html = html.replace(/<title>[^<]*<\/title>/, `<title>${page.title}</title>\n  <meta name="description" content="${page.desc}"/>`);
+  } else {
+    html = html.replace(
+      /<meta name="description" content="[^"]*"\/>/,
+      `<meta name="description" content="${page.desc}"/>`
+    );
+  }
+
+  html = html.replace(/<link rel="stylesheet" href="assets\/css\/style\.css"\/>/, (m) => buildSeoBlock(page) + '\n  ' + m);
+
+  if (!html.includes('assets/js/seo.js')) {
+    html = html.replace(
+      /<script src="assets\/js\/consent\.js"><\/script>/,
+      '<script src="assets/js/seo.js"></script>\n  <script src="assets/js/consent.js"></script>'
+    );
+  }
+
+  fs.writeFileSync(filePath, html);
+  console.log('Patched', page.file);
+});

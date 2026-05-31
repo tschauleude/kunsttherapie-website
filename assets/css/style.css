@@ -1726,18 +1726,16 @@ body.consent-settings-open {
   border: 2px solid transparent;
 }
 
+.page-kunsttherapie .kt-offer.card {
+  padding: 1.1rem 1.2rem;
+}
+
 .kt-offer-head {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 11.5rem;
-}
-
-.kt-offer-teaser {
-  flex: 1;
-  margin: 0 0 1rem;
-  color: var(--text-light);
-  line-height: 1.55;
+  flex: 0 0 auto;
+  gap: 0.65rem;
+  min-height: 0;
 }
 
 .kt-offer-head .kt-toggle {
@@ -1746,24 +1744,23 @@ body.consent-settings-open {
 }
 
 .kt-offer.is-open {
-  box-shadow: 0 16px 40px rgba(85, 122, 118, 0.15);
-}
-
-.kt-offer-tag {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-pill);
-  background: rgba(85, 122, 118, 0.2);
-  color: var(--color-teal-dark);
-  margin-bottom: 0.5rem;
+  box-shadow: 0 12px 32px rgba(85, 122, 118, 0.12);
 }
 
 .kt-offer h3 {
-  margin: 0 0 0.5rem;
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.35;
+  color: var(--color-teal-dark);
+}
+
+.kt-offer-body {
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(85, 122, 118, 0.15);
+  margin-top: 0.65rem;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  animation: ktReveal 0.35s ease;
 }
 
 .kt-praxis-grid {
