@@ -203,23 +203,38 @@
   }
 
   function applyConsentI18n() {
-    const wrap = document.getElementById('consentBanner')?.parentElement;
-    if (!wrap) return;
-    const extChecked = document.getElementById('consentExternal')?.checked;
-    const bannerHidden = document.getElementById('consentBanner')?.hidden;
-    const settingsHidden = document.getElementById('consentSettings')?.hidden;
-    wrap.innerHTML = consentMarkup();
-    if (extChecked != null) {
-      const ext = document.getElementById('consentExternal');
-      if (ext) ext.checked = extChecked;
-    }
-    if (document.getElementById('consentBanner')) {
-      document.getElementById('consentBanner').hidden = bannerHidden;
-    }
-    if (document.getElementById('consentSettings')) {
-      document.getElementById('consentSettings').hidden = settingsHidden;
-    }
-    bindConsentUi(wrap);
+    const title = document.getElementById('consentBannerTitle');
+    if (!title) return;
+
+    const close = tr('btn.close') || 'Schließen';
+    const setHtml = (sel, key) => {
+      const el = document.querySelector(sel);
+      const val = tr(key);
+      if (el && val != null) el.innerHTML = val;
+    };
+    const setText = (sel, key) => {
+      const el = document.querySelector(sel);
+      const val = tr(key);
+      if (el && val != null) el.textContent = val;
+    };
+
+    setText('#consentBannerTitle', 'consent.banner.title');
+    setHtml('#consentBanner .consent-lead', 'consent.lead');
+    setHtml('#consentBanner .consent-list', 'consent.list');
+    setHtml('#consentBanner .consent-banner-inner > .note', 'consent.note');
+    setText('[data-consent-all]', 'consent.acceptAll');
+    setText('[data-consent-essential]', 'consent.essential');
+    setText('[data-consent-settings]', 'consent.settings');
+    setText('#consentSettingsTitle', 'consent.settingsTitle');
+    setText('#consentSettings .consent-option:nth-of-type(1) label', 'consent.necessary');
+    setHtml('#consentSettings .consent-option:nth-of-type(1) .note', 'consent.necessaryNote');
+    setText('#consentSettings .consent-option:nth-of-type(2) label', 'consent.external');
+    setHtml('#consentSettings .consent-option:nth-of-type(2) .note', 'consent.externalNote');
+    setText('[data-consent-save]', 'consent.save');
+    setHtml('#consentSettings .consent-settings-panel > .note', 'consent.legalLinks');
+
+    const closeBtn = document.querySelector('.consent-settings-close');
+    if (closeBtn) closeBtn.setAttribute('aria-label', close);
   }
 
   function bindConsentUi(wrap) {

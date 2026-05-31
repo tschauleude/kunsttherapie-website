@@ -180,13 +180,46 @@
     });
 
     document.querySelectorAll('.legal-footer').forEach((el) => {
-      if (el.querySelector('[data-cookie-settings]')) return;
-      const yearEl = el.querySelector('#y, #year');
-      const year = yearEl?.textContent || String(new Date().getFullYear());
       const tag = t('footer.tagline');
-      if (tag) {
-        el.innerHTML = `&copy; <span id="y">${year}</span> ${tag}`;
+      if (!tag) return;
+
+      const hasExtra =
+        el.querySelector(
+          '[data-cookie-settings], [data-a11y-open], .footer-link-btn, .a11y-footer-link'
+        ) != null;
+
+      if (!hasExtra) {
+        const year = String(new Date().getFullYear());
+        el.innerHTML = `&copy; <span id="y">${year}</span><span class="footer-tagline-text"> ${tag}</span>`;
+        return;
       }
+
+      let yearEl = el.querySelector('#y, #year');
+      if (!yearEl) {
+        yearEl = document.createElement('span');
+        yearEl.id = 'y';
+        el.prepend(yearEl);
+        if (!el.textContent.trim().startsWith('©')) {
+          el.prepend(document.createTextNode('© '));
+        }
+      }
+      if (!yearEl.textContent?.trim()) {
+        yearEl.textContent = String(new Date().getFullYear());
+      }
+
+      let taglineEl = el.querySelector('.footer-tagline-text');
+      if (!taglineEl) {
+        taglineEl = document.createElement('span');
+        taglineEl.className = 'footer-tagline-text';
+        [...el.childNodes].forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) node.remove();
+        });
+        const insertBefore = el.querySelector(
+          '[data-cookie-settings], [data-a11y-open], .footer-link-btn, .a11y-footer-link'
+        );
+        el.insertBefore(taglineEl, insertBefore || null);
+      }
+      taglineEl.textContent = ` ${tag}`;
     });
   }
 
@@ -306,6 +339,7 @@
 
   document.addEventListener('kt-lang-change', () => {
     applySiteChrome();
+    setFooterYear();
     const group = document.querySelector('.lang-switch');
     if (group && window.ktI18n) {
       group.setAttribute('aria-label', window.ktI18n.t('lang.switch') || 'Sprache');

@@ -6,25 +6,35 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+function eventsLocale() {
+  return window.ktI18n?.getLocale?.() || 'de-DE';
+}
+
 function formatEventDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('de-DE', {
+  return new Date(dateStr).toLocaleDateString(eventsLocale(), {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
 }
 
+function metaLine(key, value) {
+  const tpl = window.ktI18n?.t(key);
+  if (!tpl) return String(value);
+  return tpl.replace('{value}', String(value));
+}
+
 function renderEventCard(item) {
   const date = formatEventDate(item.date);
   const imageHtml = item.image
     ? `<img src="${escapeHtml(item.image)}" alt="" class="event-image"/>`
-    : `<div class="event-image event-image-placeholder">Termin</div>`;
+    : `<div class="event-image event-image-placeholder">${window.ktI18n?.t('eventsPage.cardDate') || 'Termin'}</div>`;
 
   const meta = [
     date,
-    item.time ? `Uhrzeit: ${item.time}` : null,
-    item.location ? `Ort: ${item.location}` : null,
-    item.capacity ? `${item.capacity} Plätze` : null,
+    item.time ? metaLine('eventsPage.metaTime', item.time) : null,
+    item.location ? metaLine('eventsPage.metaLocation', item.location) : null,
+    item.capacity ? metaLine('eventsPage.metaCapacity', item.capacity) : null,
   ].filter(Boolean);
 
   return `
@@ -37,22 +47,48 @@ function renderEventCard(item) {
           ${meta.map((m) => `<span>${escapeHtml(m)}</span>`).join('')}
         </div>
         <p>${escapeHtml(item.description)}</p>
-        <a href="kontakt.html" class="event-cta">Anmelden</a>
+        <a href="kontakt.html" class="event-cta">${window.ktI18n?.t('eventsPage.signUp') || 'Anmelden'}</a>
       </div>
     </div>
   `;
 }
 
-async function loadEvents() {
+let cachedEvents = null;
+
+function renderEventsList(events) {
+  const empty = document.getElementById('eventsEmpty');
+  const list = document.getElementById('eventsList');
+  if (!list) return;
+
+  if (!events.length) {
+    if (empty) empty.style.display = 'block';
+    list.innerHTML = '';
+    return;
+  }
+
+  if (empty) empty.style.display = 'none';
+  list.innerHTML = events.map(renderEventCard).join('');
+  if (window.revealStagger) {
+    window.revealStagger(list.querySelectorAll('.event-card'));
+  }
+}
+
+async function loadEvents({ refetch = true } = {}) {
   const loading = document.getElementById('eventsLoading');
   const empty = document.getElementById('eventsEmpty');
   const list = document.getElementById('eventsList');
   if (!list) return;
 
+  if (!refetch && cachedEvents) {
+    renderEventsList(cachedEvents);
+    return;
+  }
+
   try {
     const response = await fetch(`${EVENTS_API_URL}/events`);
     if (!response.ok) throw new Error('Events laden fehlgeschlagen');
     const events = await response.json();
+    cachedEvents = events;
 
     if (loading) loading.style.display = 'none';
 
@@ -61,10 +97,7 @@ async function loadEvents() {
       return;
     }
 
-    list.innerHTML = events.map(renderEventCard).join('');
-    if (window.revealStagger) {
-      window.revealStagger(list.querySelectorAll('.event-card'));
-    }
+    renderEventsList(events);
   } catch (err) {
     if (loading) {
       const errText =
@@ -75,5 +108,9 @@ async function loadEvents() {
     console.error('Events load error:', err);
   }
 }
+
+document.addEventListener('kt-lang-change', () => {
+  if (document.getElementById('eventsList')) loadEvents({ refetch: false });
+});
 
 document.addEventListener('DOMContentLoaded', loadEvents);

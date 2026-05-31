@@ -124,6 +124,7 @@
   function applyToggleLabel() {
     toggle.setAttribute('aria-label', tr('a11y.toggle') || 'Barrierefreiheit');
   }
+
   applyToggleLabel();
   panel.innerHTML = panelHtml();
 
@@ -133,15 +134,23 @@
   let form = panel.querySelector('#a11yForm');
   let live = panel.querySelector('#a11yLive');
 
-  function bindFormHandlers() {
-    form.addEventListener('change', onFormChange);
-    panel.querySelector('[data-a11y-reset]')?.addEventListener('click', onReset);
+  function syncForm() {
+    if (!form) return;
+    Object.keys(defaults).forEach((key) => {
+      const input = form.querySelector(`input[name="${key}"][value="${prefs[key]}"]`);
+      if (input) input.checked = true;
+    });
+  }
+
+  function announce(msg) {
+    if (live) live.textContent = msg;
   }
 
   function onFormChange(e) {
-    const t = e.target;
-    if (!(t instanceof HTMLInputElement) || t.type !== 'radio') return;
-    prefs = { ...prefs, [t.name]: t.value };
+    const target = e.target;
+    if (!(target instanceof HTMLInputElement) || target.type !== 'radio') return;
+    if (!target.closest('#a11yForm')) return;
+    prefs = { ...prefs, [target.name]: target.value };
     save(prefs);
     apply(prefs);
     announce(tr('a11y.announce.set') || 'Einstellung übernommen.');
@@ -153,31 +162,6 @@
     apply(prefs);
     syncForm();
     announce(tr('a11y.announce.reset') || 'Alle Einstellungen zurückgesetzt.');
-  }
-
-  function refreshPanelI18n() {
-    const wasOpen = !panel.hidden;
-    panel.innerHTML = panelHtml();
-    form = panel.querySelector('#a11yForm');
-    live = panel.querySelector('#a11yLive');
-    bindFormHandlers();
-    applyToggleLabel();
-    syncForm();
-    panel.hidden = !wasOpen;
-    document.querySelectorAll('[data-a11y-open]').forEach((el) => {
-      el.textContent = tr('a11y.footerBtn') || 'Barrierefreiheit';
-    });
-  }
-
-  function syncForm() {
-    Object.keys(defaults).forEach((key) => {
-      const input = form.querySelector(`input[name="${key}"][value="${prefs[key]}"]`);
-      if (input) input.checked = true;
-    });
-  }
-
-  function announce(msg) {
-    if (live) live.textContent = msg;
   }
 
   function openPanel() {
@@ -193,12 +177,30 @@
     toggle.focus();
   }
 
+  function refreshPanelI18n() {
+    const wasOpen = !panel.hidden;
+    panel.innerHTML = panelHtml();
+    form = panel.querySelector('#a11yForm');
+    live = panel.querySelector('#a11yLive');
+    applyToggleLabel();
+    syncForm();
+    panel.hidden = !wasOpen;
+    document.querySelectorAll('[data-a11y-open]').forEach((el) => {
+      el.textContent = tr('a11y.footerBtn') || 'Barrierefreiheit';
+    });
+  }
+
   toggle.addEventListener('click', () => {
     if (panel.hidden) openPanel();
     else closePanel();
   });
 
-  panel.querySelector('[data-a11y-close]')?.addEventListener('click', closePanel);
+  panel.addEventListener('click', (e) => {
+    if (e.target.closest('[data-a11y-close]')) closePanel();
+    if (e.target.closest('[data-a11y-reset]')) onReset();
+  });
+
+  panel.addEventListener('change', onFormChange);
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !panel.hidden) {
@@ -207,7 +209,6 @@
     }
   });
 
-  bindFormHandlers();
   syncForm();
 
   document.querySelectorAll('[data-a11y-open]').forEach((el) => {
@@ -229,7 +230,6 @@
     legalFooter.appendChild(btn);
   }
 
-  /* System-Präferenz „Bewegung reduzieren“ beim ersten Besuch respektieren */
   if (
     prefs.motion === 'default' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches

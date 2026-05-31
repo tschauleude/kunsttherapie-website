@@ -142,6 +142,8 @@
       'book.pickDay': 'Bitte einen Tag wählen',
       'book.slotsHint':
         'Nur <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> – Termine à 90 Minuten.',
+      'book.slotsHintDynamic':
+        'Buchbar: {schedule} (je {minutes} Minuten). <strong>Nur grüne Tage</strong> im Kalender anklicken.',
       'book.formTitle': 'Deine Angaben',
       'book.messagePlaceholder':
         'z.B. Erstgespräch, Gruppe Dienstag morgens, Auszeit Donnerstag abends …',
@@ -232,6 +234,11 @@
       'eventsPage.empty': 'Momentan sind keine Events geplant.',
       'eventsPage.emptyHint':
         'Schreib uns gerne, wenn du Interesse an einem Workshop hast!',
+      'eventsPage.signUp': 'Anmelden',
+      'eventsPage.cardDate': 'Termin',
+      'eventsPage.metaTime': 'Uhrzeit: {value}',
+      'eventsPage.metaLocation': 'Ort: {value}',
+      'eventsPage.metaCapacity': '{value} Plätze',
       'eventsPage.error':
         'Termine konnten gerade nicht geladen werden. Bitte später erneut versuchen.',
 
@@ -562,6 +569,8 @@
       'book.pickDay': 'Please select a day',
       'book.slotsHint':
         'Only <strong>Tuesday mornings</strong> and <strong>Thursday evenings</strong> – 90-minute sessions.',
+      'book.slotsHintDynamic':
+        'Bookable: {schedule} ({minutes} min slots). <strong>Click green days only</strong> in the calendar.',
       'book.formTitle': 'Your details',
       'book.messagePlaceholder':
         'e.g. introductory call, Tuesday morning group, Thursday evening downtime …',
@@ -652,6 +661,11 @@
       'eventsPage.empty': 'No events are scheduled at the moment.',
       'eventsPage.emptyHint':
         'Feel free to write if you are interested in a workshop!',
+      'eventsPage.signUp': 'Register',
+      'eventsPage.cardDate': 'Event',
+      'eventsPage.metaTime': 'Time: {value}',
+      'eventsPage.metaLocation': 'Location: {value}',
+      'eventsPage.metaCapacity': '{value} places',
       'eventsPage.error': 'Events could not be loaded right now. Please try again later.',
 
       'map.consent':

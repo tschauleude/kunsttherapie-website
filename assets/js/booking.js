@@ -13,6 +13,7 @@ let currentMonth = formatMonth(new Date());
 let selectedDate = null;
 let selectedStart = null;
 let monthData = null;
+let bookingConfigCache = null;
 
 function formatMonth(d) {
   const y = d.getFullYear();
@@ -287,18 +288,36 @@ async function submitBooking(e) {
   }
 }
 
+function weekdayLabels() {
+  return locale().startsWith('en')
+    ? ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    : ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+}
+
+function applySlotsHint(cfg) {
+  const hint = document.getElementById('slotsHint');
+  if (!hint) return;
+
+  if (!cfg?.schedule?.length) {
+    const val = tr('book.slotsHint');
+    if (val) hint.innerHTML = val;
+    return;
+  }
+
+  const dayNames = weekdayLabels();
+  const parts = cfg.schedule.map((s) => `${s.label || dayNames[s.day]} ${s.start}–${s.end}`);
+  const tpl = tr('book.slotsHintDynamic');
+  if (!tpl) return;
+  hint.innerHTML = tpl
+    .replace('{schedule}', parts.join(' · '))
+    .replace('{minutes}', String(cfg.slotMinutes));
+}
+
 async function loadBookingConfig() {
   try {
     const res = await fetch(`${API_URL}/bookings/config`);
-    const cfg = await res.json();
-    const dayNames = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
-    const hint = document.getElementById('slotsHint');
-    if (cfg.schedule?.length && hint) {
-      const parts = cfg.schedule.map(
-        (s) => `${s.label || dayNames[s.day]} ${s.start}–${s.end}`
-      );
-      hint.innerHTML = `Buchbar: ${parts.join(' · ')} (je ${cfg.slotMinutes} Minuten). <strong>Nur grüne Tage</strong> im Kalender anklicken.`;
-    }
+    bookingConfigCache = await res.json();
+    applySlotsHint(bookingConfigCache);
   } catch (e) {
     /* Standard-Hinweis in HTML bleibt */
   }
@@ -330,8 +349,38 @@ document.addEventListener('kt-lang-change', () => {
   if (!document.getElementById('bookingForm')) return;
   const label = document.getElementById('selectedDayLabel');
   if (label && !selectedDate) label.textContent = tr('book.pickDay');
+  if (selectedDate) label.textContent = formatDateLabel(selectedDate);
+
+  if (bookingConfigCache) applySlotsHint(bookingConfigCache);
+  else {
+    const slotsHint = document.getElementById('slotsHint');
+    const hintVal = tr('book.slotsHint');
+    if (slotsHint && hintVal) slotsHint.innerHTML = hintVal;
+  }
+
+  const prev = document.getElementById('prevMonth');
+  const next = document.getElementById('nextMonth');
+  if (prev) prev.setAttribute('aria-label', tr('book.prevMonth'));
+  if (next) next.setAttribute('aria-label', tr('book.nextMonth'));
+
+  const legend = document.querySelector('.booking-legend');
+  if (legend) {
+    const legVal = tr('book.legend');
+    if (legVal) legend.innerHTML = legVal;
+  }
+
+  const weekdays = document.querySelector('.booking-weekdays');
+  if (weekdays) {
+    const wdVal = tr('book.weekdays');
+    if (wdVal) weekdays.innerHTML = wdVal;
+  }
+
   if (monthData) {
-    loadMonth(currentMonth, monthData);
-    if (selectedDate) selectDay(selectedDate);
+    renderCalendar();
+    const status = document.getElementById('calendarStatus');
+    if (status) {
+      const bookable = monthHasBookableDays(monthData);
+      status.textContent = bookable ? tr('book.hintFree') : tr('book.hintNone');
+    }
   }
 });
