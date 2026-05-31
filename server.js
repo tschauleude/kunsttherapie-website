@@ -1172,6 +1172,15 @@ app.get(/\.(pdf|jpg|jpeg|png|gif|webp)$/i, (req, res, next) => {
   next();
 });
 
+app.use((req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'Nicht gefunden' });
+  }
+  res.status(404).type('text/html; charset=utf-8').send(
+    '<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Seite nicht gefunden</title></head><body><p>Seite nicht gefunden.</p><p><a href="/">Zur Startseite</a></p></body></html>'
+  );
+});
+
 // ============================================================================
 // SERVER START
 // ============================================================================

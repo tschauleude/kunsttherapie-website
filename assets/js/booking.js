@@ -49,6 +49,7 @@ function getMondayBasedCells(monthStr) {
 
 async function loadMonth(monthStr) {
   const status = document.getElementById('calendarStatus');
+  if (!status) return;
   status.textContent = 'Kalender wird geladen …';
 
   try {
@@ -201,20 +202,6 @@ async function submitBooking(e) {
   }
 }
 
-document.getElementById('prevMonth').addEventListener('click', () => {
-  const [y, m] = currentMonth.split('-').map(Number);
-  const d = new Date(y, m - 2, 1);
-  loadMonth(formatMonth(d));
-});
-
-document.getElementById('nextMonth').addEventListener('click', () => {
-  const [y, m] = currentMonth.split('-').map(Number);
-  const d = new Date(y, m, 1);
-  loadMonth(formatMonth(d));
-});
-
-document.getElementById('bookingForm').addEventListener('submit', submitBooking);
-
 async function loadBookingConfig() {
   try {
     const res = await fetch(`${API_URL}/bookings/config`);
@@ -232,7 +219,27 @@ async function loadBookingConfig() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function initBookingPage() {
+  const form = document.getElementById('bookingForm');
+  const prevMonth = document.getElementById('prevMonth');
+  const nextMonth = document.getElementById('nextMonth');
+  if (!form || !prevMonth || !nextMonth) return;
+
+  prevMonth.addEventListener('click', () => {
+    const [y, m] = currentMonth.split('-').map(Number);
+    const d = new Date(y, m - 2, 1);
+    loadMonth(formatMonth(d));
+  });
+
+  nextMonth.addEventListener('click', () => {
+    const [y, m] = currentMonth.split('-').map(Number);
+    const d = new Date(y, m, 1);
+    loadMonth(formatMonth(d));
+  });
+
+  form.addEventListener('submit', submitBooking);
   loadBookingConfig();
   loadMonth(currentMonth);
-});
+}
+
+document.addEventListener('DOMContentLoaded', initBookingPage);

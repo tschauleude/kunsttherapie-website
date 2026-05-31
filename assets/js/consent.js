@@ -92,6 +92,7 @@
   function hideBanner() {
     const b = document.getElementById('consentBanner');
     if (b) b.hidden = true;
+    window.dispatchEvent(new CustomEvent('consent-banner-closed'));
   }
 
   function showBanner() {
@@ -107,6 +108,7 @@
   function hideSettings() {
     const s = document.getElementById('consentSettings');
     if (s) s.hidden = true;
+    document.body.classList.remove('consent-settings-open');
   }
 
   function showSettings() {
@@ -114,6 +116,7 @@
     if (s) {
       syncToggleInputs(getConsent() || { external: false });
       s.hidden = false;
+      document.body.classList.add('consent-settings-open');
       s.querySelector('.consent-settings-panel')?.focus?.();
     }
   }
@@ -123,7 +126,7 @@
 
     const wrap = document.createElement('div');
     wrap.innerHTML = `
-      <div id="consentBanner" class="consent-banner" role="dialog" aria-modal="true" aria-labelledby="consentBannerTitle" hidden>
+      <div id="consentBanner" class="consent-banner" role="region" aria-labelledby="consentBannerTitle" hidden>
         <div class="consent-banner-inner card">
           <h2 id="consentBannerTitle">Datenschutz & Cookies</h2>
           <p class="consent-lead">

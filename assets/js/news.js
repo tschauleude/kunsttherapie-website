@@ -24,7 +24,7 @@ function renderNewsCard(item, excerptLen = 200) {
     plain.length > excerptLen ? `${plain.substring(0, excerptLen)}…` : plain;
 
   const imageHtml = item.image
-    ? `<img src="${item.image}" alt="" class="news-image"/>`
+    ? `<img src="${escapeHtml(item.image)}" alt="" class="news-image"/>`
     : `<div class="news-image news-image-placeholder" aria-hidden="true"></div>`;
 
   return `
@@ -42,7 +42,7 @@ function renderNewsCard(item, excerptLen = 200) {
 function renderNewsPopupBlock(item, isFirst) {
   const date = formatNewsDate(item.createdAt);
   const imageHtml = item.image
-    ? `<img src="${item.image}" alt="" class="news-popup-image"/>`
+    ? `<img src="${escapeHtml(item.image)}" alt="" class="news-popup-image"/>`
     : '';
   const paragraphs = (item.content || '')
     .split(/\n+/)
@@ -123,6 +123,7 @@ function scheduleNewsPopup(popupItems) {
   if (typeof window.isConsentBannerVisible === 'function' && window.isConsentBannerVisible()) {
     pendingNewsPopup = popupItems;
     window.addEventListener('consent-updated', tryShowPendingNewsPopup, { once: true });
+    window.addEventListener('consent-banner-closed', tryShowPendingNewsPopup, { once: true });
     return;
   }
 

@@ -835,7 +835,7 @@ async function saveService(e) {
 
 async function editService(id) {
   try {
-    const response = await fetch(`${API_URL}/services/${id}`);
+    const response = await fetch(`${API_URL}/admin/services/${id}`, { credentials: 'include' });
     const service = await response.json();
 
     document.getElementById('serviceId').value = service.id;
