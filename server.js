@@ -874,6 +874,41 @@ app.get('/api/bookings/:id/calendar.ics', async (req, res) => {
   }
 });
 
+app.post('/api/contact', async (req, res) => {
+  const { name, email: fromEmail, phone, message } = req.body;
+
+  if (!name || !fromEmail || !message) {
+    return res.status(400).json({ error: 'Name, E-Mail und Nachricht sind erforderlich' });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail)) {
+    return res.status(400).json({ error: 'Ungültige E-Mail-Adresse' });
+  }
+
+  try {
+    const result = await email.sendContactMessage({
+      name: name.trim(),
+      email: fromEmail.trim(),
+      phone: phone ? phone.trim() : '',
+      message: message.trim(),
+    });
+
+    if (!result.sent) {
+      return res.status(503).json({
+        error:
+          'Nachricht konnte nicht per E-Mail versendet werden. Bitte ruf uns an oder schreib direkt an info@kunsttherapie-pb.de.',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Danke! Deine Nachricht ist angekommen – wir melden uns zeitnah.',
+    });
+  } catch (e) {
+    console.error('contact error:', e);
+    res.status(500).json({ error: 'Nachricht konnte nicht gesendet werden' });
+  }
+});
+
 app.post('/api/bookings', async (req, res) => {
   const { name, email, phone, date, startTime, message } = req.body;
 

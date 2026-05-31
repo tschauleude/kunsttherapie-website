@@ -1,16 +1,14 @@
-<!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Neuigkeiten – Kunsttherapie Paderborn</title>
-  <meta name="theme-color" content="#557a76"/>
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
-  <meta name="description" content="Aktuelles aus der Praxis: Neuigkeiten und Termine der Kunsttherapie Paderborn."/>
-  <link rel="stylesheet" href="assets/css/style.css"/>
-</head>
-<body>
-  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+#!/usr/bin/env node
+/**
+ * Erzeugt Header/Footer-Snippets für öffentliche Seiten (Referenz / künftige Syncs).
+ * Ausführung: node scripts/build-chrome.js
+ */
+const fs = require('fs');
+const path = require('path');
+
+const ROOT = path.join(__dirname, '..');
+
+const HEADER = `  <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header>
     <div class="container header-inner">
       <a class="brand logo-text" href="index.html">
@@ -28,32 +26,9 @@
         </ul>
       </nav>
     </div>
-  </header>
+  </header>`;
 
-<main id="main">
-  <section class="hero container">
-    <div class="card hero-left">
-      <div class="kicker">Updates & News</div>
-      <h1>Was ist neu?</h1>
-      <p class="sub">
-        Aktuelle Neuigkeiten, Termine und Ankündigungen. Verpasse keine wichtigen Updates!
-      </p>
-    </div>
-  </section>
-
-  <section class="section container">
-    <div id="newsLoading" style="text-align: center; padding: 40px;">
-      <p>Laden...</p>
-    </div>
-    <div id="newsList" class="news-grid"></div>
-    <div id="newsEmpty" style="display: none; text-align: center; padding: 40px;">
-      <p style="color: var(--text-light);">Noch keine Neuigkeiten vorhanden.</p>
-    </div>
-  </section>
-</main>
-
-
-<footer class="site-footer">
+const FOOTER = `  <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-col">
         <h4>Praxis</h4>
@@ -84,12 +59,16 @@
     <div class="container legal-footer">
       &copy; <span id="y"></span> Martina Schwierzke · Kunsttherapie Paderborn
     </div>
-  </footer>
-<script src="assets/js/consent.js"></script>
-  <script src="assets/js/site.js"></script>
-<script src="assets/js/reveal.js"></script>
-<script src="assets/js/scroll-top.js"></script>
-<script src="assets/js/news.js"></script>
+  </footer>`;
 
-</body>
-</html>
+const SCRIPTS = `  <script src="assets/js/consent.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/reveal.js"></script>
+  <script src="assets/js/scroll-top.js"></script>`;
+
+const dir = path.join(ROOT, 'partials');
+fs.mkdirSync(dir, { recursive: true });
+fs.writeFileSync(path.join(dir, 'header.html'), HEADER);
+fs.writeFileSync(path.join(dir, 'footer.html'), FOOTER);
+fs.writeFileSync(path.join(dir, 'scripts-base.html'), SCRIPTS);
+console.log('Wrote partials/header.html, footer.html, scripts-base.html');

@@ -2,83 +2,82 @@
 <html lang="de">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Kontakt & Buchung – Kunsttherapie Paderborn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Kontakt – Kunsttherapie Paderborn</title>
+  <meta name="description" content="Kontakt zur Kunsttherapie-Praxis in Paderborn: Anfrage senden, Termin online buchen, Anfahrt Otto-Stadler-Straße 23c."/>
+  <meta name="theme-color" content="#557a76"/>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
-<body><header>
-  <div class="container header-inner">
-    <a class="brand logo-text" href="index.html">
-      <span class="name">Martina Schwierzke</span>
-      <span class="title">Kunsttherapie Paderborn</span>
-    </a>
-    <nav>
-      <ul>
-        <li><a href="ueber-mich.html">Mein Ansatz</a></li>
-        <li><a href="kunsttherapie.html">Kunsttherapie</a></li>
-        <li><a href="index.html#praxis">Die Praxis</a></li>
-        <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
-        <li><a href="buchung.html" class="nav-cta">Termin</a></li>
-        <li><a href="kontakt.html">Kontakt</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header>
+    <div class="container header-inner">
+      <a class="brand logo-text" href="index.html">
+        <span class="name">Martina Schwierzke</span>
+        <span class="title">Kunsttherapie Paderborn</span>
+      </a>
+      <nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
+        <ul>
+          <li><a href="ueber-mich.html" data-nav="ansatz">Mein Ansatz</a></li>
+          <li><a href="kunsttherapie.html" data-nav="kunsttherapie">Kunsttherapie</a></li>
+          <li><a href="index.html#praxis" data-nav="praxis">Die Praxis</a></li>
+          <li><a href="neuigkeiten.html" data-nav="neuigkeiten">Neuigkeiten</a></li>
+          <li><a href="buchung.html" class="nav-cta" data-nav="termin">Termin</a></li>
+          <li><a href="kontakt.html" data-nav="kontakt">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-<main class="container section">
-  <div class="card hero-left">
+<main id="main" class="container section">
+  <div class="section-intro center page-hero">
     <div class="kicker">Kontakt</div>
-    <h1>Anfragen & Terminbuchung</h1>
-    <p class="sub">Schreib kurz, worum es geht (Gruppe, Auszeit, Teambuilding, Einzel). Ich melde mich zeitnah zurück.</p>
-    <p style="margin-top:1rem">
-      <a class="btn primary" href="buchung.html">Online-Termin buchen</a>
-    </p>
+    <h1>Fragen, Anfragen &amp; Termine</h1>
+    <p class="sub center">Für einen festen Termin nutze die <a href="buchung.html">Online-Buchung</a>. Für alles andere: kurz schreiben oder anrufen.</p>
+  </div>
 
-    <hr class="sep"/>
-
-    <div class="twoCol">
-      <div>
-        <h2>Kontakt</h2>
-        <p style="color:var(--text); line-height:1.8">
-          <strong>Martina Schwierzke</strong><br/>
-          Otto-Stadler-Straße 23c<br/>
-          33102 Paderborn
-        </p>
-        <p style="color:var(--muted); line-height:1.8">
-          <strong>Telefon:</strong><br/>
-          05251-690111<br/>
-          0170-4790790
-        </p>
-        <p style="color:var(--muted); line-height:1.8">
-          <strong>E-Mail:</strong><br/>
-          <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
-        </p>
-        <p class="note" style="margin-top:12px">
-          Ab 1. Juni 2026 · Dienstag Vormittag · Donnerstag früher Abend
-        </p>
-        <p style="margin-top:1rem">
-          <a class="btn outline" href="kunsttherapie.html">Angebote ansehen</a>
-        </p>
-      </div>
-
-      <div>
-        <h2>Schreib mir</h2>
-        <form class="contact-form" style="display:flex; flex-direction:column; gap:4px">
-          <input type="text" placeholder="Dein Name" required/>
-          <input type="email" placeholder="E-Mail" required/>
-          <textarea placeholder="Deine Nachricht (z.B. Interessiert für Gruppentherapie)" rows="4" required></textarea>
-          <button type="button" class="btn primary" onclick="alert('Formulare funktionieren auf dieser Demo-Website nicht. Bitte kontaktiere Martina direkt per Telefon oder E-Mail.')">Nachricht senden</button>
-        </form>
-        <p class="note" style="margin-top:12px; font-size:0.85rem">
-          Für eine vollständige Integration empfehle ich die Verbindung mit einem Emaildienst (z.B. Formspree oder emailjs).
-        </p>
-      </div>
+  <div class="contact-layout">
+    <div class="card contact-card">
+      <h2>Erreichbarkeit</h2>
+      <ul class="contact-list">
+        <li><strong>Adresse</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li>
+        <li><strong>Telefon</strong><br><a href="tel:+495251690111">05251-690111</a></li>
+        <li><strong>Mobil</strong><br><a href="tel:+491704790790">0170-4790790</a></li>
+        <li><strong>E-Mail</strong><br><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>
+      </ul>
+      <p class="note">Praxis ab 1. Juni · Dienstag vormittags · Donnerstag früher Abend</p>
+      <p class="actions" style="margin-top:1.25rem">
+        <a class="btn primary" href="buchung.html">Online-Termin buchen</a>
+        <a class="btn outline" href="kunsttherapie.html">Angebote</a>
+      </p>
     </div>
 
-    <hr class="sep" style="margin:2rem 0"/>
+    <div class="card contact-card">
+      <h2>Nachricht senden</h2>
+      <form id="contactForm" class="contact-form">
+        <label for="contactName">Name *</label>
+        <input type="text" id="contactName" name="name" required autocomplete="name"/>
 
-    <h2>Anfahrt</h2>
-    <div class="card map-consent-wrap kt-map-wrap" style="padding:0; overflow:hidden; margin-top:1rem">
+        <label for="contactEmail">E-Mail *</label>
+        <input type="email" id="contactEmail" name="email" required autocomplete="email"/>
+
+        <label for="contactPhone">Telefon (optional)</label>
+        <input type="tel" id="contactPhone" name="phone" autocomplete="tel"/>
+
+        <label for="contactMessage">Nachricht *</label>
+        <textarea id="contactMessage" name="message" rows="5" required placeholder="Worum geht es? z. B. Gruppe, Auszeit, Teambuilding …"></textarea>
+
+        <p class="note">Deine Angaben werden nur zur Bearbeitung der Anfrage genutzt (<a href="datenschutz.html">Datenschutz</a>).</p>
+        <button type="submit" class="btn primary">Nachricht senden</button>
+      </form>
+      <div id="contactStatus" class="booking-alert" role="status" hidden></div>
+    </div>
+  </div>
+
+  <section class="section" aria-labelledby="anfahrt-heading">
+    <h2 id="anfahrt-heading">Anfahrt</h2>
+    <div class="card map-consent-wrap kt-map-wrap map-card">
       <div class="map-placeholder" data-map-placeholder>
         <p>Die Karte wird nur mit deiner Einwilligung geladen (Google Maps, siehe <a href="datenschutz.html">Datenschutz</a>).</p>
         <button type="button" class="btn primary" data-enable-maps>Karte anzeigen</button>
@@ -94,46 +93,46 @@
         allowfullscreen>
       </iframe>
     </div>
-    <p class="note" style="margin-top:0.75rem">
-      <a href="https://www.google.com/maps/search/?api=1&amp;query=Otto-Stadler-Straße+23c+33102+Paderborn" target="_blank" rel="noopener">In Google Maps öffnen</a>
-    </p>
-  </div>
+  </section>
 </main>
 
-
-<footer class="site-footer">
-  <div class="container footer-grid">
-    <div class="footer-col">
-      <h4>Praxis</h4>
-      <p><strong>Martina Schwierzke</strong></p>
-      <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <h4>Praxis</h4>
+        <p><strong>Martina Schwierzke</strong></p>
+        <p>Psychosoziale &amp; Klinische Kunsttherapeutin</p>
+        <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>
+      </div>
+      <div class="footer-col">
+        <h4>Kontakt</h4>
+        <p><a href="tel:+495251690111">Tel. 05251-690111</a></p>
+        <p><a href="tel:+491704790790">Mobil 0170-4790790</a></p>
+        <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+      </div>
+      <div class="footer-col">
+        <h4>Angebot</h4>
+        <a href="kunsttherapie.html">Kunsttherapie</a>
+        <a href="buchung.html">Termin buchen</a>
+        <a href="events.html">Veranstaltungen</a>
+        <a href="neuigkeiten.html">Neuigkeiten</a>
+        <a href="preise.html">Preise</a>
+      </div>
+      <div class="footer-col">
+        <h4>Rechtliches</h4>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </div>
     </div>
-    <div class="footer-col">
-      <h4>Kontakt</h4>
-      <p>Tel.: 05251-690111</p>
-      <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+    <div class="container legal-footer">
+      &copy; <span id="y"></span> Martina Schwierzke · Kunsttherapie Paderborn
     </div>
-    <div class="footer-col">
-      <h4>Mehr</h4>
-      <a href="kunsttherapie.html">Kunsttherapie</a>
-      <a href="events.html">Termine</a>
-      <a href="neuigkeiten.html">Neuigkeiten</a>
-    </div>
-    <div class="footer-col">
-      <h4>Rechtliches</h4>
-      <a href="impressum.html">Impressum</a>
-      <a href="datenschutz.html">Datenschutz</a>
-    </div>
-  </div>
-  <div class="container legal-footer">
-    &copy; <span id="y"></span> Martina Schwierzke · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a>
-  </div>
-</footer>
-<script>document.getElementById("y").textContent = new Date().getFullYear();</script>
+  </footer>
 
 <script src="assets/js/consent.js"></script>
+<script src="assets/js/site.js"></script>
 <script src="assets/js/reveal.js"></script>
 <script src="assets/js/scroll-top.js"></script>
-<script src="assets/js/main.js"></script>
+<script src="assets/js/contact.js"></script>
 </body>
 </html>

@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Kunsttherapie Paderborn | Martina Schwierzke</title>
   <meta name="description" content="Kunsttherapie in Paderborn: Einzel & Gruppe, Auszeit am Abend, Teambuilding-Events. Ressourcen stärken, innere Mitte finden, neue Perspektiven entdecken."/>
+  <meta name="theme-color" content="#557a76"/>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
@@ -13,6 +15,7 @@
   <div class="news-popup-backdrop" data-close-popup></div>
   <div class="news-popup-panel card">
     <button type="button" class="news-popup-close" aria-label="Schließen" data-close-popup>&times;</button>
+    <h2 id="newsPopupTitle" class="visually-hidden">Aktuelles aus der Praxis</h2>
     <div class="news-popup-kicker">Aktuelles</div>
     <p id="newsPopupDesc" class="note" style="margin:0 0 0.75rem">Hinweis aus der Praxis – lokal gespeichert, kein Tracking.</p>
     <div id="newsPopupBody" class="news-popup-body"></div>
@@ -23,26 +26,27 @@
   </div>
 </div>
 
-<header>
-  <div class="container header-inner">
-    <a class="brand logo-text" href="index.html">
-      <span class="name">Martina Schwierzke</span>
-      <span class="title">Kunsttherapie Paderborn</span>
-    </a>
-    <nav>
-      <ul>
-        <li><a href="ueber-mich.html">Mein Ansatz</a></li>
-        <li><a href="kunsttherapie.html">Kunsttherapie</a></li>
-        <li><a href="#praxis">Die Praxis</a></li>
-        <li><a href="#neuigkeiten">Neuigkeiten</a></li>
-        <li><a href="buchung.html" class="nav-cta">Termin</a></li>
-        <li><a href="kontakt.html">Kontakt</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header>
+    <div class="container header-inner">
+      <a class="brand logo-text" href="index.html">
+        <span class="name">Martina Schwierzke</span>
+        <span class="title">Kunsttherapie Paderborn</span>
+      </a>
+      <nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
+        <ul>
+          <li><a href="ueber-mich.html" data-nav="ansatz">Mein Ansatz</a></li>
+          <li><a href="kunsttherapie.html" data-nav="kunsttherapie">Kunsttherapie</a></li>
+          <li><a href="index.html#praxis" data-nav="praxis">Die Praxis</a></li>
+          <li><a href="neuigkeiten.html" data-nav="neuigkeiten">Neuigkeiten</a></li>
+          <li><a href="buchung.html" class="nav-cta" data-nav="termin">Termin</a></li>
+          <li><a href="kontakt.html" data-nav="kontakt">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-<main>
+<main id="main">
   <section class="hero container hero-intro">
     <div class="hero-grid">
       <div class="card hero-copy">
@@ -138,13 +142,13 @@
       <h2>Mini-Atelier im Browser</h2>
       <p class="sub">Zieh Linien, setz Farbe – es geht ums Entdecken, nicht um richtig oder falsch.</p>
       <div class="canvasBar">
-        <label class="label">Farbe</label>
-        <input data-color type="color" value="#557a76"/>
-        <label class="label">Pinsel</label>
-        <input data-size type="range" min="2" max="18" value="8"/>
+        <label class="label" for="atelierColor">Farbe</label>
+        <input id="atelierColor" data-color type="color" value="#557a76"/>
+        <label class="label" for="atelierSize">Pinsel</label>
+        <input id="atelierSize" data-size type="range" min="2" max="18" value="8"/>
         <button type="button" class="btn outline" data-clear>Leeren</button>
       </div>
-      <canvas data-art></canvas>
+      <canvas data-art role="img" aria-label="Mini-Atelier: Hier kannst du frei malen und experimentieren"></canvas>
     </div>
   </section>
 
@@ -170,39 +174,40 @@
 </main>
 
 <footer class="site-footer">
-  <div class="container footer-grid">
-    <div class="footer-col">
-      <h4>Praxis</h4>
-      <p><strong>Martina Schwierzke</strong></p>
-      <p>Psychosoziale &amp; Klinische Kunsttherapeutin</p>
-      <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <h4>Praxis</h4>
+        <p><strong>Martina Schwierzke</strong></p>
+        <p>Psychosoziale &amp; Klinische Kunsttherapeutin</p>
+        <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>
+      </div>
+      <div class="footer-col">
+        <h4>Kontakt</h4>
+        <p><a href="tel:+495251690111">Tel. 05251-690111</a></p>
+        <p><a href="tel:+491704790790">Mobil 0170-4790790</a></p>
+        <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+      </div>
+      <div class="footer-col">
+        <h4>Angebot</h4>
+        <a href="kunsttherapie.html">Kunsttherapie</a>
+        <a href="buchung.html">Termin buchen</a>
+        <a href="events.html">Veranstaltungen</a>
+        <a href="neuigkeiten.html">Neuigkeiten</a>
+        <a href="preise.html">Preise</a>
+      </div>
+      <div class="footer-col">
+        <h4>Rechtliches</h4>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </div>
     </div>
-    <div class="footer-col">
-      <h4>Kontakt</h4>
-      <p>Tel.: 05251-690111</p>
-      <p>Mobil: 0170-4790790</p>
-      <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+    <div class="container legal-footer">
+      &copy; <span id="y"></span> Martina Schwierzke · Kunsttherapie Paderborn
     </div>
-    <div class="footer-col">
-      <h4>Angebot</h4>
-      <a href="kunsttherapie.html">Kunsttherapie</a>
-      <a href="events.html">Termine</a>
-      <a href="neuigkeiten.html">Neuigkeiten</a>
-      <a href="preise.html">Preise</a>
-    </div>
-    <div class="footer-col">
-      <h4>Rechtliches</h4>
-      <a href="impressum.html">Impressum</a>
-      <a href="datenschutz.html">Datenschutz</a>
-    </div>
-  </div>
-  <div class="container legal-footer">
-    &copy; <span id="y"></span> Martina Schwierzke · Kunsttherapie Paderborn
-  </div>
-</footer>
+  </footer>
 
-<script>document.getElementById("y").textContent = new Date().getFullYear();</script>
 <script src="assets/js/consent.js"></script>
+  <script src="assets/js/site.js"></script>
 <script src="assets/js/reveal.js"></script>
 <script src="assets/js/scroll-top.js"></script>
 <script src="assets/js/main.js"></script>

@@ -7,7 +7,9 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "setup-admin": "node scripts/setup-admin.js",
-    "sync-admin": "cp admin.html public/admin.html"
+    "sync-admin": "cp admin.html public/admin.html",
+    "sync-chrome": "node scripts/build-chrome.js && node scripts/apply-chrome.js",
+    "patch-meta": "node scripts/patch-head-meta.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

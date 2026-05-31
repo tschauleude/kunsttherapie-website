@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Kunsttherapie">
+  <rect width="32" height="32" rx="8" fill="#557a76"/>
+  <circle cx="11" cy="14" r="5" fill="#a2d4c4" opacity="0.9"/>
+  <circle cx="21" cy="18" r="6" fill="#d18d89" opacity="0.85"/>
+  <circle cx="16" cy="10" r="3" fill="#f0d7a4"/>
+</svg>

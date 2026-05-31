@@ -50,14 +50,13 @@ function renderNewsPopupBlock(item, isFirst) {
     .map((p) => `<p>${escapeHtml(p)}</p>`)
     .join('');
 
-  const titleTag = isFirst ? 'h2' : 'h3';
-  const idAttr = isFirst ? ' id="newsPopupTitle"' : '';
+  const titleTag = isFirst ? 'h3' : 'h3';
 
   return `
     <article class="news-popup-item${isFirst ? '' : ' news-popup-item-more'}">
       ${imageHtml}
       <div class="news-date">${date}</div>
-      <${titleTag}${idAttr}>${escapeHtml(item.title)}</${titleTag}>
+      <${titleTag}>${escapeHtml(item.title)}</${titleTag}>
       <div class="news-popup-text">${paragraphs}</div>
     </article>
   `;
