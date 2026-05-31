@@ -477,12 +477,16 @@ h3 {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   min-height: 100%;
 }
 
 .page-ueber-mich .hero-portrait-frame {
   flex: 1;
-  margin: 0;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 28rem;
   min-height: min(420px, 55vh);
   overflow: hidden;
   border-radius: calc(var(--radius-card) - 2px);
@@ -494,8 +498,8 @@ h3 {
   height: 100%;
   min-height: min(420px, 55vh);
   object-fit: cover;
-  /* Landschafts-Aufnahme: Martina rechts – Fokus auf Person, in der Karte zentriert */
-  object-position: 78% 42%;
+  /* Panorama: Person rechts im Bild – Fokuspunkt auf Martina, mittig in der Karte */
+  object-position: 71% 42%;
   display: block;
   filter: contrast(1.02);
 }
@@ -520,9 +524,13 @@ h3 {
     min-height: min(380px, 62vw);
   }
 
+  .page-ueber-mich .hero-portrait-frame {
+    max-width: 22rem;
+  }
+
   .page-ueber-mich .hero-portrait-frame img {
     min-height: min(380px, 62vw);
-    object-position: 76% 40%;
+    object-position: 71% 40%;
   }
 }
 
@@ -1655,6 +1663,13 @@ body.consent-settings-open {
 
 .page-kunsttherapie .kt-hero-card {
   max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page-kunsttherapie .kt-hero-card > .kicker,
+.page-kunsttherapie .kt-hero-card h1 {
+  text-align: center;
 }
 
 .kt-hero-card .lead {
@@ -1671,6 +1686,10 @@ body.consent-settings-open {
   gap: 0.65rem 1.25rem;
   color: var(--text-light);
   font-size: 0.95rem;
+}
+
+.kt-facts--center {
+  justify-content: center;
 }
 
 .kt-facts .pill {
