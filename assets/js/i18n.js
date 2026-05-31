@@ -66,6 +66,8 @@
       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
         if (el.hasAttribute('placeholder')) el.placeholder = val;
         else el.value = val;
+      } else if (el.tagName === 'A' && el.querySelector('[data-i18n]')) {
+        /* Link text lives in nested data-i18n span */
       } else {
         el.textContent = val;
       }
@@ -147,7 +149,16 @@
     apply: applyTranslations,
   };
 
-  document.addEventListener('DOMContentLoaded', () => {
+  function boot() {
     applyTranslations();
-  });
+    if (typeof window.ktApplySiteChrome === 'function') {
+      window.ktApplySiteChrome();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 })();

@@ -1926,7 +1926,7 @@ body.consent-settings-open {
   align-items: center;
   text-align: center;
   height: 100%;
-  min-height: 12.5rem;
+  min-height: 10.5rem;
   transition: border-color 0.35s, box-shadow 0.35s;
   border: 2px solid transparent;
   overflow: visible;
@@ -1937,8 +1937,7 @@ body.consent-settings-open {
 }
 
 .kt-offer.is-open {
-  border-color: #557a76;
-  box-shadow: 0 12px 32px rgba(85, 122, 118, 0.14);
+  border-color: rgba(85, 122, 118, 0.35);
 }
 
 .kt-offer-title {
@@ -1974,8 +1973,7 @@ body.consent-settings-open {
 
 .kt-drop-btn:hover .kt-drop-btn__shape,
 .kt-drop-btn:focus-visible .kt-drop-btn__shape {
-  transform: scale(1.06);
-  filter: brightness(1.05);
+  filter: brightness(1.06);
 }
 
 .kt-drop-btn:focus-visible {
@@ -1986,32 +1984,20 @@ body.consent-settings-open {
 
 .kt-drop-btn__shape {
   display: block;
-  width: 3.4rem;
-  height: 4.1rem;
+  width: 2.75rem;
+  height: 3.35rem;
   background: radial-gradient(circle at 35% 28%, #8eb5b0 0%, #557a76 42%, #3d5c58 100%);
   border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
   box-shadow:
-    inset -4px -8px 16px rgba(255, 255, 255, 0.25),
-    inset 3px 4px 10px rgba(0, 0, 0, 0.12),
-    0 8px 20px rgba(85, 122, 118, 0.35);
-  transition: transform 0.25s ease, filter 0.25s ease;
-  animation: ktDropPulse 3s ease-in-out infinite;
+    inset -3px -6px 12px rgba(255, 255, 255, 0.22),
+    inset 2px 3px 8px rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(85, 122, 118, 0.28);
+  transition: filter 0.2s ease, opacity 0.2s ease;
 }
 
-.kt-offer.is-open .kt-drop-btn__shape {
-  animation: none;
-  transform: scale(0.92);
-  opacity: 0.85;
-}
-
-@keyframes ktDropPulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.04);
-  }
+.kt-drop-btn.is-active .kt-drop-btn__shape {
+  opacity: 0.72;
+  filter: brightness(0.95);
 }
 
 .kt-drop-btn__label {
@@ -2104,10 +2090,6 @@ body.kt-offer-modal-open {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .kt-drop-btn__shape {
-    animation: none;
-  }
-
   .kt-offer-bubble__panel {
     transition: opacity 0.2s ease;
     transform: none;

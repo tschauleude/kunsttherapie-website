@@ -152,19 +152,25 @@
       if (label) nav.setAttribute('aria-label', label);
     });
 
+    function setI18nText(el, key) {
+      const v = t(key);
+      if (v == null) return;
+      const inner = el.querySelector(':scope > [data-i18n]');
+      if (inner) inner.textContent = v;
+      else if (!el.hasAttribute('data-i18n')) el.textContent = v;
+    }
+
     CHROME_NAV.forEach(([navKey, i18nKey]) => {
       document.querySelectorAll(`nav[data-site-nav] a[data-nav="${navKey}"]`).forEach((link) => {
         if (link.hasAttribute('data-i18n')) return;
-        const v = t(i18nKey);
-        if (v) link.textContent = v;
+        setI18nText(link, i18nKey);
       });
     });
 
     CHROME_FOOTER.forEach(([sel, key]) => {
       document.querySelectorAll(sel).forEach((el) => {
         if (el.hasAttribute('data-i18n')) return;
-        const v = t(key);
-        if (v) el.textContent = v;
+        setI18nText(el, key);
       });
     });
 
@@ -172,7 +178,19 @@
       const v = t('nav.menu');
       if (v) el.textContent = v;
     });
+
+    document.querySelectorAll('.legal-footer').forEach((el) => {
+      if (el.querySelector('[data-cookie-settings]')) return;
+      const yearEl = el.querySelector('#y, #year');
+      const year = yearEl?.textContent || String(new Date().getFullYear());
+      const tag = t('footer.tagline');
+      if (tag) {
+        el.innerHTML = `&copy; <span id="y">${year}</span> ${tag}`;
+      }
+    });
   }
+
+  window.ktApplySiteChrome = applySiteChrome;
 
   function initSkipLink() {
     const existing = document.querySelector('.skip-link');

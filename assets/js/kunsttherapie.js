@@ -29,9 +29,18 @@
     });
   }
 
-  function setBtnLabel(btn, open) {
+  function setBtnLabel(btn) {
     const label = btn.querySelector('.kt-drop-btn__label');
-    if (label) label.textContent = open ? labelClose() : labelLearn();
+    if (label) label.textContent = labelLearn();
+  }
+
+  function resetDropShape(btn) {
+    const shape = btn?.querySelector('.kt-drop-btn__shape');
+    if (!shape) return;
+    shape.style.animation = '';
+    shape.style.transform = '';
+    shape.style.opacity = '';
+    shape.style.filter = '';
   }
 
   function closeOffer(card) {
@@ -43,7 +52,9 @@
     bubble.classList.remove('is-visible');
     card.classList.remove('is-open');
     btn.setAttribute('aria-expanded', 'false');
-    setBtnLabel(btn, false);
+    btn.classList.remove('is-active');
+    setBtnLabel(btn);
+    resetDropShape(btn);
 
     if (openCard === card) {
       openCard = null;
@@ -74,7 +85,8 @@
 
     card.classList.add('is-open');
     btn.setAttribute('aria-expanded', 'true');
-    setBtnLabel(btn, true);
+    btn.classList.add('is-active');
+    setBtnLabel(btn);
     openCard = card;
     document.body.classList.add('kt-offer-modal-open');
 
@@ -86,8 +98,8 @@
     root.querySelectorAll('[data-offer]').forEach((card) => {
       const { btn } = getCardParts(card);
       if (!btn) return;
-      const open = card.classList.contains('is-open');
-      setBtnLabel(btn, open);
+      setBtnLabel(btn);
+      if (!card.classList.contains('is-open')) resetDropShape(btn);
     });
     updateCloseLabels();
   };
