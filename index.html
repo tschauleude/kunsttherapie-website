@@ -4,19 +4,17 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Kunsttherapie Paderborn | Martina Schwierzke</title>
-  <meta name="description" content="Kunsttherapie in Paderborn: Einzel & Gruppe, Auszeit am Abend, Teambuilding-Events. Ressourcen stärken, innere Mitte finden, neue Perspektiven entdecken."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <meta name="description" content="Kunsttherapie in Paderborn: Einzel & Gruppe, Auszeit am Abend, Teambuilding-Events. Ressourcen stärken, innere Mitte finden, neue Perspektiven entdecken."/><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
 
-<div id="newsPopup" class="news-popup" hidden role="dialog" aria-modal="true" aria-labelledby="newsPopupTitle">
+<div id="newsPopup" class="news-popup" hidden role="dialog" aria-modal="true" aria-labelledby="newsPopupTitle" aria-describedby="newsPopupDesc">
   <div class="news-popup-backdrop" data-close-popup></div>
   <div class="news-popup-panel card">
     <button type="button" class="news-popup-close" aria-label="Schließen" data-close-popup>&times;</button>
     <div class="news-popup-kicker">Aktuelles</div>
+    <p id="newsPopupDesc" class="note" style="margin:0 0 0.75rem">Hinweis aus der Praxis – lokal gespeichert, kein Tracking.</p>
     <div id="newsPopupBody" class="news-popup-body"></div>
     <div class="news-popup-actions">
       <a class="btn outline" href="neuigkeiten.html">Alle Neuigkeiten</a>
@@ -208,6 +206,7 @@
 </footer>
 
 <script>document.getElementById("y").textContent = new Date().getFullYear();</script>
+<script src="assets/js/consent.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/news.js"></script>
 </body>

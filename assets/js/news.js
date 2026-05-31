@@ -1,5 +1,6 @@
 const NEWS_API_URL = window.location.origin + '/api';
 const NEWS_POPUP_STORAGE_KEY = 'kunsttherapie_news_popup_id';
+let cachedHomeNews = [];
 
 function escapeHtml(text) {
   const div = document.createElement('div');
@@ -180,10 +181,19 @@ async function loadNewsPage() {
   }
 }
 
+function whenConsentReady(fn) {
+  if (window.__consentReady) {
+    fn();
+    return;
+  }
+  window.addEventListener('consent-ready', () => fn(), { once: true });
+  window.addEventListener('consent-updated', () => fn(), { once: true });
+}
+
 if (document.getElementById('homeNewsList')) {
   document.addEventListener('DOMContentLoaded', () => {
     initNewsPopupControls();
-    loadHomeNews();
+    whenConsentReady(loadHomeNews);
   });
 }
 if (document.getElementById('newsList') && !document.getElementById('homeNewsList')) {

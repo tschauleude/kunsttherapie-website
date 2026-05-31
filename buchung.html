@@ -87,6 +87,10 @@
       <input type="hidden" id="bookDate" name="date"/>
       <input type="hidden" id="bookStart" name="startTime"/>
 
+      <p class="note" style="margin-top:0.5rem">
+        Mit der Buchung werden Name, E-Mail und Termindaten auf unserem Server gespeichert (siehe
+        <a href="datenschutz.html">Datenschutz</a>). Kein Marketing-Tracking.
+      </p>
       <button type="submit" class="btn primary" id="bookSubmit">Termin anfragen</button>
     </form>
     <div id="bookingMessage" class="booking-alert" role="status" hidden></div>
@@ -116,6 +120,7 @@
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 </script>
+<script src="assets/js/consent.js"></script>
 <script src="assets/js/booking.js"></script>
 </body>
 </html>

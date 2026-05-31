@@ -4,10 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Kunsttherapie – Angebote in Paderborn | Martina Schwierzke</title>
-  <meta name="description" content="Kunsttherapie in Paderborn ab Juni: Gruppen, Auszeit am Abend, Teambuilding, Einzel. Otto-Stadler-Straße 23c. Termin online buchen."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <meta name="description" content="Kunsttherapie in Paderborn ab Juni: Gruppen, Auszeit am Abend, Teambuilding, Einzel. Otto-Stadler-Straße 23c. Termin online buchen."/><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body class="page-kunsttherapie">
@@ -228,17 +225,23 @@
           <a class="btn outline" href="preise.html">Preise</a>
         </div>
       </div>
-      <div class="card kt-map-wrap">
+      <div class="card map-consent-wrap kt-map-wrap">
+        <div class="map-placeholder" data-map-placeholder>
+          <p>Karte nur mit Einwilligung (Google Maps).</p>
+          <button type="button" class="btn primary" data-enable-maps>Karte anzeigen</button>
+          <a class="btn outline" href="https://www.google.com/maps/search/?api=1&amp;query=Otto-Stadler-Straße+23c+33102+Paderborn" target="_blank" rel="noopener noreferrer">In Google Maps öffnen</a>
+        </div>
         <iframe
+          hidden
           title="Karte: Kunsttherapie Paderborn, Otto-Stadler-Straße 23c"
           class="kt-map"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
-          src="https://maps.google.com/maps?q=Otto-Stadler-Stra%C3%9Fe+23c,+33102+Paderborn&amp;hl=de&amp;z=16&amp;output=embed"
+          data-google-maps-src="https://maps.google.com/maps?q=Otto-Stadler-Stra%C3%9Fe+23c,+33102+Paderborn&amp;hl=de&amp;z=16&amp;output=embed"
           allowfullscreen>
         </iframe>
         <p class="note">
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=Otto-Stadler-Straße+23c+33102+Paderborn" target="_blank" rel="noopener">Route in Google Maps öffnen</a>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Otto-Stadler-Straße+23c+33102+Paderborn" target="_blank" rel="noopener noreferrer">Route in Google Maps öffnen</a>
         </p>
       </div>
     </div>
@@ -290,6 +293,7 @@
 </footer>
 
 <script>document.getElementById("y").textContent = new Date().getFullYear();</script>
+<script src="assets/js/consent.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/kunsttherapie.js"></script>
 </body>
