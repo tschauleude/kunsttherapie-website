@@ -13,10 +13,7 @@
     btn.className = 'scroll-top-btn';
     btn.hidden = true;
     btn.setAttribute('aria-label', 'Nach oben scrollen');
-    btn.innerHTML = `
-      <span class="scroll-top-icon" aria-hidden="true"></span>
-      <span class="scroll-top-label">Nach oben</span>
-    `;
+    btn.innerHTML = '<span class="scroll-top-arrow" aria-hidden="true">↑</span>';
     btn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });

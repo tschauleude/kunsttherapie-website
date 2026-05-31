@@ -5,7 +5,7 @@
   --bg-main: #f4f1ea;
   --bg-card: rgba(255, 255, 255, 0.9);
   --bg-surface: rgba(255, 255, 255, 0.72);
-  --bg-paint-opacity: 0.68;
+  --bg-paint-opacity: 0.46;
   --text-main: #4a4a4a;
   --text-light: #7a7a7a;
   --color-teal: #557a76;
@@ -453,6 +453,19 @@ h3 {
   display: block;
 }
 
+/* Landing Hero: Fokus auf Atelier, keine Marken-Logos an den Rändern */
+.hero-right--landing {
+  overflow: hidden;
+}
+
+.hero-right--landing img {
+  width: 108%;
+  height: 108%;
+  margin: -4%;
+  object-fit: cover;
+  object-position: center 38%;
+}
+
 /* Über mich: große Porträt-Spalte, Martina vollständig & mittig (kein Querformat-Zuschnitt) */
 .hero-right--portrait {
   align-self: stretch;
@@ -676,6 +689,27 @@ details .inner {
 .gallery-item:nth-child(2) { grid-column: span 5; }
 .gallery-item:nth-child(3) { grid-column: span 5; }
 .gallery-item:nth-child(4) { grid-column: span 7; }
+
+.image-gallery--duo {
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.image-gallery--duo .gallery-item:nth-child(1) {
+  grid-column: span 7;
+}
+
+.image-gallery--duo .gallery-item:nth-child(2) {
+  grid-column: span 5;
+}
+
+.image-gallery--duo .gallery-item img {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.image-gallery--duo .gallery-item:first-child img {
+  object-position: center 36%;
+}
 
 .gallery-item img {
   width: 100%;
@@ -1939,17 +1973,16 @@ html.reveal-active .reveal-item.reveal-visible {
   z-index: 10004;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1rem 0.65rem 0.85rem;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
   border: none;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(135deg, rgba(85, 122, 118, 0.95), rgba(209, 141, 137, 0.92));
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(85, 122, 118, 0.92), rgba(209, 141, 137, 0.88));
   color: #fff;
   font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  box-shadow: 0 12px 32px rgba(85, 122, 118, 0.35);
+  box-shadow: 0 10px 28px rgba(85, 122, 118, 0.32);
   cursor: pointer;
   opacity: 0;
   transform: translateY(1rem) scale(0.92);
@@ -1974,48 +2007,11 @@ html.reveal-active .reveal-item.reveal-visible {
   outline-offset: 3px;
 }
 
-.scroll-top-icon {
-  width: 1.1rem;
-  height: 1.1rem;
-  border-radius: 50% 50% 40% 60% / 55% 45% 55% 45%;
-  background: rgba(255, 255, 255, 0.35);
-  position: relative;
-  flex-shrink: 0;
-}
-
-.scroll-top-icon::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 42%;
-  width: 0.45rem;
-  height: 0.45rem;
-  border-left: 2px solid #fff;
-  border-top: 2px solid #fff;
-  transform: translate(-50%, -20%) rotate(45deg);
-}
-
-.scroll-top-label {
-  padding-right: 0.15rem;
-}
-
-@media (max-width: 520px) {
-  .scroll-top-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  .scroll-top-btn {
-    padding: 0.75rem;
-    border-radius: 50% 45% 55% 50% / 50% 55% 45% 50%;
-  }
+.scroll-top-arrow {
+  font-size: 1.45rem;
+  line-height: 1;
+  font-weight: 700;
+  margin-top: -0.1rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
