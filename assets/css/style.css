@@ -2,8 +2,10 @@
 /* DM Sans wird nach Einwilligung per consent.js geladen; Fallback: System-Schrift */
 
 :root {
-  --bg-main: #faf9f6;
-  --bg-card: rgba(255, 255, 255, 0.82);
+  --bg-main: #f4f1ea;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-surface: rgba(255, 255, 255, 0.72);
+  --bg-paint-opacity: 0.68;
   --text-main: #4a4a4a;
   --text-light: #7a7a7a;
   --color-teal: #557a76;
@@ -52,7 +54,6 @@ html.fonts-loaded {
 body {
   font-family: var(--font-body);
   background-color: var(--bg-main);
-  background-image: linear-gradient(160deg, var(--bg-main) 0%, #f3efe6 55%, #f7f4ee 100%);
   color: var(--text-main);
   line-height: 1.8;
   overflow-x: hidden;
@@ -60,31 +61,46 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  isolation: isolate;
 }
 
-/* Dezenter Hintergrund (ohne Blob-„Bubbles“) */
-body::before,
-body::after {
+/* Malerischer Farbverlauf (inspiriert von Aquarell: Navy → Teal → Gold → Hell) */
+body:not(.admin-app)::before {
   content: '';
   position: fixed;
+  inset: 0;
+  z-index: -2;
   pointer-events: none;
-  z-index: 0;
+  opacity: var(--bg-paint-opacity);
+  background:
+    radial-gradient(ellipse 90% 55% at 58% 48%, rgba(212, 168, 72, 0.38) 0%, transparent 58%),
+    radial-gradient(ellipse 70% 45% at 22% 72%, rgba(28, 95, 118, 0.45) 0%, transparent 62%),
+    radial-gradient(ellipse 80% 50% at 78% 82%, rgba(18, 48, 82, 0.42) 0%, transparent 55%),
+    linear-gradient(
+      0deg,
+      rgba(10, 28, 52, 0.55) 0%,
+      rgba(16, 58, 88, 0.42) 14%,
+      rgba(32, 108, 118, 0.36) 30%,
+      rgba(72, 140, 132, 0.28) 42%,
+      rgba(168, 132, 58, 0.32) 52%,
+      rgba(218, 178, 88, 0.26) 58%,
+      rgba(235, 220, 185, 0.22) 68%,
+      rgba(245, 240, 232, 0.38) 82%,
+      rgba(252, 250, 246, 0.52) 100%
+    );
 }
 
-body::before {
-  top: -12%;
-  left: -8%;
-  width: min(480px, 85vw);
-  height: min(480px, 85vw);
-  background: radial-gradient(ellipse at 35% 40%, rgba(162, 212, 196, 0.07), transparent 68%);
-}
-
-body::after {
-  bottom: -15%;
-  right: -10%;
-  width: min(520px, 90vw);
-  height: min(520px, 90vw);
-  background: radial-gradient(ellipse at 55% 50%, rgba(235, 171, 169, 0.06), transparent 70%);
+/* Weißes Körnungs-„Rauschen“ / Leinwandstruktur */
+body:not(.admin-app)::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.14;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }
 
 .container {
@@ -120,11 +136,13 @@ header {
   align-items: center;
   flex-wrap: wrap;
   gap: 1.25rem;
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--bg-surface);
   padding: 0.85rem 1.75rem;
   border-radius: var(--radius-pill);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.75);
 }
 
 .brand.logo-text,
@@ -453,12 +471,20 @@ h3 {
 /* === CARDS (organisch) === */
 .card {
   background: var(--bg-card);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: clamp(2rem, 4vw, 3rem) clamp(1.75rem, 3vw, 2.5rem);
   border-radius: var(--radius-organic);
   box-shadow: var(--shadow);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.72);
   transition: transform 0.4s ease, border-radius 0.4s ease, box-shadow 0.4s ease;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card,
+  .header-inner {
+    background: rgba(255, 255, 255, 0.96);
+  }
 }
 
 .card:hover {
@@ -471,6 +497,29 @@ h3 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+/* Lesbarkeit: freistehende Intro-Texte auf dem Verlauf */
+.page-hero,
+.section-intro {
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border-radius: var(--radius-organic);
+  background: var(--bg-surface);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
+
+.section-intro h1,
+.section-intro h2,
+.page-hero h1 {
+  color: var(--text-main);
+}
+
+.section-intro .sub,
+.page-hero .sub {
+  color: var(--text-light);
 }
 
 /* === SECTIONS & GRIDS === */
@@ -790,12 +839,15 @@ table.prices th {
 .site-footer,
 .footer {
   margin-top: auto;
-  background-color: rgba(255, 255, 255, 0.92);
+  background: var(--bg-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 3.5rem 0 1.5rem;
   border-top: 2px dashed rgba(85, 122, 118, 0.2);
   font-size: 0.9rem;
   position: relative;
   z-index: 10;
+  border-bottom: none;
 }
 
 .footer-grid {
@@ -1770,6 +1822,27 @@ html.reveal-active .reveal-item.reveal-visible {
     transform: none;
     filter: none;
     transition: none;
+  }
+
+  body:not(.admin-app)::before {
+    opacity: 0.38;
+  }
+
+  body:not(.admin-app)::after {
+    opacity: 0.08;
+    mix-blend-mode: normal;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --bg-paint-opacity: 0.45;
+    --bg-card: rgba(255, 255, 255, 0.97);
+    --bg-surface: rgba(255, 255, 255, 0.95);
+  }
+
+  body:not(.admin-app)::after {
+    opacity: 0.06;
   }
 }
 
