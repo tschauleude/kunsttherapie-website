@@ -19,7 +19,8 @@
 <!-- LOGIN SCREEN -->
 <div class="login-container active" id="loginScreen">
   <div class="login-box">
-    <h1>Admin Panel</h1>
+    <h1>Website verwalten</h1>
+    <p style="text-align:center;color:#666;font-size:0.95rem;margin:-0.5rem 0 1rem">Martina Schwierzke · Kunsttherapie Paderborn</p>
     <div class="message" id="loginMessage"></div>
     <form id="loginForm" onsubmit="handleLogin(event)">
       <div class="form-group">
@@ -62,31 +63,39 @@
 <div class="main-container" id="mainContainer">
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
-    <h2>Admin</h2>
-    <div class="nav-item active" onclick="switchSection('dashboard')">Dashboard</div>
-    <div class="nav-item" onclick="switchSection('news')">News</div>
-    <div class="nav-item" onclick="switchSection('bookings')">Termine</div>
-    <div class="nav-item" onclick="switchSection('events')">Events</div>
-    <div class="nav-item" onclick="switchSection('services')">Services</div>
+    <h2>Verwaltung</h2>
+    <div class="nav-item active" onclick="switchSection('dashboard')">Übersicht</div>
+    <div class="nav-item" onclick="switchSection('news')">Neuigkeiten</div>
+    <div class="nav-item" onclick="switchSection('bookings')">Buchungen</div>
+    <div class="nav-item" onclick="switchSection('events')">Veranstaltungen</div>
     <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
+    <p class="sidebar-links">
+      <a href="/" target="_blank" rel="noopener">Website ansehen</a><br>
+      <a href="/buchung" target="_blank" rel="noopener">Buchungsseite</a>
+    </p>
   </div>
 
   <!-- CONTENT -->
   <div class="content">
+    <div class="message" id="adminToast"></div>
     <!-- DASHBOARD -->
     <section class="admin-section active" id="dashboard">
-      <h1>Dashboard</h1>
+      <h1>Übersicht</h1>
       <div class="form-container">
-        <p>Willkommen im Admin-Panel von Kunsttherapie Paderborn!</p>
-        <p style="margin-top: 15px; color: #666;">
-          Verwalte hier deine News, Events und Services. Alle Änderungen werden sofort auf der Website angezeigt.
-        </p>
+        <p id="dashboardWelcome">Willkommen! Hier pflegst du deine Website – ohne technische Kenntnisse.</p>
+        <div class="admin-guide">
+          <h3>Was du hier machst</h3>
+          <ul>
+            <li><strong>Neuigkeiten</strong> – Texte und Fotos für die Seite „Aktuelles“</li>
+            <li><strong>Buchungen</strong> – Online-Termine von Kunden, Zeiten blockieren, Google Kalender</li>
+            <li><strong>Veranstaltungen</strong> – Workshops &amp; Termine auf der Events-Seite</li>
+          </ul>
+        </div>
         <div class="stats-box">
-          <h3>Übersicht</h3>
-          <p>News: <strong id="newsCount">0</strong></p>
-          <p>Termine: <strong id="bookingsCount">0</strong></p>
-          <p>Events: <strong id="eventsCount">0</strong></p>
-          <p>Services: <strong id="servicesCount">0</strong></p>
+          <h3>Zahlen</h3>
+          <p>Neuigkeiten: <strong id="newsCount">0</strong></p>
+          <p>Buchungen: <strong id="bookingsCount">0</strong></p>
+          <p>Veranstaltungen: <strong id="eventsCount">0</strong></p>
         </div>
         <hr class="sep" style="margin:1.5rem 0"/>
         <h3>Passwort ändern</h3>
@@ -107,23 +116,27 @@
 
     <!-- NEWS SECTION -->
     <section class="admin-section" id="news">
-      <h1>News & Updates</h1>
-      <button class="btn-add" onclick="openNewsForm()">Neue News</button>
+      <h1>Neuigkeiten</h1>
+      <p class="sub section-desc">Erscheinen auf <a href="/neuigkeiten" target="_blank" rel="noopener">kunsttherapie.mkmpb.de/neuigkeiten</a> – Häkchen „Veröffentlichen“ nicht vergessen.</p>
+      <button class="btn-add" onclick="openNewsForm()">Neue Neuigkeit</button>
       <div id="newsForm" class="form-container" style="display: none;">
-        <h2>News bearbeiten</h2>
+        <h2>Neuigkeit bearbeiten</h2>
         <form onsubmit="saveNews(event)">
           <input type="hidden" id="newsId">
           <div class="form-group full">
             <label>Titel</label>
-            <input type="text" id="newsTitle" required placeholder="z.B. Neue Gruppen starten">
+            <input type="text" id="newsTitle" required placeholder="z.B. Neue Gruppen ab Juni">
           </div>
           <div class="form-group full">
-            <label>Inhalt</label>
-            <textarea id="newsContent" required placeholder="Beschreibe die Neuigkeit..."></textarea>
+            <label>Text</label>
+            <textarea id="newsContent" required rows="6" placeholder="Was möchtest du mitteilen?"></textarea>
           </div>
           <div class="form-group full">
-            <label>Bild URL (optional)</label>
-            <input type="text" id="newsImage" placeholder="https://...">
+            <label>Bild</label>
+            <input type="file" id="newsImageFile" accept="image/jpeg,image/png,image/gif,image/webp"/>
+            <p class="note">Foto vom Handy/PC wählen – wird automatisch hochgeladen.</p>
+            <input type="hidden" id="newsImage"/>
+            <img id="newsImagePreview" class="upload-preview" alt="" hidden/>
           </div>
           <div class="form-group">
             <label>
@@ -142,26 +155,67 @@
 
     <!-- BOOKINGS & GOOGLE CALENDAR -->
     <section class="admin-section" id="bookings">
-      <h1>Termine & Google Kalender</h1>
+      <h1>Buchungen &amp; Kalender</h1>
+      <p class="sub section-desc">Kunden buchen unter <a href="/buchung" target="_blank" rel="noopener">Termin buchen</a>. Hier siehst du alle Anfragen.</p>
+
       <div class="form-container" id="googleCalendarBox">
         <h3>Google Kalender</h3>
         <p id="googleStatusText" style="color:#666">Status wird geladen …</p>
-        <p style="font-size:0.9rem;color:#666;margin-top:8px">
-          Termine in Google blockieren freie Slots auf der Website. Neue Buchungen erscheinen im Kalender.
-          Blocker im Google Kalender eintragen, um Zeiten zu sperren.
-        </p>
+        <p class="note">Verbunden: neue Buchungen landen im Kalender; Einträge in Google sperren Zeiten auf der Website.</p>
         <div class="form-actions" style="margin-top:12px">
           <button type="button" class="btn-save" id="btnGoogleConnect" style="display:none" onclick="connectGoogle()">Mit Google verbinden</button>
         </div>
       </div>
-      <h2 style="margin-top:2rem">Buchungen von der Website</h2>
+
+      <div class="form-container" style="margin-top:1.5rem">
+        <h3>Termin eintragen oder Zeit blockieren</h3>
+        <form onsubmit="saveManualBooking(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Datum</label>
+              <input type="date" id="manualDate" required>
+            </div>
+            <div class="form-group">
+              <label>Uhrzeit (Start)</label>
+              <input type="time" id="manualTime" required step="3600">
+            </div>
+          </div>
+          <div class="form-group">
+            <label><input type="checkbox" id="manualBlock"> Nur Zeitslot blockieren (kein Kunde)</label>
+          </div>
+          <div id="manualClientFields">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="manualName" placeholder="Max Mustermann">
+              </div>
+              <div class="form-group">
+                <label>E-Mail</label>
+                <input type="email" id="manualEmail" placeholder="mail@beispiel.de">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Telefon (optional)</label>
+              <input type="tel" id="manualPhone">
+            </div>
+          </div>
+          <div class="form-group full">
+            <label>Notiz</label>
+            <input type="text" id="manualMessage" placeholder="z.B. Gruppe, Auszeit, Blocker …">
+          </div>
+          <button type="submit" class="btn-save">Speichern</button>
+        </form>
+      </div>
+
+      <h2 style="margin-top:2rem">Alle Buchungen</h2>
       <div id="bookingsList" class="items-list"></div>
     </section>
 
     <!-- EVENTS SECTION -->
     <section class="admin-section" id="events">
-      <h1>Events & Termine</h1>
-      <button class="btn-add" onclick="openEventForm()">Neuer Event</button>
+      <h1>Veranstaltungen</h1>
+      <p class="sub section-desc">Workshops und Termine auf <a href="/events" target="_blank" rel="noopener">der Events-Seite</a>.</p>
+      <button class="btn-add" onclick="openEventForm()">Neue Veranstaltung</button>
       <div id="eventForm" class="form-container" style="display: none;">
         <h2>Event bearbeiten</h2>
         <form onsubmit="saveEvent(event)">
@@ -195,8 +249,10 @@
             </div>
           </div>
           <div class="form-group full">
-            <label>Bild URL (optional)</label>
-            <input type="text" id="eventImage" placeholder="https://...">
+            <label>Bild</label>
+            <input type="file" id="eventImageFile" accept="image/jpeg,image/png,image/gif,image/webp"/>
+            <input type="hidden" id="eventImage"/>
+            <img id="eventImagePreview" class="upload-preview" alt="" hidden/>
           </div>
           <div class="form-group">
             <label>
@@ -211,51 +267,6 @@
         </form>
       </div>
       <div id="eventsList" class="items-list"></div>
-    </section>
-
-    <!-- SERVICES SECTION -->
-    <section class="admin-section" id="services">
-      <h1>Services & Angebote</h1>
-      <button class="btn-add" onclick="openServiceForm()">Neuer Service</button>
-      <div id="serviceForm" class="form-container" style="display: none;">
-        <h2>Service bearbeiten</h2>
-        <form onsubmit="saveService(event)">
-          <input type="hidden" id="serviceId">
-          <div class="form-group full">
-            <label>Titel</label>
-            <input type="text" id="serviceTitle" required placeholder="z.B. Einzeltherapie">
-          </div>
-          <div class="form-group full">
-            <label>Beschreibung</label>
-            <textarea id="serviceDescription" required placeholder="Beschreibe das Service..."></textarea>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Preis (optional)</label>
-              <input type="text" id="servicePrice" placeholder="z.B. ab 55 €">
-            </div>
-            <div class="form-group">
-              <label>Dauer (optional)</label>
-              <input type="text" id="serviceDuration" placeholder="z.B. 90 Minuten">
-            </div>
-          </div>
-          <div class="form-group full">
-            <label>Bild URL (optional)</label>
-            <input type="text" id="serviceImage" placeholder="https://...">
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" id="serviceActive" checked>
-              Aktiv
-            </label>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn-save">Speichern</button>
-            <button type="button" class="btn-cancel" onclick="closeServiceForm()">Abbrechen</button>
-          </div>
-        </form>
-      </div>
-      <div id="servicesList" class="items-list"></div>
     </section>
   </div>
 </div>
@@ -272,8 +283,8 @@ function showAdminApp(username) {
   document.getElementById('mainContainer').classList.add('active');
   loadDashboard();
   if (username) {
-    const welcome = document.querySelector('#dashboard .form-container > p');
-    if (welcome) welcome.textContent = `Willkommen, ${username}!`;
+    const welcome = document.getElementById('dashboardWelcome');
+    if (welcome) welcome.textContent = `Hallo ${username}! Hier pflegst du Neuigkeiten, Buchungen und Veranstaltungen.`;
   }
 }
 
@@ -295,25 +306,11 @@ async function checkAuthOnLoad() {
   }
 }
 
-async function checkSetupAvailable() {
-  try {
-    const res = await fetch(`${API_URL}/auth/status`);
-    const setupBox = document.getElementById('firstSetupBox');
-    const hint = document.getElementById('loginHint');
-    const testLogin = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: '__probe__', password: '__probe__' }),
-    });
-    if (testLogin.status === 401) {
-      hint.innerHTML =
-        'Noch kein eigenes Konto? Falls eingerichtet: Benutzername <strong>admin</strong>, Passwort <strong>admin123</strong> (einmal testen), danach sofort ändern.<br>Oder Konto über Hostinger .env (ADMIN_USERNAME / ADMIN_PASSWORD).';
-    }
-    setupBox.style.display = 'block';
-  } catch (e) {
-    /* ignore */
-  }
+function showLoginHelp() {
+  document.getElementById('firstSetupBox').style.display = 'block';
+  document.getElementById('loginHint').innerHTML =
+    'Erstlogin oft: <strong>admin</strong> / <strong>admin123</strong> (falls noch nicht in Hostinger .env geändert).<br>' +
+    'Dauerhaft: <strong>ADMIN_USERNAME</strong> und <strong>ADMIN_PASSWORD</strong> in der Hostinger-.env setzen, dann Redeploy.';
 }
 
 async function runFirstSetup() {
@@ -429,16 +426,59 @@ function switchSection(sectionId) {
     loadGoogleStatus();
   }
   if (sectionId === 'events') loadEventsList();
-  if (sectionId === 'services') loadServicesList();
 }
 
 function showMessage(text, type, elementId) {
-  const msg = document.getElementById(elementId);
+  const id = elementId || 'adminToast';
+  const msg = document.getElementById(id);
+  if (!msg) return;
   msg.textContent = text;
   msg.className = `message ${type} active`;
+  msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   if (type === 'success') {
-    setTimeout(() => msg.classList.remove('active'), 3000);
+    setTimeout(() => msg.classList.remove('active'), 4000);
   }
+}
+
+async function uploadImageFile(fileInput) {
+  const file = fileInput?.files?.[0];
+  if (!file) return null;
+  const fd = new FormData();
+  fd.append('image', file);
+  const res = await fetch(`${API_URL}/admin/upload`, {
+    method: 'POST',
+    credentials: 'include',
+    body: fd,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Bild-Upload fehlgeschlagen');
+  return data.url;
+}
+
+function bindImagePreview(fileInputId, hiddenInputId, previewId) {
+  const fileInput = document.getElementById(fileInputId);
+  const hidden = document.getElementById(hiddenInputId);
+  const preview = document.getElementById(previewId);
+  if (!fileInput) return;
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.src = e.target.result;
+      preview.hidden = false;
+    };
+    reader.readAsDataURL(file);
+  });
+  if (hidden?.value) {
+    preview.src = hidden.value;
+    preview.hidden = false;
+  }
+}
+
+function toggleManualBlockFields() {
+  const block = document.getElementById('manualBlock').checked;
+  document.getElementById('manualClientFields').style.display = block ? 'none' : 'block';
 }
 
 // ============================================================================
@@ -447,22 +487,19 @@ function showMessage(text, type, elementId) {
 
 async function loadDashboard() {
   try {
-    const [newsRes, bookingsRes, eventsRes, servicesRes] = await Promise.all([
+    const [newsRes, bookingsRes, eventsRes] = await Promise.all([
       fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
-      fetch(`${API_URL}/admin/services`, { credentials: 'include' })
     ]);
 
     const news = await newsRes.json();
     const bookings = await bookingsRes.json();
     const events = await eventsRes.json();
-    const services = await servicesRes.json();
 
     document.getElementById('newsCount').textContent = news.length;
-    document.getElementById('bookingsCount').textContent = bookings.length;
+    document.getElementById('bookingsCount').textContent = bookings.filter((b) => b.status !== 'cancelled').length;
     document.getElementById('eventsCount').textContent = events.length;
-    document.getElementById('servicesCount').textContent = services.length;
   } catch (err) {
     console.error('Dashboard load error:', err);
   }
@@ -478,6 +515,8 @@ function openNewsForm() {
   document.getElementById('newsTitle').value = '';
   document.getElementById('newsContent').value = '';
   document.getElementById('newsImage').value = '';
+  document.getElementById('newsImageFile').value = '';
+  document.getElementById('newsImagePreview').hidden = true;
   document.getElementById('newsPublished').checked = false;
   document.getElementById('newsTitle').focus();
 }
@@ -491,13 +530,18 @@ async function saveNews(e) {
   const id = document.getElementById('newsId').value;
   const title = document.getElementById('newsTitle').value;
   const content = document.getElementById('newsContent').value;
-  const image = document.getElementById('newsImage').value;
+  let image = document.getElementById('newsImage').value;
   const published = document.getElementById('newsPublished').checked;
 
   const url = id ? `${API_URL}/admin/news/${id}` : `${API_URL}/admin/news`;
   const method = id ? 'PUT' : 'POST';
 
   try {
+    const uploaded = await uploadImageFile(document.getElementById('newsImageFile'));
+    if (uploaded) {
+      image = uploaded;
+      document.getElementById('newsImage').value = image;
+    }
     const response = await fetch(url, {
       method,
       credentials: 'include',
@@ -521,16 +565,21 @@ async function saveNews(e) {
 
 async function editNews(id) {
   try {
-    const response = await fetch(`${API_URL}/admin/news`, { credentials: 'include' });
-    const list = await response.json();
-    const news = list.find((n) => n.id === parseInt(id, 10));
-    if (!news) throw new Error('Nicht gefunden');
+    const response = await fetch(`${API_URL}/admin/news/${id}`, { credentials: 'include' });
+    const news = await response.json();
+    if (!response.ok) throw new Error('Nicht gefunden');
 
     document.getElementById('newsId').value = news.id;
     document.getElementById('newsTitle').value = news.title;
     document.getElementById('newsContent').value = news.content;
     document.getElementById('newsImage').value = news.image || '';
-    document.getElementById('newsPublished').checked = news.published;
+    document.getElementById('newsImageFile').value = '';
+    const prev = document.getElementById('newsImagePreview');
+    if (news.image) {
+      prev.src = news.image;
+      prev.hidden = false;
+    } else prev.hidden = true;
+    document.getElementById('newsPublished').checked = !!news.published;
     openNewsForm();
     document.getElementById('newsTitle').focus();
   } catch (err) {
@@ -618,13 +667,18 @@ async function saveEvent(e) {
   const time = document.getElementById('eventTime').value;
   const location = document.getElementById('eventLocation').value;
   const capacity = document.getElementById('eventCapacity').value;
-  const image = document.getElementById('eventImage').value;
+  let image = document.getElementById('eventImage').value;
   const published = document.getElementById('eventPublished').checked;
 
   const url = id ? `${API_URL}/admin/events/${id}` : `${API_URL}/admin/events`;
   const method = id ? 'PUT' : 'POST';
 
   try {
+    const uploaded = await uploadImageFile(document.getElementById('eventImageFile'));
+    if (uploaded) {
+      image = uploaded;
+      document.getElementById('eventImage').value = image;
+    }
     const response = await fetch(url, {
       method,
       credentials: 'include',
@@ -648,7 +702,7 @@ async function saveEvent(e) {
 
 async function editEvent(id) {
   try {
-    const response = await fetch(`${API_URL}/events/${id}`);
+    const response = await fetch(`${API_URL}/admin/events/${id}`, { credentials: 'include' });
     const event = await response.json();
 
     document.getElementById('eventId').value = event.id;
@@ -659,7 +713,13 @@ async function editEvent(id) {
     document.getElementById('eventLocation').value = event.location || '';
     document.getElementById('eventCapacity').value = event.capacity || '';
     document.getElementById('eventImage').value = event.image || '';
-    document.getElementById('eventPublished').checked = event.published;
+    document.getElementById('eventImageFile').value = '';
+    const prev = document.getElementById('eventImagePreview');
+    if (event.image) {
+      prev.src = event.image;
+      prev.hidden = false;
+    } else prev.hidden = true;
+    document.getElementById('eventPublished').checked = !!event.published;
     openEventForm();
   } catch (err) {
     showMessage('Fehler beim Laden', 'error');
@@ -899,6 +959,7 @@ async function loadBookingsList() {
             ${item.message ? '<p>' + item.message + '</p>' : ''}
           </div>
           <div class="item-actions">
+            ${item.status === 'pending' ? `<button class="btn-small btn-edit" onclick="confirmBooking(${item.id})">Bestätigen</button>` : ''}
             ${item.status !== 'cancelled' ? `<button class="btn-small btn-cancel" onclick="cancelBooking(${item.id})">Stornieren</button>` : ''}
             <button class="btn-small btn-delete" onclick="deleteBooking(${item.id})">Löschen</button>
           </div>
@@ -910,6 +971,59 @@ async function loadBookingsList() {
       html || '<div style="padding: 20px; text-align: center; color: #999;">Noch keine Buchungen</div>';
   } catch (err) {
     console.error('Error loading bookings:', err);
+  }
+}
+
+async function confirmBooking(id) {
+  try {
+    const response = await fetch(`${API_URL}/admin/bookings/${id}`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'confirmed' }),
+    });
+    if (response.ok) {
+      showMessage('Termin bestätigt', 'success');
+      loadBookingsList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function saveManualBooking(e) {
+  e.preventDefault();
+  const block = document.getElementById('manualBlock').checked;
+  const date = document.getElementById('manualDate').value;
+  const startTime = document.getElementById('manualTime').value.slice(0, 5);
+
+  try {
+    const res = await fetch(`${API_URL}/admin/bookings`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        blockSlot: block,
+        date,
+        startTime,
+        name: document.getElementById('manualName').value,
+        email: document.getElementById('manualEmail').value,
+        phone: document.getElementById('manualPhone').value,
+        message: document.getElementById('manualMessage').value,
+      }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showMessage(data.message || 'Gespeichert', 'success');
+      e.target.reset();
+      loadBookingsList();
+      loadDashboard();
+    } else {
+      showMessage(data.error || 'Fehler', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
   }
 }
 
@@ -949,7 +1063,16 @@ async function deleteBooking(id) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', checkAuthOnLoad);
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuthOnLoad();
+  bindImagePreview('newsImageFile', 'newsImage', 'newsImagePreview');
+  bindImagePreview('eventImageFile', 'eventImage', 'eventImagePreview');
+  const manualBlock = document.getElementById('manualBlock');
+  if (manualBlock) {
+    manualBlock.addEventListener('change', toggleManualBlockFields);
+    toggleManualBlockFields();
+  }
+});
 </script>
 
 </body>

@@ -5,6 +5,8 @@ const bcryptjs = require('bcryptjs');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
 const app = express();
@@ -20,7 +22,26 @@ if (IS_PRODUCTION) {
 }
 
 // Ensure upload directory exists (Hostinger redeploy may wipe empty dirs)
-fs.mkdirSync(path.join(PUBLIC_DIR, 'uploads'), { recursive: true });
+const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(PUBLIC_DIR, 'uploads');
+fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+
+const imageUpload = multer({
+  storage: multer.diskStorage({
+    destination: UPLOAD_DIR,
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
+      cb(null, `${Date.now()}-${uuidv4().slice(0, 8)}${ext}`);
+    },
+  }),
+  limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE || '5242880', 10) },
+  fileFilter: (req, file, cb) => {
+    if (/^image\/(jpeg|png|gif|webp)$/.test(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Nur Bilder (JPG, PNG, GIF, WebP)'));
+    }
+  },
+});
 
 // ============================================================================
 // MIDDLEWARE
@@ -457,6 +478,15 @@ app.get('/api/admin/news', requireAuth, (req, res) => {
   );
 });
 
+// Get single news (admin, inkl. Entwürfe)
+app.get('/api/admin/news/:id', requireAuth, (req, res) => {
+  db.get(`SELECT * FROM news WHERE id = ?`, [req.params.id], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    if (!row) return res.status(404).json({ error: 'Not found' });
+    res.json(row);
+  });
+});
+
 // Get single news
 app.get('/api/news/:id', (req, res) => {
   db.get(
@@ -549,6 +579,15 @@ app.get('/api/events', (req, res) => {
   );
 });
 
+// Get single event (admin, inkl. Entwürfe)
+app.get('/api/admin/events/:id', requireAuth, (req, res) => {
+  db.get(`SELECT * FROM events WHERE id = ?`, [req.params.id], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    if (!row) return res.status(404).json({ error: 'Not found' });
+    res.json(row);
+  });
+});
+
 // Get all events (admin)
 app.get('/api/admin/events', requireAuth, (req, res) => {
   db.all(
@@ -635,6 +674,15 @@ app.get('/api/services', (req, res) => {
       res.json(rows);
     }
   );
+});
+
+// Get single service (admin)
+app.get('/api/admin/services/:id', requireAuth, (req, res) => {
+  db.get(`SELECT * FROM services WHERE id = ?`, [req.params.id], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    if (!row) return res.status(404).json({ error: 'Not found' });
+    res.json(row);
+  });
 });
 
 // Get all services (admin)
@@ -858,11 +906,98 @@ app.post('/api/bookings', async (req, res) => {
   }
 });
 
+app.post('/api/admin/upload', requireAuth, (req, res) => {
+  imageUpload.single('image')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: 'Keine Datei ausgewählt' });
+    }
+    res.json({
+      success: true,
+      url: `/uploads/${req.file.filename}`,
+    });
+  });
+});
+
 app.get('/api/admin/bookings', requireAuth, (req, res) => {
   db.all(`SELECT * FROM bookings ORDER BY date DESC, start_time DESC`, (err, rows) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     res.json(rows);
   });
+});
+
+app.post('/api/admin/bookings', requireAuth, async (req, res) => {
+  const { name, email, phone, date, startTime, message, blockSlot } = req.body;
+
+  if (!date || !startTime || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(startTime)) {
+    return res.status(400).json({ error: 'Datum und Uhrzeit erforderlich' });
+  }
+
+  const daySlots = booking.generateSlotsForDay(date);
+  const slot = daySlots.find((s) => s.start === startTime);
+  if (!slot) {
+    return res.status(400).json({ error: 'Ungültiger Zeitslot' });
+  }
+
+  const isBlock = Boolean(blockSlot);
+  const clientName = isBlock ? (name?.trim() || 'Blockiert (Praxis)') : name?.trim();
+  const clientEmail = isBlock ? (email?.trim() || 'praxis@kunsttherapie-pb.de') : email?.trim();
+
+  if (!isBlock && (!clientName || !clientEmail)) {
+    return res.status(400).json({ error: 'Name und E-Mail erforderlich' });
+  }
+
+  try {
+    const { localBusy, googleBusy } = await getBusyForRange(date, date);
+    const intervals = busyForDate(date, localBusy, googleBusy);
+    const available = booking.slotsWithAvailability(date, intervals);
+    const chosen = available.find((s) => s.start === startTime);
+    if (!chosen || !chosen.available) {
+      return res.status(409).json({ error: 'Dieser Zeitslot ist bereits belegt' });
+    }
+
+    const result = await dbRun(
+      `INSERT INTO bookings (name, email, phone, date, start_time, end_time, message, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed')`,
+      [
+        clientName,
+        clientEmail,
+        phone ? phone.trim() : null,
+        date,
+        slot.start,
+        slot.end,
+        isBlock ? (message?.trim() || 'Manuell blockiert') : message?.trim() || null,
+      ]
+    );
+
+    const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
+
+    if (!isBlock) {
+      getGoogleRefreshToken(async (err, token) => {
+        if (!err && token) {
+          try {
+            const googleEventId = await googleCalendar.createCalendarEvent(token, row);
+            if (googleEventId) {
+              await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [googleEventId, row.id]);
+            }
+          } catch (e) {
+            console.error('Google event create failed:', e.message);
+          }
+        }
+      });
+    }
+
+    res.json({
+      success: true,
+      id: row.id,
+      message: isBlock ? 'Zeitslot blockiert' : 'Termin eingetragen',
+    });
+  } catch (e) {
+    console.error('admin booking create:', e);
+    res.status(500).json({ error: 'Termin konnte nicht gespeichert werden' });
+  }
 });
 
 app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {

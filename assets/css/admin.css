@@ -97,6 +97,42 @@
   top: 0;
 }
 
+.admin-app .sidebar-links {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.admin-app .sidebar-links a {
+  color: var(--color-teal);
+}
+
+.admin-app .section-desc {
+  color: var(--text-light);
+  margin: -0.5rem 0 1.25rem;
+  max-width: 40rem;
+}
+
+.admin-app .admin-guide ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
+.admin-app #adminToast {
+  margin-bottom: 1rem;
+}
+
+.admin-app .upload-preview {
+  display: block;
+  max-width: 100%;
+  max-height: 200px;
+  margin-top: 0.75rem;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
 .admin-app .sidebar h2 {
   font-size: 1rem;
   font-weight: 700;
