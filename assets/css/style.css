@@ -466,34 +466,63 @@ h3 {
   object-position: center 38%;
 }
 
-/* Über mich: große Porträt-Spalte, Martina vollständig & mittig (kein Querformat-Zuschnitt) */
-.hero-right--portrait {
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: min(480px, 70vh);
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.55);
+/* Über mich: Porträt groß wie Text-Karte, Martina zentriert */
+.page-ueber-mich .hero-grid--about {
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
 }
 
-.hero-right--portrait img {
+.page-ueber-mich .hero-right--portrait.card {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.page-ueber-mich .hero-portrait-frame {
+  flex: 1;
+  margin: 0;
+  min-height: min(420px, 55vh);
+  overflow: hidden;
+  border-radius: calc(var(--radius-card) - 2px);
+  background: linear-gradient(165deg, rgba(67, 97, 94, 0.12), rgba(209, 141, 137, 0.08));
+}
+
+.page-ueber-mich .hero-portrait-frame img {
   width: 100%;
-  height: auto;
-  max-height: min(620px, 78vh);
-  min-height: 280px;
-  object-fit: contain;
-  object-position: center center;
+  height: 100%;
+  min-height: min(420px, 55vh);
+  object-fit: cover;
+  /* Landschafts-Aufnahme: Martina rechts – Fokus auf Person, in der Karte zentriert */
+  object-position: 78% 42%;
   display: block;
+  filter: contrast(1.02);
 }
 
 @media (min-width: 901px) {
-  .hero-grid .hero-right--portrait {
-    min-height: 100%;
+  .page-ueber-mich .hero-grid--about {
+    grid-template-columns: 1fr 1fr;
   }
 
-  .hero-right--portrait img {
-    max-height: min(680px, 85vh);
+  .page-ueber-mich .hero-portrait-frame,
+  .page-ueber-mich .hero-portrait-frame img {
+    min-height: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .page-ueber-mich .hero-grid--about {
+    grid-template-columns: 1fr;
+  }
+
+  .page-ueber-mich .hero-portrait-frame {
+    min-height: min(380px, 62vw);
+  }
+
+  .page-ueber-mich .hero-portrait-frame img {
+    min-height: min(380px, 62vw);
+    object-position: 76% 40%;
   }
 }
 
