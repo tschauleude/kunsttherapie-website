@@ -4,24 +4,30 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Neuigkeiten – Kunsttherapie Paderborn</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
 <body>
+
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+
 <header>
-  <div class="container nav">
-    <a class="brand" href="index.html">
-      <img src="assets/img/Sonnige_Pinsel.jpg" alt="Logo Kunsttherapie Paderborn"/>
-      <div>Kunsttherapie Paderborn</div>
+  <div class="container header-inner">
+    <a class="brand logo-text" href="index.html">
+      <span class="name">Martina Schwierzke</span>
+      <span class="title">Kunsttherapie Paderborn</span>
     </a>
     <nav>
       <ul>
+        <li><a href="ueber-mich.html">Mein Ansatz</a></li>
         <li><a href="angebote.html">Angebote</a></li>
-        <li><a href="ueber-mich.html">Über mich</a></li>
+        <li><a href="index.html#praxis">Die Praxis</a></li>
         <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
-        <li><a href="kontakt.html" class="nav-cta">Anfragen / Buchen</a></li>
+        <li><a href="kontakt.html" class="nav-cta">Kontakt</a></li>
       </ul>
     </nav>
   </div>
@@ -40,7 +46,7 @@
 
   <section class="section container">
     <div id="newsLoading" style="text-align: center; padding: 40px;">
-      <p style="color: var(--text-light); font-size: 1.1rem;"> Laden...</p>
+      <p>Laden...</p>
     </div>
     <div id="newsList" class="news-grid"></div>
     <div id="newsEmpty" style="display: none; text-align: center; padding: 40px;">
@@ -49,21 +55,36 @@
   </section>
 </main>
 
-<footer class="footer">
-  <div class="container">
-    <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:16px">
-      <div><strong>© <span id="y"></span> Kunsttherapie Paderborn</strong> – Martina Schwierzke</div>
-      <div style="display:flex; gap:12px; flex-wrap:wrap">
-        <a href="impressum.html">Impressum</a>
-        <a href="datenschutz.html">Datenschutz</a>
-        <a href="kontakt.html">Kontakt</a>
-      </div>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-col">
+      <h4>Praxis</h4>
+      <p><strong>Martina Schwierzke</strong></p>
+      <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>
     </div>
-    <p class="note" style="margin:0; text-align:center; font-size:0.9rem;">
-      Kunsttherapie als Weg zu Ressourcen, Resilienz & innerer Kraft
-    </p>
+    <div class="footer-col">
+      <h4>Kontakt</h4>
+      <p>Tel.: 05251-690111</p>
+      <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+    </div>
+    <div class="footer-col">
+      <h4>Mehr</h4>
+      <a href="angebote.html">Angebote</a>
+      <a href="events.html">Termine</a>
+      <a href="neuigkeiten.html">Neuigkeiten</a>
+    </div>
+    <div class="footer-col">
+      <h4>Rechtliches</h4>
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+    </div>
+  </div>
+  <div class="container legal-footer">
+    &copy; <span id="y"></span> Martina Schwierzke · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a>
   </div>
 </footer>
+<script>document.getElementById("y").textContent = new Date().getFullYear();</script>
 
 <script>
 const API_URL = window.location.origin + '/api';
