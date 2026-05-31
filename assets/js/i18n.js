@@ -151,14 +151,22 @@
 
   function boot() {
     applyTranslations();
+    if (typeof window.ktInitLangSwitch === 'function') {
+      window.ktInitLangSwitch();
+    }
     if (typeof window.ktApplySiteChrome === 'function') {
       window.ktApplySiteChrome();
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
-  } else {
-    boot();
+  function scheduleBoot() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+      return;
+    }
+    /* Body-Skripte (z. B. site.js) laufen erst danach – einen Tick warten */
+    window.setTimeout(boot, 0);
   }
+
+  scheduleBoot();
 })();
