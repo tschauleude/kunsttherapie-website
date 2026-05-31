@@ -20,22 +20,22 @@
   <meta name="twitter:description" content="Transparente Preise für Gruppensitzungen ab 55 €, Programme und Einzelsitzungen auf Anfrage."/>
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
-<body>
-  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+<body data-i18n-page="prices">
+  <a class="skip-link" data-i18n="a11y.skip" href="#main">Zum Inhalt springen</a>
   <header>
     <div class="container header-inner">
       <a class="brand logo-text" href="index.html">
         <span class="name">Martina Schwierzke</span>
-        <span class="title">Kunsttherapie Paderborn</span>
+        <span class="title" data-i18n="brand.subtitle">Kunsttherapie Paderborn</span>
       </a>
       <nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
         <ul>
-          <li><a href="ueber-mich.html" data-nav="ansatz">Mein Ansatz</a></li>
-          <li><a href="kunsttherapie.html" data-nav="kunsttherapie">Kunsttherapie</a></li>
-          <li><a href="kunsttherapie.html#praxis" data-nav="praxis">Die Praxis</a></li>
-          <li><a href="neuigkeiten.html" data-nav="neuigkeiten">Neuigkeiten</a></li>
-          <li><a href="buchung.html" class="nav-cta" data-nav="termin">Termin</a></li>
-          <li><a href="kontakt.html" data-nav="kontakt">Kontakt</a></li>
+          <li><a href="ueber-mich.html" data-nav="ansatz"><span data-i18n="nav.ansatz">Mein Ansatz</span></a></li>
+          <li><a href="kunsttherapie.html" data-nav="kunsttherapie"><span data-i18n="nav.therapy">Kunsttherapie</span></a></li>
+          <li><a href="kunsttherapie.html#praxis" data-nav="praxis"><span data-i18n="nav.practice">Die Praxis</span></a></li>
+          <li><a href="neuigkeiten.html" data-nav="neuigkeiten"><span data-i18n="nav.news">Neuigkeiten</span></a></li>
+          <li><a href="buchung.html" class="nav-cta" data-nav="termin"><span data-i18n="nav.booking">Termin</span></a></li>
+          <li><a href="kontakt.html" data-nav="kontakt"><span data-i18n="nav.contact">Kontakt</span></a></li>
         </ul>
       </nav>
     </div>
@@ -43,15 +43,15 @@
 
 <main id="main" class="container section">
   <div class="card hero-left">
-    <div class="kicker">Preise</div>
-    <h1>Transparent & fair</h1>
-    <p class="sub">Materialien sind inklusive. Einzelsitzungen sind möglich – bitte direkt anfragen.</p>
+    <div class="kicker" data-i18n="prices.kicker">Preise</div>
+    <h1 data-i18n="prices.title">Transparent & fair</h1>
+    <p class="sub" data-i18n="prices.sub">Materialien sind inklusive. Einzelsitzungen sind möglich – bitte direkt anfragen.</p>
 
     <hr class="sep"/>
 
     <div class="table-wrap">
       <table class="prices">
-        <thead>
+        <thead data-i18n-html="prices.tableHead">
           <tr>
             <th scope="col">Leistung</th>
             <th scope="col">Dauer</th>
@@ -59,7 +59,7 @@
             <th scope="col">Hinweis</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody data-i18n-html="prices.tableBody">
           <tr>
             <td>Gruppensitzung</td>
             <td data-label="Dauer">90 Minuten</td>
@@ -88,13 +88,13 @@
       </table>
     </div>
 
-    <p class="note" style="margin-top:16px">
+    <p class="note" style="margin-top:16px" data-i18n="prices.note">
       Fragen zu Preisen oder Rabatten? Schreib mir direkt – jede Situation ist individuell.
     </p>
 
     <div class="actions" style="margin-top:20px">
-      <a class="btn primary" href="buchung.html">Termin buchen</a>
-      <a class="btn outline" href="kontakt.html">Preis anfragen</a>
+      <a class="btn primary" href="buchung.html" data-i18n="btn.book">Termin buchen</a>
+      <a class="btn outline" href="kontakt.html" data-i18n="prices.ask">Preis anfragen</a>
     </div>
   </div>
 </main>
@@ -103,35 +103,39 @@
 <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-col">
-        <h4>Praxis</h4>
+        <h4 data-i18n="footer.practice">Praxis</h4>
         <p><strong>Martina Schwierzke</strong></p>
-        <p>Psychosoziale &amp; Klinische Kunsttherapeutin</p>
+        <p data-i18n="footer.role">Psychosoziale &amp; Klinische Kunsttherapeutin</p>
         <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>
       </div>
       <div class="footer-col">
-        <h4>Kontakt</h4>
+        <h4 data-i18n="footer.contact">Kontakt</h4>
         <p><a href="tel:+495251690111">Tel. 05251-690111</a></p>
         <p><a href="tel:+491704790790">Mobil 0170-4790790</a></p>
         <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
       </div>
       <div class="footer-col">
-        <h4>Angebot</h4>
-        <a href="kunsttherapie.html">Kunsttherapie</a>
-        <a href="buchung.html">Termin buchen</a>
-        <a href="events.html">Veranstaltungen</a>
-        <a href="neuigkeiten.html">Neuigkeiten</a>
-        <a href="preise.html">Preise</a>
+        <h4 data-i18n="footer.offer">Angebot</h4>
+        <a href="kunsttherapie.html"><span data-i18n="nav.therapy">Kunsttherapie</span></a>
+        <a href="buchung.html"><span data-i18n="btn.book">Termin buchen</span></a>
+        <a href="events.html"><span data-i18n="nav.events">Veranstaltungen</span></a>
+        <a href="neuigkeiten.html"><span data-i18n="nav.news">Neuigkeiten</span></a>
+        <a href="preise.html"><span data-i18n="footer.prices">Preise</span></a>
       </div>
       <div class="footer-col">
-        <h4>Rechtliches</h4>
-        <a href="impressum.html">Impressum</a>
-        <a href="datenschutz.html">Datenschutz</a>
+        <h4 data-i18n="footer.legal">Rechtliches</h4>
+        <a href="impressum.html"><span data-i18n="footer.imprint">Impressum</span></a>
+        <a href="datenschutz.html"><span data-i18n="footer.privacy">Datenschutz</span></a>
       </div>
     </div>
     <div class="container legal-footer">
       &copy; <span id="y"></span> Martina Schwierzke · Kunsttherapie Paderborn
     </div>
   </footer>
+<script src="assets/js/i18n-messages.js"></script>
+<script src="assets/js/i18n-messages-pages.js"></script>
+<script src="assets/js/i18n-page-bindings.js"></script>
+<script src="assets/js/i18n.js"></script>
 <script src="assets/js/seo.js"></script>
   <script src="assets/js/consent.js"></script>
   <script src="assets/js/accessibility.js"></script>

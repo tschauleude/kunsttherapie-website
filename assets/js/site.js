@@ -108,8 +108,129 @@
     window.addEventListener('hashchange', markCurrentNav);
   }
 
+  const CHROME_NAV = [
+    ['ansatz', 'nav.ansatz'],
+    ['kunsttherapie', 'nav.therapy'],
+    ['praxis', 'nav.practice'],
+    ['neuigkeiten', 'nav.news'],
+    ['termin', 'nav.booking'],
+    ['kontakt', 'nav.contact'],
+  ];
+
+  const CHROME_FOOTER = [
+    ['.site-footer .footer-col:nth-child(1) h4', 'footer.practice'],
+    ['.site-footer .footer-col:nth-child(1) p:nth-of-type(2)', 'footer.role'],
+    ['.site-footer .footer-col:nth-child(2) h4', 'footer.contact'],
+    ['.site-footer .footer-col:nth-child(3) h4', 'footer.offer'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="kunsttherapie"]', 'nav.therapy'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="buchung"]', 'btn.book'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="events"]', 'nav.events'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="neuigkeiten"]', 'nav.news'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="preise"]', 'footer.prices'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="atelier"]', 'nav.atelier'],
+    ['.site-footer .footer-col:nth-child(4) h4', 'footer.legal'],
+    ['.site-footer .footer-col:nth-child(4) a[href*="impressum"]', 'footer.imprint'],
+    ['.site-footer .footer-col:nth-child(4) a[href*="datenschutz"]', 'footer.privacy'],
+  ];
+
+  function applySiteChrome() {
+    if (!window.ktI18n) return;
+    const t = window.ktI18n.t.bind(window.ktI18n);
+
+    document.querySelectorAll('.skip-link').forEach((el) => {
+      const v = t('a11y.skip');
+      if (v) el.textContent = v;
+    });
+
+    document.querySelectorAll('.brand.logo-text .title').forEach((el) => {
+      const v = t('brand.subtitle');
+      if (v) el.textContent = v;
+    });
+
+    document.querySelectorAll('nav[data-site-nav]').forEach((nav) => {
+      const label = t('nav.aria');
+      if (label) nav.setAttribute('aria-label', label);
+    });
+
+    function setI18nText(el, key) {
+      const v = t(key);
+      if (v == null) return;
+      const inner = el.querySelector(':scope > [data-i18n]');
+      if (inner) inner.textContent = v;
+      else if (!el.hasAttribute('data-i18n')) el.textContent = v;
+    }
+
+    CHROME_NAV.forEach(([navKey, i18nKey]) => {
+      document.querySelectorAll(`nav[data-site-nav] a[data-nav="${navKey}"]`).forEach((link) => {
+        if (link.hasAttribute('data-i18n')) return;
+        setI18nText(link, i18nKey);
+      });
+    });
+
+    CHROME_FOOTER.forEach(([sel, key]) => {
+      document.querySelectorAll(sel).forEach((el) => {
+        if (el.hasAttribute('data-i18n')) return;
+        setI18nText(el, key);
+      });
+    });
+
+    document.querySelectorAll('.nav-toggle-label').forEach((el) => {
+      const v = t('nav.menu');
+      if (v) el.textContent = v;
+    });
+
+    document.querySelectorAll('.legal-footer').forEach((el) => {
+      const tag = t('footer.tagline');
+      if (!tag) return;
+
+      const hasExtra =
+        el.querySelector(
+          '[data-cookie-settings], [data-a11y-open], .footer-link-btn, .a11y-footer-link'
+        ) != null;
+
+      if (!hasExtra) {
+        const year = String(new Date().getFullYear());
+        el.innerHTML = `&copy; <span id="y">${year}</span><span class="footer-tagline-text"> ${tag}</span>`;
+        return;
+      }
+
+      let yearEl = el.querySelector('#y, #year');
+      if (!yearEl) {
+        yearEl = document.createElement('span');
+        yearEl.id = 'y';
+        el.prepend(yearEl);
+        if (!el.textContent.trim().startsWith('©')) {
+          el.prepend(document.createTextNode('© '));
+        }
+      }
+      if (!yearEl.textContent?.trim()) {
+        yearEl.textContent = String(new Date().getFullYear());
+      }
+
+      let taglineEl = el.querySelector('.footer-tagline-text');
+      if (!taglineEl) {
+        taglineEl = document.createElement('span');
+        taglineEl.className = 'footer-tagline-text';
+        [...el.childNodes].forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) node.remove();
+        });
+        const insertBefore = el.querySelector(
+          '[data-cookie-settings], [data-a11y-open], .footer-link-btn, .a11y-footer-link'
+        );
+        el.insertBefore(taglineEl, insertBefore || null);
+      }
+      taglineEl.textContent = ` ${tag}`;
+    });
+  }
+
+  window.ktApplySiteChrome = applySiteChrome;
+
   function initSkipLink() {
-    if (document.querySelector('.skip-link')) return;
+    const existing = document.querySelector('.skip-link');
+    if (existing) {
+      if (!existing.hasAttribute('data-i18n')) existing.setAttribute('data-i18n', 'a11y.skip');
+      return;
+    }
     const main = document.querySelector('main');
     if (!main) return;
     if (!main.id) main.id = 'main';
@@ -117,6 +238,7 @@
     const skip = document.createElement('a');
     skip.href = '#main';
     skip.className = 'skip-link';
+    skip.setAttribute('data-i18n', 'a11y.skip');
     skip.textContent = 'Zum Inhalt springen';
     document.body.prepend(skip);
   }
@@ -177,6 +299,14 @@
     wrap.setAttribute('role', 'group');
     wrap.setAttribute('aria-label', window.ktI18n?.t('lang.switch') || 'Sprache');
 
+    const hint = document.createElement('span');
+    hint.className = 'lang-switch-hint';
+    hint.setAttribute('data-i18n', 'lang.hint');
+    hint.textContent = window.ktI18n?.t('lang.hint') || 'DE · EN';
+
+    const btns = document.createElement('div');
+    btns.className = 'lang-switch-btns';
+
     ['de', 'en'].forEach((code) => {
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -186,8 +316,11 @@
       btn.addEventListener('click', () => {
         if (window.ktI18n) window.ktI18n.setLang(code);
       });
-      wrap.appendChild(btn);
+      btns.appendChild(btn);
     });
+
+    wrap.appendChild(hint);
+    wrap.appendChild(btns);
 
     const nav = header.querySelector('nav[data-site-nav]');
     if (nav) header.insertBefore(wrap, nav);
@@ -198,15 +331,23 @@
     initSkipLink();
     initMobileNav();
     initLangSwitch();
+    applySiteChrome();
     markCurrentNav();
     initHomeScrollSpy();
     setFooterYear();
   }
 
   document.addEventListener('kt-lang-change', () => {
+    applySiteChrome();
+    setFooterYear();
     const group = document.querySelector('.lang-switch');
     if (group && window.ktI18n) {
       group.setAttribute('aria-label', window.ktI18n.t('lang.switch') || 'Sprache');
+      const hint = group.querySelector('.lang-switch-hint');
+      if (hint) {
+        const val = window.ktI18n.t('lang.hint');
+        if (val != null) hint.textContent = val;
+      }
     }
   });
 

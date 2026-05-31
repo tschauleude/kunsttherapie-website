@@ -159,70 +159,108 @@
     }
   }
 
-  function injectUi() {
-    if (document.getElementById('consentBanner')) return;
+  function tr(key) {
+    const v = window.ktI18n?.t(key);
+    return v != null ? v : '';
+  }
 
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `
+  function consentMarkup() {
+    const close = tr('btn.close') || 'Schließen';
+    return `
       <div id="consentBanner" class="consent-banner" role="region" aria-labelledby="consentBannerTitle" hidden>
         <div class="consent-banner-inner card">
-          <h2 id="consentBannerTitle">Datenschutz & Cookies</h2>
-          <p class="consent-lead">
-            Wir setzen <strong>kein Tracking</strong> ein und verkaufen keine Daten.
-            Gespeichert werden nur das, was du uns aktiv gibst (z.&nbsp;B. Terminbuchung)
-            sowie technische Einstellungen auf deinem Gerät.
-          </p>
-          <ul class="consent-list">
-            <li><strong>Notwendig:</strong> Cookie-Einstellungen, Hinweis zu Neuigkeiten (lokal im Browser)</li>
-            <li><strong>Optional:</strong> Google Maps &amp; Google Fonts (Datenübertragung in die USA möglich)</li>
-          </ul>
-          <p class="note">
-            Terminbuchungen werden auf unserem Server gespeichert und können mit dem
-            <strong>Google Kalender der Praxis</strong> synchronisiert werden (nicht auf deinem Gerät).
-            <a href="/datenschutz">Datenschutzerklärung</a>
-          </p>
+          <h2 id="consentBannerTitle">${tr('consent.banner.title')}</h2>
+          <p class="consent-lead">${tr('consent.lead')}</p>
+          <ul class="consent-list">${tr('consent.list')}</ul>
+          <p class="note">${tr('consent.note')}</p>
           <div class="consent-actions">
-            <button type="button" class="btn primary" data-consent-all>Alle akzeptieren</button>
-            <button type="button" class="btn outline" data-consent-essential>Nur notwendige</button>
-            <button type="button" class="btn outline" data-consent-settings>Einstellungen</button>
+            <button type="button" class="btn primary" data-consent-all>${tr('consent.acceptAll')}</button>
+            <button type="button" class="btn outline" data-consent-essential>${tr('consent.essential')}</button>
+            <button type="button" class="btn outline" data-consent-settings>${tr('consent.settings')}</button>
           </div>
         </div>
       </div>
       <div id="consentSettings" class="consent-settings" role="dialog" aria-modal="true" aria-labelledby="consentSettingsTitle" hidden>
         <div class="consent-settings-backdrop" data-consent-close-settings></div>
         <div class="consent-settings-panel card" tabindex="-1">
-          <button type="button" class="consent-settings-close" data-consent-close-settings aria-label="Schließen">&times;</button>
-          <h2 id="consentSettingsTitle">Cookie-Einstellungen</h2>
+          <button type="button" class="consent-settings-close" data-consent-close-settings aria-label="${close}">&times;</button>
+          <h2 id="consentSettingsTitle">${tr('consent.settingsTitle')}</h2>
           <div class="consent-option">
-            <label><input type="checkbox" checked disabled> Notwendig</label>
-            <p class="note">Speichert deine Auswahl und ob du den Neuigkeiten-Hinweis schon gesehen hast. Ohne Tracking.</p>
+            <label><input type="checkbox" checked disabled> ${tr('consent.necessary')}</label>
+            <p class="note">${tr('consent.necessaryNote')}</p>
           </div>
           <div class="consent-option">
-            <label><input type="checkbox" id="consentExternal"> Externe Medien (Google)</label>
-            <p class="note">Google Maps auf Kontakt- und Angebotsseiten sowie Schriftarten von Google Fonts.</p>
+            <label><input type="checkbox" id="consentExternal"> ${tr('consent.external')}</label>
+            <p class="note">${tr('consent.externalNote')}</p>
           </div>
           <div class="consent-actions">
-            <button type="button" class="btn primary" data-consent-save>Auswahl speichern</button>
+            <button type="button" class="btn primary" data-consent-save>${tr('consent.save')}</button>
           </div>
-          <p class="note" style="margin-top:1rem"><a href="/datenschutz">Datenschutzerklärung</a> · <a href="/impressum">Impressum</a></p>
+          <p class="note" style="margin-top:1rem">${tr('consent.legalLinks')}</p>
         </div>
       </div>
     `;
-    document.body.appendChild(wrap);
+  }
 
-    document.querySelector('[data-consent-all]')?.addEventListener('click', () => {
+  function applyConsentI18n() {
+    const title = document.getElementById('consentBannerTitle');
+    if (!title) return;
+
+    const close = tr('btn.close') || 'Schließen';
+    const setHtml = (sel, key) => {
+      const el = document.querySelector(sel);
+      const val = tr(key);
+      if (el && val != null) el.innerHTML = val;
+    };
+    const setText = (sel, key) => {
+      const el = document.querySelector(sel);
+      const val = tr(key);
+      if (el && val != null) el.textContent = val;
+    };
+
+    setText('#consentBannerTitle', 'consent.banner.title');
+    setHtml('#consentBanner .consent-lead', 'consent.lead');
+    setHtml('#consentBanner .consent-list', 'consent.list');
+    setHtml('#consentBanner .consent-banner-inner > .note', 'consent.note');
+    setText('[data-consent-all]', 'consent.acceptAll');
+    setText('[data-consent-essential]', 'consent.essential');
+    setText('[data-consent-settings]', 'consent.settings');
+    setText('#consentSettingsTitle', 'consent.settingsTitle');
+    setText('#consentSettings .consent-option:nth-of-type(1) label', 'consent.necessary');
+    setHtml('#consentSettings .consent-option:nth-of-type(1) .note', 'consent.necessaryNote');
+    setText('#consentSettings .consent-option:nth-of-type(2) label', 'consent.external');
+    setHtml('#consentSettings .consent-option:nth-of-type(2) .note', 'consent.externalNote');
+    setText('[data-consent-save]', 'consent.save');
+    setHtml('#consentSettings .consent-settings-panel > .note', 'consent.legalLinks');
+
+    const closeBtn = document.querySelector('.consent-settings-close');
+    if (closeBtn) closeBtn.setAttribute('aria-label', close);
+  }
+
+  function bindConsentUi(wrap) {
+    wrap.querySelector('[data-consent-all]')?.addEventListener('click', () => {
       saveConsent({ external: true });
     });
-    document.querySelector('[data-consent-essential]')?.addEventListener('click', () => {
+    wrap.querySelector('[data-consent-essential]')?.addEventListener('click', () => {
       saveConsent({ external: false });
     });
-    document.querySelector('[data-consent-settings]')?.addEventListener('click', showSettings);
-    document.querySelector('[data-consent-save]')?.addEventListener('click', () => {
+    wrap.querySelector('[data-consent-settings]')?.addEventListener('click', showSettings);
+    wrap.querySelector('[data-consent-save]')?.addEventListener('click', () => {
       saveConsent({ external: document.getElementById('consentExternal')?.checked || false });
     });
-    document.querySelectorAll('[data-consent-close-settings]').forEach((el) => {
+    wrap.querySelectorAll('[data-consent-close-settings]').forEach((el) => {
       el.addEventListener('click', hideSettings);
     });
+  }
+
+  function injectUi() {
+    if (document.getElementById('consentBanner')) return;
+
+    const wrap = document.createElement('div');
+    wrap.innerHTML = consentMarkup();
+    document.body.appendChild(wrap);
+
+    bindConsentUi(wrap);
 
     document.addEventListener('click', (e) => {
       if (e.target.matches('[data-enable-maps]')) {
@@ -239,7 +277,7 @@
       btn.type = 'button';
       btn.className = 'footer-link-btn';
       btn.dataset.cookieSettings = '1';
-      btn.textContent = 'Cookie-Einstellungen';
+      btn.textContent = tr('consent.footerLink') || 'Cookie-Einstellungen';
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         showSettings();
@@ -268,6 +306,13 @@
       })
     );
   }
+
+  document.addEventListener('kt-lang-change', () => {
+    if (document.getElementById('consentBanner')) applyConsentI18n();
+    document.querySelectorAll('[data-cookie-settings]').forEach((btn) => {
+      btn.textContent = tr('consent.footerLink') || 'Cookie-Einstellungen';
+    });
+  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

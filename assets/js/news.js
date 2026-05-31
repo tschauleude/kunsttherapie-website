@@ -9,8 +9,12 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+function newsLocale() {
+  return window.ktI18n?.getLocale?.() || 'de-DE';
+}
+
 function formatNewsDate(createdAt) {
-  return new Date(createdAt).toLocaleDateString('de-DE', {
+  return new Date(createdAt).toLocaleDateString(newsLocale(), {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -207,14 +211,17 @@ async function loadNewsPage() {
       return;
     }
 
+    cachedNewsPage = news;
     list.innerHTML = news.map((item) => renderNewsCard(item, 200)).join('');
     if (window.revealStagger) {
       window.revealStagger(list.querySelectorAll('.news-card'));
     }
   } catch (err) {
     if (loading) {
-      loading.innerHTML =
-        '<p style="color:var(--text-light)">Aktuelles konnte gerade nicht geladen werden. Bitte später erneut versuchen.</p>';
+      const errText =
+        window.ktI18n?.t('newsPage.error') ||
+        'Aktuelles konnte gerade nicht geladen werden. Bitte später erneut versuchen.';
+      loading.innerHTML = `<p style="color:var(--text-light)">${errText}</p>`;
     }
     console.error('News page error:', err);
   }
@@ -229,3 +236,29 @@ if (document.getElementById('homeNewsList')) {
 if (document.getElementById('newsList') && !document.getElementById('homeNewsList')) {
   document.addEventListener('DOMContentLoaded', loadNewsPage);
 }
+
+let cachedNewsPage = null;
+
+function rerenderNewsFromCache() {
+  const list = document.getElementById('newsList');
+  if (list && cachedNewsPage) {
+    list.innerHTML = cachedNewsPage.map((item) => renderNewsCard(item, 200)).join('');
+    return;
+  }
+
+  const homeList = document.getElementById('homeNewsList');
+  const section = document.getElementById('neuigkeiten');
+  if (homeList && cachedHomeNews.length) {
+    const limit = parseInt(section?.dataset.limit || '3', 10);
+    homeList.innerHTML = cachedHomeNews
+      .slice(0, limit)
+      .map((item) => renderNewsCard(item, 160))
+      .join('');
+  }
+}
+
+document.addEventListener('kt-lang-change', () => {
+  if (document.getElementById('newsList') || document.getElementById('homeNewsList')) {
+    rerenderNewsFromCache();
+  }
+});

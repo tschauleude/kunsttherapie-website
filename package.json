@@ -9,7 +9,8 @@
     "setup-admin": "node scripts/setup-admin.js",
     "sync-admin": "cp admin.html public/admin.html",
     "sync-chrome": "node scripts/build-chrome.js && node scripts/apply-chrome.js",
-    "patch-meta": "node scripts/patch-head-meta.js"
+    "patch-meta": "node scripts/patch-head-meta.js",
+    "validate-i18n": "node scripts/validate-i18n.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
