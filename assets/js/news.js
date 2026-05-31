@@ -1,4 +1,5 @@
 const NEWS_API_URL = window.location.origin + '/api';
+const NEWS_POPUP_STORAGE_KEY = 'kunsttherapie_news_popup_id';
 
 function escapeHtml(text) {
   const div = document.createElement('div');
@@ -36,14 +37,87 @@ function renderNewsCard(item, excerptLen = 200) {
   `;
 }
 
+function renderNewsPopupBlock(item, isFirst) {
+  const date = formatNewsDate(item.createdAt);
+  const imageHtml = item.image
+    ? `<img src="${item.image}" alt="" class="news-popup-image"/>`
+    : '';
+  const paragraphs = (item.content || '')
+    .split(/\n+/)
+    .filter(Boolean)
+    .map((p) => `<p>${escapeHtml(p)}</p>`)
+    .join('');
+
+  const titleTag = isFirst ? 'h2' : 'h3';
+  const idAttr = isFirst ? ' id="newsPopupTitle"' : '';
+
+  return `
+    <article class="news-popup-item${isFirst ? '' : ' news-popup-item-more'}">
+      ${imageHtml}
+      <div class="news-date">${date}</div>
+      <${titleTag}${idAttr}>${escapeHtml(item.title)}</${titleTag}>
+      <div class="news-popup-text">${paragraphs}</div>
+    </article>
+  `;
+}
+
 async function fetchPublishedNews() {
   const response = await fetch(`${NEWS_API_URL}/news`);
   if (!response.ok) throw new Error('News laden fehlgeschlagen');
   return response.json();
 }
 
+function closeNewsPopup() {
+  const popup = document.getElementById('newsPopup');
+  if (!popup) return;
+  popup.hidden = true;
+  document.body.classList.remove('news-popup-open');
+}
+
+function openNewsPopup(items) {
+  const popup = document.getElementById('newsPopup');
+  const body = document.getElementById('newsPopupBody');
+  if (!popup || !body || !items.length) return;
+
+  body.innerHTML = items
+    .map((item, index) => renderNewsPopupBlock(item, index === 0))
+    .join('');
+
+  popup.hidden = false;
+  document.body.classList.add('news-popup-open');
+  popup.querySelector('.news-popup-close')?.focus();
+
+  const latestId = String(items[0].id);
+  try {
+    localStorage.setItem(NEWS_POPUP_STORAGE_KEY, latestId);
+  } catch (e) {
+    /* ignore */
+  }
+}
+
+function shouldShowNewsPopup(latestId) {
+  try {
+    return localStorage.getItem(NEWS_POPUP_STORAGE_KEY) !== String(latestId);
+  } catch (e) {
+    return true;
+  }
+}
+
+function initNewsPopupControls() {
+  const popup = document.getElementById('newsPopup');
+  if (!popup) return;
+
+  popup.querySelectorAll('[data-close-popup]').forEach((el) => {
+    el.addEventListener('click', closeNewsPopup);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!popup.hidden && e.key === 'Escape') closeNewsPopup();
+  });
+}
+
 async function loadHomeNews() {
-  const section = document.getElementById('homeNewsSection');
+  const section = document.getElementById('neuigkeiten');
   const list = document.getElementById('homeNewsList');
   const loading = document.getElementById('homeNewsLoading');
   if (!section || !list) return;
@@ -57,10 +131,23 @@ async function loadHomeNews() {
       return;
     }
 
+    cachedHomeNews = news;
+
     const limit = parseInt(section.dataset.limit || '3', 10);
     const items = news.slice(0, limit);
     list.innerHTML = items.map((item) => renderNewsCard(item, 160)).join('');
     section.hidden = false;
+
+    const popupLimit = parseInt(section.dataset.popupLimit || '2', 10);
+    const popupItems = news.slice(0, popupLimit);
+    if (shouldShowNewsPopup(popupItems[0].id)) {
+      openNewsPopup(popupItems);
+    }
+
+    const reopenBtn = document.getElementById('openNewsPopupBtn');
+    if (reopenBtn) {
+      reopenBtn.onclick = () => openNewsPopup(news.slice(0, popupLimit));
+    }
   } catch (err) {
     if (loading) loading.style.display = 'none';
     section.hidden = true;
@@ -94,7 +181,10 @@ async function loadNewsPage() {
 }
 
 if (document.getElementById('homeNewsList')) {
-  document.addEventListener('DOMContentLoaded', loadHomeNews);
+  document.addEventListener('DOMContentLoaded', () => {
+    initNewsPopupControls();
+    loadHomeNews();
+  });
 }
 if (document.getElementById('newsList') && !document.getElementById('homeNewsList')) {
   document.addEventListener('DOMContentLoaded', loadNewsPage);

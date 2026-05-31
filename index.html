@@ -12,6 +12,19 @@
 </head>
 <body>
 
+<div id="newsPopup" class="news-popup" hidden role="dialog" aria-modal="true" aria-labelledby="newsPopupTitle">
+  <div class="news-popup-backdrop" data-close-popup></div>
+  <div class="news-popup-panel card">
+    <button type="button" class="news-popup-close" aria-label="Schließen" data-close-popup>&times;</button>
+    <div class="news-popup-kicker">Aktuelles</div>
+    <div id="newsPopupBody" class="news-popup-body"></div>
+    <div class="news-popup-actions">
+      <a class="btn outline" href="neuigkeiten.html">Alle Neuigkeiten</a>
+      <button type="button" class="btn primary" data-close-popup>Schließen</button>
+    </div>
+  </div>
+</div>
+
 <div class="blob blob-1" aria-hidden="true"></div>
 <div class="blob blob-2" aria-hidden="true"></div>
 <div class="blob blob-3" aria-hidden="true"></div>
@@ -63,7 +76,7 @@
     </div>
   </section>
 
-  <section id="neuigkeiten" class="section container home-news" hidden data-limit="3">
+  <section id="neuigkeiten" class="section container home-news" hidden data-limit="3" data-popup-limit="2">
     <div class="section-intro center">
       <div class="kicker">Aktuelles</div>
       <h2>Neuigkeiten</h2>
@@ -74,6 +87,7 @@
     </div>
     <div id="homeNewsList" class="news-grid news-grid-home"></div>
     <p class="center" style="margin-top:1.5rem">
+      <button type="button" class="btn outline" id="openNewsPopupBtn">Aktuelles anzeigen</button>
       <a class="btn outline" href="neuigkeiten.html">Alle Neuigkeiten</a>
     </p>
   </section>
