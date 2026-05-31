@@ -1,5 +1,5 @@
 /* === FARBPARTIKEL DESIGN-SYSTEM === */
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Quicksand:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
 
 :root {
   --bg-main: #faf9f6;
@@ -13,8 +13,8 @@
   --particle-rose: rgba(235, 171, 169, 0.4);
   --particle-mint: rgba(162, 212, 196, 0.4);
   --particle-sand: rgba(240, 215, 164, 0.4);
-  --font-body: 'Quicksand', sans-serif;
-  --font-accent: 'Caveat', cursive;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-accent: var(--font-body);
   --radius-organic: 30px 10px 30px 10px;
   --radius-organic-hover: 10px 30px 10px 30px;
   --radius-pill: 50px;
@@ -147,18 +147,19 @@ header {
 }
 
 .logo-text .name {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--color-teal);
-  letter-spacing: 0.04em;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-light);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .logo-text .title {
-  font-family: var(--font-accent);
-  font-size: 1.35rem;
-  color: var(--color-rose);
-  line-height: 1.1;
-  font-weight: 500;
+  font-size: 1.2rem;
+  color: var(--color-teal);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .brand img {
@@ -208,38 +209,36 @@ nav a.nav-cta:hover {
 }
 
 h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(2rem, 4.5vw, 2.85rem);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
   color: #3d4a48;
   margin-bottom: 1rem;
 }
 
-h1 .accent,
+.text-accent,
 .hero-title-accent {
-  font-family: var(--font-accent);
-  font-size: clamp(2.4rem, 6vw, 3.6rem);
-  font-weight: 500;
-  color: var(--color-rose);
-  display: inline-block;
-  transform: rotate(-2deg);
-  line-height: 1.1;
+  color: var(--color-teal);
+  font-weight: 700;
 }
 
 h2 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: clamp(1.45rem, 2.8vw, 1.85rem);
   font-weight: 700;
+  letter-spacing: -0.025em;
   color: #3d4a48;
   margin-bottom: 0.75rem;
 }
 
 h3 {
-  font-family: var(--font-accent);
-  font-size: 1.75rem;
-  font-weight: 500;
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--color-teal);
   margin-bottom: 0.75rem;
-  line-height: 1.15;
+  line-height: 1.3;
 }
 
 .sub {
@@ -259,12 +258,15 @@ h3 {
   padding: clamp(5rem, 12vw, 8rem) 0 clamp(3rem, 6vw, 5rem);
 }
 
-.hero.centered {
-  text-align: center;
+.hero-intro {
+  padding-top: clamp(3rem, 8vw, 5rem);
+  padding-bottom: clamp(2rem, 5vw, 3rem);
 }
 
-.hero.centered .sub {
-  margin: 0 auto 2rem;
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .hero-grid {
@@ -562,11 +564,12 @@ table.prices th {
 }
 
 .footer-col h4 {
-  font-family: var(--font-accent);
-  font-size: 1.5rem;
-  color: var(--color-rose);
-  margin-bottom: 0.75rem;
-  font-weight: 500;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-teal);
+  margin-bottom: 0.85rem;
 }
 
 .footer-col p,

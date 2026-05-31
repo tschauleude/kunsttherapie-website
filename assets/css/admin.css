@@ -98,11 +98,11 @@
 }
 
 .admin-app .sidebar h2 {
-  font-family: var(--font-accent);
-  font-size: 1.5rem;
-  color: var(--color-rose);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-teal);
   margin-bottom: 1.5rem;
-  font-weight: 500;
 }
 
 .admin-app .nav-item {
