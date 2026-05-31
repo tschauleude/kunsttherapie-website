@@ -34,6 +34,10 @@
 
   const collageImages = new Map();
 
+  function markStarted() {
+    canvasWrap?.classList.add('has-started');
+  }
+
   function setStatus(msg, type) {
     if (!statusEl) return;
     statusEl.textContent = msg;
@@ -241,6 +245,7 @@
       syncCollageBar();
       render();
       setStatus('Bild zur Kollage hinzugefügt – ziehen zum Verschieben.', 'success');
+      markStarted();
     };
     img.src = src;
   }
@@ -322,6 +327,7 @@
 
   function onPointerDown(e) {
     if (e.button === 2) return;
+    markStarted();
     const p = pointerPos(e);
 
     if (tool === 'select') {
@@ -661,6 +667,7 @@
   bindUI();
   setTool('brush');
   toggleIdentityFields();
+  if (strokes.length || collageItems.length) markStarted();
   resize();
   window.addEventListener('resize', resize);
 })();

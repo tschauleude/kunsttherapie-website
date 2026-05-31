@@ -44,12 +44,18 @@
 
   function markCurrentNav() {
     const pageKey = currentNavKey();
+    const hash = window.location.hash.replace('#', '');
+
+    if (pageKey === 'kunsttherapie' && hash === 'praxis') {
+      setActiveNav('praxis');
+      return;
+    }
+
     if (pageKey !== 'home') {
       setActiveNav(pageKey);
       return;
     }
 
-    const hash = window.location.hash.replace('#', '');
     if (hash) {
       const match = HOME_SECTIONS.find((s) => s.id === hash);
       if (match) {

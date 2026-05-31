@@ -19,7 +19,7 @@ const HEADER = `  <a class="skip-link" href="#main">Zum Inhalt springen</a>
         <ul>
           <li><a href="ueber-mich.html" data-nav="ansatz">Mein Ansatz</a></li>
           <li><a href="kunsttherapie.html" data-nav="kunsttherapie">Kunsttherapie</a></li>
-          <li><a href="index.html#praxis" data-nav="praxis">Die Praxis</a></li>
+          <li><a href="kunsttherapie.html#praxis" data-nav="praxis">Die Praxis</a></li>
           <li><a href="neuigkeiten.html" data-nav="neuigkeiten">Neuigkeiten</a></li>
           <li><a href="buchung.html" class="nav-cta" data-nav="termin">Termin</a></li>
           <li><a href="kontakt.html" data-nav="kontakt">Kontakt</a></li>

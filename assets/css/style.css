@@ -1679,15 +1679,51 @@ body.consent-settings-open {
 
 .kt-offers {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.25rem;
+  align-items: stretch;
+}
+
+@media (min-width: 640px) {
+  .kt-offers {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .kt-offers {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .kt-offers .kt-offer.is-open { border-color: #557a76; }
 
 .kt-offer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
   transition: border-color 0.35s, box-shadow 0.35s;
   border: 2px solid transparent;
+}
+
+.kt-offer-head {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 11.5rem;
+}
+
+.kt-offer-teaser {
+  flex: 1;
+  margin: 0 0 1rem;
+  color: var(--text-light);
+  line-height: 1.55;
+}
+
+.kt-offer-head .kt-toggle {
+  margin-top: auto;
+  align-self: flex-start;
 }
 
 .kt-offer.is-open {
@@ -1711,10 +1747,76 @@ body.consent-settings-open {
   margin: 0 0 0.5rem;
 }
 
-.kt-offer-teaser {
-  margin: 0 0 1rem;
+.kt-praxis-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .kt-praxis-grid {
+    grid-template-columns: 1.05fr 1fr;
+    align-items: stretch;
+  }
+}
+
+.kt-praxis-photo {
+  width: 100%;
+  height: auto;
+  min-height: 220px;
+  max-height: 360px;
+  object-fit: cover;
+  object-position: center 36%;
+  border-radius: calc(var(--radius-card) - 4px);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.kt-praxis-media {
+  display: flex;
+  flex-direction: column;
+}
+
+.kt-praxis-highlights {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+@media (min-width: 640px) {
+  .kt-praxis-highlights {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .kt-praxis-highlights {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.kt-praxis-highlight {
+  padding: 1.15rem 1.25rem;
+  height: 100%;
+}
+
+.kt-praxis-highlight h3 {
+  font-size: 1rem;
+  margin: 0 0 0.4rem;
+  color: var(--color-teal-dark);
+}
+
+.kt-praxis-highlight p {
+  margin: 0;
+  font-size: 0.92rem;
   color: var(--text-light);
-  line-height: 1.55;
+  line-height: 1.5;
+}
+
+.kt-location-grid {
+  align-items: stretch;
 }
 
 .kt-offer-body {
