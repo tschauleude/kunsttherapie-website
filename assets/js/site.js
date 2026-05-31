@@ -127,7 +127,7 @@
     ['.site-footer .footer-col:nth-child(3) a[href*="events"]', 'nav.events'],
     ['.site-footer .footer-col:nth-child(3) a[href*="neuigkeiten"]', 'nav.news'],
     ['.site-footer .footer-col:nth-child(3) a[href*="preise"]', 'footer.prices'],
-    ['.site-footer .footer-col:nth-child(3) a[href*="atelier"]', 'nav.atelier'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="atelier"]', 'footer.atelier'],
     ['.site-footer .footer-col:nth-child(4) h4', 'footer.legal'],
     ['.site-footer .footer-col:nth-child(4) a[href*="impressum"]', 'footer.imprint'],
     ['.site-footer .footer-col:nth-child(4) a[href*="datenschutz"]', 'footer.privacy'],

@@ -49,6 +49,7 @@ const FOOTER = `  <footer class="site-footer">
         <a href="events.html">Veranstaltungen</a>
         <a href="neuigkeiten.html">Neuigkeiten</a>
         <a href="preise.html">Preise</a>
+        <a href="atelier.html"><span data-i18n="footer.atelier">Live-Atelier</span></a>
       </div>
       <div class="footer-col">
         <h4>Rechtliches</h4>
