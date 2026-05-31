@@ -507,7 +507,6 @@ h3 {
   border-radius: var(--radius-card);
   box-shadow: var(--shadow);
   border: 1px solid rgba(255, 255, 255, 0.72);
-  transition: box-shadow 0.35s ease;
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -517,8 +516,11 @@ h3 {
   }
 }
 
-.card:hover {
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06);
+/* Karten: beim Hover keine Ecken-, Größen- oder Positionsänderung */
+.card:hover,
+.card:focus-within {
+  border-radius: var(--radius-card);
+  transform: none;
 }
 
 .hero-left {
@@ -1853,5 +1855,194 @@ html.reveal-active .reveal-item.reveal-visible {
 
   nav ul {
     justify-content: flex-start;
+  }
+}
+
+/* === Barrierefreiheit (accessibility.js) === */
+html[data-a11y-text='large'] {
+  font-size: 112.5%;
+}
+
+html[data-a11y-text='xlarge'] {
+  font-size: 125%;
+}
+
+html[data-a11y-contrast='high'],
+html.a11y-high-contrast {
+  --bg-main: #fff;
+  --bg-card: #fff;
+  --bg-surface: #fff;
+  --text-main: #111;
+  --text-light: #222;
+  --color-teal: #0d4a46;
+  --color-teal-dark: #062e2c;
+  --line: #111;
+  --shadow: none;
+  --bg-paint-opacity: 0;
+}
+
+html[data-a11y-contrast='high'] body:not(.admin-app)::before,
+html.a11y-high-contrast body:not(.admin-app)::before {
+  opacity: 0;
+}
+
+html[data-a11y-contrast='high'] .card,
+html.a11y-high-contrast .card {
+  border: 2px solid #111;
+  backdrop-filter: none;
+}
+
+html[data-a11y-links='underline'] main a:not(.btn):not(.nav-cta):not(.brand) {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+html[data-a11y-spacing='readable'] body {
+  line-height: 1.95;
+  letter-spacing: 0.02em;
+}
+
+html[data-a11y-focus='strong'] :focus-visible {
+  outline: 3px solid var(--color-teal-dark);
+  outline-offset: 3px;
+}
+
+html.a11y-reduce-motion *,
+html.a11y-reduce-motion *::before,
+html.a11y-reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+.a11y-fab {
+  position: fixed;
+  left: clamp(1rem, 3vw, 1.75rem);
+  bottom: clamp(1rem, 3vw, 1.75rem);
+  z-index: 190;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid var(--color-teal);
+  background: var(--bg-card);
+  color: var(--color-teal-dark);
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.a11y-fab:hover {
+  background: rgba(85, 122, 118, 0.1);
+}
+
+.a11y-fab:focus-visible {
+  outline: 3px solid var(--color-teal-dark);
+  outline-offset: 3px;
+}
+
+.a11y-panel {
+  position: fixed;
+  left: clamp(1rem, 3vw, 1.75rem);
+  bottom: calc(clamp(1rem, 3vw, 1.75rem) + 3.5rem);
+  z-index: 195;
+  width: min(22rem, calc(100vw - 2rem));
+  max-height: min(70vh, 32rem);
+  overflow: auto;
+  padding: 1.25rem 1.35rem 1.35rem;
+  border-radius: var(--radius-card);
+  background: var(--bg-card);
+  border: 2px solid rgba(85, 122, 118, 0.35);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+.a11y-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.a11y-panel-head h2 {
+  font-size: 1.15rem;
+  margin: 0;
+  color: var(--text-main);
+}
+
+.a11y-panel-close {
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text-main);
+  padding: 0.15rem 0.35rem;
+}
+
+.a11y-panel-intro {
+  font-size: 0.88rem;
+  color: var(--text-light);
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.a11y-form fieldset {
+  border: 1px solid rgba(85, 122, 118, 0.25);
+  border-radius: 10px;
+  margin: 0 0 0.75rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.a11y-form legend {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0 0.25rem;
+  color: var(--color-teal-dark);
+}
+
+.a11y-form label {
+  display: block;
+  font-size: 0.92rem;
+  margin: 0.35rem 0;
+  cursor: pointer;
+}
+
+.a11y-form input {
+  margin-right: 0.45rem;
+}
+
+.a11y-actions {
+  margin-top: 0.5rem;
+}
+
+.a11y-live {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  min-height: 1.25rem;
+  margin: 0.5rem 0 0;
+}
+
+.a11y-footer-link {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.a11y-footer-link:hover {
+  color: var(--color-teal-dark);
+}
+
+@media (max-width: 480px) {
+  .a11y-panel {
+    left: 0.75rem;
+    right: 0.75rem;
+    width: auto;
   }
 }
