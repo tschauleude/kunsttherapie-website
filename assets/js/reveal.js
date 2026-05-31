@@ -78,6 +78,11 @@
         sections.forEach((section) => collectSectionBlocks(section, add, seen));
       } else {
         collectFlatMain(main, add, seen);
+        const heroGrid = main.querySelector(':scope > .hero-grid');
+        if (heroGrid) {
+          [...heroGrid.children].forEach((child) => add(child));
+        }
+        main.querySelectorAll(':scope > .card').forEach((el) => add(el));
       }
     }
 
