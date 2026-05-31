@@ -67,8 +67,10 @@ async function loadEvents() {
     }
   } catch (err) {
     if (loading) {
-      loading.innerHTML =
-        '<p style="color:var(--text-light)">Termine konnten gerade nicht geladen werden. Bitte später erneut versuchen.</p>';
+      const errText =
+        window.ktI18n?.t('eventsPage.error') ||
+        'Termine konnten gerade nicht geladen werden. Bitte später erneut versuchen.';
+      loading.innerHTML = `<p style="color:var(--text-light)">${errText}</p>`;
     }
     console.error('Events load error:', err);
   }

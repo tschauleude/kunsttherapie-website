@@ -45,17 +45,69 @@
     root.classList.toggle('a11y-high-contrast', prefs.contrast === 'high');
   }
 
+  function tr(key) {
+    const v = window.ktI18n?.t(key);
+    return v != null ? v : '';
+  }
+
   let prefs = load();
   apply(prefs);
 
   const panelId = 'a11yPanel';
   const toggleId = 'a11yToggle';
 
+  function panelHtml() {
+    const closeLabel = tr('a11y.close') || tr('btn.close') || 'Schließen';
+    return `
+    <header class="a11y-panel-head">
+      <h2 id="a11yPanelTitle">${tr('a11y.title')}</h2>
+      <button type="button" class="a11y-panel-close" data-a11y-close aria-label="${closeLabel}">×</button>
+    </header>
+    <p class="a11y-panel-intro">${tr('a11y.intro')}</p>
+    <form class="a11y-form" id="a11yForm">
+      <fieldset>
+        <legend>${tr('a11y.fontSize')}</legend>
+        <label><input type="radio" name="textSize" value="normal"/> ${tr('a11y.font.normal')}</label>
+        <label><input type="radio" name="textSize" value="large"/> ${tr('a11y.font.large')}</label>
+        <label><input type="radio" name="textSize" value="xlarge"/> ${tr('a11y.font.xlarge')}</label>
+      </fieldset>
+      <fieldset>
+        <legend>${tr('a11y.contrast')}</legend>
+        <label><input type="radio" name="contrast" value="default"/> ${tr('a11y.contrast.default')}</label>
+        <label><input type="radio" name="contrast" value="high"/> ${tr('a11y.contrast.high')}</label>
+      </fieldset>
+      <fieldset>
+        <legend>${tr('a11y.motion')}</legend>
+        <label><input type="radio" name="motion" value="default"/> ${tr('a11y.motion.default')}</label>
+        <label><input type="radio" name="motion" value="reduce"/> ${tr('a11y.motion.reduce')}</label>
+      </fieldset>
+      <fieldset>
+        <legend>${tr('a11y.links')}</legend>
+        <label><input type="radio" name="links" value="default"/> ${tr('a11y.links.default')}</label>
+        <label><input type="radio" name="links" value="underline"/> ${tr('a11y.links.underline')}</label>
+      </fieldset>
+      <fieldset>
+        <legend>${tr('a11y.spacing')}</legend>
+        <label><input type="radio" name="spacing" value="default"/> ${tr('a11y.spacing.default')}</label>
+        <label><input type="radio" name="spacing" value="readable"/> ${tr('a11y.spacing.readable')}</label>
+      </fieldset>
+      <fieldset>
+        <legend>${tr('a11y.focus')}</legend>
+        <label><input type="radio" name="focus" value="default"/> ${tr('a11y.focus.default')}</label>
+        <label><input type="radio" name="focus" value="strong"/> ${tr('a11y.focus.strong')}</label>
+      </fieldset>
+      <div class="a11y-actions">
+        <button type="button" class="btn outline" data-a11y-reset>${tr('a11y.reset')}</button>
+      </div>
+    </form>
+    <p class="a11y-live" id="a11yLive" role="status" aria-live="polite" aria-atomic="true"></p>
+  `;
+  }
+
   const toggle = document.createElement('button');
   toggle.type = 'button';
   toggle.id = toggleId;
   toggle.className = 'a11y-fab';
-  toggle.setAttribute('aria-label', 'Barrierefreiheit-Einstellungen öffnen');
   toggle.setAttribute('aria-expanded', 'false');
   toggle.setAttribute('aria-controls', panelId);
   toggle.innerHTML =
@@ -68,56 +120,54 @@
   panel.setAttribute('role', 'dialog');
   panel.setAttribute('aria-modal', 'true');
   panel.setAttribute('aria-labelledby', 'a11yPanelTitle');
-  panel.innerHTML = `
-    <header class="a11y-panel-head">
-      <h2 id="a11yPanelTitle">Barrierefreiheit</h2>
-      <button type="button" class="a11y-panel-close" data-a11y-close aria-label="Einstellungen schließen">×</button>
-    </header>
-    <p class="a11y-panel-intro">Passen Sie die Darstellung an Ihre Bedürfnisse an. Einstellungen werden auf diesem Gerät gespeichert.</p>
-    <form class="a11y-form" id="a11yForm">
-      <fieldset>
-        <legend>Schriftgröße</legend>
-        <label><input type="radio" name="textSize" value="normal"/> Standard</label>
-        <label><input type="radio" name="textSize" value="large"/> Größer</label>
-        <label><input type="radio" name="textSize" value="xlarge"/> Sehr groß</label>
-      </fieldset>
-      <fieldset>
-        <legend>Kontrast</legend>
-        <label><input type="radio" name="contrast" value="default"/> Standard</label>
-        <label><input type="radio" name="contrast" value="high"/> Hoher Kontrast</label>
-      </fieldset>
-      <fieldset>
-        <legend>Bewegung</legend>
-        <label><input type="radio" name="motion" value="default"/> Standard</label>
-        <label><input type="radio" name="motion" value="reduce"/> Reduziert</label>
-      </fieldset>
-      <fieldset>
-        <legend>Links</legend>
-        <label><input type="radio" name="links" value="default"/> Standard</label>
-        <label><input type="radio" name="links" value="underline"/> Immer unterstrichen</label>
-      </fieldset>
-      <fieldset>
-        <legend>Lesbarkeit</legend>
-        <label><input type="radio" name="spacing" value="default"/> Standard</label>
-        <label><input type="radio" name="spacing" value="readable"/> Mehr Zeilenabstand</label>
-      </fieldset>
-      <fieldset>
-        <legend>Tastatur-Fokus</legend>
-        <label><input type="radio" name="focus" value="default"/> Standard</label>
-        <label><input type="radio" name="focus" value="strong"/> Deutlicher Fokusrahmen</label>
-      </fieldset>
-      <div class="a11y-actions">
-        <button type="button" class="btn outline" data-a11y-reset>Zurücksetzen</button>
-      </div>
-    </form>
-    <p class="a11y-live" id="a11yLive" role="status" aria-live="polite" aria-atomic="true"></p>
-  `;
+
+  function applyToggleLabel() {
+    toggle.setAttribute('aria-label', tr('a11y.toggle') || 'Barrierefreiheit');
+  }
+  applyToggleLabel();
+  panel.innerHTML = panelHtml();
 
   document.body.appendChild(toggle);
   document.body.appendChild(panel);
 
-  const form = panel.querySelector('#a11yForm');
-  const live = panel.querySelector('#a11yLive');
+  let form = panel.querySelector('#a11yForm');
+  let live = panel.querySelector('#a11yLive');
+
+  function bindFormHandlers() {
+    form.addEventListener('change', onFormChange);
+    panel.querySelector('[data-a11y-reset]')?.addEventListener('click', onReset);
+  }
+
+  function onFormChange(e) {
+    const t = e.target;
+    if (!(t instanceof HTMLInputElement) || t.type !== 'radio') return;
+    prefs = { ...prefs, [t.name]: t.value };
+    save(prefs);
+    apply(prefs);
+    announce(tr('a11y.announce.set') || 'Einstellung übernommen.');
+  }
+
+  function onReset() {
+    prefs = { ...defaults };
+    save(prefs);
+    apply(prefs);
+    syncForm();
+    announce(tr('a11y.announce.reset') || 'Alle Einstellungen zurückgesetzt.');
+  }
+
+  function refreshPanelI18n() {
+    const wasOpen = !panel.hidden;
+    panel.innerHTML = panelHtml();
+    form = panel.querySelector('#a11yForm');
+    live = panel.querySelector('#a11yLive');
+    bindFormHandlers();
+    applyToggleLabel();
+    syncForm();
+    panel.hidden = !wasOpen;
+    document.querySelectorAll('[data-a11y-open]').forEach((el) => {
+      el.textContent = tr('a11y.footerBtn') || 'Barrierefreiheit';
+    });
+  }
 
   function syncForm() {
     Object.keys(defaults).forEach((key) => {
@@ -157,23 +207,7 @@
     }
   });
 
-  form.addEventListener('change', (e) => {
-    const t = e.target;
-    if (!(t instanceof HTMLInputElement) || t.type !== 'radio') return;
-    prefs = { ...prefs, [t.name]: t.value };
-    save(prefs);
-    apply(prefs);
-    announce('Einstellung übernommen.');
-  });
-
-  panel.querySelector('[data-a11y-reset]')?.addEventListener('click', () => {
-    prefs = { ...defaults };
-    save(prefs);
-    apply(prefs);
-    syncForm();
-    announce('Alle Einstellungen zurückgesetzt.');
-  });
-
+  bindFormHandlers();
   syncForm();
 
   document.querySelectorAll('[data-a11y-open]').forEach((el) => {
@@ -190,7 +224,7 @@
     btn.type = 'button';
     btn.className = 'a11y-footer-link';
     btn.setAttribute('data-a11y-open', '');
-    btn.textContent = 'Barrierefreiheit';
+    btn.textContent = tr('a11y.footerBtn') || 'Barrierefreiheit';
     legalFooter.appendChild(sep);
     legalFooter.appendChild(btn);
   }
@@ -205,4 +239,6 @@
     apply(prefs);
     syncForm();
   }
+
+  document.addEventListener('kt-lang-change', refreshPanelI18n);
 })();

@@ -12,7 +12,9 @@
     btn.type = 'button';
     btn.className = 'scroll-top-btn';
     btn.hidden = true;
-    btn.setAttribute('aria-label', 'Nach oben scrollen');
+    const label = window.ktI18n?.t('ui.scrollTop') || 'Nach oben scrollen';
+    btn.setAttribute('aria-label', label);
+    btn.dataset.i18nAria = 'ui.scrollTop';
     btn.innerHTML = '<span class="scroll-top-arrow" aria-hidden="true">↑</span>';
     btn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -50,6 +52,12 @@
     window.addEventListener('consent-updated', updateBottomOffset);
     window.addEventListener('consent-banner-closed', updateBottomOffset);
   }
+
+  document.addEventListener('kt-lang-change', () => {
+    if (!btn) return;
+    const label = window.ktI18n?.t('ui.scrollTop') || 'Nach oben scrollen';
+    btn.setAttribute('aria-label', label);
+  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

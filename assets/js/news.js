@@ -213,8 +213,10 @@ async function loadNewsPage() {
     }
   } catch (err) {
     if (loading) {
-      loading.innerHTML =
-        '<p style="color:var(--text-light)">Aktuelles konnte gerade nicht geladen werden. Bitte später erneut versuchen.</p>';
+      const errText =
+        window.ktI18n?.t('newsPage.error') ||
+        'Aktuelles konnte gerade nicht geladen werden. Bitte später erneut versuchen.';
+      loading.innerHTML = `<p style="color:var(--text-light)">${errText}</p>`;
     }
     console.error('News page error:', err);
   }

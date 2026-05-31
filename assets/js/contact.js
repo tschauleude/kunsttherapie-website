@@ -4,6 +4,11 @@
 
   const msg = document.getElementById('contactStatus');
 
+  function tr(key) {
+    const v = window.ktI18n?.t(key);
+    return v != null ? v : '';
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = form.querySelector('button[type="submit"]');
@@ -24,10 +29,10 @@
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Nachricht konnte nicht gesendet werden');
+      if (!res.ok) throw new Error(data.error || tr('contact.msg.error'));
 
       if (msg) {
-        msg.textContent = data.message || 'Danke! Deine Nachricht ist angekommen.';
+        msg.textContent = data.message || tr('contact.msg.success');
         msg.className = 'booking-alert booking-alert-success';
         msg.hidden = false;
       }

@@ -17,11 +17,16 @@
     overlay.hidden = true;
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
-    overlay.setAttribute('aria-label', 'Vergrößertes Bild');
+    function tr(key, fallback) {
+      const v = window.ktI18n?.t(key);
+      return v != null ? v : fallback;
+    }
+
+    overlay.setAttribute('aria-label', tr('ui.lightbox.title', 'Vergrößertes Bild'));
     overlay.innerHTML = `
-      <button type="button" class="lightbox-close" aria-label="Schließen">&times;</button>
-      <button type="button" class="lightbox-nav lightbox-prev" aria-label="Vorheriges Bild">&#8249;</button>
-      <button type="button" class="lightbox-nav lightbox-next" aria-label="Nächstes Bild">&#8250;</button>
+      <button type="button" class="lightbox-close" aria-label="${tr('btn.close', 'Schließen')}">&times;</button>
+      <button type="button" class="lightbox-nav lightbox-prev" aria-label="${tr('ui.lightbox.prev', 'Vorheriges Bild')}">&#8249;</button>
+      <button type="button" class="lightbox-nav lightbox-next" aria-label="${tr('ui.lightbox.next', 'Nächstes Bild')}">&#8250;</button>
       <figure class="lightbox-dialog">
         <img class="lightbox-img" src="" alt=""/>
         <figcaption class="lightbox-caption"></figcaption>

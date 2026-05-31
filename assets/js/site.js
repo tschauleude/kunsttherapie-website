@@ -108,8 +108,78 @@
     window.addEventListener('hashchange', markCurrentNav);
   }
 
+  const CHROME_NAV = [
+    ['ansatz', 'nav.ansatz'],
+    ['kunsttherapie', 'nav.therapy'],
+    ['praxis', 'nav.practice'],
+    ['neuigkeiten', 'nav.news'],
+    ['termin', 'nav.booking'],
+    ['kontakt', 'nav.contact'],
+  ];
+
+  const CHROME_FOOTER = [
+    ['.site-footer .footer-col:nth-child(1) h4', 'footer.practice'],
+    ['.site-footer .footer-col:nth-child(1) p:nth-of-type(2)', 'footer.role'],
+    ['.site-footer .footer-col:nth-child(2) h4', 'footer.contact'],
+    ['.site-footer .footer-col:nth-child(3) h4', 'footer.offer'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="kunsttherapie"]', 'nav.therapy'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="buchung"]', 'btn.book'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="events"]', 'nav.events'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="neuigkeiten"]', 'nav.news'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="preise"]', 'footer.prices'],
+    ['.site-footer .footer-col:nth-child(3) a[href*="atelier"]', 'nav.atelier'],
+    ['.site-footer .footer-col:nth-child(4) h4', 'footer.legal'],
+    ['.site-footer .footer-col:nth-child(4) a[href*="impressum"]', 'footer.imprint'],
+    ['.site-footer .footer-col:nth-child(4) a[href*="datenschutz"]', 'footer.privacy'],
+  ];
+
+  function applySiteChrome() {
+    if (!window.ktI18n) return;
+    const t = window.ktI18n.t.bind(window.ktI18n);
+
+    document.querySelectorAll('.skip-link').forEach((el) => {
+      const v = t('a11y.skip');
+      if (v) el.textContent = v;
+    });
+
+    document.querySelectorAll('.brand.logo-text .title').forEach((el) => {
+      const v = t('brand.subtitle');
+      if (v) el.textContent = v;
+    });
+
+    document.querySelectorAll('nav[data-site-nav]').forEach((nav) => {
+      const label = t('nav.aria');
+      if (label) nav.setAttribute('aria-label', label);
+    });
+
+    CHROME_NAV.forEach(([navKey, i18nKey]) => {
+      document.querySelectorAll(`nav[data-site-nav] a[data-nav="${navKey}"]`).forEach((link) => {
+        if (link.hasAttribute('data-i18n')) return;
+        const v = t(i18nKey);
+        if (v) link.textContent = v;
+      });
+    });
+
+    CHROME_FOOTER.forEach(([sel, key]) => {
+      document.querySelectorAll(sel).forEach((el) => {
+        if (el.hasAttribute('data-i18n')) return;
+        const v = t(key);
+        if (v) el.textContent = v;
+      });
+    });
+
+    document.querySelectorAll('.nav-toggle-label').forEach((el) => {
+      const v = t('nav.menu');
+      if (v) el.textContent = v;
+    });
+  }
+
   function initSkipLink() {
-    if (document.querySelector('.skip-link')) return;
+    const existing = document.querySelector('.skip-link');
+    if (existing) {
+      if (!existing.hasAttribute('data-i18n')) existing.setAttribute('data-i18n', 'a11y.skip');
+      return;
+    }
     const main = document.querySelector('main');
     if (!main) return;
     if (!main.id) main.id = 'main';
@@ -117,6 +187,7 @@
     const skip = document.createElement('a');
     skip.href = '#main';
     skip.className = 'skip-link';
+    skip.setAttribute('data-i18n', 'a11y.skip');
     skip.textContent = 'Zum Inhalt springen';
     document.body.prepend(skip);
   }
@@ -209,12 +280,14 @@
     initSkipLink();
     initMobileNav();
     initLangSwitch();
+    applySiteChrome();
     markCurrentNav();
     initHomeScrollSpy();
     setFooterYear();
   }
 
   document.addEventListener('kt-lang-change', () => {
+    applySiteChrome();
     const group = document.querySelector('.lang-switch');
     if (group && window.ktI18n) {
       group.setAttribute('aria-label', window.ktI18n.t('lang.switch') || 'Sprache');
