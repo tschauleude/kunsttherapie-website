@@ -16,7 +16,7 @@
     if (!el || !(el instanceof Element)) return true;
     if (el.matches(SKIP_SELECTOR)) return true;
     if (el.closest(SKIP_SELECTOR)) return true;
-    if (el.offsetParent === null && !el.classList.contains('blob')) return true;
+    if (el.offsetParent === null) return true;
     return false;
   }
 
@@ -64,8 +64,6 @@
       seen.add(el);
       items.push(el);
     }
-
-    document.querySelectorAll('.blob').forEach((el) => add(el));
 
     const brand = document.querySelector('header .brand');
     if (brand) add(brand);
