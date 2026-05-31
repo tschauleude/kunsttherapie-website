@@ -69,44 +69,72 @@
       <p class="sub center" data-i18n="kt.offers.sub">Vier Angebote – ausführliche Beschreibung per Klick.</p>
     </div>
 
-    <div class="kt-offers kt-offers--four">
+    <div class="kt-offers kt-offers--four" data-reveal-skip>
       <article class="kt-offer card" data-offer>
-        <div class="kt-offer-head">
-          <h3 data-i18n="offer.1.title">Kunstgruppentherapie</h3>
-          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
+        <h3 class="kt-offer-title" id="kt-offer-title-1" data-i18n="offer.1.title">Kunstgruppentherapie</h3>
+        <div class="kt-offer-drop-wrap">
+          <button type="button" class="kt-drop-btn" aria-expanded="false" aria-controls="kt-bubble-1">
+            <span class="kt-drop-btn__shape" aria-hidden="true"></span>
+            <span class="kt-drop-btn__label" data-i18n="btn.learnMore">Mehr erfahren</span>
+          </button>
         </div>
-        <div class="kt-offer-body" hidden data-i18n-html="offer.1.body">
-          <p><strong>Dienstag morgens.</strong> In der Gruppe entsteht ein geschützter Rahmen …</p>
+        <div class="kt-offer-bubble" id="kt-bubble-1" hidden>
+          <div class="kt-offer-bubble__backdrop" data-offer-close tabindex="-1" aria-hidden="true"></div>
+          <div class="kt-offer-bubble__panel" role="dialog" aria-modal="true" aria-labelledby="kt-offer-title-1">
+            <button type="button" class="kt-offer-bubble__close" data-offer-close aria-label="Schließen">&times;</button>
+            <div class="kt-offer-bubble__content" data-i18n-html="offer.1.body"></div>
+          </div>
         </div>
       </article>
 
       <article class="kt-offer card" data-offer>
-        <div class="kt-offer-head">
-          <h3 data-i18n="offer.2.title">Auszeit</h3>
-          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
+        <h3 class="kt-offer-title" id="kt-offer-title-2" data-i18n="offer.2.title">Auszeit</h3>
+        <div class="kt-offer-drop-wrap">
+          <button type="button" class="kt-drop-btn" aria-expanded="false" aria-controls="kt-bubble-2">
+            <span class="kt-drop-btn__shape" aria-hidden="true"></span>
+            <span class="kt-drop-btn__label" data-i18n="btn.learnMore">Mehr erfahren</span>
+          </button>
         </div>
-        <div class="kt-offer-body" hidden data-i18n-html="offer.2.body">
-          <p><strong>Donnerstag abends.</strong> Entspanntes Gestalten …</p>
-        </div>
-      </article>
-
-      <article class="kt-offer card" data-offer>
-        <div class="kt-offer-head">
-          <h3 data-i18n="offer.3.title">Einzelsitzungen</h3>
-          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
-        </div>
-        <div class="kt-offer-body" hidden data-i18n-html="offer.3.body">
-          <p>Intensiv und persönlich …</p>
+        <div class="kt-offer-bubble" id="kt-bubble-2" hidden>
+          <div class="kt-offer-bubble__backdrop" data-offer-close tabindex="-1" aria-hidden="true"></div>
+          <div class="kt-offer-bubble__panel" role="dialog" aria-modal="true" aria-labelledby="kt-offer-title-2">
+            <button type="button" class="kt-offer-bubble__close" data-offer-close aria-label="Schließen">&times;</button>
+            <div class="kt-offer-bubble__content" data-i18n-html="offer.2.body"></div>
+          </div>
         </div>
       </article>
 
       <article class="kt-offer card" data-offer>
-        <div class="kt-offer-head">
-          <h3 data-i18n="offer.4.title">Unternehmen, Kliniken &amp; Einrichtungen</h3>
-          <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
+        <h3 class="kt-offer-title" id="kt-offer-title-3" data-i18n="offer.3.title">Einzelsitzungen</h3>
+        <div class="kt-offer-drop-wrap">
+          <button type="button" class="kt-drop-btn" aria-expanded="false" aria-controls="kt-bubble-3">
+            <span class="kt-drop-btn__shape" aria-hidden="true"></span>
+            <span class="kt-drop-btn__label" data-i18n="btn.learnMore">Mehr erfahren</span>
+          </button>
         </div>
-        <div class="kt-offer-body" hidden data-i18n-html="offer.4.body">
-          <p>Für Teams und Organisationen …</p>
+        <div class="kt-offer-bubble" id="kt-bubble-3" hidden>
+          <div class="kt-offer-bubble__backdrop" data-offer-close tabindex="-1" aria-hidden="true"></div>
+          <div class="kt-offer-bubble__panel" role="dialog" aria-modal="true" aria-labelledby="kt-offer-title-3">
+            <button type="button" class="kt-offer-bubble__close" data-offer-close aria-label="Schließen">&times;</button>
+            <div class="kt-offer-bubble__content" data-i18n-html="offer.3.body"></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="kt-offer card" data-offer>
+        <h3 class="kt-offer-title" id="kt-offer-title-4" data-i18n="offer.4.title">Unternehmen, Kliniken &amp; Einrichtungen</h3>
+        <div class="kt-offer-drop-wrap">
+          <button type="button" class="kt-drop-btn" aria-expanded="false" aria-controls="kt-bubble-4">
+            <span class="kt-drop-btn__shape" aria-hidden="true"></span>
+            <span class="kt-drop-btn__label" data-i18n="btn.learnMore">Mehr erfahren</span>
+          </button>
+        </div>
+        <div class="kt-offer-bubble" id="kt-bubble-4" hidden>
+          <div class="kt-offer-bubble__backdrop" data-offer-close tabindex="-1" aria-hidden="true"></div>
+          <div class="kt-offer-bubble__panel" role="dialog" aria-modal="true" aria-labelledby="kt-offer-title-4">
+            <button type="button" class="kt-offer-bubble__close" data-offer-close aria-label="Schließen">&times;</button>
+            <div class="kt-offer-bubble__content" data-i18n-html="offer.4.body"></div>
+          </div>
         </div>
       </article>
     </div>
