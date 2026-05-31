@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Termin buchen – Kunsttherapie Paderborn</title>
+  <meta name="description" content="Online-Terminbuchung für Kunsttherapie in Paderborn. Freie Zeiten im Kalender wählen – ausgebuchte Termine sind nicht verfügbar."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+
+<header>
+  <div class="container header-inner">
+    <a class="brand logo-text" href="index.html">
+      <span class="name">Martina Schwierzke</span>
+      <span class="title">Kunsttherapie Paderborn</span>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="ueber-mich.html">Mein Ansatz</a></li>
+        <li><a href="angebote.html">Angebote</a></li>
+        <li><a href="index.html#praxis">Die Praxis</a></li>
+        <li><a href="neuigkeiten.html">Neuigkeiten</a></li>
+        <li><a href="buchung.html" class="nav-cta">Termin</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="container section booking-page">
+  <div class="section-intro center page-hero">
+    <div class="kicker">Terminbuchung</div>
+    <h1>Kennenlernen oder Sitzung buchen</h1>
+    <p class="sub center">Grau markierte Zeiten sind bereits belegt. Wähle einen freien Termin – Martina erhält die Anfrage und bestätigt sie per E-Mail.</p>
+  </div>
+
+  <div class="booking-layout">
+    <div class="card booking-calendar-panel">
+      <div class="booking-month-nav">
+        <button type="button" class="btn outline btn-icon" id="prevMonth" aria-label="Vorheriger Monat">&larr;</button>
+        <h2 id="monthLabel"></h2>
+        <button type="button" class="btn outline btn-icon" id="nextMonth" aria-label="Nächster Monat">&rarr;</button>
+      </div>
+      <p class="booking-legend">
+        <span class="legend-dot legend-free"></span> Frei
+        <span class="legend-dot legend-busy"></span> Belegt
+        <span class="legend-dot legend-off"></span> Kein Angebot
+      </p>
+      <div class="booking-weekdays" aria-hidden="true">
+        <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+      </div>
+      <div id="calendarGrid" class="booking-grid" role="grid" aria-label="Kalender"></div>
+      <p id="calendarStatus" class="booking-status">Kalender wird geladen …</p>
+    </div>
+
+    <div class="card booking-slots-panel">
+      <h2 id="selectedDayLabel">Bitte einen Tag wählen</h2>
+      <div id="slotsList" class="slots-list"></div>
+      <p id="slotsHint" class="sub" style="margin-top:1rem">Termine Mo–Fr, jeweils 60 Minuten (9–17 Uhr).</p>
+    </div>
+  </div>
+
+  <div class="card booking-form-panel" id="bookingFormPanel" style="display:none">
+    <h2>Deine Angaben</h2>
+    <p class="sub" id="bookingSummary"></p>
+    <form id="bookingForm" class="contact-form">
+      <label for="bookName">Name *</label>
+      <input type="text" id="bookName" name="name" required autocomplete="name"/>
+
+      <label for="bookEmail">E-Mail *</label>
+      <input type="email" id="bookEmail" name="email" required autocomplete="email"/>
+
+      <label for="bookPhone">Telefon (optional)</label>
+      <input type="tel" id="bookPhone" name="phone" autocomplete="tel"/>
+
+      <label for="bookMessage">Nachricht (optional)</label>
+      <textarea id="bookMessage" name="message" rows="4" placeholder="z.B. Erstgespräch, Gruppe, Auszeit am Abend …"></textarea>
+
+      <input type="hidden" id="bookDate" name="date"/>
+      <input type="hidden" id="bookStart" name="startTime"/>
+
+      <button type="submit" class="btn primary" id="bookSubmit">Termin anfragen</button>
+    </form>
+    <div id="bookingMessage" class="booking-alert" role="status" hidden></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <strong>Martina Schwierzke</strong>
+      <p>Kunsttherapie Paderborn</p>
+    </div>
+    <div class="footer-links">
+      <a href="angebote.html">Angebote</a>
+      <a href="buchung.html">Termin buchen</a>
+      <a href="neuigkeiten.html">Neuigkeiten</a>
+      <a href="kontakt.html">Kontakt</a>
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>&copy; <span id="year"></span> Martina Schwierzke</p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+<script src="assets/js/booking.js"></script>
+</body>
+</html>

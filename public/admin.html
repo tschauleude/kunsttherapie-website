@@ -46,6 +46,7 @@
     <h2>Admin</h2>
     <div class="nav-item active" onclick="switchSection('dashboard')">Dashboard</div>
     <div class="nav-item" onclick="switchSection('news')">News</div>
+    <div class="nav-item" onclick="switchSection('bookings')">Termine</div>
     <div class="nav-item" onclick="switchSection('events')">Events</div>
     <div class="nav-item" onclick="switchSection('services')">Services</div>
     <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
@@ -64,6 +65,7 @@
         <div class="stats-box">
           <h3>Übersicht</h3>
           <p>News: <strong id="newsCount">0</strong></p>
+          <p>Termine: <strong id="bookingsCount">0</strong></p>
           <p>Events: <strong id="eventsCount">0</strong></p>
           <p>Services: <strong id="servicesCount">0</strong></p>
         </div>
@@ -103,6 +105,24 @@
         </form>
       </div>
       <div id="newsList" class="items-list"></div>
+    </section>
+
+    <!-- BOOKINGS & GOOGLE CALENDAR -->
+    <section class="admin-section" id="bookings">
+      <h1>Termine & Google Kalender</h1>
+      <div class="form-container" id="googleCalendarBox">
+        <h3>Google Kalender</h3>
+        <p id="googleStatusText" style="color:#666">Status wird geladen …</p>
+        <p style="font-size:0.9rem;color:#666;margin-top:8px">
+          Termine in Google blockieren freie Slots auf der Website. Neue Buchungen erscheinen im Kalender.
+          Blocker im Google Kalender eintragen, um Zeiten zu sperren.
+        </p>
+        <div class="form-actions" style="margin-top:12px">
+          <button type="button" class="btn-save" id="btnGoogleConnect" style="display:none" onclick="connectGoogle()">Mit Google verbinden</button>
+        </div>
+      </div>
+      <h2 style="margin-top:2rem">Buchungen von der Website</h2>
+      <div id="bookingsList" class="items-list"></div>
     </section>
 
     <!-- EVENTS SECTION -->
@@ -270,6 +290,10 @@ function switchSection(sectionId) {
   event.target.classList.add('active');
 
   if (sectionId === 'news') loadNewsList();
+  if (sectionId === 'bookings') {
+    loadBookingsList();
+    loadGoogleStatus();
+  }
   if (sectionId === 'events') loadEventsList();
   if (sectionId === 'services') loadServicesList();
 }
@@ -289,17 +313,20 @@ function showMessage(text, type, elementId) {
 
 async function loadDashboard() {
   try {
-    const [newsRes, eventsRes, servicesRes] = await Promise.all([
+    const [newsRes, bookingsRes, eventsRes, servicesRes] = await Promise.all([
       fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/services`, { credentials: 'include' })
     ]);
 
     const news = await newsRes.json();
+    const bookings = await bookingsRes.json();
     const events = await eventsRes.json();
     const services = await servicesRes.json();
 
     document.getElementById('newsCount').textContent = news.length;
+    document.getElementById('bookingsCount').textContent = bookings.length;
     document.getElementById('eventsCount').textContent = events.length;
     document.getElementById('servicesCount').textContent = services.length;
   } catch (err) {
@@ -360,8 +387,10 @@ async function saveNews(e) {
 
 async function editNews(id) {
   try {
-    const response = await fetch(`${API_URL}/news/${id}`);
-    const news = await response.json();
+    const response = await fetch(`${API_URL}/admin/news`, { credentials: 'include' });
+    const list = await response.json();
+    const news = list.find((n) => n.id === parseInt(id, 10));
+    if (!news) throw new Error('Nicht gefunden');
 
     document.getElementById('newsId').value = news.id;
     document.getElementById('newsTitle').value = news.title;
@@ -670,6 +699,119 @@ async function loadServicesList() {
     document.getElementById('servicesList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">Keine Services vorhanden</div>';
   } catch (err) {
     console.error('Error loading services:', err);
+  }
+}
+
+// ============================================================================
+// BOOKINGS & GOOGLE CALENDAR
+// ============================================================================
+
+async function loadGoogleStatus() {
+  try {
+    const res = await fetch(`${API_URL}/admin/google/status`, { credentials: 'include' });
+    const data = await res.json();
+    const text = document.getElementById('googleStatusText');
+    const btn = document.getElementById('btnGoogleConnect');
+
+    if (!data.clientConfigured) {
+      text.textContent = 'Google API noch nicht konfiguriert (GOOGLE_CLIENT_ID / SECRET in .env auf Hostinger).';
+      btn.style.display = 'none';
+      return;
+    }
+
+    if (data.connected) {
+      text.textContent = `Verbunden mit Kalender: ${data.calendarId}`;
+      btn.style.display = 'none';
+    } else {
+      text.textContent = 'Noch nicht verbunden. Klicke unten und melde dich mit dem Google-Konto von Martina an.';
+      btn.style.display = 'inline-block';
+    }
+  } catch (err) {
+    document.getElementById('googleStatusText').textContent = 'Status konnte nicht geladen werden.';
+  }
+}
+
+async function connectGoogle() {
+  try {
+    const res = await fetch(`${API_URL}/admin/google/auth`, { credentials: 'include' });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else showMessage(data.error || 'Verbindung nicht möglich', 'error');
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function loadBookingsList() {
+  try {
+    const response = await fetch(`${API_URL}/admin/bookings`, { credentials: 'include' });
+    const bookings = await response.json();
+
+    let html = '';
+    bookings.forEach((item) => {
+      const date = new Date(item.date + 'T12:00:00').toLocaleDateString('de-DE');
+      const statusLabels = {
+        pending: 'Ausstehend',
+        confirmed: 'Bestätigt',
+        cancelled: 'Storniert',
+      };
+      const status = statusLabels[item.status] || item.status;
+      html += `
+        <div class="item">
+          <div class="item-info">
+            <h3>${item.name} – ${date} ${item.start_time}–${item.end_time}</h3>
+            <p>${item.email}${item.phone ? ' | ' + item.phone : ''}</p>
+            <p>Status: <strong>${status}</strong>${item.google_event_id ? ' | Google' : ''}</p>
+            ${item.message ? '<p>' + item.message + '</p>' : ''}
+          </div>
+          <div class="item-actions">
+            ${item.status !== 'cancelled' ? `<button class="btn-small btn-cancel" onclick="cancelBooking(${item.id})">Stornieren</button>` : ''}
+            <button class="btn-small btn-delete" onclick="deleteBooking(${item.id})">Löschen</button>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById('bookingsList').innerHTML =
+      html || '<div style="padding: 20px; text-align: center; color: #999;">Noch keine Buchungen</div>';
+  } catch (err) {
+    console.error('Error loading bookings:', err);
+  }
+}
+
+async function cancelBooking(id) {
+  if (!confirm('Termin stornieren?')) return;
+  try {
+    const response = await fetch(`${API_URL}/admin/bookings/${id}`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'cancelled' }),
+    });
+    if (response.ok) {
+      showMessage('Storniert', 'success');
+      loadBookingsList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function deleteBooking(id) {
+  if (!confirm('Buchung endgültig löschen?')) return;
+  try {
+    const response = await fetch(`${API_URL}/admin/bookings/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (response.ok) {
+      showMessage('Gelöscht', 'success');
+      loadBookingsList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
   }
 }
 </script>

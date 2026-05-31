@@ -97,6 +97,31 @@ function initializeDatabase() {
     )
   `);
 
+  // App settings (e.g. Google refresh token from OAuth)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL
+    )
+  `);
+
+  // Bookings (Terminbuchung)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS bookings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT,
+      date TEXT NOT NULL,
+      start_time TEXT NOT NULL,
+      end_time TEXT NOT NULL,
+      message TEXT,
+      status TEXT DEFAULT 'pending',
+      google_event_id TEXT,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
   // Services Table
   db.run(`
     CREATE TABLE IF NOT EXISTS services (
@@ -144,6 +169,94 @@ const requireAuth = (req, res, next) => {
   }
   next();
 };
+
+const booking = require('./lib/booking');
+const googleCalendar = require('./lib/google-calendar');
+
+function getGoogleRefreshToken(callback) {
+  if (process.env.GOOGLE_REFRESH_TOKEN) {
+    return callback(null, process.env.GOOGLE_REFRESH_TOKEN);
+  }
+  db.get(`SELECT value FROM settings WHERE key = ?`, ['google_refresh_token'], (err, row) => {
+    if (err) return callback(err);
+    callback(null, row ? row.value : null);
+  });
+}
+
+function saveGoogleRefreshToken(token, callback) {
+  db.run(
+    `INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)`,
+    ['google_refresh_token', token],
+    callback
+  );
+}
+
+function dbAll(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.all(sql, params, (err, rows) => (err ? reject(err) : resolve(rows || [])));
+  });
+}
+
+function dbGet(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.get(sql, params, (err, row) => (err ? reject(err) : resolve(row)));
+  });
+}
+
+function dbRun(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.run(sql, params, function onRun(err) {
+      if (err) reject(err);
+      else resolve({ lastID: this.lastID, changes: this.changes });
+    });
+  });
+}
+
+async function getBusyForRange(fromStr, toStr) {
+  const days = booking.eachDayInRange(fromStr, toStr);
+  const rows = await dbAll(
+    `SELECT * FROM bookings WHERE date >= ? AND date <= ? AND status != 'cancelled'`,
+    [fromStr, toStr]
+  );
+  const localBusy = booking.bookingsToIntervals(rows);
+
+  return new Promise((resolve, reject) => {
+    getGoogleRefreshToken(async (err, token) => {
+      if (err) return reject(err);
+      let googleBusy = [];
+      if (token) {
+        try {
+          const timeMin = booking.parseDateTime(fromStr, '00:00');
+          const timeMax = booking.parseDateTime(toStr, '23:59');
+          timeMax.setHours(23, 59, 59, 999);
+          googleBusy = await googleCalendar.fetchBusyIntervals(token, timeMin, timeMax);
+        } catch (e) {
+          console.error('Google Calendar sync error:', e.message);
+        }
+      }
+      resolve({ localBusy, googleBusy, days });
+    });
+  });
+}
+
+function busyForDate(dateStr, localBusy, googleBusy) {
+  const dayStart = booking.parseDateTime(dateStr, '00:00');
+  const dayEnd = booking.parseDateTime(dateStr, '23:59');
+  dayEnd.setHours(23, 59, 59, 999);
+
+  const intervals = [];
+  localBusy.forEach((b) => {
+    if (booking.overlaps(b.start, b.end, dayStart, dayEnd)) {
+      intervals.push(b);
+    }
+  });
+  googleBusy.forEach((b) => {
+    if (booking.overlaps(b.start, b.end, dayStart, dayEnd)) {
+      intervals.push(b);
+    }
+  });
+  return intervals;
+}
 
 // ============================================================================
 // AUTH ROUTES
@@ -491,6 +604,278 @@ app.delete('/api/admin/services/:id', requireAuth, (req, res) => {
 });
 
 // ============================================================================
+// BOOKING & GOOGLE CALENDAR
+// ============================================================================
+
+app.get('/api/bookings/config', (req, res) => {
+  res.json({
+    slotMinutes: booking.SLOT_MINUTES,
+    startHour: booking.START_HOUR,
+    endHour: booking.END_HOUR,
+    workDays: booking.WORK_DAYS,
+    minAdvanceHours: booking.MIN_ADVANCE_HOURS,
+    timezone: process.env.BOOKING_TIMEZONE || 'Europe/Berlin',
+  });
+});
+
+app.get('/api/bookings/availability', async (req, res) => {
+  const month = req.query.month;
+  if (!month || !/^\d{4}-\d{2}$/.test(month)) {
+    return res.status(400).json({ error: 'Parameter month erforderlich (YYYY-MM)' });
+  }
+
+  try {
+    const { from, to, daysInMonth, year, month: mo } = booking.monthRange(month);
+    const { localBusy, googleBusy } = await getBusyForRange(from, to);
+
+    const days = {};
+    for (let d = 1; d <= daysInMonth; d += 1) {
+      const dateStr = `${year}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const intervals = busyForDate(dateStr, localBusy, googleBusy);
+      const slots = booking.slotsWithAvailability(dateStr, intervals);
+      const availableCount = slots.filter((s) => s.available).length;
+      days[dateStr] = {
+        workingDay: booking.isWorkingDay(dateStr),
+        slots,
+        hasAvailability: availableCount > 0,
+        availableCount,
+      };
+    }
+
+    getGoogleRefreshToken((err, token) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.json({
+        month,
+        from,
+        to,
+        days,
+        googleCalendarConnected: Boolean(token),
+      });
+    });
+  } catch (e) {
+    console.error('availability error:', e);
+    res.status(500).json({ error: 'Verfügbarkeit konnte nicht geladen werden' });
+  }
+});
+
+app.get('/api/bookings/slots', async (req, res) => {
+  const dateStr = req.query.date;
+  if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    return res.status(400).json({ error: 'Parameter date erforderlich (YYYY-MM-DD)' });
+  }
+
+  try {
+    const { localBusy, googleBusy } = await getBusyForRange(dateStr, dateStr);
+    const intervals = busyForDate(dateStr, localBusy, googleBusy);
+    const slots = booking.slotsWithAvailability(dateStr, intervals);
+
+    getGoogleRefreshToken((err, token) => {
+      if (err) return res.status(500).json({ error: 'Database error' });
+      res.json({
+        date: dateStr,
+        workingDay: booking.isWorkingDay(dateStr),
+        slots,
+        googleCalendarConnected: Boolean(token),
+      });
+    });
+  } catch (e) {
+    console.error('slots error:', e);
+    res.status(500).json({ error: 'Slots konnten nicht geladen werden' });
+  }
+});
+
+app.post('/api/bookings', async (req, res) => {
+  const { name, email, phone, date, startTime, message } = req.body;
+
+  if (!name || !email || !date || !startTime) {
+    return res.status(400).json({ error: 'Name, E-Mail, Datum und Uhrzeit sind erforderlich' });
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(startTime)) {
+    return res.status(400).json({ error: 'Ungültiges Datum oder Uhrzeit' });
+  }
+  if (!booking.isWorkingDay(date)) {
+    return res.status(400).json({ error: 'An diesem Tag sind keine Termine möglich' });
+  }
+  if (booking.isSlotInPast(date, startTime)) {
+    return res.status(400).json({ error: 'Dieser Termin liegt zu nah in der Vergangenheit' });
+  }
+
+  const daySlots = booking.generateSlotsForDay(date);
+  const slot = daySlots.find((s) => s.start === startTime);
+  if (!slot) {
+    return res.status(400).json({ error: 'Ungültiger Termin-Slot' });
+  }
+
+  try {
+    const { localBusy, googleBusy } = await getBusyForRange(date, date);
+    const intervals = busyForDate(date, localBusy, googleBusy);
+    const available = booking.slotsWithAvailability(date, intervals);
+    const chosen = available.find((s) => s.start === startTime);
+    if (!chosen || !chosen.available) {
+      return res.status(409).json({ error: 'Dieser Termin ist leider nicht mehr verfügbar' });
+    }
+
+    const result = await dbRun(
+      `INSERT INTO bookings (name, email, phone, date, start_time, end_time, message, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed')`,
+      [name.trim(), email.trim(), phone ? phone.trim() : null, date, slot.start, slot.end, message ? message.trim() : null]
+    );
+
+    const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
+
+    getGoogleRefreshToken(async (err, token) => {
+      let googleEventId = null;
+      if (!err && token) {
+        try {
+          googleEventId = await googleCalendar.createCalendarEvent(token, row);
+          if (googleEventId) {
+            await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [googleEventId, row.id]);
+          }
+        } catch (e) {
+          console.error('Google event create failed:', e.message);
+        }
+      }
+      res.json({
+        success: true,
+        id: row.id,
+        date: row.date,
+        startTime: row.start_time,
+        endTime: row.end_time,
+        googleSynced: Boolean(googleEventId),
+        message: 'Terminanfrage eingegangen. Martina bestätigt den Termin per E-Mail.',
+      });
+    });
+  } catch (e) {
+    console.error('booking create error:', e);
+    res.status(500).json({ error: 'Buchung fehlgeschlagen' });
+  }
+});
+
+app.get('/api/admin/bookings', requireAuth, (req, res) => {
+  db.all(`SELECT * FROM bookings ORDER BY date DESC, start_time DESC`, (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    res.json(rows);
+  });
+});
+
+app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {
+  const { status } = req.body;
+  const allowed = ['pending', 'confirmed', 'cancelled'];
+  if (!allowed.includes(status)) {
+    return res.status(400).json({ error: 'Ungültiger Status' });
+  }
+
+  try {
+    const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [req.params.id]);
+    if (!row) return res.status(404).json({ error: 'Nicht gefunden' });
+
+    await dbRun(`UPDATE bookings SET status = ? WHERE id = ?`, [status, req.params.id]);
+
+    if (status === 'cancelled' && row.google_event_id) {
+      getGoogleRefreshToken(async (err, token) => {
+        if (!err && token) {
+          try {
+            await googleCalendar.deleteCalendarEvent(token, row.google_event_id);
+          } catch (e) {
+            console.error('Google delete failed:', e.message);
+          }
+        }
+      });
+    }
+
+    res.json({ success: true, message: 'Buchung aktualisiert' });
+  } catch (e) {
+    res.status(500).json({ error: 'Update fehlgeschlagen' });
+  }
+});
+
+app.delete('/api/admin/bookings/:id', requireAuth, async (req, res) => {
+  try {
+    const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [req.params.id]);
+    if (!row) return res.status(404).json({ error: 'Nicht gefunden' });
+
+    if (row.google_event_id) {
+      getGoogleRefreshToken(async (err, token) => {
+        if (!err && token) {
+          try {
+            await googleCalendar.deleteCalendarEvent(token, row.google_event_id);
+          } catch (e) {
+            console.error('Google delete failed:', e.message);
+          }
+        }
+      });
+    }
+
+    await dbRun(`DELETE FROM bookings WHERE id = ?`, [req.params.id]);
+    res.json({ success: true, message: 'Buchung gelöscht' });
+  } catch (e) {
+    res.status(500).json({ error: 'Löschen fehlgeschlagen' });
+  }
+});
+
+app.get('/api/admin/google/status', requireAuth, (req, res) => {
+  const hasClient = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
+  getGoogleRefreshToken((err, token) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    res.json({
+      clientConfigured: hasClient,
+      connected: Boolean(token),
+      calendarId: process.env.GOOGLE_CALENDAR_ID || 'primary',
+      authUrl: hasClient && !token ? googleCalendar.getAuthUrl() : null,
+    });
+  });
+});
+
+app.get('/api/admin/google/auth', requireAuth, (req, res) => {
+  const url = googleCalendar.getAuthUrl();
+  if (!url) {
+    return res.status(400).json({
+      error: 'GOOGLE_CLIENT_ID und GOOGLE_CLIENT_SECRET in .env eintragen',
+    });
+  }
+  res.json({ url });
+});
+
+app.get('/api/admin/google/callback', async (req, res) => {
+  const { code, error } = req.query;
+  if (error) {
+    return res.status(400).send(`<p>Google-Verbindung abgebrochen: ${error}</p>`);
+  }
+  if (!code) {
+    return res.status(400).send('<p>Kein Autorisierungscode erhalten.</p>');
+  }
+
+  try {
+    const refreshToken = await googleCalendar.getRefreshTokenFromCode(code);
+    if (!refreshToken) {
+      return res.status(400).send(
+        '<p>Kein Refresh-Token erhalten. Bitte erneut verbinden und „Zugriff erlauben“ bestätigen.</p>'
+      );
+    }
+
+    await new Promise((resolve, reject) => {
+      saveGoogleRefreshToken(refreshToken, (err) => (err ? reject(err) : resolve()));
+    });
+
+    res.send(`
+      <!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Google Kalender verbunden</title></head>
+      <body style="font-family:sans-serif;max-width:640px;margin:40px auto;padding:20px">
+        <h1>Google Kalender verbunden</h1>
+        <p>Der Kalender ist jetzt mit der Website verknüpft. Termine aus Google blockieren freie Slots; neue Buchungen erscheinen im Kalender.</p>
+        <p>Optional für Hostinger in der <code>.env</code> sichern:</p>
+        <pre style="background:#f4f4f4;padding:12px;overflow:auto">GOOGLE_REFRESH_TOKEN=${refreshToken}</pre>
+        <p><a href="/admin">Zurück zum Admin-Panel</a></p>
+      </body></html>
+    `);
+  } catch (e) {
+    console.error('Google callback error:', e);
+    res.status(500).send('<p>Verbindung fehlgeschlagen. Bitte Einstellungen prüfen.</p>');
+  }
+});
+
+// ============================================================================
 // FRONTEND ROUTES (fixes "Cannot GET /" on Hostinger Node redeploy)
 // ============================================================================
 
@@ -502,6 +887,7 @@ const SITE_PAGES = [
   'events',
   'preise',
   'kontakt',
+  'buchung',
   'impressum',
   'datenschutz'
 ];
