@@ -1730,6 +1730,13 @@ body.consent-settings-open {
 
 .page-kunsttherapie .kt-hero-card {
   max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page-kunsttherapie .kt-hero-card > .kicker,
+.page-kunsttherapie .kt-hero-card h1 {
+  text-align: center;
 }
 
 .kt-hero-card .lead {
