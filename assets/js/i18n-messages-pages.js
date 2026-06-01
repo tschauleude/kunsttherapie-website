@@ -34,7 +34,7 @@
       'meta.events.description': 'Workshops, Teambuilding und Veranstaltungen in Paderborn.',
       'meta.atelier.title': 'Mini-Atelier – Kunsttherapie Paderborn',
       'meta.atelier.description':
-        'Probier dich aus: Mini-Atelier zum Malen, Zeichnen und Kollage – optional anonym an Martina senden.',
+        'Ausprobieren im Mini-Atelier: Mini-Atelier zum Malen, Zeichnen und Kollage – optional anonym an Martina senden.',
       'meta.imprint.title': 'Impressum – Martina Schwierzke',
       'meta.imprint.description': 'Impressum der Website Kunsttherapie Paderborn.',
       'meta.privacy.title': 'Datenschutz – Kunsttherapie Paderborn',
@@ -72,7 +72,7 @@
         '<p>Bilder, Formen und Materialien machen Inneres greifbar – auch wenn Sprache fehlt oder zu viel wird. Das entstandene Werk begleitet den Prozess wie ein Spiegel: Distanz und Nähe zugleich.</p>',
       'kt.faq2.q': 'Brauche ich Vorkenntnisse?',
       'kt.faq2.a':
-        '<p>Nein. Entscheidend ist, dass sich das Gestalten für dich stimmig anfühlt – nicht, ob du „künstlerisch“ bist. <strong>Trau dich – der Überraschungseffekt gehört dazu.</strong></p>',
+        '<p>Nein. Entscheidend ist, dass sich das Gestalten stimmig anfühlt – nicht, ob „künstlerisch“ bist. <strong>Ausprobieren lohnt sich – der Überraschungseffekt gehört dazu.</strong></p>',
       'kt.faq3.q': 'Materialien & Methoden',
       'kt.faq3.a':
         '<p>Begleitetes Malen, Collagen erstellen, Zeichnen mit Acryl, Gouache und Kreide. Regelmäßige Gruppen <strong>Dienstag morgens</strong>, Auszeit und Workshops <strong>Donnerstag abends</strong>. Kunstworkshops nach Absprache – z.&nbsp;B. Donnerstag abends.</p>',
@@ -82,11 +82,11 @@
         'Ab <strong>1. Juni 2026</strong> in Paderborn – ein eigener Raum zum Ankommen, Gestalten und Begegnen. Die Räumlichkeiten werden laufend eingerichtet und hier Schritt für Schritt vorgestellt.',
       'kt.praxis.photoNote': 'Einblicke aus dem Raum – weitere Fotos und Einrichtungsdetails folgen in Kürze.',
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
-      'kt.praxis.headline': 'Dein geschützter Ort in Paderborn',
+      'kt.praxis.headline': 'Geschützter Ort in Paderborn',
       'kt.praxis.p1':
-        'Das Atelier ist ein <strong>angemieteter Raum</strong> – kein improvisiertes Zimmer, sondern ein bewusst gewählter Ort für Kunsttherapie, Gruppen und Auszeiten. Martina richtet den Raum so ein, dass du dich schnell geborgen fühlst: Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag morgens</strong> für Gruppen, <strong>Donnerstag abends</strong> für Auszeit und Workshops.',
+        'Das Atelier ist ein <strong>angemieteter Raum</strong> – kein improvisiertes Zimmer, sondern ein bewusst gewählter Ort für Kunsttherapie, Gruppen und Auszeiten. Martina richtet den Raum so ein, sich schnell geborgen fühlst: Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag morgens</strong> für Gruppen, <strong>Donnerstag abends</strong> für Auszeit und Workshops.',
       'kt.praxis.p2':
-        '<strong>Was du erwarten kannst:</strong> helle, ruhige Atmosphäre, Materialien vor Ort, kleine Gruppen, klare Struktur ohne Leistungsdruck. Parken und Anreise mit ÖPNV sind unkompliziert – Details zur Anfahrt findest du unten.',
+        '<strong>Im Atelier:</strong> helle, ruhige Atmosphäre, Materialien vor Ort, kleine Gruppen, klare Struktur ohne Leistungsdruck. Parken und Anreise mit ÖPNV sind unkompliziert – Details zur Anfahrt siehe unten.',
       'kt.praxis.schedule1': '<strong>Dienstag morgens</strong> · Gruppentherapie, professionelles Setting',
       'kt.praxis.schedule2': '<strong>Donnerstag abends</strong> · Auszeit, Workshops, Teambuilding',
       'kt.praxis.book': 'Online-Termin wählen',
@@ -97,7 +97,7 @@
       'kt.highlight2.text': '4–12 Personen, geschützter Rahmen, auch für Seniorengruppen und Einrichtungen.',
       'kt.highlight3.title': 'Angemietet & wachsend',
       'kt.highlight3.text':
-        'Der Raum wird weiter ausgebaut und auf der Website präsentiert – bleib gern auf dem Laufenden.',
+        'Der Raum wird weiter ausgebaut und auf der Website präsentiert – auf dem Laufenden bleiben.',
       'kt.highlight4.title': 'Ab Juni 2026',
       'kt.highlight4.text':
         'Regelmäßig <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> – Termine online oder per Anfrage.',
@@ -106,7 +106,7 @@
       'kt.location.phone':
         'Tel. <a href="tel:+495251690111">05251-690111</a> · Mobil <a href="tel:+491704790790">0170-4790790</a>',
       'kt.cta.title': 'Bereit für den ersten Schritt?',
-      'kt.cta.sub': 'Termin online buchen oder kurz anfragen – ich melde mich zeitnah.',
+      'kt.cta.sub': 'Termin online buchen oder kurz anfragen – Rückmeldung folgt zeitnah.',
       'kt.cta.book': 'Zum Buchungskalender',
       'kt.cta.about': 'Über Martina',
       'kt.cta.news': 'Mehr Einblicke: <a href="neuigkeiten.html">Aktuelles &amp; Neuigkeiten</a>',
@@ -131,7 +131,7 @@
       'book.kicker': 'Terminbuchung',
       'book.title': 'Kennenlernen oder Sitzung buchen',
       'book.sub':
-        'Nur <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> sind buchbar (grüne Tage). Deine Anfrage geht an Martina – sie bestätigt den Termin per E-Mail. Danach kannst du ihn in Apple- oder Google-Kalender speichern.',
+        'Nur <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> sind buchbar (grüne Tage). Die Anfrage geht an Martina – Martina bestätigt den Termin per E-Mail. Danach lässt sich der Termin in Apple- oder Google-Kalender speichern.',
       'book.prevMonth': 'Vorheriger Monat',
       'book.nextMonth': 'Nächster Monat',
       'book.legend':
@@ -144,7 +144,7 @@
         'Nur <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> – Termine à 90 Minuten.',
       'book.slotsHintDynamic':
         'Buchbar: {schedule} (je {minutes} Minuten). <strong>Nur grüne Tage</strong> im Kalender anklicken.',
-      'book.formTitle': 'Deine Angaben',
+      'book.formTitle': 'Angaben',
       'book.messagePlaceholder':
         'z.B. Erstgespräch, Gruppe Dienstag morgens, Auszeit Donnerstag abends …',
       'book.privacyNote':
@@ -168,8 +168,8 @@
       'book.dayFree': 'Freie Termine – klicken',
       'book.dayBusy': 'Ausgebucht oder Vorlauf – trotzdem Zeiten anzeigen',
       'book.confirmedNote':
-        'Eine Bestätigung wurde an deine E-Mail-Adresse gesendet (mit Kalender-Anhang).',
-      'book.saveCalendar': 'Speichere den Termin direkt in deinem Kalender:',
+        'Eine Bestätigung wurde an die angegebene E-Mail-Adresse gesendet (mit Kalender-Anhang).',
+      'book.saveCalendar': 'Speichere den Termin direkt in dem Kalender:',
       'book.googleCal': 'Google Kalender',
       'book.icsCal': 'In Apple / Outlook (.ics)',
       'book.success': 'Anfrage eingegangen. Vielen Dank!',
@@ -191,7 +191,7 @@
       'contact.form.messageLabel': 'Nachricht *',
       'contact.messagePlaceholder': 'Worum geht es? z. B. Gruppe, Auszeit, Teambuilding …',
       'contact.privacyNote':
-        'Deine Angaben werden nur zur Bearbeitung der Anfrage genutzt (<a href="datenschutz.html">Datenschutz</a>).',
+        'Angaben werden nur zur Bearbeitung der Anfrage genutzt (<a href="datenschutz.html">Datenschutz</a>).',
       'contact.submit': 'Nachricht senden',
       'contact.map.title': 'Anfahrt',
       'contact.mapIframeTitle': 'Karte Atelier Otto-Stadler-Straße 23c Paderborn',
@@ -199,7 +199,7 @@
       'ui.lightbox.title': 'Vergrößertes Bild',
       'ui.lightbox.prev': 'Vorheriges Bild',
       'ui.lightbox.next': 'Nächstes Bild',
-      'contact.msg.success': 'Danke! Deine Nachricht ist angekommen.',
+      'contact.msg.success': 'Vielen Dank – die Nachricht ist angekommen.',
       'contact.msg.error': 'Nachricht konnte nicht gesendet werden',
       'ui.scrollTop': 'Nach oben scrollen',
       'ui.lightbox.title': 'Vergrößertes Bild',
@@ -214,7 +214,7 @@
       'prices.tableBody':
         '<tr><td>Gruppensitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis"><strong>ab 55 €</strong></td><td data-label="Hinweis">4–12 Personen, Material inkl.</td></tr><tr><td>Gruppenprogramm (typisch)</td><td data-label="Dauer">4 Einheiten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">je nach Thema/Setting</td></tr><tr><td>Einzelsitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">individuelle Begleitung</td></tr><tr><td>Teambuilding Event</td><td data-label="Dauer">nach Bedarf</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">inkl. Konzept &amp; Material</td></tr>',
       'prices.note':
-        'Fragen zu Preisen oder Rabatten? Schreib mir direkt – jede Situation ist individuell.',
+        'Fragen zu Preisen oder Rabatten? Gern direkt anfragen – jede Situation ist individuell.',
       'prices.ask': 'Preis anfragen',
 
       'newsPage.kicker': 'Updates & News',
@@ -229,11 +229,11 @@
       'eventsPage.kicker': 'Termine',
       'eventsPage.title': 'Events & Workshops',
       'eventsPage.sub':
-        'Kommende Events, Workshops und Gruppentherapien. Melde dich an und sei dabei!',
+        'Kommende Events, Workshops und Gruppentherapien. Anmeldung per Kontakt und sei dabei!',
       'eventsPage.loading': 'Termine werden geladen …',
       'eventsPage.empty': 'Momentan sind keine Events geplant.',
       'eventsPage.emptyHint':
-        'Schreib uns gerne, wenn du Interesse an einem Workshop hast!',
+        'Gern per Kontakt, bei Interesse an einem Workshop hast!',
       'eventsPage.signUp': 'Anmelden',
       'eventsPage.cardDate': 'Termin',
       'eventsPage.metaTime': 'Uhrzeit: {value}',
@@ -243,7 +243,7 @@
         'Termine konnten gerade nicht geladen werden. Bitte später erneut versuchen.',
 
       'map.consent':
-        'Die Karte wird nur mit deiner Einwilligung geladen (Google Maps, siehe <a href="datenschutz.html">Datenschutz</a>).',
+        'Die Karte wird nur mit Einwilligung geladen (Google Maps, siehe <a href="datenschutz.html">Datenschutz</a>).',
       'map.show': 'Karte anzeigen',
       'map.open': 'In Google Maps öffnen',
       'map.route': 'Route in Google Maps öffnen',
@@ -297,8 +297,8 @@
 <h2>2. Kurzüberblick</h2>
 <p>
   Diese Website setzt <strong>kein Besucher-Tracking</strong> (kein Google Analytics, keine Werbe-Pixel) ein.
-  Wir speichern keine Marketing-Profile. Daten erhältst du nur dann von uns, wenn du uns etwas aktiv mitteilst
-  (z.&nbsp;B. Terminbuchung oder E-Mail) oder wenn du optionale Dienste wie Google Maps zustimmst.
+  Wir speichern keine Marketing-Profile. Daten werden nur übermittelt, wenn etwas aktiv mitteilst
+  (z.&nbsp;B. Terminbuchung oder E-Mail) oder bei Zustimmung zu optionalen Diensten wie Google Maps zustimmst.
 </p>
 <h2>3. Hosting</h2>
 <p>
@@ -309,9 +309,9 @@
 </p>
 <h2>4. Terminbuchung</h2>
 <p>
-  Wenn du online einen Termin buchst, speichern wir die von dir eingegebenen Daten
+  Bei einer Online-Terminbuchung, speichern wir die eingegebenen Daten
   (Name, E-Mail, optional Telefon und Nachricht, gewählter Termin) in einer Datenbank auf unserem Server,
-  um den Termin zu verwalten und dich zu kontaktieren.
+  um den Termin zu verwalten und zur Kontaktaufnahme.
 </p>
 <p>
   Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen / Vertrag) bzw. lit. f
@@ -328,15 +328,15 @@
 <h2>5. Neuigkeiten auf der Website</h2>
 <p>
   Veröffentlichte Neuigkeiten werden vom Server ausgeliefert. Ein Hinweis-Fenster auf der Startseite merkt sich
-  lokal in deinem Browser (localStorage), welche Meldung du zuletzt gesehen hast – ohne Tracking und ohne Cookies
+  lokal in deinem Browser (localStorage), welche Meldung zuletzt gesehen hast – ohne Tracking und ohne Cookies
   zu Werbezwecken.
 </p>
 <h2>6. Cookies & lokale Speicherung</h2>
 <p>
-  <strong>Notwendig (ohne Marketing):</strong> Wir speichern deine Auswahl im Cookie-Banner
-  (localStorage-Schlüssel <code>kunsttherapie_consent_v1</code>) sowie optional, ob du den
+  <strong>Notwendig (ohne Marketing):</strong> Wir speichern die Auswahl im Cookie-Banner
+  (localStorage-Schlüssel <code>kunsttherapie_consent_v1</code>) sowie optional, ob der
   Neuigkeiten-Hinweis bereits gesehen hast.
-  Über „Barrierefreiheit“ (unten links oder im Footer) kannst du Darstellungseinstellungen wählen;
+  Über „Barrierefreiheit“ (unten links oder im Footer) sind Darstellungseinstellungen möglich wählen;
   diese werden nur lokal gespeichert (<code>kunsttherapie-a11y</code>, ohne Tracking).
 </p>
 <p>
@@ -347,7 +347,7 @@
   <li><strong>Google Fonts</strong> (Schriftarten): beim Laden können Daten an Google übermittelt werden.</li>
 </ul>
 <p>
-  Du kannst deine Einwilligung jederzeit über „Cookie-Einstellungen“ im Footer widerrufen oder anpassen.
+  Die Einwilligung lässt sich jederzeit über „Cookie-Einstellungen“ im Footer widerrufen oder anpassen.
   Rechtsgrundlage für optionale Dienste: Art. 6 Abs. 1 lit. a DSGVO.
 </p>
 <h2>7. Admin-Bereich</h2>
@@ -358,13 +358,13 @@
 </p>
 <h2>8. Kontakt per E-Mail oder Telefon</h2>
 <p>
-  Wenn du uns per E-Mail oder Telefon kontaktierst, verarbeiten wir die von dir mitgeteilten Daten
-  zur Bearbeitung deiner Anfrage (Art. 6 Abs. 1 lit. b oder lit. f DSGVO).
+  Bei Kontakt per E-Mail oder Telefon kontaktierst, verarbeiten wir die mitgeteilten Daten
+  zur Bearbeitung der Anfrage (Art. 6 Abs. 1 lit. b oder lit. f DSGVO).
 </p>
-<h2>9. Deine Rechte</h2>
+<h2>9. Betroffenenrechte</h2>
 <p>
-  Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
-  Datenübertragbarkeit und Widerspruch. Bei erteilter Einwilligung kannst du diese jederzeit widerrufen.
+  Es besteht das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
+  Datenübertragbarkeit und Widerspruch. Bei erteilter Einwilligung ist jederzeit widerrufbar.
 </p>
 <p>
   Beschwerderecht bei einer Datenschutz-Aufsichtsbehörde, z.&nbsp;B. die LDI NRW.
@@ -380,18 +380,18 @@
 
       'consent.banner.title': 'Datenschutz & Cookies',
       'consent.lead':
-        'Wir setzen <strong>kein Tracking</strong> ein und verkaufen keine Daten. Gespeichert werden nur das, was du uns aktiv gibst (z.&nbsp;B. Terminbuchung) sowie technische Einstellungen auf deinem Gerät.',
+        'Wir setzen <strong>kein Tracking</strong> ein und verkaufen keine Daten. Gespeichert werden nur das, was aktiv mitgeteilt wird (z.&nbsp;B. Terminbuchung) sowie technische Einstellungen im Browser.',
       'consent.list':
         '<li><strong>Notwendig:</strong> Cookie-Einstellungen, Hinweis zu Neuigkeiten (lokal im Browser)</li><li><strong>Optional:</strong> Google Maps &amp; Google Fonts (Datenübertragung in die USA möglich)</li>',
       'consent.note':
-        'Terminbuchungen werden auf unserem Server gespeichert und können mit dem <strong>Google Kalender des Ateliers</strong> synchronisiert werden (nicht auf deinem Gerät). <a href="/datenschutz">Datenschutzerklärung</a>',
+        'Terminbuchungen werden auf unserem Server gespeichert und können mit dem <strong>Google Kalender des Ateliers</strong> synchronisiert werden (nicht im Browser). <a href="/datenschutz">Datenschutzerklärung</a>',
       'consent.acceptAll': 'Alle akzeptieren',
       'consent.essential': 'Nur notwendige',
       'consent.settings': 'Einstellungen',
       'consent.settingsTitle': 'Cookie-Einstellungen',
       'consent.necessary': 'Notwendig',
       'consent.necessaryNote':
-        'Speichert deine Auswahl und ob du den Neuigkeiten-Hinweis schon gesehen hast. Ohne Tracking.',
+        'Speichert die Auswahl und ob der Neuigkeiten-Hinweis schon gesehen hast. Ohne Tracking.',
       'consent.external': 'Externe Medien (Google)',
       'consent.externalNote':
         'Google Maps auf Kontakt- und Angebotsseiten sowie Schriftarten von Google Fonts.',
@@ -403,7 +403,7 @@
       'a11y.toggle': 'Barrierefreiheit-Einstellungen öffnen',
       'a11y.title': 'Barrierefreiheit',
       'a11y.intro':
-        'Passen Sie die Darstellung an Ihre Bedürfnisse an. Einstellungen werden auf diesem Gerät gespeichert.',
+        'Darstellung anpassen – Einstellungen für Bedürfnisse. Einstellungen werden auf diesem Gerät gespeichert.',
       'a11y.fontSize': 'Schriftgröße',
       'a11y.font.normal': 'Standard',
       'a11y.font.large': 'Größer',
@@ -461,7 +461,7 @@
       'meta.events.description': 'Workshops, team building, and events in Paderborn.',
       'meta.atelier.title': 'Mini Studio – Art Therapy Paderborn',
       'meta.atelier.description':
-        'Try it out: mini studio for painting, drawing, and collage – optionally send your work to Martina anonymously.',
+        'Try the mini studio: mini studio for painting, drawing, and collage – optionally send your work to Martina anonymously.',
       'meta.imprint.title': 'Imprint – Martina Schwierzke',
       'meta.imprint.description': 'Legal imprint for the Art Therapy Paderborn website.',
       'meta.privacy.title': 'Privacy – Art Therapy Paderborn',
@@ -499,7 +499,7 @@
         '<p>Images, shapes, and materials make inner experience tangible – even when words fail or feel overwhelming. The artwork accompanies the process like a mirror: distance and closeness at once.</p>',
       'kt.faq2.q': 'Do I need prior experience?',
       'kt.faq2.a':
-        '<p>No. What matters is that creating feels right for you – not whether you consider yourself “artistic”. <strong>Be brave – surprise is part of the process.</strong></p>',
+        '<p>No. What matters is that creating feels feels right – not whether someone considers yourself “artistic”. <strong>Curiosity welcome – surprise is part of the process.</strong></p>',
       'kt.faq3.q': 'Materials & methods',
       'kt.faq3.a':
         '<p>Guided painting, collage, and drawing with acrylic, gouache, and chalk. Regular groups on <strong>Tuesday mornings</strong>, downtime and workshops on <strong>Thursday evenings</strong>. Art workshops by arrangement – e.g. Thursday evenings.</p>',
@@ -509,9 +509,9 @@
         'From <strong>1 June 2026</strong> in Paderborn – a dedicated space to arrive, create, and connect. The rooms are being set up and introduced here step by step.',
       'kt.praxis.photoNote': 'A first look inside – more photos and setup details coming soon.',
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
-      'kt.praxis.headline': 'Your safe place in Paderborn',
+      'kt.praxis.headline': 'A safe place in Paderborn',
       'kt.praxis.p1':
-        'The atelier is a <strong>rented space</strong> – not an improvised room, but a deliberately chosen place for art therapy, groups, and downtime. Martina sets it up so you feel at home quickly: space to paint, room for conversation in between – <strong>Tuesday mornings</strong> for groups, <strong>Thursday evenings</strong> for downtime and workshops.',
+        'The atelier is a <strong>rented space</strong> – not an improvised room, but a deliberately chosen place for art therapy, groups, and downtime. Martina sets it up to feel at home quickly quickly: space to paint, room for conversation in between – <strong>Tuesday mornings</strong> for groups, <strong>Thursday evenings</strong> for downtime and workshops.',
       'kt.praxis.p2':
         '<strong>What to expect:</strong> a bright, calm atmosphere, materials on site, small groups, clear structure without pressure to perform. Parking and public transport are straightforward – directions below.',
       'kt.praxis.schedule1': '<strong>Tuesday mornings</strong> · Group therapy, professional setting',
@@ -533,7 +533,7 @@
       'kt.location.phone':
         'Tel. <a href="tel:+495251690111">05251-690111</a> · Mobile <a href="tel:+491704790790">0170-4790790</a>',
       'kt.cta.title': 'Ready for the first step?',
-      'kt.cta.sub': 'Book online or send a quick enquiry – I will get back to you soon.',
+      'kt.cta.sub': 'Book online or send a quick enquiry – A reply follows soon soon.',
       'kt.cta.book': 'Go to booking calendar',
       'kt.cta.about': 'About Martina',
       'kt.cta.news': 'More insights: <a href="neuigkeiten.html">News &amp; updates</a>',
@@ -558,7 +558,7 @@
       'book.kicker': 'Booking',
       'book.title': 'Book an introductory or regular session',
       'book.sub':
-        'Only <strong>Tuesday mornings</strong> and <strong>Thursday evenings</strong> can be booked (green days). Your request goes to Martina – she confirms by email. You can then save the appointment in Apple or Google Calendar.',
+        'Only <strong>Tuesday mornings</strong> and <strong>Thursday evenings</strong> can be booked (green days). The request goes to Martina – she confirms by email. The appointment can then be saved the appointment in Apple or Google Calendar.',
       'book.prevMonth': 'Previous month',
       'book.nextMonth': 'Next month',
       'book.legend':
@@ -571,7 +571,7 @@
         'Only <strong>Tuesday mornings</strong> and <strong>Thursday evenings</strong> – 90-minute sessions.',
       'book.slotsHintDynamic':
         'Bookable: {schedule} ({minutes} min slots). <strong>Click green days only</strong> in the calendar.',
-      'book.formTitle': 'Your details',
+      'book.formTitle': 'Details',
       'book.messagePlaceholder':
         'e.g. introductory call, Tuesday morning group, Thursday evening downtime …',
       'book.privacyNote':
@@ -595,8 +595,8 @@
       'book.dayFree': 'Available slots – click',
       'book.dayBusy': 'Fully booked or too soon – show times anyway',
       'book.confirmedNote':
-        'A confirmation has been sent to your email address (with calendar attachment).',
-      'book.saveCalendar': 'Save the appointment directly in your calendar:',
+        'A confirmation has been sent to the email address provided (with calendar attachment).',
+      'book.saveCalendar': 'Save the appointment directly in the calendar:',
       'book.googleCal': 'Google Calendar',
       'book.icsCal': 'Apple / Outlook (.ics)',
       'book.success': 'Request received. Thank you!',
@@ -619,7 +619,7 @@
       'contact.messagePlaceholder':
         'What is it about? e.g. group, downtime, team building …',
       'contact.privacyNote':
-        'Your details are used only to handle your enquiry (<a href="datenschutz.html">Privacy</a>).',
+        'Details are used only to handle the enquiry (<a href="datenschutz.html">Privacy</a>).',
       'contact.submit': 'Send message',
       'contact.map.title': 'Directions',
       'contact.mapIframeTitle': 'Map: atelier Otto-Stadler-Straße 23c Paderborn',
@@ -627,7 +627,7 @@
       'ui.lightbox.title': 'Enlarged image',
       'ui.lightbox.prev': 'Previous image',
       'ui.lightbox.next': 'Next image',
-      'contact.msg.success': 'Thank you! Your message has been received.',
+      'contact.msg.success': 'Thank you – message received has been received.',
       'contact.msg.error': 'Your message could not be sent',
       'ui.scrollTop': 'Scroll to top',
       'ui.lightbox.title': 'Enlarged image',
@@ -669,7 +669,7 @@
       'eventsPage.error': 'Events could not be loaded right now. Please try again later.',
 
       'map.consent':
-        'The map loads only with your consent (Google Maps, see <a href="datenschutz.html">Privacy</a>).',
+        'The map loads only with consent (Google Maps, see <a href="datenschutz.html">Privacy</a>).',
       'map.show': 'Show map',
       'map.open': 'Open in Google Maps',
       'map.route': 'Open route in Google Maps',
@@ -723,8 +723,8 @@
 <h2>2. Overview</h2>
 <p>
   This website uses <strong>no visitor tracking</strong> (no Google Analytics, no advertising pixels).
-  We do not store marketing profiles. We only receive data from you when you actively share it with us
-  (e.g. booking or email) or when you consent to optional services such as Google Maps.
+  We do not store marketing profiles. We only receive data from you when actively share it with us
+  (e.g. booking or email) or when consenting to to optional services such as Google Maps.
 </p>
 <h2>3. Hosting</h2>
 <p>
@@ -735,9 +735,9 @@
 </p>
 <h2>4. Appointment booking</h2>
 <p>
-  When you book online, we store the data you enter
+  When booking online, we store the data entered
   (name, email, optional phone and message, chosen appointment) in a database on our server
-  to manage the appointment and contact you.
+  to manage the appointment and for contact.
 </p>
 <p>
   Legal basis: Art. 6(1)(b) GDPR (pre-contractual measures / contract) or (f)
@@ -754,12 +754,12 @@
 <h2>5. News on the website</h2>
 <p>
   Published news is delivered from the server. A notice on the home page remembers locally in your browser (localStorage)
-  which message you last saw – without tracking and without cookies for advertising purposes.
+  which message was last saw – without tracking and without cookies for advertising purposes.
 </p>
 <h2>6. Cookies & local storage</h2>
 <p>
   <strong>Necessary (no marketing):</strong> We store your choice in the cookie banner
-  (localStorage key <code>kunsttherapie_consent_v1</code>) and optionally whether you have already seen the news notice.
+  (localStorage key <code>kunsttherapie_consent_v1</code>) and optionally whether the already seen the news notice.
   Via “Accessibility” (bottom left or in the footer) you can choose display settings;
   these are stored locally only (<code>kunsttherapie-a11y</code>, no tracking).
 </p>
@@ -771,7 +771,7 @@
   <li><strong>Google Fonts</strong> (typefaces): loading may transmit data to Google.</li>
 </ul>
 <p>
-  You can withdraw or adjust your consent at any time via “Cookie settings” in the footer.
+  Consent can be withdrawn or adjust your consent at any time via “Cookie settings” in the footer.
   Legal basis for optional services: Art. 6(1)(a) GDPR.
 </p>
 <h2>7. Admin area</h2>
@@ -782,13 +782,13 @@
 </p>
 <h2>8. Contact by email or phone</h2>
 <p>
-  When you contact us by email or phone, we process the data you provide
-  to handle your enquiry (Art. 6(1)(b) or (f) GDPR).
+  When contacting us by email or phone, we process the data provided
+  to handle the enquiry (Art. 6(1)(b) or (f) GDPR).
 </p>
-<h2>9. Your rights</h2>
+<h2>9. Data subject rights</h2>
 <p>
-  You have the right to access, rectification, erasure, restriction of processing,
-  data portability, and objection. Where consent was given, you may withdraw it at any time.
+  There is a right to access, rectification, erasure, restriction of processing,
+  data portability, and objection. Where consent was given, withdrawal is possible at any time it at any time.
 </p>
 <p>
   You may lodge a complaint with a data protection supervisory authority, e.g. the LDI NRW.
@@ -804,18 +804,18 @@
 
       'consent.banner.title': 'Privacy & cookies',
       'consent.lead':
-        'We use <strong>no tracking</strong> and do not sell data. We only store what you actively give us (e.g. booking) and technical settings on your device.',
+        'We use <strong>no tracking</strong> and do not sell data. We only store what is actively shared (e.g. booking) and technical settings in the browser.',
       'consent.list':
         '<li><strong>Necessary:</strong> cookie settings, news notice (stored locally in the browser)</li><li><strong>Optional:</strong> Google Maps &amp; Google Fonts (data transfer to the USA possible)</li>',
       'consent.note':
-        'Bookings are stored on our server and may be synchronised with the <strong>practice Google Calendar</strong> (not on your device). <a href="/datenschutz">Privacy policy</a>',
+        'Bookings are stored on our server and may be synchronised with the <strong>practice Google Calendar</strong> (not in the browser). <a href="/datenschutz">Privacy policy</a>',
       'consent.acceptAll': 'Accept all',
       'consent.essential': 'Essential only',
       'consent.settings': 'Settings',
       'consent.settingsTitle': 'Cookie settings',
       'consent.necessary': 'Necessary',
       'consent.necessaryNote':
-        'Stores your choice and whether you have already seen the news notice. No tracking.',
+        'Stores your choice and whether the already seen the news notice. No tracking.',
       'consent.external': 'External media (Google)',
       'consent.externalNote':
         'Google Maps on contact and services pages and typefaces from Google Fonts.',
@@ -827,7 +827,7 @@
       'a11y.toggle': 'Open accessibility settings',
       'a11y.title': 'Accessibility',
       'a11y.intro':
-        'Adjust the display to your needs. Settings are saved on this device.',
+        'Adjust display settings. Settings are saved on this device.',
       'a11y.fontSize': 'Font size',
       'a11y.font.normal': 'Default',
       'a11y.font.large': 'Larger',
