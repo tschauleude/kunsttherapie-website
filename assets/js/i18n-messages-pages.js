@@ -18,18 +18,18 @@
         'Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn.',
       'meta.about.title': 'Über Martina Schwierzke – Kunsttherapeutin Paderborn',
       'meta.about.description':
-        'Psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, eigene Praxis in Paderborn.',
+        'Psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, eigenes Atelier in Paderborn.',
       'meta.booking.title': 'Termin buchen – Kunsttherapie Paderborn',
       'meta.booking.description':
         'Online-Termin anfragen: Dienstag morgens und Donnerstag abends. Freie Zeiten im Kalender – Bestätigung per E-Mail.',
       'meta.contact.title': 'Kontakt – Kunsttherapie Paderborn',
       'meta.contact.description':
-        'Nachricht senden, anrufen oder Anfahrt zur Praxis Otto-Stadler-Straße 23c, Paderborn.',
+        'Nachricht senden, anrufen oder Anfahrt zum Atelier Otto-Stadler-Straße 23c, Paderborn.',
       'meta.prices.title': 'Preise – Kunsttherapie Paderborn',
       'meta.prices.description':
         'Transparente Preise für Gruppensitzungen ab 55 €, Programme und Einzelsitzungen auf Anfrage.',
       'meta.news.title': 'Neuigkeiten – Kunsttherapie Paderborn',
-      'meta.news.description': 'Aktuelles aus der Praxis: Termine, Raum und Ankündigungen.',
+      'meta.news.description': 'Aktuelles aus dem Atelier: Termine, Raum und Ankündigungen.',
       'meta.events.title': 'Veranstaltungen – Kunsttherapie Paderborn',
       'meta.events.description': 'Workshops, Teambuilding und Veranstaltungen in Paderborn.',
       'meta.atelier.title': 'Mini-Atelier – Kunsttherapie Paderborn',
@@ -40,10 +40,10 @@
       'meta.privacy.title': 'Datenschutz – Kunsttherapie Paderborn',
       'meta.privacy.description': 'Datenschutzerklärung der Website Kunsttherapie Paderborn.',
 
-      'home.popup.title': 'Aktuelles aus der Praxis',
+      'home.popup.title': 'Aktuelles aus dem Atelier',
       'home.news.kicker': 'Aktuelles',
-      'home.popup.note': 'Hinweis aus der Praxis – lokal gespeichert, kein Tracking.',
-      'home.news.sub': 'Was gerade ansteht – direkt aus der Praxis.',
+      'home.popup.note': 'Hinweis aus dem Atelier – lokal gespeichert, kein Tracking.',
+      'home.news.sub': 'Was gerade ansteht – direkt aus dem Atelier.',
       'home.news.loading': 'Neuigkeiten werden geladen …',
       'home.news.show': 'Aktuelles anzeigen',
       'home.news.all': 'Alle Neuigkeiten',
@@ -61,8 +61,8 @@
       'home.praxis.do':
         '<p><span class="pill">Do</span><br>Donnerstag abends · Auszeit, Workshops</p>',
       'home.praxis.link':
-        '<p class="note" style="margin-top:1rem">Raum, Fotos &amp; Details: <a href="kunsttherapie.html#praxis">Praxis entdecken</a></p>',
-      'home.praxis.more': 'Mehr zur Praxis',
+        '<p class="note" style="margin-top:1rem">Raum, Fotos &amp; Details: <a href="kunsttherapie.html#atelier">Atelier entdecken</a></p>',
+      'home.praxis.more': 'Mehr zum Atelier',
       'home.hero.imgAlt': 'Atelier – gemeinsam malen und gestalten in Paderborn',
 
       'kt.effects.title': 'Wie Kunsttherapie wirkt',
@@ -76,7 +76,7 @@
       'kt.faq3.q': 'Materialien & Methoden',
       'kt.faq3.a':
         '<p>Begleitetes Malen, Collagen erstellen, Zeichnen mit Acryl, Gouache und Kreide. Regelmäßige Gruppen <strong>Dienstag morgens</strong>, Auszeit und Workshops <strong>Donnerstag abends</strong>. Kunstworkshops nach Absprache – z.&nbsp;B. Donnerstag abends.</p>',
-      'kt.praxis.kicker': 'Die Praxis',
+      'kt.praxis.kicker': 'Das Atelier',
       'kt.praxis.title': 'Angemieteter Atelier- und Gruppenraum',
       'kt.praxis.sub':
         'Ab <strong>1. Juni 2026</strong> in Paderborn – ein eigener Raum zum Ankommen, Gestalten und Begegnen. Die Räumlichkeiten werden laufend eingerichtet und hier Schritt für Schritt vorgestellt.',
@@ -84,13 +84,13 @@
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
       'kt.praxis.headline': 'Dein geschützter Ort in Paderborn',
       'kt.praxis.p1':
-        'Die Praxis ist ein <strong>angemieteter Raum</strong> – kein improvisiertes Zimmer, sondern ein bewusst gewählter Ort für Kunsttherapie, Gruppen und Auszeiten. Martina richtet den Raum so ein, dass du dich schnell geborgen fühlst: Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag morgens</strong> für Gruppen, <strong>Donnerstag abends</strong> für Auszeit und Workshops.',
+        'Das Atelier ist ein <strong>angemieteter Raum</strong> – kein improvisiertes Zimmer, sondern ein bewusst gewählter Ort für Kunsttherapie, Gruppen und Auszeiten. Martina richtet den Raum so ein, dass du dich schnell geborgen fühlst: Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag morgens</strong> für Gruppen, <strong>Donnerstag abends</strong> für Auszeit und Workshops.',
       'kt.praxis.p2':
         '<strong>Was du erwarten kannst:</strong> helle, ruhige Atmosphäre, Materialien vor Ort, kleine Gruppen, klare Struktur ohne Leistungsdruck. Parken und Anreise mit ÖPNV sind unkompliziert – Details zur Anfahrt findest du unten.',
       'kt.praxis.schedule1': '<strong>Dienstag morgens</strong> · Gruppentherapie, professionelles Setting',
       'kt.praxis.schedule2': '<strong>Donnerstag abends</strong> · Auszeit, Workshops, Teambuilding',
       'kt.praxis.book': 'Online-Termin wählen',
-      'kt.praxis.news': 'Neuigkeiten zur Praxis',
+      'kt.praxis.news': 'Neuigkeiten zum Atelier',
       'kt.highlight1.title': 'Atelierfläche',
       'kt.highlight1.text': 'Gemeinsames Gestalten mit Acryl, Gouache, Kreide, Collage – Materialien werden gestellt.',
       'kt.highlight2.title': 'Gruppenraum',
@@ -110,12 +110,12 @@
       'kt.cta.book': 'Zum Buchungskalender',
       'kt.cta.about': 'Über Martina',
       'kt.cta.news': 'Mehr Einblicke: <a href="neuigkeiten.html">Aktuelles &amp; Neuigkeiten</a>',
-      'kt.praxis.imgAlt': 'Atelier in der Praxis – gemeinsam malen und gestalten',
+      'kt.praxis.imgAlt': 'Atelier – gemeinsam malen und gestalten',
 
       'about.kicker': 'Über mich',
       'about.name': 'Martina Schwierzke',
       'about.intro':
-        'Als psychosoziale und klinische Kunsttherapeutin und Heilpraktikerin für Psychotherapie arbeite ich selbstständig. Mit über 16 Jahren Erfahrung begleite ich Menschen in schwierigen Situationen – im klinischen Kontext und in privater Praxis.',
+        'Als psychosoziale und klinische Kunsttherapeutin und Heilpraktikerin für Psychotherapie arbeite ich selbstständig. Mit über 16 Jahren Erfahrung begleite ich Menschen in schwierigen Situationen – im klinischen Kontext und im eigenen Atelier.',
       'about.passion.title': 'Meine Leidenschaft',
       'about.passion.p1':
         'Ich bin seit vielen Jahren in der Palliativversorgung und Psychoonkologie tätig und leite kunsttherapeutische Gruppen im klinischen Umfeld. Regelmäßige Weiterbildungen und Supervisionen sind für mich selbstverständlich.',
@@ -135,7 +135,7 @@
       'book.prevMonth': 'Vorheriger Monat',
       'book.nextMonth': 'Nächster Monat',
       'book.legend':
-        '<span class="legend-dot legend-free"></span> Frei (Di / Do) <span class="legend-dot legend-busy"></span> Ausgebucht <span class="legend-dot legend-off"></span> Kein Praxistag',
+        '<span class="legend-dot legend-free"></span> Frei (Di / Do) <span class="legend-dot legend-busy"></span> Ausgebucht <span class="legend-dot legend-off"></span> Kein Ateliertag',
       'book.weekdays':
         '<span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>',
       'book.calendarAria': 'Kalender',
@@ -164,7 +164,7 @@
       'book.loadingSlots': 'Zeiten werden geladen …',
       'book.slotsError': 'Zeiten konnten nicht geladen werden.',
       'book.dayNoOffer': 'Kein Angebot',
-      'book.dayOff': 'Kein Praxistag (nur Di & Do)',
+      'book.dayOff': 'Kein Ateliertag (nur Di & Do)',
       'book.dayFree': 'Freie Termine – klicken',
       'book.dayBusy': 'Ausgebucht oder Vorlauf – trotzdem Zeiten anzeigen',
       'book.confirmedNote':
@@ -184,7 +184,7 @@
       'contact.reach.title': 'Erreichbarkeit',
       'contact.reach.list':
         '<li><strong>Adresse</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Telefon</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobil</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>E-Mail</strong><br><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>',
-      'contact.hours': 'Praxis ab 1. Juni · Dienstag morgens · Donnerstag abends',
+      'contact.hours': 'Atelier ab 1. Juni · Dienstag morgens · Donnerstag abends',
       'contact.book': 'Online-Termin buchen',
       'contact.offers': 'Angebote',
       'contact.form.title': 'Nachricht senden',
@@ -194,7 +194,7 @@
         'Deine Angaben werden nur zur Bearbeitung der Anfrage genutzt (<a href="datenschutz.html">Datenschutz</a>).',
       'contact.submit': 'Nachricht senden',
       'contact.map.title': 'Anfahrt',
-      'contact.mapIframeTitle': 'Karte Praxis Otto-Stadler-Straße 23c Paderborn',
+      'contact.mapIframeTitle': 'Karte Atelier Otto-Stadler-Straße 23c Paderborn',
       'ui.scrollTop': 'Nach oben scrollen',
       'ui.lightbox.title': 'Vergrößertes Bild',
       'ui.lightbox.prev': 'Vorheriges Bild',
@@ -319,9 +319,9 @@
   für den Zweck nicht mehr erforderlich sind, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
 </p>
 <p>
-  <strong>Google Kalender:</strong> Termine können – nach technischer Einrichtung durch die Praxis –
+  <strong>Google Kalender:</strong> Termine können – nach technischer Einrichtung durch das Atelier –
   mit dem Google-Kalender von Martina Schwierzke synchronisiert werden. Das betrifft die interne
-  Praxisorganisation; Besucher der Website laden dabei keinen Google-Kalender auf ihrem Gerät.
+  Atelierorganisation; Besucher der Website laden dabei keinen Google-Kalender auf ihrem Gerät.
   Anbieter: Google Ireland Limited / Google LLC (USA). Bei Übermittlung in die USA können
   Standardvertragsklauseln der EU greifen. Details: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Datenschutz</a>.
 </p>
@@ -384,7 +384,7 @@
       'consent.list':
         '<li><strong>Notwendig:</strong> Cookie-Einstellungen, Hinweis zu Neuigkeiten (lokal im Browser)</li><li><strong>Optional:</strong> Google Maps &amp; Google Fonts (Datenübertragung in die USA möglich)</li>',
       'consent.note':
-        'Terminbuchungen werden auf unserem Server gespeichert und können mit dem <strong>Google Kalender der Praxis</strong> synchronisiert werden (nicht auf deinem Gerät). <a href="/datenschutz">Datenschutzerklärung</a>',
+        'Terminbuchungen werden auf unserem Server gespeichert und können mit dem <strong>Google Kalender des Ateliers</strong> synchronisiert werden (nicht auf deinem Gerät). <a href="/datenschutz">Datenschutzerklärung</a>',
       'consent.acceptAll': 'Alle akzeptieren',
       'consent.essential': 'Nur notwendige',
       'consent.settings': 'Einstellungen',
@@ -445,18 +445,18 @@
         'Groups Tuesday mornings, downtime Thursday evenings, team building and one-to-one sessions. Studio at Otto-Stadler-Straße 23c, Paderborn.',
       'meta.about.title': 'About Martina Schwierzke – Art Therapist Paderborn',
       'meta.about.description':
-        'Psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, own practice in Paderborn.',
+        'Psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, own atelier in Paderborn.',
       'meta.booking.title': 'Book appointment – Art Therapy Paderborn',
       'meta.booking.description':
         'Request an appointment online: Tuesday mornings and Thursday evenings. Available slots in the calendar – confirmation by email.',
       'meta.contact.title': 'Contact – Art Therapy Paderborn',
       'meta.contact.description':
-        'Send a message, call, or find directions to the practice at Otto-Stadler-Straße 23c, Paderborn.',
+        'Send a message, call, or find directions to the atelier at Otto-Stadler-Straße 23c, Paderborn.',
       'meta.prices.title': 'Prices – Art Therapy Paderborn',
       'meta.prices.description':
         'Transparent pricing for group sessions from €55, programmes and one-to-one sessions on request.',
       'meta.news.title': 'News – Art Therapy Paderborn',
-      'meta.news.description': 'Updates from the practice: appointments, studio news, and announcements.',
+      'meta.news.description': 'Updates from the atelier: appointments, studio news, and announcements.',
       'meta.events.title': 'Events – Art Therapy Paderborn',
       'meta.events.description': 'Workshops, team building, and events in Paderborn.',
       'meta.atelier.title': 'Mini Studio – Art Therapy Paderborn',
@@ -467,10 +467,10 @@
       'meta.privacy.title': 'Privacy – Art Therapy Paderborn',
       'meta.privacy.description': 'Privacy policy for the Art Therapy Paderborn website.',
 
-      'home.popup.title': 'News from the practice',
+      'home.popup.title': 'News from the atelier',
       'home.news.kicker': 'Updates',
-      'home.popup.note': 'Notice from the practice – stored locally, no tracking.',
-      'home.news.sub': 'What is coming up – straight from the practice.',
+      'home.popup.note': 'Notice from the atelier – stored locally, no tracking.',
+      'home.news.sub': 'What is coming up – straight from the atelier.',
       'home.news.loading': 'Loading news …',
       'home.news.show': 'Show updates',
       'home.news.all': 'All news',
@@ -488,8 +488,8 @@
       'home.praxis.do':
         '<p><span class="pill">Thu</span><br>Thursday evenings · Downtime, workshops</p>',
       'home.praxis.link':
-        '<p class="note" style="margin-top:1rem">Space, photos &amp; details: <a href="kunsttherapie.html#praxis">Explore the studio</a></p>',
-      'home.praxis.more': 'More about the studio',
+        '<p class="note" style="margin-top:1rem">Space, photos &amp; details: <a href="kunsttherapie.html#atelier">Explore the atelier</a></p>',
+      'home.praxis.more': 'More about the atelier',
       'home.hero.imgAlt': 'Studio – painting and creating together in Paderborn',
 
       'kt.effects.title': 'How art therapy works',
@@ -503,7 +503,7 @@
       'kt.faq3.q': 'Materials & methods',
       'kt.faq3.a':
         '<p>Guided painting, collage, and drawing with acrylic, gouache, and chalk. Regular groups on <strong>Tuesday mornings</strong>, downtime and workshops on <strong>Thursday evenings</strong>. Art workshops by arrangement – e.g. Thursday evenings.</p>',
-      'kt.praxis.kicker': 'The studio',
+      'kt.praxis.kicker': 'The atelier',
       'kt.praxis.title': 'Rented art therapy and group room',
       'kt.praxis.sub':
         'From <strong>1 June 2026</strong> in Paderborn – a dedicated space to arrive, create, and connect. The rooms are being set up and introduced here step by step.',
@@ -511,13 +511,13 @@
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
       'kt.praxis.headline': 'Your safe place in Paderborn',
       'kt.praxis.p1':
-        'The practice is a <strong>rented space</strong> – not an improvised room, but a deliberately chosen place for art therapy, groups, and downtime. Martina sets it up so you feel at home quickly: space to paint, room for conversation in between – <strong>Tuesday mornings</strong> for groups, <strong>Thursday evenings</strong> for downtime and workshops.',
+        'The atelier is a <strong>rented space</strong> – not an improvised room, but a deliberately chosen place for art therapy, groups, and downtime. Martina sets it up so you feel at home quickly: space to paint, room for conversation in between – <strong>Tuesday mornings</strong> for groups, <strong>Thursday evenings</strong> for downtime and workshops.',
       'kt.praxis.p2':
         '<strong>What to expect:</strong> a bright, calm atmosphere, materials on site, small groups, clear structure without pressure to perform. Parking and public transport are straightforward – directions below.',
       'kt.praxis.schedule1': '<strong>Tuesday mornings</strong> · Group therapy, professional setting',
       'kt.praxis.schedule2': '<strong>Thursday evenings</strong> · Downtime, workshops, team building',
       'kt.praxis.book': 'Choose appointment online',
-      'kt.praxis.news': 'Studio news',
+      'kt.praxis.news': 'Atelier news',
       'kt.highlight1.title': 'Studio area',
       'kt.highlight1.text': 'Shared creating with acrylic, gouache, chalk, collage – materials provided.',
       'kt.highlight2.title': 'Group room',
@@ -537,7 +537,7 @@
       'kt.cta.book': 'Go to booking calendar',
       'kt.cta.about': 'About Martina',
       'kt.cta.news': 'More insights: <a href="neuigkeiten.html">News &amp; updates</a>',
-      'kt.praxis.imgAlt': 'Studio in the practice – painting and creating together',
+      'kt.praxis.imgAlt': 'Atelier – painting and creating together',
 
       'about.kicker': 'About me',
       'about.name': 'Martina Schwierzke',
@@ -562,7 +562,7 @@
       'book.prevMonth': 'Previous month',
       'book.nextMonth': 'Next month',
       'book.legend':
-        '<span class="legend-dot legend-free"></span> Available (Tue / Thu) <span class="legend-dot legend-busy"></span> Fully booked <span class="legend-dot legend-off"></span> No practice day',
+        '<span class="legend-dot legend-free"></span> Available (Tue / Thu) <span class="legend-dot legend-busy"></span> Fully booked <span class="legend-dot legend-off"></span> No atelier day',
       'book.weekdays':
         '<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>',
       'book.calendarAria': 'Calendar',
@@ -591,7 +591,7 @@
       'book.loadingSlots': 'Loading times …',
       'book.slotsError': 'Times could not be loaded.',
       'book.dayNoOffer': 'Not available',
-      'book.dayOff': 'No practice day (Tue & Thu only)',
+      'book.dayOff': 'No atelier day (Tue & Thu only)',
       'book.dayFree': 'Available slots – click',
       'book.dayBusy': 'Fully booked or too soon – show times anyway',
       'book.confirmedNote':
@@ -611,7 +611,7 @@
       'contact.reach.title': 'How to reach us',
       'contact.reach.list':
         '<li><strong>Address</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Phone</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobile</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>Email</strong><br><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>',
-      'contact.hours': 'Practice from 1 June · Tuesday mornings · Thursday evenings',
+      'contact.hours': 'Atelier from 1 June · Tuesday mornings · Thursday evenings',
       'contact.book': 'Book online',
       'contact.offers': 'Services',
       'contact.form.title': 'Send a message',
@@ -622,7 +622,7 @@
         'Your details are used only to handle your enquiry (<a href="datenschutz.html">Privacy</a>).',
       'contact.submit': 'Send message',
       'contact.map.title': 'Directions',
-      'contact.mapIframeTitle': 'Map: practice Otto-Stadler-Straße 23c Paderborn',
+      'contact.mapIframeTitle': 'Map: atelier Otto-Stadler-Straße 23c Paderborn',
       'ui.scrollTop': 'Scroll to top',
       'ui.lightbox.title': 'Enlarged image',
       'ui.lightbox.prev': 'Previous image',

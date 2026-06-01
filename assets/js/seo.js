@@ -11,7 +11,7 @@
   const localBusiness = {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
-    '@id': origin + '/#praxis',
+    '@id': origin + '/#atelier',
     name: 'Kunsttherapie Paderborn – Martina Schwierzke',
     description:
       'Psychosoziale und klinische Kunsttherapie in Paderborn: Gruppen Dienstag morgens, Auszeit Donnerstag abends, Einzelsitzungen und Teambuilding.',
@@ -67,7 +67,7 @@
     description:
       document.querySelector('meta[name="description"]')?.getAttribute('content') || undefined,
     isPartOf: { '@id': origin + '/#website' },
-    about: { '@id': origin + '/#praxis' },
+    about: { '@id': origin + '/#atelier' },
     inLanguage: 'de-DE',
   };
 
@@ -77,9 +77,9 @@
     '@id': origin + '/#website',
     url: origin + '/',
     name: 'Kunsttherapie Paderborn',
-    description: 'Website der Kunsttherapie-Praxis Martina Schwierzke in Paderborn',
+    description: 'Website des Kunsttherapie-Ateliers Martina Schwierzke in Paderborn',
     inLanguage: 'de-DE',
-    publisher: { '@id': origin + '/#praxis' },
+    publisher: { '@id': origin + '/#atelier' },
   };
 
   const graph = {

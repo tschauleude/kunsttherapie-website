@@ -28,7 +28,7 @@ const HEADER = `  <a class="skip-link" href="#main">Zum Inhalt springen</a>
         <ul>
           <li><a href="ueber-mich.html" data-nav="ansatz">Mein Ansatz</a></li>
           <li><a href="kunsttherapie.html" data-nav="kunsttherapie">Kunsttherapie</a></li>
-          <li><a href="kunsttherapie.html#praxis" data-nav="praxis">Die Praxis</a></li>
+          <li><a href="kunsttherapie.html#atelier" data-nav="praxis">Das Atelier</a></li>
           <li><a href="neuigkeiten.html" data-nav="neuigkeiten">Neuigkeiten</a></li>
           <li><a href="buchung.html" class="nav-cta" data-nav="termin">Termin</a></li>
           <li><a href="kontakt.html" data-nav="kontakt">Kontakt</a></li>
@@ -40,7 +40,7 @@ const HEADER = `  <a class="skip-link" href="#main">Zum Inhalt springen</a>
 const FOOTER = `  <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-col">
-        <h4>Praxis</h4>
+        <h4>Atelier</h4>
         <p><strong>Martina Schwierzke</strong></p>
         <p>Psychosoziale &amp; Klinische Kunsttherapeutin</p>
         <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>

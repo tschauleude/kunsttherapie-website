@@ -22,7 +22,7 @@
   const HOME_SECTIONS = [
     { id: 'neuigkeiten', nav: 'neuigkeiten' },
     { id: 'angebote', nav: 'kunsttherapie' },
-    { id: 'praxis', nav: 'praxis' },
+    { id: 'atelier', nav: 'praxis' },
   ];
 
   function currentNavKey() {
@@ -47,7 +47,7 @@
     const pageKey = currentNavKey();
     const hash = window.location.hash.replace('#', '');
 
-    if (pageKey === 'kunsttherapie' && hash === 'praxis') {
+    if (pageKey === 'kunsttherapie' && (hash === 'atelier' || hash === 'praxis')) {
       setActiveNav('praxis');
       return;
     }
@@ -356,7 +356,14 @@
 
   window.ktInitLangSwitch = initLangSwitch;
 
+  function redirectLegacyPraxisHash() {
+    if (window.location.hash === '#praxis') {
+      history.replaceState(null, '', `${window.location.pathname}${window.location.search}#atelier`);
+    }
+  }
+
   function init() {
+    redirectLegacyPraxisHash();
     initSkipLink();
     initMobileNav();
     initLangSwitch();
