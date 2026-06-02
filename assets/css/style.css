@@ -162,7 +162,7 @@ header {
 
 .header-inner {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
   gap: 1.25rem;
@@ -1828,6 +1828,10 @@ body.consent-settings-open {
   }
 }
 
+nav[data-site-nav] {
+  flex-shrink: 0;
+}
+
 .header-tools {
   display: flex;
   align-items: center;
@@ -1855,6 +1859,8 @@ body.consent-settings-open {
   color: var(--color-teal-dark);
   white-space: nowrap;
   line-height: 1;
+  min-width: 4.6rem;
+  text-align: center;
 }
 
 .lang-switch-btns {
