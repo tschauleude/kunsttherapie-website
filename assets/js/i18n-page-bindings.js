@@ -42,7 +42,6 @@ window.I18N_PAGE_BINDINGS = {
     { sel: '[data-raum-tab="gestalten"] span:last-child', key: 'kt.raum.tab.gestalten', attr: 'text' },
     { sel: '.kt-raum-compare-labels span:first-child', key: 'kt.raum.compare.before', attr: 'text' },
     { sel: '.kt-raum-compare-labels span:last-child', key: 'kt.raum.compare.after', attr: 'text' },
-    { sel: '.kt-praxis-copy .kicker', key: 'kt.praxis.addressKicker', attr: 'text' },
     { sel: '.kt-praxis-copy > h2', key: 'kt.praxis.headline', attr: 'text' },
     { sel: '.kt-praxis-copy > p:nth-of-type(1)', key: 'kt.praxis.p1', attr: 'html' },
     { sel: '.kt-praxis-copy > p:nth-of-type(2)', key: 'kt.praxis.p2', attr: 'html' },

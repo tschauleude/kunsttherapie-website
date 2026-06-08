@@ -110,7 +110,6 @@
       'kt.praxis.sub':
         'Ab <strong>1. Juli 2026</strong> in Paderborn – ein eigener Raum zum Ankommen, Gestalten und Begegnen. Die Räumlichkeiten werden laufend eingerichtet und hier Schritt für Schritt vorgestellt.',
       'kt.praxis.photoNote': 'Einblicke aus dem Raum – weitere Fotos und Einrichtungsdetails folgen in Kürze.',
-      'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
       'kt.praxis.headline': 'Ankommen und gestalten in Paderborn',
       'kt.praxis.p1':
         'Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen. Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag 11:00–12:30</strong> für Gruppen, <strong>Donnerstag 18:00–19:30</strong> für Auszeit und Workshops. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.',
@@ -592,7 +591,6 @@
       'kt.praxis.sub':
         'From <strong>1 July 2026</strong> in Paderborn – a dedicated space to arrive, create, and connect. The rooms are being set up and introduced here step by step.',
       'kt.praxis.photoNote': 'A first look inside – more photos and setup details coming soon.',
-      'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
       'kt.praxis.headline': 'A place to arrive and create in Paderborn',
       'kt.praxis.p1':
         'The space has a welcoming atmosphere, a touch of green with a terrace, and everything needed to feel at home quickly. Room to paint and talk in between – <strong>Tuesday 11:00–12:30</strong> for groups, <strong>Thursday 18:00–19:30</strong> for downtime and workshops. Group times rotate: on alternate weeks also on Thursday evenings.',
