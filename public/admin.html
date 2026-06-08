@@ -60,6 +60,7 @@
     <h2>Verwaltung</h2>
     <div class="nav-item active" onclick="switchSection('dashboard')">Übersicht</div>
     <div class="nav-item" onclick="switchSection('news')">Neuigkeiten</div>
+    <div class="nav-item" onclick="switchSection('images')">Bilder</div>
     <div class="nav-item" onclick="switchSection('texts')">Website-Texte</div>
     <div class="nav-item" onclick="switchSection('bookings')">Buchungen</div>
     <div class="nav-item" onclick="switchSection('atelier')">Mini-Atelier</div>
@@ -83,6 +84,7 @@
           <h3>Was du hier machst</h3>
           <ul>
             <li><strong>Neuigkeiten</strong> – Texte und Fotos für die Seite „Aktuelles“</li>
+            <li><strong>Bilder</strong> – Galerie, Hero, Portrait und Atelier-Fotos auf der Website</li>
             <li><strong>Website-Texte</strong> – Texte auf Startseite, Kunsttherapie, Über mich, Preise usw.</li>
             <li><strong>Buchungen</strong> – Online-Termine von Kunden, Zeiten blockieren, Google Kalender</li>
             <li><strong>Mini-Atelier</strong> – Werke von der Website (anonym oder mit Namen)</li>
@@ -275,6 +277,15 @@
       <div id="eventsList" class="items-list"></div>
     </section>
 
+    <!-- SITE IMAGES -->
+    <section class="admin-section" id="images">
+      <h1>Bilder</h1>
+      <p class="sub section-desc">Galerie auf der Startseite, Hero-Bild, Portrait und Atelier-Fotos. JPG, PNG oder WebP – max. ca. 5&nbsp;MB. Alt-Texte weiterhin unter <strong>Website-Texte → Startseite</strong>.</p>
+      <div id="siteImagesList" class="site-images-admin">
+        <p class="note">Bilder werden geladen …</p>
+      </div>
+    </section>
+
     <!-- WEBSITE TEXTS (i18n) -->
     <section class="admin-section" id="texts">
       <h1>Website-Texte</h1>
@@ -465,6 +476,7 @@ function switchSection(sectionId) {
   }
   if (sectionId === 'atelier') loadAtelierList();
   if (sectionId === 'events') loadEventsList();
+  if (sectionId === 'images') loadSiteImagesList();
   if (sectionId === 'texts') initTextsSection();
 }
 
@@ -622,6 +634,121 @@ async function uploadImageFile(fileInput) {
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'Bild-Upload fehlgeschlagen');
   return data.url;
+}
+
+async function uploadSiteImageSlot(slot, fileInput) {
+  const file = fileInput?.files?.[0];
+  if (!file) throw new Error('Bitte zuerst ein Bild auswählen');
+  const fd = new FormData();
+  fd.append('image', file);
+  const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}/upload`, {
+    method: 'POST',
+    credentials: 'include',
+    body: fd,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Bild konnte nicht gespeichert werden');
+  return data;
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+async function loadSiteImagesList() {
+  const container = document.getElementById('siteImagesList');
+  if (!container) return;
+  container.innerHTML = '<p class="note">Bilder werden geladen …</p>';
+
+  try {
+    const res = await fetch(`${API_URL}/admin/site-images`, { credentials: 'include' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Laden fehlgeschlagen');
+
+    const groups = {};
+    (data.slots || []).forEach((slot) => {
+      if (!groups[slot.group]) groups[slot.group] = [];
+      groups[slot.group].push(slot);
+    });
+
+    let html = '';
+    for (const [group, slots] of Object.entries(groups)) {
+      html += `<div class="site-images-group"><h2>${escapeHtml(group)}</h2><div class="site-images-grid">`;
+      for (const slot of slots) {
+        const status = slot.isCustom
+          ? '<span class="site-image-badge site-image-badge--custom">Eigenes Bild</span>'
+          : '<span class="site-image-badge">Standard</span>';
+        html += `
+          <article class="site-image-card card" data-slot="${escapeHtml(slot.slot)}">
+            <div class="site-image-card-head">
+              <h3>${escapeHtml(slot.label)}</h3>
+              ${status}
+            </div>
+            <img class="upload-preview site-image-preview" src="${escapeHtml(slot.url)}" alt="" loading="lazy"/>
+            <div class="form-group">
+              <label>Neues Bild wählen</label>
+              <input type="file" class="site-image-file" accept="image/jpeg,image/png,image/gif,image/webp" data-slot="${escapeHtml(slot.slot)}"/>
+            </div>
+            <div class="form-actions site-image-actions">
+              <button type="button" class="btn-save" onclick="saveSiteImageSlot('${escapeHtml(slot.slot)}')">Hochladen &amp; speichern</button>
+              <button type="button" class="btn-cancel" onclick="resetSiteImageSlot('${escapeHtml(slot.slot)}')" ${slot.isCustom ? '' : 'disabled'}>Standard wiederherstellen</button>
+            </div>
+          </article>`;
+      }
+      html += '</div></div>';
+    }
+
+    container.innerHTML = html || '<p class="note">Keine Bild-Slots konfiguriert.</p>';
+
+    container.querySelectorAll('.site-image-file').forEach((input) => {
+      input.addEventListener('change', () => {
+        const file = input.files?.[0];
+        if (!file) return;
+        const card = input.closest('.site-image-card');
+        const preview = card?.querySelector('.site-image-preview');
+        if (!preview) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  } catch (err) {
+    container.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+async function saveSiteImageSlot(slot) {
+  const card = document.querySelector(`.site-image-card[data-slot="${slot}"]`);
+  const fileInput = card?.querySelector('.site-image-file');
+  try {
+    await uploadSiteImageSlot(slot, fileInput);
+    showMessage('Bild gespeichert – auf der Website nach Laden sichtbar.', 'success');
+    loadSiteImagesList();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function resetSiteImageSlot(slot) {
+  if (!confirm('Dieses Bild auf den Website-Standard zurücksetzen?')) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Zurücksetzen fehlgeschlagen');
+    showMessage('Standardbild wiederhergestellt.', 'success');
+    loadSiteImagesList();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
 }
 
 function bindImagePreview(fileInputId, hiddenInputId, previewId) {

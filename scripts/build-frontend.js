@@ -65,6 +65,7 @@ const CORE_BUNDLE_SOURCES = [
   'consent.js',
   'accessibility.js',
   'site.js',
+  'site-images.js',
   'reveal.js',
   'scroll-top.js',
 ];

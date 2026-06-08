@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const siteImages = require('./lib/site-images');
 require('dotenv').config();
 
 const app = express();
@@ -198,6 +199,14 @@ function initializeDatabase() {
       note TEXT,
       status TEXT DEFAULT 'new',
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS site_images (
+      slot TEXT PRIMARY KEY,
+      url TEXT NOT NULL,
+      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
@@ -1163,6 +1172,86 @@ app.post('/api/admin/upload', requireAuth, (req, res) => {
       url: `/uploads/${req.file.filename}`,
     });
   });
+});
+
+// ============================================================================
+// SITE IMAGES (Galerie & feste Bild-Slots)
+// ============================================================================
+
+app.get('/api/site-images', async (req, res) => {
+  try {
+    const images = await siteImages.getPublicImages(dbAll);
+    res.setHeader('Cache-Control', 'public, max-age=120');
+    res.json({ images });
+  } catch (e) {
+    console.error('site-images public:', e.message);
+    const fallback = Object.fromEntries(
+      siteImages.SITE_IMAGE_SLOTS.map((s) => [s.slot, s.defaultUrl])
+    );
+    res.json({ images: fallback });
+  }
+});
+
+app.get('/api/admin/site-images', requireAuth, async (req, res) => {
+  try {
+    const slots = await siteImages.getAdminSlots(dbAll);
+    res.json({ slots });
+  } catch (e) {
+    console.error('site-images admin list:', e.message);
+    res.status(500).json({ error: 'Bilder konnten nicht geladen werden' });
+  }
+});
+
+app.put('/api/admin/site-images/:slot', requireAuth, async (req, res) => {
+  const { slot } = req.params;
+  const { url } = req.body || {};
+  try {
+    const saved = await siteImages.setSlotUrl(dbGet, dbRun, slot, url, UPLOAD_DIR);
+    res.json({ success: true, ...saved });
+  } catch (e) {
+    res.status(400).json({ error: e.message || 'Speichern fehlgeschlagen' });
+  }
+});
+
+app.post('/api/admin/site-images/:slot/upload', requireAuth, (req, res) => {
+  const { slot } = req.params;
+  if (!siteImages.getSlot(slot)) {
+    return res.status(404).json({ error: 'Unbekannter Bild-Slot' });
+  }
+
+  imageUpload.single('image')(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: 'Keine Datei ausgewählt' });
+    }
+
+    try {
+      const url = `/uploads/${req.file.filename}`;
+      const saved = await siteImages.setSlotUrl(dbGet, dbRun, slot, url, UPLOAD_DIR);
+      res.json({ success: true, url, ...saved });
+    } catch (e) {
+      if (req.file?.path && fs.existsSync(req.file.path)) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (_) {
+          /* ignore */
+        }
+      }
+      res.status(500).json({ error: e.message || 'Speichern fehlgeschlagen' });
+    }
+  });
+});
+
+app.delete('/api/admin/site-images/:slot', requireAuth, async (req, res) => {
+  const { slot } = req.params;
+  try {
+    const reset = await siteImages.resetSlot(dbGet, dbRun, slot, UPLOAD_DIR);
+    res.json({ success: true, ...reset });
+  } catch (e) {
+    res.status(400).json({ error: e.message || 'Zurücksetzen fehlgeschlagen' });
+  }
 });
 
 // ============================================================================
