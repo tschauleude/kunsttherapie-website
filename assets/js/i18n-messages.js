@@ -66,6 +66,13 @@ window.I18N_MESSAGES = {
     'home.trust.text':
       'Über 16 Jahre in Palliativversorgung, Psychoonkologie und klinischen Gruppen – u. a. MZG und Brüderkrankenhaus. Jetzt eigenes Atelier in Paderborn.',
     'home.trust.note': 'Kundenstimmen und Kooperationslogos folgen nach Freigabe.',
+    'quotes.1.text':
+      '„Ohne die Freiheit des Geistes ist die Kunst weder machbar, denkbar, noch erfahrbar.“',
+    'quotes.1.author': 'Georg Meistermann',
+    'quotes.2.text':
+      '„Kunst, Kultur, Natur und alles, was sich nicht rechnet, bereichern das Leben, lassen ahnen, wie heil sein ist.“',
+    'quotes.2.author': 'Else Pannek',
+    'quotes.nav': 'Zitate wechseln',
     'home.gallery.title': 'Kunsttherapie in Aktion',
     'home.praxis.title': 'Das Atelier ab Juli',
     'kt.hero.kicker': 'Ab 1. Juli in Paderborn',
@@ -181,6 +188,13 @@ window.I18N_MESSAGES = {
     'home.trust.text':
       'Over 16 years in palliative care, psycho-oncology, and clinical groups – including MZG and Brüderkrankenhaus. Now her own practice in Paderborn.',
     'home.trust.note': 'Testimonials and partner logos will follow once approved.',
+    'quotes.1.text':
+      '“Without freedom of mind, art is neither possible, conceivable, nor experienceable.”',
+    'quotes.1.author': 'Georg Meistermann',
+    'quotes.2.text':
+      '“Art, culture, nature, and everything that cannot be counted enrich life and give a sense of how healing being is.”',
+    'quotes.2.author': 'Else Pannek',
+    'quotes.nav': 'Change quote',
     'home.gallery.title': 'Art therapy in action',
     'home.praxis.title': 'The atelier from July',
     'kt.hero.kicker': 'From 1 July in Paderborn',

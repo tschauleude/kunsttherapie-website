@@ -1501,6 +1501,126 @@ body.consent-settings-open {
   border-radius: 4px;
 }
 
+/* === ZITAT-BAND === */
+.quote-band {
+  padding: clamp(2.5rem, 5vw, 4rem) 0;
+}
+
+.quote-showcase {
+  position: relative;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(1.75rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 2rem) 2.25rem;
+  text-align: center;
+}
+
+.quote-showcase::before {
+  content: '“';
+  position: absolute;
+  top: -0.15rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(4rem, 12vw, 5.5rem);
+  line-height: 1;
+  color: var(--color-teal);
+  opacity: 0.1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.quote-track {
+  display: grid;
+  grid-template: 1fr / 1fr;
+  align-items: center;
+  min-height: clamp(5rem, 14vw, 6.5rem);
+}
+
+.quote-slide {
+  grid-area: 1 / 1;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.85s ease,
+    transform 0.85s ease;
+  pointer-events: none;
+}
+
+.quote-slide.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.quote-slide blockquote {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.quote-slide blockquote p {
+  margin: 0;
+  font-size: clamp(1.08rem, 2.4vw, 1.28rem);
+  line-height: 1.65;
+  font-style: italic;
+  color: var(--color-teal-dark);
+  letter-spacing: -0.01em;
+}
+
+.quote-slide figcaption {
+  margin-top: 0.85rem;
+  font-size: 0.88rem;
+  font-style: normal;
+  color: var(--text-light);
+  letter-spacing: 0.03em;
+}
+
+.quote-slide figcaption::before {
+  content: '— ';
+  opacity: 0.65;
+}
+
+.quote-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 1.35rem;
+}
+
+.quote-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(85, 122, 118, 0.22);
+  cursor: pointer;
+  transition:
+    width 0.35s ease,
+    background 0.35s ease,
+    border-radius 0.35s ease;
+}
+
+.quote-dot:hover,
+.quote-dot:focus-visible {
+  background: rgba(85, 122, 118, 0.45);
+  outline: none;
+}
+
+.quote-dot.is-active {
+  width: 1.35rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-teal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quote-slide {
+    transition: none;
+    transform: none;
+  }
+}
+
 .news-popup {
   position: fixed;
   inset: 0;
