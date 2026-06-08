@@ -2,7 +2,9 @@
  * Angebots-Karten: „Mehr erfahren“ klappt die Beschreibung in der Karte auf.
  */
 (function () {
-  const root = document.querySelector('.page-kunsttherapie');
+  const root =
+    document.querySelector('.page-kunsttherapie') ||
+    document.querySelector('[data-i18n-page="therapy"]');
   if (!root) return;
 
   function labelLearn() {

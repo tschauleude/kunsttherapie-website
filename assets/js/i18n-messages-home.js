@@ -19,7 +19,9 @@
   "home.praxis.do": "<p><span class=\"pill\">Do</span><br>18:00–19:30 · Auszeit, Workshops</p>",
   "home.praxis.link": "<p class=\"note\" style=\"margin-top:1rem\">Raum, Fotos &amp; Details: <a href=\"kunsttherapie.html#atelier\">Atelier entdecken</a></p>",
   "home.praxis.more": "Mehr zum Atelier",
-  "home.hero.imgAlt": "Atelier – gemeinsam malen und gestalten in Paderborn"
+  "home.hero.imgAlt": "Kreativer Außenarbeitsplatz – Gestalten im Grünen",
+  "home.gallery.img2.alt": "Kunsttherapeutisches Gestalten in der Klinik",
+  "home.gallery.img3.alt": "Abstraktes Aquarell – Farben und Formen"
 }, en: {
   "meta.home.title": "Art Therapy Paderborn | Psychosocial Art Therapy & Studio",
   "meta.home.description": "Art therapy in Paderborn: Tuesday mornings and Thursday evenings. Groups, downtime, one-to-one, team building – book online.",
@@ -39,7 +41,9 @@
   "home.praxis.do": "<p><span class=\"pill\">Thu</span><br>18:00–19:30 · Downtime, workshops</p>",
   "home.praxis.link": "<p class=\"note\" style=\"margin-top:1rem\">Space, photos &amp; details: <a href=\"kunsttherapie.html#atelier\">Explore the atelier</a></p>",
   "home.praxis.more": "More about the atelier",
-  "home.hero.imgAlt": "Studio – painting and creating together in Paderborn"
+  "home.hero.imgAlt": "Creative outdoor workspace – creating in nature",
+  "home.gallery.img2.alt": "Art therapy in a clinical setting",
+  "home.gallery.img3.alt": "Abstract watercolour – colours and shapes"
 } };
   Object.assign(window.I18N_MESSAGES.de, extra.de);
   Object.assign(window.I18N_MESSAGES.en, extra.en);

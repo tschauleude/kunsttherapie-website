@@ -72,7 +72,7 @@ function pageForKey(key) {
   if (key.startsWith('nav.') || key.startsWith('btn.') || key.startsWith('form.')) return 'shared';
   if (key.startsWith('map.')) return 'shared';
   if (key.startsWith('meta.home.') || key.startsWith('home.')) return 'home';
-  if (key.startsWith('meta.therapy.') || key.startsWith('kt.')) return 'therapy';
+  if (key.startsWith('meta.therapy.') || key.startsWith('kt.') || key.startsWith('offer.')) return 'therapy';
   if (key.startsWith('meta.about.') || key.startsWith('about.')) return 'about';
   if (key.startsWith('meta.booking.') || key.startsWith('book.')) return 'booking';
   if (key.startsWith('meta.contact.') || key.startsWith('contact.')) return 'contact';
@@ -171,9 +171,9 @@ async function optimizeImages() {
   }
 
   const targets = [
-    'Gruppen-und-Einzeltherapie-768x524.jpg',
-    'Bilder.jpg',
-    'Potenziale-Kunsttherapie-Paderborn.jpg',
+    'hero-atelier-aussen.jpg',
+    'galerie-abstrakt.jpg',
+    'galerie-schmerzstation.jpg',
     'atelier-eingang.jpg',
     'martina-portrait.jpg',
   ];
