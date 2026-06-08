@@ -166,17 +166,87 @@
       </p>
     </div>
 
-    <div class="kt-praxis-grid">
-      <div class="card kt-praxis-media">
-        <img
-          class="kt-praxis-photo"
-          src="assets/img/Gruppen-und-Einzeltherapie-768x524.jpg"
-          alt="Atelier – gemeinsam malen und gestalten"
-          loading="lazy"
-          decoding="async"
-        />
-        <p class="note">Einblicke aus dem Raum – weitere Fotos und Einrichtungsdetails folgen in Kürze.</p>
+    <div class="kt-praxis-grid kt-praxis-grid--showcase">
+      <div class="card kt-raum-showcase" data-raum-showcase>
+        <div class="kt-raum-tabs" role="tablist" aria-label="Raumansichten">
+          <button type="button" class="kt-raum-tab is-active" role="tab" data-raum-tab="eingang" aria-selected="true" aria-controls="raum-panel-eingang" id="raum-tab-eingang">
+            <span class="kt-raum-tab-icon" aria-hidden="true">◆</span>
+            <span data-i18n="kt.raum.tab.eingang">Eingang</span>
+          </button>
+          <button type="button" class="kt-raum-tab" role="tab" data-raum-tab="innen" aria-selected="false" aria-controls="raum-panel-innen" id="raum-tab-innen" tabindex="-1">
+            <span class="kt-raum-tab-icon" aria-hidden="true">◇</span>
+            <span data-i18n="kt.raum.tab.innen">Atelier innen</span>
+          </button>
+          <button type="button" class="kt-raum-tab" role="tab" data-raum-tab="gestalten" aria-selected="false" aria-controls="raum-panel-gestalten" id="raum-tab-gestalten" tabindex="-1">
+            <span class="kt-raum-tab-icon" aria-hidden="true">○</span>
+            <span data-i18n="kt.raum.tab.gestalten">Gestalten</span>
+          </button>
+        </div>
+
+        <div class="kt-raum-panels">
+          <div class="kt-raum-panel is-active" data-raum-panel="eingang" id="raum-panel-eingang" role="tabpanel" aria-labelledby="raum-tab-eingang">
+            <div class="kt-raum-compare" data-raum-compare data-raum-lightbox data-raum-caption="Eingang Otto-Stadler-Straße 23c">
+              <img class="kt-raum-compare-before" src="assets/img/atelier-eingang.jpg" alt="Eingang zum Atelier – Otto-Stadler-Straße 23c" loading="eager" decoding="async"/>
+              <div class="kt-raum-compare-after" data-raum-compare-after>
+                <img src="assets/img/atelier-eingang-vision.jpg" alt="Atmosphäre am Eingang – warm, einladend, modern" loading="lazy" decoding="async"/>
+              </div>
+              <div class="kt-raum-compare-handle" data-raum-compare-handle aria-hidden="true">
+                <span class="kt-raum-compare-grip"></span>
+              </div>
+              <label class="visually-hidden" for="raumCompareRange">Vorher-Nachher-Vergleich</label>
+              <input type="range" class="kt-raum-compare-range" id="raumCompareRange" data-raum-compare-range" min="0" max="100" value="50" aria-valuetext="50 Prozent"/>
+              <div class="kt-raum-compare-labels">
+                <span data-i18n="kt.raum.compare.before">Heute</span>
+                <span data-i18n="kt.raum.compare.after">Atmosphäre</span>
+              </div>
+              <button type="button" class="kt-hotspot" data-raum-hotspot style="--hotspot-x:72%;--hotspot-y:38%">
+                <span class="kt-hotspot-dot" aria-hidden="true"></span>
+                <span class="kt-hotspot-tip">
+                  <strong data-i18n="kt.raum.hotspot1.title">Willkommen</strong>
+                  <span data-i18n="kt.raum.hotspot1.text">Barrierefreier Zugang über die Rampe – direkt ins Atelier.</span>
+                </span>
+              </button>
+              <button type="button" class="kt-hotspot" data-raum-hotspot style="--hotspot-x:28%;--hotspot-y:22%">
+                <span class="kt-hotspot-dot" aria-hidden="true"></span>
+                <span class="kt-hotspot-tip">
+                  <strong data-i18n="kt.raum.hotspot2.title">Licht &amp; Grün</strong>
+                  <span data-i18n="kt.raum.hotspot2.text">Glasfassade mit Blick ins Grüne – ruhiger Rahmen zum Ankommen.</span>
+                </span>
+              </button>
+            </div>
+            <p class="note kt-raum-hint" data-i18n="kt.raum.compare.hint">Ziehen oder wischen, um Eingang und Atmosphäre zu vergleichen · Klick auf einen Punkt für Details · Bild antippen zum Vergrößern</p>
+          </div>
+
+          <div class="kt-raum-panel" data-raum-panel="innen" id="raum-panel-innen" role="tabpanel" aria-labelledby="raum-tab-innen" hidden>
+            <div class="kt-raum-stage" data-raum-lightbox data-raum-caption="Atelier innen – gemeinsam gestalten">
+              <img src="assets/img/Gruppen-und-Einzeltherapie-768x524.jpg" alt="Atelier – gemeinsam malen und gestalten" loading="lazy" decoding="async"/>
+              <button type="button" class="kt-hotspot" data-raum-hotspot style="--hotspot-x:55%;--hotspot-y:45%">
+                <span class="kt-hotspot-dot" aria-hidden="true"></span>
+                <span class="kt-hotspot-tip">
+                  <strong data-i18n="kt.raum.hotspot3.title">Gruppenraum</strong>
+                  <span data-i18n="kt.raum.hotspot3.text">4–12 Personen, Materialien vor Ort, geschützter Rahmen.</span>
+                </span>
+              </button>
+              <button type="button" class="kt-hotspot" data-raum-hotspot style="--hotspot-x:20%;--hotspot-y:60%">
+                <span class="kt-hotspot-dot" aria-hidden="true"></span>
+                <span class="kt-hotspot-tip">
+                  <strong data-i18n="kt.raum.hotspot4.title">Materialien</strong>
+                  <span data-i18n="kt.raum.hotspot4.text">Acryl, Gouache, Kreide, Collage – alles bereitgestellt.</span>
+                </span>
+              </button>
+            </div>
+            <p class="note kt-raum-hint" data-i18n="kt.raum.innen.hint">Klick auf die Punkte für mehr · Bild antippen zum Vergrößern</p>
+          </div>
+
+          <div class="kt-raum-panel" data-raum-panel="gestalten" id="raum-panel-gestalten" role="tabpanel" aria-labelledby="raum-tab-gestalten" hidden>
+            <div class="kt-raum-stage" data-raum-lightbox data-raum-caption="Kunst aus dem Atelier">
+              <img src="assets/img/Potenziale-Kunsttherapie-Paderborn.jpg" alt="Kunsttherapeutisches Bild – Natur und Kreativität" loading="lazy" decoding="async"/>
+            </div>
+            <p class="note kt-raum-hint" data-i18n="kt.raum.gestalten.hint">Kreativität ohne Leistungsdruck – ein Blick auf das, was im Atelier entsteht.</p>
+          </div>
+        </div>
       </div>
+
       <div class="card kt-praxis-copy">
         <div class="kicker">Otto-Stadler-Straße 23c</div>
         <h2>Geschützter Ort in Paderborn</h2>
@@ -317,5 +387,6 @@
 <script src="assets/js/reveal.js"></script>
 <script src="assets/js/scroll-top.js"></script>
 <script src="assets/js/kunsttherapie.js"></script>
+<script src="assets/js/raum-showcase.js"></script>
 </body>
 </html>
