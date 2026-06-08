@@ -274,10 +274,15 @@
 <h2>Verantwortliche Person</h2>
 <p>
   <strong>Martina Schwierzke</strong><br/>
-  Psychosoziale Kunsttherapie Paderborn<br/>
-  Otto-Stadler-Straße 23c<br/>
+  Konrad-Martin-Straße 11c<br/>
   33102 Paderborn<br/>
   Deutschland
+</p>
+<h2>Atelier-Adresse</h2>
+<p>
+  Psychosoziale Kunsttherapie Paderborn<br/>
+  Otto-Stadler-Straße 23c<br/>
+  33102 Paderborn
 </p>
 <h2>Kontakt</h2>
 <p>
@@ -722,10 +727,15 @@
 <h2>Responsible person</h2>
 <p>
   <strong>Martina Schwierzke</strong><br/>
-  Psychosocial Art Therapy Paderborn<br/>
-  Otto-Stadler-Straße 23c<br/>
+  Konrad-Martin-Straße 11c<br/>
   33102 Paderborn<br/>
   Germany
+</p>
+<h2>Studio address</h2>
+<p>
+  Psychosocial Art Therapy Paderborn<br/>
+  Otto-Stadler-Straße 23c<br/>
+  33102 Paderborn
 </p>
 <h2>Contact</h2>
 <p>

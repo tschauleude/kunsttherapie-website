@@ -1,4 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Kunsttherapie Paderborn">
-  <rect width="32" height="32" rx="8" fill="#557a76"/>
-  <path fill="#f7f4ef" d="M16 7.5c0 0-6 8.2-6 12.5a6 6 0 1 0 12 0c0-4.3-6-12.5-6-12.5z"/>
+  <defs>
+    <linearGradient id="bg" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5f8f89"/>
+      <stop offset="100%" stop-color="#3f615d"/>
+    </linearGradient>
+    <radialGradient id="drop" cx="42%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#f7f4ef"/>
+      <stop offset="100%" stop-color="#e8e2d8"/>
+    </radialGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <circle cx="7.5" cy="7" r="4.2" fill="#d18d89" opacity="0.62"/>
+  <circle cx="25.5" cy="8.5" r="3.6" fill="#a2d4c4" opacity="0.58"/>
+  <circle cx="23.5" cy="25.5" r="3.2" fill="#f0d7a4" opacity="0.55"/>
+  <path fill="url(#drop)" d="M16 6.2c0 0-5.8 8.1-5.8 12.3a5.8 5.8 0 1 0 11.6 0C21.8 14.3 16 6.2 16 6.2z"/>
+  <ellipse cx="13.8" cy="13.6" rx="1.6" ry="2" fill="#fff" opacity="0.42"/>
+  <circle cx="18.6" cy="19.8" r="1.1" fill="#d18d89" opacity="0.35"/>
 </svg>
