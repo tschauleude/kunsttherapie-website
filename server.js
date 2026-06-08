@@ -936,7 +936,7 @@ app.post('/api/contact', async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Danke! Deine Nachricht ist angekommen – wir melden uns zeitnah.',
+      message: 'Vielen Dank – die Nachricht ist angekommen. Eine Rückmeldung folgt zeitnah.',
     });
   } catch (e) {
     console.error('contact error:', e);
@@ -1000,8 +1000,8 @@ app.post('/api/bookings', async (req, res) => {
       endTime: row.end_time,
       emailSent,
       message: emailSent
-        ? 'Anfrage eingegangen! Martina bestätigt deinen Termin per E-Mail – danach kannst du ihn in deinen Kalender übernehmen.'
-        : 'Anfrage gespeichert! Martina meldet sich zur Bestätigung bei dir.',
+        ? 'Anfrage eingegangen! Die Bestätigung folgt per E-Mail – danach lässt sich der Termin im Kalender speichern.'
+        : 'Anfrage gespeichert! Die Bestätigung folgt zeitnah per E-Mail.',
     });
   } catch (e) {
     console.error('booking create error:', e);
@@ -1087,7 +1087,7 @@ app.post('/api/atelier/submit', (req, res) => {
         success: true,
         id: row.id,
         message:
-          'Vielen Dank! Dein Werk ist bei Martina eingegangen. Sie kann es vertraulich als Impuls nutzen.',
+          'Vielen Dank! Das Werk ist im Atelier eingegangen und kann vertraulich als Impuls genutzt werden.',
       });
     } catch (e) {
       console.error('atelier submit:', e);

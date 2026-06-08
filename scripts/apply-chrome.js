@@ -17,6 +17,7 @@ const PAGES = [
   'buchung',
   'impressum',
   'datenschutz',
+  'atelier',
 ];
 
 const HEADER = fs.readFileSync(path.join(ROOT, 'partials/header.html'), 'utf8');

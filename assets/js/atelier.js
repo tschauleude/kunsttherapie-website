@@ -1,5 +1,5 @@
 /**
- * Mini-Atelier: Zeichnen, Formen, Kollage, Entwurf speichern, an Martina senden.
+ * Mini-Atelier: Zeichnen, Formen, Kollage, Entwurf speichern, optional ans Atelier senden.
  */
 (function () {
   const root = document.getElementById('atelierApp');
@@ -584,7 +584,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Senden fehlgeschlagen');
 
-      setStatus(data.message || 'Danke! Dein Werk wurde übermittelt.', 'success');
+      setStatus(data.message || 'Vielen Dank – das Werk wurde übermittelt.', 'success');
       form.reset();
       form.querySelector('[name="anonymous"]').checked = true;
       toggleIdentityFields();

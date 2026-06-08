@@ -12,8 +12,8 @@ const HEADER = `  <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header>
     <div class="container header-inner">
       <a class="brand logo-text" href="index.html">
-        <span class="name">Martina Schwierzke</span>
-        <span class="title">Kunsttherapie Paderborn</span>
+        <span class="name" data-i18n="brand.name">Kunsttherapie Paderborn</span>
+        <span class="title" data-i18n="brand.subtitle">Psychosoziale Kunsttherapie</span>
       </a>
       <div class="header-tools">
         <div class="lang-switch" role="group" aria-label="Sprache wählen">
@@ -41,7 +41,7 @@ const FOOTER = `  <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-col">
         <h4>Atelier</h4>
-        <p><strong>Martina Schwierzke</strong></p>
+        <p><strong data-i18n="brand.name">Kunsttherapie Paderborn</strong></p>
         <p>Psychosoziale &amp; Klinische Kunsttherapeutin</p>
         <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>
       </div>
@@ -67,7 +67,7 @@ const FOOTER = `  <footer class="site-footer">
       </div>
     </div>
     <div class="container legal-footer">
-      &copy; <span id="y"></span> Martina Schwierzke · Kunsttherapie Paderborn
+      &copy; <span id="y"></span> <span data-i18n="footer.tagline">Kunsttherapie Paderborn</span>
     </div>
   </footer>`;
 

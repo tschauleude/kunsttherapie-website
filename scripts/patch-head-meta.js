@@ -4,15 +4,15 @@ const path = require('path');
 
 const META = {
   kunsttherapie:
-    'Kunsttherapie Paderborn ab Juni: Gruppen, Auszeit, Teambuilding, Einzel. Otto-Stadler-Straße 23c – Termin online buchen.',
+    'Kunsttherapie Paderborn ab Juli: Gruppen, Auszeit, Teambuilding, Einzel. Otto-Stadler-Straße 23c – Termin online buchen.',
   'ueber-mich':
-    'Martina Schwierzke – psychosoziale und klinische Kunsttherapeutin in Paderborn. Qualifikationen und therapeutischer Ansatz.',
+    'Psychosoziale und klinische Kunsttherapeutin in Paderborn. Qualifikationen und therapeutischer Ansatz.',
   neuigkeiten: 'Aktuelles aus dem Atelier: Neuigkeiten und Termine der Kunsttherapie Paderborn.',
-  events: 'Veranstaltungen und Termine – Kunsttherapie Paderborn, Martina Schwierzke.',
+  events: 'Veranstaltungen und Termine – Kunsttherapie Paderborn.',
   preise: 'Preise für Kunsttherapie, Gruppen und Einzel in Paderborn – transparente Übersicht.',
   buchung:
     'Online-Terminbuchung Kunsttherapie Paderborn: freie Zeiten Di/Do wählen, Bestätigung per E-Mail.',
-  impressum: 'Impressum – Martina Schwierzke, Kunsttherapie Paderborn.',
+  impressum: 'Impressum – Kunsttherapie Paderborn.',
   datenschutz: 'Datenschutzerklärung der Website Kunsttherapie Paderborn.',
 };
 

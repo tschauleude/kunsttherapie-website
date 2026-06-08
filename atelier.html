@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Mini-Atelier – Kunsttherapie Paderborn</title>
-  <meta name="description" content="Probier dich aus: Mini-Atelier zum Malen, Zeichnen und Kollage – optional anonym an Martina senden."/>
+  <meta name="description" content="Ausprobieren im Mini-Atelier: Malen, Zeichnen und Kollage – optional anonym an das Atelier senden."/>
   <meta name="theme-color" content="#557a76"/>
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
   <link rel="canonical" href="https://kunsttherapie.mkmpb.de/atelier"/>
@@ -12,13 +12,13 @@
   <link rel="alternate" hreflang="en" href="https://kunsttherapie.mkmpb.de/atelier"/>
   <link rel="stylesheet" href="assets/css/style.css"/>
 </head>
-<body class="page-atelier" data-i18n-page="atelier">
-  <a class="skip-link" href="#main" data-i18n="a11y.skip">Zum Inhalt springen</a>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header>
     <div class="container header-inner">
       <a class="brand logo-text" href="index.html">
-        <span class="name">Martina Schwierzke</span>
-        <span class="title" data-i18n="brand.subtitle">Kunsttherapie Paderborn</span>
+        <span class="name" data-i18n="brand.name">Kunsttherapie Paderborn</span>
+        <span class="title" data-i18n="brand.subtitle">Psychosoziale Kunsttherapie</span>
       </a>
       <div class="header-tools">
         <div class="lang-switch" role="group" aria-label="Sprache wählen">
@@ -29,15 +29,14 @@
           </div>
         </div>
       </div>
-
-<nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
+      <nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
         <ul>
-          <li><a href="ueber-mich.html" data-nav="ansatz" data-i18n="nav.ansatz"><span data-i18n="nav.ansatz">Mein Ansatz</span></a></li>
-          <li><a href="kunsttherapie.html" data-nav="kunsttherapie" data-i18n="nav.therapy"><span data-i18n="nav.therapy">Kunsttherapie</span></a></li>
-          <li><a href="kunsttherapie.html#atelier" data-nav="praxis" data-i18n="nav.practice"><span data-i18n="nav.practice">Das Atelier</span></a></li>
-          <li><a href="neuigkeiten.html" data-nav="neuigkeiten" data-i18n="nav.news"><span data-i18n="nav.news">Neuigkeiten</span></a></li>
-          <li><a href="buchung.html" class="nav-cta" data-nav="termin" data-i18n="nav.booking"><span data-i18n="nav.booking">Termin</span></a></li>
-          <li><a href="kontakt.html" data-nav="kontakt" data-i18n="nav.contact"><span data-i18n="nav.contact">Kontakt</span></a></li>
+          <li><a href="ueber-mich.html" data-nav="ansatz">Mein Ansatz</a></li>
+          <li><a href="kunsttherapie.html" data-nav="kunsttherapie">Kunsttherapie</a></li>
+          <li><a href="kunsttherapie.html#atelier" data-nav="praxis">Das Atelier</a></li>
+          <li><a href="neuigkeiten.html" data-nav="neuigkeiten">Neuigkeiten</a></li>
+          <li><a href="buchung.html" class="nav-cta" data-nav="termin">Termin</a></li>
+          <li><a href="kontakt.html" data-nav="kontakt">Kontakt</a></li>
         </ul>
       </nav>
     </div>
@@ -47,7 +46,7 @@
   <div class="card canvasWrap" id="atelierApp" data-reveal-skip>
     <div class="kicker" data-i18n="atelier.kicker">Probier's aus</div>
     <h1 data-i18n="atelier.title">Mini-Atelier – <span class="text-accent">einfach loslegen</span></h1>
-    <p class="atelier-invite" data-i18n="atelier.intro">Malen, Linien und Formen setzen, Fotos zur Kollage legen. Es geht ums Ausprobieren – nichts muss „schön“ werden. Optional: Werk Werk später an Martina.</p>
+    <p class="atelier-invite" data-i18n="atelier.intro">Malen, Linien und Formen setzen, Fotos zur Kollage legen. Optional kann das Werk später an das Atelier gesendet werden.</p>
 
     <div class="atelier-canvas-wrap">
       <canvas id="atelierCanvas" role="img" aria-label="Mini-Atelier Zeichenfläche"></canvas>
@@ -92,9 +91,9 @@
     </div>
 
     <details class="atelier-submit-panel">
-      <summary data-i18n="atelier.send">An Martina senden</summary>
+      <summary data-i18n="atelier.send">An das Atelier senden</summary>
       <form class="atelier-submit-form" data-submit-form>
-        <p class="note" data-i18n="atelier.sendNote">Das Werk wird als Bild übermittelt. Martina nutzt es vertraulich.</p>
+        <p class="note" data-i18n="atelier.sendNote">Das Werk wird als Bild übermittelt und vertraulich genutzt.</p>
         <label class="atelier-check">
           <input type="checkbox" name="anonymous" checked/>
           <span data-i18n="atelier.anonymous">Anonym senden</span>
@@ -124,38 +123,38 @@
 </main>
 
 <footer class="site-footer">
-  <div class="container footer-grid">
-    <div class="footer-col">
-      <h4 data-i18n="footer.practice">Atelier</h4>
-      <p><strong>Martina Schwierzke</strong></p>
-      <p data-i18n="footer.role">Psychosoziale &amp; Klinische Kunsttherapeutin</p>
-      <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <h4>Atelier</h4>
+        <p><strong data-i18n="brand.name">Kunsttherapie Paderborn</strong></p>
+        <p>Psychosoziale &amp; Klinische Kunsttherapeutin</p>
+        <p>Otto-Stadler-Straße 23c<br>33102 Paderborn</p>
+      </div>
+      <div class="footer-col">
+        <h4>Kontakt</h4>
+        <p><a href="tel:+495251690111">Tel. 05251-690111</a></p>
+        <p><a href="tel:+491704790790">Mobil 0170-4790790</a></p>
+        <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+      </div>
+      <div class="footer-col">
+        <h4>Angebot</h4>
+        <a href="kunsttherapie.html">Kunsttherapie</a>
+        <a href="buchung.html">Termin buchen</a>
+        <a href="events.html">Veranstaltungen</a>
+        <a href="neuigkeiten.html">Neuigkeiten</a>
+        <a href="preise.html">Preise</a>
+        <a href="atelier.html"><span data-i18n="footer.atelier">Live-Atelier</span></a>
+      </div>
+      <div class="footer-col">
+        <h4>Rechtliches</h4>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutz</a>
+      </div>
     </div>
-    <div class="footer-col">
-      <h4 data-i18n="footer.contact">Kontakt</h4>
-      <p><a href="tel:+495251690111">Tel. 05251-690111</a></p>
-      <p><a href="tel:+491704790790">Mobil 0170-4790790</a></p>
-      <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+    <div class="container legal-footer">
+      &copy; <span id="y"></span> <span data-i18n="footer.tagline">Kunsttherapie Paderborn</span>
     </div>
-    <div class="footer-col">
-      <h4 data-i18n="footer.offer">Angebot</h4>
-      <a href="kunsttherapie.html" data-i18n="nav.therapy"><span data-i18n="nav.therapy">Kunsttherapie</span></a>
-      <a href="buchung.html"><span data-i18n="btn.book">Termin buchen</span></a>
-      <a href="events.html"><span data-i18n="nav.events">Veranstaltungen</span></a>
-      <a href="neuigkeiten.html"><span data-i18n="nav.news">Neuigkeiten</span></a>
-      <a href="preise.html"><span data-i18n="footer.prices">Preise</span></a>
-      <a href="atelier.html"><span data-i18n="footer.atelier">Live-Atelier</span></a>
-    </div>
-    <div class="footer-col">
-      <h4 data-i18n="footer.legal">Rechtliches</h4>
-      <a href="impressum.html" data-i18n="footer.imprint">Impressum</a>
-      <a href="datenschutz.html" data-i18n="footer.privacy">Datenschutz</a>
-    </div>
-  </div>
-  <div class="container legal-footer">
-    &copy; <span id="y"></span> Martina Schwierzke · Kunsttherapie Paderborn
-  </div>
-</footer>
+  </footer>
 
 <script src="assets/js/i18n-messages.js"></script>
 <script src="assets/js/i18n-messages-pages.js"></script>
