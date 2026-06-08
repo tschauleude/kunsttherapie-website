@@ -225,6 +225,21 @@
 
   window.ktApplySiteChrome = applySiteChrome;
 
+  function initEmailLinks() {
+    document.querySelectorAll('.js-email[data-u][data-d]').forEach((link) => {
+      const user = link.getAttribute('data-u');
+      const domain = link.getAttribute('data-d');
+      if (!user || !domain) return;
+      const addr = `${user}@${domain}`;
+      link.href = `mailto:${addr}`;
+      if (!link.hasAttribute('data-i18n') && !link.textContent.trim()) {
+        link.textContent = addr;
+      }
+    });
+  }
+
+  window.ktInitEmailLinks = initEmailLinks;
+
   function initSkipLink() {
     const existing = document.querySelector('.skip-link');
     if (existing) {
@@ -365,6 +380,7 @@
   function init() {
     redirectLegacyPraxisHash();
     initSkipLink();
+    initEmailLinks();
     initMobileNav();
     initLangSwitch();
     applySiteChrome();
@@ -375,6 +391,7 @@
 
   document.addEventListener('kt-lang-change', () => {
     applySiteChrome();
+    initEmailLinks();
     setFooterYear();
     const group = document.querySelector('.lang-switch');
     if (group && window.ktI18n) {

@@ -12,10 +12,12 @@
     "patch-meta": "node scripts/patch-head-meta.js",
     "upgrade-seo": "node scripts/upgrade-seo.js",
     "validate-i18n": "node scripts/validate-i18n.js",
+    "build-frontend": "node scripts/build-frontend.js",
     "qa": "node scripts/validate-i18n.js && node --check assets/js/*.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -23,6 +25,7 @@
     "googleapis": "^140.0.1",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.10.1",
+    "sharp": "^0.34.5",
     "sqlite3": "^5.1.6",
     "uuid": "^9.0.0"
   },

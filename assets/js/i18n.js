@@ -111,6 +111,7 @@
 
     applyMeta();
     applyPageBindings();
+    if (typeof window.ktInitEmailLinks === 'function') window.ktInitEmailLinks();
     document.dispatchEvent(new CustomEvent('kt-lang-change', { detail: { lang: currentLang } }));
   }
 
