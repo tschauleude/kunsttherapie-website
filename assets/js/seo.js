@@ -1,5 +1,5 @@
 /**
- * Strukturierte Daten (Schema.org) für lokale Suche – alle öffentlichen Seiten.
+ * Strukturierte Daten (Schema.org) für lokale Suche – WebPage/WebSite (LocalBusiness statisch im HTML).
  */
 (function () {
   if (document.body.classList.contains('admin-app')) return;
@@ -9,57 +9,7 @@
   const pageUrl = origin + (path === '/' ? '/' : path);
   const lang = document.documentElement.lang === 'en' ? 'en-GB' : 'de-DE';
   const ogImage = origin + '/assets/img/Gruppen-und-Einzeltherapie-768x524.jpg';
-
-  const localBusiness = {
-    '@context': 'https://schema.org',
-    '@type': 'MedicalBusiness',
-    medicalSpecialty: 'Psychotherapy',
-    '@id': origin + '/#atelier',
-    name: 'Kunsttherapie Paderborn',
-    description:
-      'Psychosoziale und klinische Kunsttherapie in Paderborn: Gruppen Dienstag morgens, Auszeit Donnerstag abends, Einzelsitzungen und Teambuilding.',
-    url: origin + '/',
-    image: ogImage,
-    telephone: '+49-5251-690111',
-    email: 'info@kunsttherapie-pb.de',
-    priceRange: '€€',
-    areaServed: {
-      '@type': 'City',
-      name: 'Paderborn',
-    },
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Otto-Stadler-Straße 23c',
-      addressLocality: 'Paderborn',
-      postalCode: '33102',
-      addressCountry: 'DE',
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: 51.7189,
-      longitude: 8.7575,
-    },
-    openingHoursSpecification: [
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: 'Tuesday',
-        opens: '11:00',
-        closes: '12:30',
-      },
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: 'Thursday',
-        opens: '18:00',
-        closes: '19:30',
-      },
-    ],
-    employee: {
-      '@type': 'Person',
-      name: 'Martina Schwierzke',
-      jobTitle: 'Psychosoziale und klinische Kunsttherapeutin',
-    },
-    sameAs: [],
-  };
+  const localBusinessId = origin + '/#localbusiness';
 
   const webPage = {
     '@context': 'https://schema.org',
@@ -70,7 +20,7 @@
     description:
       document.querySelector('meta[name="description"]')?.getAttribute('content') || undefined,
     isPartOf: { '@id': origin + '/#website' },
-    about: { '@id': origin + '/#atelier' },
+    about: { '@id': localBusinessId },
     inLanguage: lang,
     primaryImageOfPage: {
       '@type': 'ImageObject',
@@ -86,12 +36,12 @@
     name: 'Kunsttherapie Paderborn',
     description: 'Website des Kunsttherapie-Ateliers in Paderborn',
     inLanguage: ['de-DE', 'en-GB'],
-    publisher: { '@id': origin + '/#atelier' },
+    publisher: { '@id': localBusinessId },
   };
 
   const graph = {
     '@context': 'https://schema.org',
-    '@graph': [website, localBusiness, webPage],
+    '@graph': [website, webPage],
   };
 
   const script = document.createElement('script');

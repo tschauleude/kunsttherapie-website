@@ -52,7 +52,7 @@
       'home.services.kicker': 'Leistungen',
       'home.praxis.title': 'Angemieteter Raum in Paderborn – ab 1. Juli 2026',
       'home.praxis.sub':
-        'Ein angemieteter Atelier- und Gruppenraum an der Otto-Stadler-Straße 23c. Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen – Platz zum Malen und Gestalten.',
+        'Ein angemieteter Atelier- und Gruppenraum an der Otto-Stadler-Straße 23c – hell, ruhig und mit Platz zum Malen und Gestalten.',
       'home.praxis.address':
         '<p><span class="pill">Adresse</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn</p>',
       'home.praxis.di':
@@ -86,7 +86,7 @@
         'Ab <strong>1. Juli 2026</strong> in Paderborn – ein eigener Raum zum Ankommen, Gestalten und Begegnen. Die Räumlichkeiten werden laufend eingerichtet und hier Schritt für Schritt vorgestellt.',
       'kt.praxis.photoNote': 'Einblicke aus dem Raum – weitere Fotos und Einrichtungsdetails folgen in Kürze.',
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
-      'kt.praxis.headline': 'Geschützter Ort in Paderborn',
+      'kt.praxis.headline': 'Ankommen und gestalten in Paderborn',
       'kt.praxis.p1':
         'Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen. Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag 11:00–12:30</strong> für Gruppen, <strong>Donnerstag 18:00–19:30</strong> für Auszeit und Workshops. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.',
       'kt.praxis.p2':
@@ -142,7 +142,7 @@
         'Ich bin seit vielen Jahren in der Palliativversorgung und Psychoonkologie tätig und leite kunsttherapeutische Gruppen im klinischen Umfeld. Regelmäßige Weiterbildungen und Supervisionen sind für mich selbstverständlich.',
       'about.passion.p2':
         'Kunst ist für mich ein existenzieller Freiraum. Natur ist eine wesentliche Inspirations- und Kraftquelle.',
-      'about.quote': '„Weil ich weiß, dass Zeit endlich ist, lebe ich lieber jetzt."',
+      'about.quote': '„Weil ich weiß, dass Zeit endlich ist, lebe ich lieber jetzt.“',
       'about.qual.title': 'Qualifikationen',
       'about.qual.list':
         '<ul style="color:var(--muted); line-height:1.8"><li>Psychosoziale Kunsttherapeutin (2006–2009, anerkanntes Institut)</li><li>Klinische Kunsttherapeutin (2010)</li><li>Heilpraktikerin für Psychotherapie (2011)</li><li>Gestalterin für visuelles Marketing, IHK (2007)</li></ul>',
@@ -254,7 +254,7 @@
       'eventsPage.loading': 'Termine werden geladen …',
       'eventsPage.empty': 'Momentan sind keine Events geplant.',
       'eventsPage.emptyHint':
-        'Gern per Kontakt, bei Interesse an einem Workshop hast!',
+        'Schreib mir gern über das Kontaktformular, wenn du Interesse an einem Workshop hast.',
       'eventsPage.signUp': 'Anmelden',
       'eventsPage.cardDate': 'Termin',
       'eventsPage.metaTime': 'Uhrzeit: {value}',
@@ -507,7 +507,7 @@
       'home.services.kicker': 'Services',
       'home.praxis.title': 'Rented studio space in Paderborn – from 1 July',
       'home.praxis.sub':
-        'A rented art therapy and group room at Otto-Stadler-Straße 23c. The space has a welcoming atmosphere, a touch of green with a terrace, and everything needed to feel at home quickly – room to paint and create.',
+        'A rented studio and group space on Otto-Stadler-Straße 23c – bright, calm, and with room to paint and create.',
       'home.praxis.address':
         '<p><span class="pill">Address</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn</p>',
       'home.praxis.di':
@@ -541,7 +541,7 @@
         'From <strong>1 July 2026</strong> in Paderborn – a dedicated space to arrive, create, and connect. The rooms are being set up and introduced here step by step.',
       'kt.praxis.photoNote': 'A first look inside – more photos and setup details coming soon.',
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
-      'kt.praxis.headline': 'A safe place in Paderborn',
+      'kt.praxis.headline': 'A place to arrive and create in Paderborn',
       'kt.praxis.p1':
         'The space has a welcoming atmosphere, a touch of green with a terrace, and everything needed to feel at home quickly. Room to paint and talk in between – <strong>Tuesday 11:00–12:30</strong> for groups, <strong>Thursday 18:00–19:30</strong> for downtime and workshops. Group times rotate: on alternate weeks also on Thursday evenings.',
       'kt.praxis.p2':
@@ -597,7 +597,7 @@
         'For many years I have worked in palliative care and psycho-oncology and lead art therapy groups in clinical settings. Continuing education and supervision are essential to my work.',
       'about.passion.p2':
         'Art is an existential space of freedom for me. Nature is a vital source of inspiration and strength.',
-      'about.quote': '"Because I know time is finite, I prefer to live now."',
+      'about.quote': '"Because I know time is finite, I\'d rather live now."',
       'about.qual.title': 'Qualifications',
       'about.qual.list':
         '<ul style="color:var(--muted); line-height:1.8"><li>Psychosocial art therapist (2006–2009, accredited institute)</li><li>Clinical art therapist (2010)</li><li>Practitioner for psychotherapy (2011)</li><li>Visual marketing designer, Chamber of Commerce (2007)</li></ul>',
@@ -709,7 +709,7 @@
       'eventsPage.loading': 'Loading events …',
       'eventsPage.empty': 'No events are scheduled at the moment.',
       'eventsPage.emptyHint':
-        'Feel free to write if you are interested in a workshop!',
+        'Feel free to message me via the contact form if you\'re interested in a workshop.',
       'eventsPage.signUp': 'Register',
       'eventsPage.cardDate': 'Event',
       'eventsPage.metaTime': 'Time: {value}',

@@ -94,9 +94,9 @@ window.I18N_MESSAGES = {
     'offer.3.title': 'Einzelsitzungen',
     'offer.3.body':
       '<p>Intensiv und persönlich: psychosoziale und klinische Kunsttherapie in Krisen, bei Trauer oder in der Krankheitsverarbeitung – individuell auf die jeweilige Situation abgestimmt.</p><p>Im geschützten Rahmen des Ateliers oder nach Vereinbarung. Termine flexibel außerhalb der Gruppenzeiten – Preis auf Anfrage.</p>',
-    'offer.4.title': 'Team Building & Institutionen',
+    'offer.4.title': 'Teambuilding & Institutionen',
     'offer.4.body':
-      '<p><strong>Team Building-Events</strong></p><p>Raus aus dem Büro, rein ins FarbenReich – Kolleginnen und Kollegen MALend ganz neu erleben. Es entsteht ein Werk mit Überraschungseffekt, mit spielerischen Regeln und echter Verbindung, das wertschätzend einen exponierten Platz in der Firma bekommen darf.</p><p class="note">Mindestens 12, maximal 18 Teilnehmer. Bei mehr als 18 Teilnehmern bitte Kontakt aufnehmen. Termine nach Absprache.</p>',
+      '<p>Raus aus dem Büro, rein ins FarbenReich – Kolleginnen und Kollegen MALend ganz neu erleben. Es entsteht ein Werk mit Überraschungseffekt, mit spielerischen Regeln und echter Verbindung, das wertschätzend einen exponierten Platz in der Firma bekommen darf.</p><p class="note">Mindestens 12, maximal 18 Teilnehmer. Bei mehr als 18 Teilnehmern bitte Kontakt aufnehmen. Termine nach Absprache.</p>',
     'offer.5.title': 'Vorträge & Impulse',
     'offer.5.body':
       '<p>Regelmäßige Vorträge und Impulse aus der Kunsttherapie.</p><p><strong>Warum Kunst statt nur Gespräch?</strong> Ein Einblick in Wirkung, Methoden und Erfahrungen aus über 16 Jahren klinischer Arbeit – für Einrichtungen, Fachpublikum und Interessierte. Auch Gruppen (z.&nbsp;B. Senioren) und palliative Begleitung aus langjähriger Praxis.</p><p class="note">Dauer, Ort und Honorar nach Absprache – Konzept und Material inklusive.</p>',
@@ -221,7 +221,7 @@ window.I18N_MESSAGES = {
       '<p>Intensive and personal: psychosocial and clinical art therapy in crisis, grief, or illness – tailored to each situation.</p><p>In the atelier or by arrangement. Flexible times outside group slots – price on request.</p>',
     'offer.4.title': 'Team building & institutions',
     'offer.4.body':
-      '<p><strong>Team building events</strong></p><p>Out of the office, into a world of colour – experience colleagues in a new creative way. A shared artwork with surprise, playful rules, and real connection – worthy of a visible place in the company.</p><p class="note">Minimum 12, maximum 18 participants. For more than 18, please get in touch. Dates by arrangement.</p>',
+      '<p>Out of the office, into a world of colour – experience colleagues in a whole new, creative way. A shared artwork with a surprise effect, playful rules, and real connection – worthy of a visible place in the company.</p><p class="note">Minimum 12, maximum 18 participants. For more than 18, please get in touch. Dates by arrangement.</p>',
     'offer.5.title': 'Talks & impulses',
     'offer.5.body':
       '<p>Regular talks and impulses from art therapy.</p><p><strong>Why art instead of conversation alone?</strong> An insight into methods, effects, and experience from over 16 years of clinical work – for institutions, professionals, and interested audiences. Including groups (e.g. seniors) and palliative support from long practice.</p><p class="note">Duration, venue, and fee by arrangement – concept and materials included.</p>',
@@ -601,7 +601,7 @@ window.I18N_PAGE_BINDINGS = {
 
 ;
 /**
- * Strukturierte Daten (Schema.org) für lokale Suche – alle öffentlichen Seiten.
+ * Strukturierte Daten (Schema.org) für lokale Suche – WebPage/WebSite (LocalBusiness statisch im HTML).
  */
 (function () {
   if (document.body.classList.contains('admin-app')) return;
@@ -611,57 +611,7 @@ window.I18N_PAGE_BINDINGS = {
   const pageUrl = origin + (path === '/' ? '/' : path);
   const lang = document.documentElement.lang === 'en' ? 'en-GB' : 'de-DE';
   const ogImage = origin + '/assets/img/Gruppen-und-Einzeltherapie-768x524.jpg';
-
-  const localBusiness = {
-    '@context': 'https://schema.org',
-    '@type': 'MedicalBusiness',
-    medicalSpecialty: 'Psychotherapy',
-    '@id': origin + '/#atelier',
-    name: 'Kunsttherapie Paderborn',
-    description:
-      'Psychosoziale und klinische Kunsttherapie in Paderborn: Gruppen Dienstag morgens, Auszeit Donnerstag abends, Einzelsitzungen und Teambuilding.',
-    url: origin + '/',
-    image: ogImage,
-    telephone: '+49-5251-690111',
-    email: 'info@kunsttherapie-pb.de',
-    priceRange: '€€',
-    areaServed: {
-      '@type': 'City',
-      name: 'Paderborn',
-    },
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Otto-Stadler-Straße 23c',
-      addressLocality: 'Paderborn',
-      postalCode: '33102',
-      addressCountry: 'DE',
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: 51.7189,
-      longitude: 8.7575,
-    },
-    openingHoursSpecification: [
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: 'Tuesday',
-        opens: '11:00',
-        closes: '12:30',
-      },
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: 'Thursday',
-        opens: '18:00',
-        closes: '19:30',
-      },
-    ],
-    employee: {
-      '@type': 'Person',
-      name: 'Martina Schwierzke',
-      jobTitle: 'Psychosoziale und klinische Kunsttherapeutin',
-    },
-    sameAs: [],
-  };
+  const localBusinessId = origin + '/#localbusiness';
 
   const webPage = {
     '@context': 'https://schema.org',
@@ -672,7 +622,7 @@ window.I18N_PAGE_BINDINGS = {
     description:
       document.querySelector('meta[name="description"]')?.getAttribute('content') || undefined,
     isPartOf: { '@id': origin + '/#website' },
-    about: { '@id': origin + '/#atelier' },
+    about: { '@id': localBusinessId },
     inLanguage: lang,
     primaryImageOfPage: {
       '@type': 'ImageObject',
@@ -688,12 +638,12 @@ window.I18N_PAGE_BINDINGS = {
     name: 'Kunsttherapie Paderborn',
     description: 'Website des Kunsttherapie-Ateliers in Paderborn',
     inLanguage: ['de-DE', 'en-GB'],
-    publisher: { '@id': origin + '/#atelier' },
+    publisher: { '@id': localBusinessId },
   };
 
   const graph = {
     '@context': 'https://schema.org',
-    '@graph': [website, localBusiness, webPage],
+    '@graph': [website, webPage],
   };
 
   const script = document.createElement('script');

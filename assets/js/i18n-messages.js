@@ -94,9 +94,9 @@ window.I18N_MESSAGES = {
     'offer.3.title': 'Einzelsitzungen',
     'offer.3.body':
       '<p>Intensiv und persönlich: psychosoziale und klinische Kunsttherapie in Krisen, bei Trauer oder in der Krankheitsverarbeitung – individuell auf die jeweilige Situation abgestimmt.</p><p>Im geschützten Rahmen des Ateliers oder nach Vereinbarung. Termine flexibel außerhalb der Gruppenzeiten – Preis auf Anfrage.</p>',
-    'offer.4.title': 'Team Building & Institutionen',
+    'offer.4.title': 'Teambuilding & Institutionen',
     'offer.4.body':
-      '<p><strong>Team Building-Events</strong></p><p>Raus aus dem Büro, rein ins FarbenReich – Kolleginnen und Kollegen MALend ganz neu erleben. Es entsteht ein Werk mit Überraschungseffekt, mit spielerischen Regeln und echter Verbindung, das wertschätzend einen exponierten Platz in der Firma bekommen darf.</p><p class="note">Mindestens 12, maximal 18 Teilnehmer. Bei mehr als 18 Teilnehmern bitte Kontakt aufnehmen. Termine nach Absprache.</p>',
+      '<p>Raus aus dem Büro, rein ins FarbenReich – Kolleginnen und Kollegen MALend ganz neu erleben. Es entsteht ein Werk mit Überraschungseffekt, mit spielerischen Regeln und echter Verbindung, das wertschätzend einen exponierten Platz in der Firma bekommen darf.</p><p class="note">Mindestens 12, maximal 18 Teilnehmer. Bei mehr als 18 Teilnehmern bitte Kontakt aufnehmen. Termine nach Absprache.</p>',
     'offer.5.title': 'Vorträge & Impulse',
     'offer.5.body':
       '<p>Regelmäßige Vorträge und Impulse aus der Kunsttherapie.</p><p><strong>Warum Kunst statt nur Gespräch?</strong> Ein Einblick in Wirkung, Methoden und Erfahrungen aus über 16 Jahren klinischer Arbeit – für Einrichtungen, Fachpublikum und Interessierte. Auch Gruppen (z.&nbsp;B. Senioren) und palliative Begleitung aus langjähriger Praxis.</p><p class="note">Dauer, Ort und Honorar nach Absprache – Konzept und Material inklusive.</p>',
@@ -221,7 +221,7 @@ window.I18N_MESSAGES = {
       '<p>Intensive and personal: psychosocial and clinical art therapy in crisis, grief, or illness – tailored to each situation.</p><p>In the atelier or by arrangement. Flexible times outside group slots – price on request.</p>',
     'offer.4.title': 'Team building & institutions',
     'offer.4.body':
-      '<p><strong>Team building events</strong></p><p>Out of the office, into a world of colour – experience colleagues in a new creative way. A shared artwork with surprise, playful rules, and real connection – worthy of a visible place in the company.</p><p class="note">Minimum 12, maximum 18 participants. For more than 18, please get in touch. Dates by arrangement.</p>',
+      '<p>Out of the office, into a world of colour – experience colleagues in a whole new, creative way. A shared artwork with a surprise effect, playful rules, and real connection – worthy of a visible place in the company.</p><p class="note">Minimum 12, maximum 18 participants. For more than 18, please get in touch. Dates by arrangement.</p>',
     'offer.5.title': 'Talks & impulses',
     'offer.5.body':
       '<p>Regular talks and impulses from art therapy.</p><p><strong>Why art instead of conversation alone?</strong> An insight into methods, effects, and experience from over 16 years of clinical work – for institutions, professionals, and interested audiences. Including groups (e.g. seniors) and palliative support from long practice.</p><p class="note">Duration, venue, and fee by arrangement – concept and materials included.</p>',
