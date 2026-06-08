@@ -95,7 +95,7 @@
         '<p>Eine Sitzung dauert 90 Minuten. Nach einem kurzen Ankommen gibt es einen Impuls oder ein Thema – oder du gestaltest frei. Das Gestalten steht im Mittelpunkt, am Ende ist Raum für ein Gespräch über das, was entstanden ist. Es gibt kein Richtig oder Falsch und kein Tempo, das du halten musst.</p>',
       'kt.faq9.q': 'Was muss ich mitbringen?',
       'kt.faq9.a':
-        '<p>Nur dich selbst. Alle Materialien – Farben, Kreiden, Papier, Collage-Material und mehr – sind, je nach Absprache vor Ort und im Preis enthalten. Kleidung, die auch mal Farbe abbekommen darf, ist sinnvoll. Sollte mal etwas mehr an Materialen benötigt werden, kann es zu Zusatzkosten kommen, diese werden dann jedoch individuell im Vorgespräch abgeklärt.</p>',
+        '<p>Nur dich selbst. Die gängigen Materialien – Farben, Kreiden, Papier, Collage-Material und mehr – sind je nach Absprache vor Ort und im Preis enthalten. Kleidung, die auch mal Farbe abbekommen darf, ist sinnvoll. Wird im Einzelfall mehr benötigt, kann es zu Zusatzkosten kommen; diese klären wir vorab gemeinsam im Vorgespräch.</p>',
       'kt.faq10.q': 'Ist Kunsttherapie vertraulich?',
       'kt.faq10.a':
         '<p>Ja. Alles, was in den Sitzungen besprochen und gestaltet wird, bleibt vertraulich. Deine Werke gehören dir – sie werden nur mit deiner ausdrücklichen Einwilligung gezeigt oder verwendet.</p>',
@@ -577,7 +577,7 @@
         '<p>A session lasts 90 minutes. After a short arrival, there\'s a prompt or theme – or you create freely. Creating is at the centre, and at the end there\'s space to talk about what emerged. There\'s no right or wrong and no pace you have to keep.</p>',
       'kt.faq9.q': 'What do I need to bring?',
       'kt.faq9.a':
-        '<p>Just yourself. All materials – paints, chalks, paper, collage supplies and more – are provided on site and included in the price, depending on what we agree in advance. Clothes that can handle a bit of paint are a good idea. If you need extra materials beyond the usual range, there may be additional costs – we clarify that individually before your first session.</p>',
+        '<p>Just yourself. The usual materials – paints, chalks, paper, collage supplies and more – are provided on site and included in the price, depending on what we agree in advance. Clothes that can handle a bit of paint are a good idea. If more is needed in individual cases, there may be additional costs; we clarify these together in advance during the intro conversation.</p>',
       'kt.faq10.q': 'Is art therapy confidential?',
       'kt.faq10.a':
         '<p>Yes. Everything discussed and created in sessions stays confidential. Your artwork belongs to you – it is only shown or used with your explicit consent.</p>',
