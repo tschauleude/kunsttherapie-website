@@ -28,6 +28,7 @@ window.I18N_MESSAGES = {
     'footer.imprint': 'Impressum',
     'footer.privacy': 'Datenschutz',
     'footer.tagline': 'Kunsttherapie Paderborn',
+    'footer.emailLabel': 'E-Mail schreiben',
     'form.name': 'Name',
     'form.email': 'E-Mail',
     'form.message': 'Nachricht (optional)',
@@ -45,7 +46,7 @@ window.I18N_MESSAGES = {
     'home.hero.sub':
       'Zwei feste Angebotszeiten, ein geschützter Raum: Gruppen und therapeutische Begleitung am Vormittag, Auszeit und Gestalten am Abend – ohne Leistungsdruck. Für Teams in Unternehmen und Kliniken.',
     'home.hero.note':
-      'Di 11:00–12:30 · Do 18:00–19:30 · Gruppenzeiten rotieren, im Wechsel auch donnerstags abends · Otto-Stadler-Straße 23c',
+      'Neue Gruppen ab 1. Juli 2026 · Di 11:00–12:30 · Do 18:00–19:30 · Otto-Stadler-Straße 23c',
     'home.audience.title': 'Für wen ist das Angebot?',
     'home.audience.privat': 'Privat',
     'home.audience.privat.desc': 'Gruppe, Auszeit oder Einzel – wenn Worte nicht reichen und Ressourcen gesucht werden.',
@@ -65,7 +66,6 @@ window.I18N_MESSAGES = {
     'home.trust.title': 'Erfahrung & Vertrauen',
     'home.trust.text':
       'Über 16 Jahre in Palliativversorgung, Psychoonkologie und klinischen Gruppen – u. a. MZG und Brüderkrankenhaus. Jetzt eigenes Atelier in Paderborn.',
-    'home.trust.note': 'Kundenstimmen und Kooperationslogos folgen nach Freigabe.',
     'quotes.1.text':
       '„Ohne die Freiheit des Geistes ist die Kunst weder machbar, denkbar, noch erfahrbar.“',
     'quotes.1.author': 'Georg Meistermann',
@@ -150,6 +150,7 @@ window.I18N_MESSAGES = {
     'footer.imprint': 'Imprint',
     'footer.privacy': 'Privacy',
     'footer.tagline': 'Art Therapy Paderborn',
+    'footer.emailLabel': 'Send e-mail',
     'form.name': 'Name',
     'form.email': 'Email',
     'form.message': 'Message (optional)',
@@ -167,7 +168,7 @@ window.I18N_MESSAGES = {
     'home.hero.sub':
       'Two regular time slots, one safe space: groups and therapeutic support on Tuesday mornings, creative downtime on Thursday evenings – no pressure to perform. For corporate teams and clinical settings.',
     'home.hero.note':
-      'Tue 11:00–12:30 · Thu 18:00–19:30 · Group times rotate, on alternate weeks also Thursday evenings · Otto-Stadler-Straße 23c',
+      'New groups from 1 July 2026 · Tue 11:00–12:30 · Thu 18:00–19:30 · Otto-Stadler-Straße 23c',
     'home.audience.title': 'Who is this for?',
     'home.audience.privat': 'Individuals',
     'home.audience.privat.desc': 'Group, downtime, or one-to-one – when words are not enough.',
@@ -187,7 +188,6 @@ window.I18N_MESSAGES = {
     'home.trust.title': 'Experience & trust',
     'home.trust.text':
       'Over 16 years in palliative care, psycho-oncology, and clinical groups – including MZG and Brüderkrankenhaus. Now her own practice in Paderborn.',
-    'home.trust.note': 'Testimonials and partner logos will follow once approved.',
     'quotes.1.text':
       '“Without freedom of mind, art is neither possible, conceivable, nor experienceable.”',
     'quotes.1.author': 'Georg Meistermann',

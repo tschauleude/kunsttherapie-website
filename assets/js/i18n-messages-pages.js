@@ -10,7 +10,7 @@
       'btn.message': 'Nachricht schicken',
       'form.phone': 'Telefon (optional)',
 
-      'meta.home.title': 'Kunsttherapie Paderborn',
+      'meta.home.title': 'Kunsttherapie Paderborn | Psychosoziale Kunsttherapie & Atelier',
       'meta.home.description':
         'Kunsttherapie in Paderborn: Di 11:00–12:30 und Do 18:00–19:30. Gruppen, Auszeit, Einzel, Teambuilding – Termin online buchen.',
       'meta.therapy.title': 'Kunsttherapie & Angebote – Paderborn',
@@ -42,7 +42,6 @@
 
       'home.popup.title': 'Aktuelles aus dem Atelier',
       'home.news.kicker': 'Aktuelles',
-      'home.popup.note': 'Hinweis aus dem Atelier – lokal gespeichert, kein Tracking.',
       'home.news.sub': 'Was gerade ansteht – direkt aus dem Atelier.',
       'home.news.loading': 'Neuigkeiten werden geladen …',
       'home.news.show': 'Aktuelles anzeigen',
@@ -51,7 +50,7 @@
       'home.gallery.sub':
         'Kreativität ohne Leistungsdruck – ein Blick in den Atelier-Alltag. Klick auf ein Bild zum Vergrößern.',
       'home.services.kicker': 'Leistungen',
-      'home.praxis.title': 'Angemieteter Raum in Paderborn – ab 1. Juli',
+      'home.praxis.title': 'Angemieteter Raum in Paderborn – ab 1. Juli 2026',
       'home.praxis.sub':
         'Ein angemieteter Atelier- und Gruppenraum an der Otto-Stadler-Straße 23c. Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen – Platz zum Malen und Gestalten.',
       'home.praxis.address':
@@ -203,8 +202,8 @@
         'Für einen festen Termin nutze die <a href="buchung.html">Online-Buchung</a>. Für alles andere: kurz schreiben oder anrufen.',
       'contact.reach.title': 'Erreichbarkeit',
       'contact.reach.list':
-        '<li><strong>Adresse</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Telefon</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobil</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>E-Mail</strong><br><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>',
-      'contact.hours': 'Atelier ab 1. Juli · Di 11:00–12:30 · Do 18:00–19:30',
+        '<li><strong>Adresse</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Telefon</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobil</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>E-Mail</strong><br><a href="#" class="js-email" data-u="info" data-d="kunsttherapie-pb.de">E-Mail schreiben</a></li>',
+      'contact.hours': 'Atelier ab 1. Juli 2026 · Di 11:00–12:30 · Do 18:00–19:30',
       'contact.book': 'Online-Termin buchen',
       'contact.offers': 'Angebote',
       'contact.form.title': 'Nachricht senden',
@@ -288,7 +287,7 @@
 <p>
   Telefon: <a href="tel:+495251690111">05251-690111</a><br/>
   Mobil: <a href="tel:+491704790790">0170-4790790</a><br/>
-  E-Mail: <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+  E-Mail: <a href="#" class="js-email" data-u="info" data-d="kunsttherapie-pb.de">E-Mail schreiben</a>
 </p>
 <h2>Berufsbezeichnung &amp; Kammer</h2>
 <p>
@@ -318,7 +317,7 @@
   Martina Schwierzke<br>
   Psychosoziale Kunsttherapie Paderborn<br>
   Otto-Stadler-Straße 23c, 33102 Paderborn<br>
-  E-Mail: <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a><br>
+  E-Mail: <a href="#" class="js-email" data-u="info" data-d="kunsttherapie-pb.de">E-Mail schreiben</a><br>
   Telefon: 05251-690111
 </p>
 <h2>2. Kurzüberblick</h2>
@@ -464,7 +463,7 @@
       'btn.message': 'Send message',
       'form.phone': 'Phone (optional)',
 
-      'meta.home.title': 'Art Therapy Paderborn',
+      'meta.home.title': 'Art Therapy Paderborn | Psychosocial Art Therapy & Studio',
       'meta.home.description':
         'Art therapy in Paderborn: Tuesday mornings and Thursday evenings. Groups, downtime, one-to-one, team building – book online.',
       'meta.therapy.title': 'Art Therapy & Services – Paderborn',
@@ -496,7 +495,6 @@
 
       'home.popup.title': 'News from the atelier',
       'home.news.kicker': 'Updates',
-      'home.popup.note': 'Notice from the atelier – stored locally, no tracking.',
       'home.news.sub': 'What is coming up – straight from the atelier.',
       'home.news.loading': 'Loading news …',
       'home.news.show': 'Show updates',
@@ -657,7 +655,7 @@
         'For a fixed appointment, use <a href="buchung.html">online booking</a>. For everything else: write briefly or call.',
       'contact.reach.title': 'How to reach us',
       'contact.reach.list':
-        '<li><strong>Address</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Phone</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobile</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>Email</strong><br><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>',
+        '<li><strong>Address</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Phone</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobile</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>Email</strong><br><a href="#" class="js-email" data-u="info" data-d="kunsttherapie-pb.de">Send e-mail</a></li>',
       'contact.hours': 'Atelier from 1 July · Tue 11:00–12:30 · Thu 18:00–19:30',
       'contact.book': 'Book online',
       'contact.offers': 'Services',
@@ -741,7 +739,7 @@
 <p>
   Phone: <a href="tel:+495251690111">05251-690111</a><br/>
   Mobile: <a href="tel:+491704790790">0170-4790790</a><br/>
-  Email: <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
+  Email: <a href="#" class="js-email" data-u="info" data-d="kunsttherapie-pb.de">Send e-mail</a>
 </p>
 <h2>Professional title &amp; registration</h2>
 <p>
@@ -771,7 +769,7 @@
   Martina Schwierzke<br>
   Psychosocial Art Therapy Paderborn<br>
   Otto-Stadler-Straße 23c, 33102 Paderborn<br>
-  Email: <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a><br>
+  Email: <a href="#" class="js-email" data-u="info" data-d="kunsttherapie-pb.de">Send e-mail</a><br>
   Phone: 05251-690111
 </p>
 <h2>2. Overview</h2>

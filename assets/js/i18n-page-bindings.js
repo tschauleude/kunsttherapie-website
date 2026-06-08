@@ -5,7 +5,6 @@ window.I18N_PAGE_BINDINGS = {
   home: [
     { sel: '#newsPopupTitle', key: 'home.popup.title', attr: 'text' },
     { sel: '#newsPopup .news-popup-kicker', key: 'home.news.kicker', attr: 'text' },
-    { sel: '#newsPopupDesc', key: 'home.popup.note', attr: 'text' },
     { sel: '#newsPopup .news-popup-actions a.btn.outline', key: 'home.news.all', attr: 'text' },
     { sel: '#newsPopup .news-popup-actions button.btn.primary', key: 'btn.close', attr: 'text' },
     { sel: '#neuigkeiten .section-intro .kicker', key: 'home.news.kicker', attr: 'text' },

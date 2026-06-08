@@ -12,7 +12,8 @@
 
   const localBusiness = {
     '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
+    '@type': 'MedicalBusiness',
+    medicalSpecialty: 'Psychotherapy',
     '@id': origin + '/#atelier',
     name: 'Kunsttherapie Paderborn',
     description:

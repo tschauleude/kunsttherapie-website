@@ -1,4 +1,5 @@
 const express = require('express');
+const compression = require('compression');
 const session = require('express-session');
 const sqlite3 = require('sqlite3').verbose();
 const bcryptjs = require('bcryptjs');
@@ -73,12 +74,25 @@ const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean)
   : [];
 app.use(cors(corsOrigins.length ? { origin: corsOrigins, credentials: true } : undefined));
+app.use(compression());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+const ASSET_MAX_AGE = '1y';
+const assetStatic = express.static(path.join(ROOT, 'assets'), {
+  maxAge: ASSET_MAX_AGE,
+  immutable: true,
+  etag: true,
+  setHeaders(res, filePath) {
+    if (/\.(html?)$/i.test(filePath)) {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+  },
+});
+
 // Static: admin panel, uploads, assets (css/js/img)
-app.use('/assets', express.static(path.join(ROOT, 'assets')));
-app.use(express.static(PUBLIC_DIR));
+app.use('/assets', assetStatic);
+app.use(express.static(PUBLIC_DIR, { maxAge: '1h', etag: true }));
 
 // Session Configuration
 app.use(session({
@@ -1402,6 +1416,7 @@ function sendPage(res, name) {
   if (!fs.existsSync(file)) {
     return res.status(404).send('Seite nicht gefunden');
   }
+  res.setHeader('Cache-Control', 'no-cache');
   return res.sendFile(file);
 }
 
@@ -1442,9 +1457,10 @@ app.get('/angebote', (req, res) => res.redirect(301, '/kunsttherapie'));
 app.get('/angebote.html', (req, res) => res.redirect(301, '/kunsttherapie'));
 
 // PDFs and images in project root (Lebenslauf, etc.)
-app.get(/\.(pdf|jpg|jpeg|png|gif|webp)$/i, (req, res, next) => {
+app.get(/\.(pdf|jpg|jpeg|png|gif|webp|svg)$/i, (req, res, next) => {
   const file = path.join(ROOT, path.basename(req.path));
   if (fs.existsSync(file)) {
+    res.setHeader('Cache-Control', `public, max-age=${365 * 24 * 60 * 60}, immutable`);
     return res.sendFile(file);
   }
   next();
