@@ -116,10 +116,10 @@
       'kt.raum.tab.eingang': 'Eingang',
       'kt.raum.tab.innen': 'Atelier innen',
       'kt.raum.tab.gestalten': 'Gestalten',
-      'kt.raum.compare.before': 'Heute',
-      'kt.raum.compare.after': 'Atmosphäre',
+      'kt.raum.compare.before': 'Aktuelles Foto',
+      'kt.raum.compare.after': 'Stimmungsvision',
       'kt.raum.compare.hint':
-        'Ziehen oder wischen, um Eingang und Atmosphäre zu vergleichen · Klick auf einen Punkt für Details · Bild antippen zum Vergrößern',
+        'Regler ziehen: links das Foto vom Eingang, rechts die Stimmungsvision · Punkte antippen für Details · Bild antippen zum Vergrößern',
       'kt.raum.innen.hint': 'Klick auf die Punkte für mehr · Bild antippen zum Vergrößern',
       'kt.raum.gestalten.hint': 'Kreativität ohne Leistungsdruck – ein Blick auf das, was im Atelier entsteht.',
       'kt.raum.hotspot1.title': 'Willkommen',
@@ -569,10 +569,10 @@
       'kt.raum.tab.eingang': 'Entrance',
       'kt.raum.tab.innen': 'Inside the atelier',
       'kt.raum.tab.gestalten': 'Creating',
-      'kt.raum.compare.before': 'Today',
-      'kt.raum.compare.after': 'Atmosphere',
+      'kt.raum.compare.before': 'Current photo',
+      'kt.raum.compare.after': 'Mood vision',
       'kt.raum.compare.hint':
-        'Drag or swipe to compare entrance and atmosphere · Tap a point for details · Tap image to enlarge',
+        'Drag the slider: photo on the left, mood vision on the right · Tap hotspots for details · Tap image to enlarge',
       'kt.raum.innen.hint': 'Tap the points for more · Tap image to enlarge',
       'kt.raum.gestalten.hint': 'Creativity without pressure – a glimpse of what emerges in the atelier.',
       'kt.raum.hotspot1.title': 'Welcome',
@@ -585,7 +585,7 @@
       'kt.raum.hotspot4.text': 'Acrylic, gouache, chalk, collage – all provided.',
 
       'about.kicker': 'About me',
-      'about.name': 'Über mich',
+      'about.name': 'About me',
       'about.intro':
         'As a psychosocial and clinical art therapist and practitioner for psychotherapy, I work independently. With over 16 years of experience, I support people in difficult situations – in clinical settings and in private practice.',
       'about.passion.title': 'My passion',

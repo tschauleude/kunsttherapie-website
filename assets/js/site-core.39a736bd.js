@@ -75,7 +75,7 @@ window.I18N_MESSAGES = {
     'quotes.nav': 'Zitate wechseln',
     'home.gallery.title': 'Kunsttherapie in Aktion',
     'home.praxis.title': 'Das Atelier ab Juli',
-    'kt.hero.kicker': 'Ab 1. Juli in Paderborn',
+    'kt.hero.kicker': 'Ab 1. Juli 2026 in Paderborn',
     'kt.hero.title': 'Kunst, die <span class="text-accent">trägt</span> – nicht nur schmückt',
     'kt.hero.sub':
       'Dienstag 11:00–12:30 Uhr und Donnerstag 18:00–19:30 Uhr – feste Atelierzeiten. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.',
@@ -84,10 +84,10 @@ window.I18N_MESSAGES = {
     'kt.facts.meta': '90 Min · 4–12 Personen · ab 55 €',
     'kt.audience': 'Für Unternehmen · für Kliniken & Einrichtungen · für Experten & Interessierte',
     'kt.offers.title': 'Welches Angebot passt?',
-    'kt.offers.sub': 'Vier Angebote – ausführliche Beschreibung per Klick.',
+    'kt.offers.sub': 'Fünf Angebote – ausführliche Beschreibung per Klick.',
     'offer.1.title': 'Gruppentherapie',
     'offer.1.body':
-      '<p><strong>Primär dienstags 11:00–12:30 Uhr</strong> – die Gruppenzeiten rotieren und werden im Wechsel auch donnerstags abends angeboten. Viele Menschen kennen bereits kunsttherapeutisches Gestalten in Gruppen, haben die Kunsttherapie schätzen gelernt, Wissen um die Wirksamkeit – und suchen einen freien Platz. Selbstverständlich auch für alle, die durch ressourcenorientierte, visuelle Methoden ganz individuelle Themen gestalten möchten – mit professioneller Begleitung.</p><p><strong>Gruppentherapie, freies und thematisches Gestalten:</strong> Kunst als Weg zurück zum Inneren – um Gesundheit zu erhalten und zu fördern, im Sinne von Resilienz, der psychischen Widerstandsfähigkeit.</p><p>„Bilder sagen mehr als tausend Worte“, sowie „die Heilkraft der Farben“ sind Erfahrungswerte in der Kunsttherapie.</p><p class="note">4–12 Personen · 90 Minuten · im Wechsel auch donnerstags abends</p>',
+      '<p><strong>Primär dienstags 11:00–12:30 Uhr</strong> – die Gruppenzeiten rotieren und werden im Wechsel auch donnerstags abends angeboten. Viele Menschen kennen bereits kunsttherapeutisches Gestalten in Gruppen, haben die Kunsttherapie schätzen gelernt, Wissen um die Wirksamkeit – und suchen einen freien Platz. Selbstverständlich auch für alle, die durch ressourcenorientierte, visuelle Methoden ganz individuelle Themen gestalten möchten – mit professioneller Begleitung.</p><p><strong>Gruppentherapie, freies und thematisches Gestalten:</strong> Kunst als Weg zurück zum Inneren – um Gesundheit zu erhalten und zu fördern, im Sinne von Resilienz, Krankheitsakzeptanz und psychischer Widerstandsfähigkeit.</p><p>„Bilder sagen mehr als tausend Worte“, sowie „die Heilkraft der Farben“ sind Erfahrungswerte in der Kunsttherapie.</p><p class="note">4–12 Personen · 90 Minuten · im Wechsel auch donnerstags abends</p>',
     'offer.2.title': 'Auszeit: Kreativabende für Freunde & Familien',
     'offer.2.body':
       '<p><strong>Donnerstag 18:00–19:30 Uhr.</strong> Viele sagen danach: „Hätte nicht gedacht, dass mir ein Bild so gut gelingt.“</p><p>Buchbar für Familie und Freunde – <strong>nicht einzeln buchbar</strong>. Es geht um Freude durch neue Erfahrungen und eine gute kreative gemeinsame Auszeit.</p><p class="note">Termine auf Anfrage</p>',
@@ -96,7 +96,10 @@ window.I18N_MESSAGES = {
       '<p>Intensiv und persönlich: psychosoziale und klinische Kunsttherapie in Krisen, bei Trauer oder in der Krankheitsverarbeitung – individuell auf die jeweilige Situation abgestimmt.</p><p>Im geschützten Rahmen des Ateliers oder nach Vereinbarung. Termine flexibel außerhalb der Gruppenzeiten – Preis auf Anfrage.</p>',
     'offer.4.title': 'Team Building & Institutionen',
     'offer.4.body':
-      '<p><strong>Team Building-Events</strong></p><p>Raus aus dem Büro, rein ins FarbenReich – Kolleginnen und Kollegen MALend ganz neu erleben. Es entsteht ein Werk mit Überraschungseffekt, mit spielerischen Regeln und echter Verbindung, das wertschätzend einen exponierten Platz in der Firma bekommen darf.</p><p class="note">Mindestens 12, maximal 18 Teilnehmer. Bei mehr als 18 Teilnehmern bitte Kontakt aufnehmen. Termine nach Absprache.</p><p><strong>Für Institutionen, Experten und Interessierte</strong></p><p>Regelmäßige Vorträge und Impulse aus der Kunsttherapie – Gruppen (auch Senioren), palliative Begleitung aus langjähriger Erfahrung.</p><p class="note">Dauer, Umfang und Preis nach Absprache – Konzept und Material inklusive.</p>',
+      '<p><strong>Team Building-Events</strong></p><p>Raus aus dem Büro, rein ins FarbenReich – Kolleginnen und Kollegen MALend ganz neu erleben. Es entsteht ein Werk mit Überraschungseffekt, mit spielerischen Regeln und echter Verbindung, das wertschätzend einen exponierten Platz in der Firma bekommen darf.</p><p class="note">Mindestens 12, maximal 18 Teilnehmer. Bei mehr als 18 Teilnehmern bitte Kontakt aufnehmen. Termine nach Absprache.</p>',
+    'offer.5.title': 'Vorträge & Impulse',
+    'offer.5.body':
+      '<p>Regelmäßige Vorträge und Impulse aus der Kunsttherapie.</p><p><strong>Warum Kunst statt nur Gespräch?</strong> Ein Einblick in Wirkung, Methoden und Erfahrungen aus über 16 Jahren klinischer Arbeit – für Einrichtungen, Fachpublikum und Interessierte. Auch Gruppen (z.&nbsp;B. Senioren) und palliative Begleitung aus langjähriger Praxis.</p><p class="note">Dauer, Ort und Honorar nach Absprache – Konzept und Material inklusive.</p>',
     'atelier.kicker': "Ausprobieren",
     'atelier.title': 'Mini-Atelier – einfach loslegen',
     'atelier.intro':
@@ -128,11 +131,11 @@ window.I18N_MESSAGES = {
     'a11y.skip': 'Skip to content',
     'brand.name': 'Art Therapy Paderborn',
     'brand.subtitle': 'Psychosocial Art Therapy',
-    'nav.ansatz': 'My Approach',
+    'nav.ansatz': 'Approach',
     'nav.therapy': 'Art Therapy',
-    'nav.practice': 'The Atelier',
+    'nav.practice': 'Atelier',
     'nav.news': 'News',
-    'nav.booking': 'Book',
+    'nav.booking': 'Booking',
     'nav.contact': 'Contact',
     'nav.atelier': 'Mini Studio',
     'nav.events': 'Events',
@@ -197,7 +200,7 @@ window.I18N_MESSAGES = {
     'quotes.nav': 'Change quote',
     'home.gallery.title': 'Art therapy in action',
     'home.praxis.title': 'The atelier from July',
-    'kt.hero.kicker': 'From 1 July in Paderborn',
+    'kt.hero.kicker': 'From 1 July 2026 in Paderborn',
     'kt.hero.title': 'Art that <span class="text-accent">supports</span> – not just decorates',
     'kt.hero.sub':
       'Tuesday 11:00–12:30 and Thursday 18:00–19:30 – fixed studio hours. Group times rotate: on alternate weeks also on Thursday evenings.',
@@ -206,10 +209,10 @@ window.I18N_MESSAGES = {
     'kt.facts.meta': '90 min · 4–12 people · from €55',
     'kt.audience': 'For companies · for clinics & institutions · for experts & interested visitors',
     'kt.offers.title': 'Which offer fits?',
-    'kt.offers.sub': 'Four services – click for the full description.',
+    'kt.offers.sub': 'Five services – click for the full description.',
     'offer.1.title': 'Group therapy',
     'offer.1.body':
-      '<p><strong>Primarily Tuesday 11:00–12:30</strong> – group times rotate and are also offered on Thursday evenings on alternate weeks. Many people already know art therapy in groups, value its effectiveness – and are looking for an open place. Also for anyone who wants to work on individual themes through resource-oriented visual methods – with professional support.</p><p><strong>Group therapy, free and themed creating:</strong> art as a path inward – to maintain and support health, in the sense of resilience and psychological strength.</p><p>“A picture is worth a thousand words” and “the healing power of colour” are lived experiences in art therapy.</p><p class="note">4–12 people · 90 minutes · on alternate weeks also Thursday evenings</p>',
+      '<p><strong>Primarily Tuesday 11:00–12:30</strong> – group times rotate and are also offered on Thursday evenings on alternate weeks. Many people already know art therapy in groups, value its effectiveness – and are looking for an open place. Also for anyone who wants to work on individual themes through resource-oriented visual methods – with professional support.</p><p><strong>Group therapy, free and themed creating:</strong> art as a path inward – to maintain and support health, in the sense of resilience, illness acceptance, and psychological strength.</p><p>“A picture is worth a thousand words” and “the healing power of colour” are lived experiences in art therapy.</p><p class="note">4–12 people · 90 minutes · on alternate weeks also Thursday evenings</p>',
     'offer.2.title': 'Downtime: creative evenings for friends & family',
     'offer.2.body':
       '<p><strong>Thursday 18:00–19:30.</strong> Many say afterwards: “I never thought I could create something like that.”</p><p>Bookable for family and friends – <strong>not individually</strong>. About joy through new experiences and a good shared creative break.</p><p class="note">Dates on request</p>',
@@ -218,7 +221,10 @@ window.I18N_MESSAGES = {
       '<p>Intensive and personal: psychosocial and clinical art therapy in crisis, grief, or illness – tailored to each situation.</p><p>In the atelier or by arrangement. Flexible times outside group slots – price on request.</p>',
     'offer.4.title': 'Team building & institutions',
     'offer.4.body':
-      '<p><strong>Team building events</strong></p><p>Out of the office, into a world of colour – experience colleagues in a new creative way. A shared artwork with surprise, playful rules, and real connection – worthy of a visible place in the company.</p><p class="note">Minimum 12, maximum 18 participants. For more than 18, please get in touch. Dates by arrangement.</p><p><strong>For institutions, experts, and interested visitors</strong></p><p>Regular talks and impulses from art therapy – groups (including seniors), palliative support from years of clinical experience.</p><p class="note">Duration and price by arrangement – concept and materials included.</p>',
+      '<p><strong>Team building events</strong></p><p>Out of the office, into a world of colour – experience colleagues in a new creative way. A shared artwork with surprise, playful rules, and real connection – worthy of a visible place in the company.</p><p class="note">Minimum 12, maximum 18 participants. For more than 18, please get in touch. Dates by arrangement.</p>',
+    'offer.5.title': 'Talks & impulses',
+    'offer.5.body':
+      '<p>Regular talks and impulses from art therapy.</p><p><strong>Why art instead of conversation alone?</strong> An insight into methods, effects, and experience from over 16 years of clinical work – for institutions, professionals, and interested audiences. Including groups (e.g. seniors) and palliative support from long practice.</p><p class="note">Duration, venue, and fee by arrangement – concept and materials included.</p>',
     'atelier.kicker': 'Try the mini studio',
     'atelier.title': 'Mini studio – start creating',
     'atelier.intro':
