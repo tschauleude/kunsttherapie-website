@@ -26,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Kunsttherapie & Angebote – Paderborn"/>
   <meta name="twitter:description" content="Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn."/>
-  <link rel="stylesheet" href="assets/css/style.8f5da864.css"/>
+  <link rel="stylesheet" href="assets/css/style.bf6db863.css"/>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -116,14 +116,14 @@
       </ul>
       <div class="actions">
         <a class="btn primary" href="buchung.html" data-i18n="btn.book">Termin buchen</a>
-        <a class="btn outline" href="kontakt.html">Anfrage stellen</a>
+        <a class="btn outline" href="kontakt.html" data-i18n="btn.inquiry">Anfrage stellen</a>
       </div>
     </div>
   </section>
 
   <section class="container section" id="angebote">
     <div class="section-intro center">
-      <div class="kicker">Formate</div>
+      <div class="kicker" data-i18n="kt.offers.kicker">Formate</div>
       <h2 data-i18n="kt.offers.title">Welches Angebot passt?</h2>
       <p class="sub center" data-i18n="kt.offers.sub">Fünf Angebote – ausführliche Beschreibung per Klick.</p>
     </div>
@@ -132,6 +132,7 @@
       <article class="kt-offer card" data-offer>
         <div class="kt-offer-head">
           <h3 data-i18n="offer.1.title">Gruppentherapie</h3>
+          <p class="kt-offer-teaser" data-i18n="offer.1.teaser">Begleitetes Malen in der Gruppe – dienstags vormittags.</p>
           <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
         <div class="kt-offer-body" hidden data-i18n-html="offer.1.body"></div>
@@ -140,6 +141,7 @@
       <article class="kt-offer card" data-offer>
         <div class="kt-offer-head">
           <h3 data-i18n="offer.2.title">Auszeit: Kreativabende für Freunde &amp; Familien</h3>
+          <p class="kt-offer-teaser" data-i18n="offer.2.teaser">Kreativabende für Freunde &amp; Familie – ohne Leistungsdruck.</p>
           <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
         <div class="kt-offer-body" hidden data-i18n-html="offer.2.body"></div>
@@ -148,6 +150,7 @@
       <article class="kt-offer card" data-offer>
         <div class="kt-offer-head">
           <h3 data-i18n="offer.3.title">Einzelsitzungen</h3>
+          <p class="kt-offer-teaser" data-i18n="offer.3.teaser">Intensiv und persönlich – flexibel nach Vereinbarung.</p>
           <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
         <div class="kt-offer-body" hidden data-i18n-html="offer.3.body"></div>
@@ -156,14 +159,16 @@
       <article class="kt-offer card" data-offer>
         <div class="kt-offer-head">
           <h3 data-i18n="offer.4.title">Teambuilding &amp; Institutionen</h3>
+          <p class="kt-offer-teaser" data-i18n="offer.4.teaser">Raus aus dem Büro, gemeinsam ein Werk gestalten.</p>
           <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
         <div class="kt-offer-body" hidden data-i18n-html="offer.4.body"></div>
       </article>
 
-      <article class="kt-offer card" data-offer>
+      <article class="kt-offer card kt-offer--accent" data-offer>
         <div class="kt-offer-head">
           <h3 data-i18n="offer.5.title">Vorträge &amp; Impulse</h3>
+          <p class="kt-offer-teaser" data-i18n="offer.5.teaser">Impulse aus über 16 Jahren klinischer Kunsttherapie.</p>
           <button type="button" class="btn outline btn-sm kt-toggle" aria-expanded="false" data-i18n="btn.learnMore">Mehr erfahren</button>
         </div>
         <div class="kt-offer-body" hidden data-i18n-html="offer.5.body"></div>
@@ -238,9 +243,9 @@
 
   <section class="container section" id="atelier">
     <div class="section-intro center">
-      <div class="kicker">Das Atelier</div>
-      <h2>Angemieteter Atelier- und Gruppenraum</h2>
-      <p class="sub center">
+      <div class="kicker" data-i18n="kt.praxis.kicker">Das Atelier</div>
+      <h2 data-i18n="kt.praxis.title">Angemieteter Atelier- und Gruppenraum</h2>
+      <p class="sub center" data-i18n-html="kt.praxis.sub">
         Ab <strong>1. Juli 2026</strong> in Paderborn – ein eigener Raum zum Ankommen, Gestalten und Begegnen.
         Die Räumlichkeiten werden laufend eingerichtet und hier Schritt für Schritt vorgestellt.
       </p>
@@ -328,68 +333,66 @@
       </div>
 
       <div class="card kt-praxis-copy">
-        <div class="kicker">Otto-Stadler-Straße 23c</div>
-        <h2>Geschützter Ort in Paderborn</h2>
-        <p>
-          Das Atelier ist ein <strong>angemieteter Raum</strong> – kein improvisiertes Zimmer, sondern ein bewusst gewählter
-          Ort für Kunsttherapie, Gruppen und Auszeiten. Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse –
-          Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag 11:00–12:30</strong> für Gruppen,
+        <div class="kicker" data-i18n="kt.praxis.addressKicker">Otto-Stadler-Straße 23c</div>
+        <h2 data-i18n="kt.praxis.headline">Ankommen und gestalten in Paderborn</h2>
+        <p data-i18n-html="kt.praxis.p1">
+          Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen. Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag 11:00–12:30</strong> für Gruppen,
           <strong>Donnerstag 18:00–19:30</strong> für Auszeit und Workshops. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.
         </p>
-        <p>
+        <p data-i18n-html="kt.praxis.p2">
           <strong>Im Atelier:</strong> helle, ruhige Atmosphäre, Materialien vor Ort, kleine Gruppen,
           klare Struktur ohne Leistungsdruck. Parken und Anreise mit ÖPNV sind unkompliziert – Details zur Anfahrt siehe unten.
         </p>
         <ul class="kt-schedule">
-          <li><strong>Dienstag 11:00–12:30</strong> · Gruppentherapie, professionelles Setting</li>
-          <li><strong>Donnerstag 18:00–19:30</strong> · Auszeit, Workshops, Teambuilding</li>
+          <li data-i18n-html="kt.praxis.schedule1"><strong>Dienstag 11:00–12:30</strong> · Gruppentherapie, professionelles Setting</li>
+          <li data-i18n-html="kt.praxis.schedule2"><strong>Donnerstag 18:00–19:30</strong> · Auszeit, Workshops, Teambuilding</li>
         </ul>
         <div class="actions">
-          <a class="btn primary" href="buchung.html">Online-Termin wählen</a>
-          <a class="btn outline" href="neuigkeiten.html">Neuigkeiten zum Atelier</a>
+          <a class="btn primary" href="buchung.html" data-i18n="kt.praxis.book">Online-Termin wählen</a>
+          <a class="btn outline" href="neuigkeiten.html" data-i18n="kt.praxis.news">Neuigkeiten zum Atelier</a>
         </div>
       </div>
     </div>
 
     <div class="kt-praxis-highlights" aria-label="Ausstattung und Raum">
       <div class="card kt-praxis-highlight">
-        <h3>Atelierfläche</h3>
-        <p>Gemeinsames Gestalten mit Acryl, Gouache, Kreide, Collage – Materialien werden gestellt.</p>
+        <h3 data-i18n="kt.highlight1.title">Atelierfläche</h3>
+        <p data-i18n="kt.highlight1.text">Gemeinsames Gestalten mit Acryl, Gouache, Kreide, Collage – Materialien werden gestellt.</p>
       </div>
       <div class="card kt-praxis-highlight">
-        <h3>Gruppenraum</h3>
-        <p>4–12 Personen, geschützter Rahmen, auch für Seniorengruppen und Einrichtungen.</p>
+        <h3 data-i18n="kt.highlight2.title">Gruppenraum</h3>
+        <p data-i18n="kt.highlight2.text">4–12 Personen, geschützter Rahmen, auch für Seniorengruppen und Einrichtungen.</p>
       </div>
       <div class="card kt-praxis-highlight">
-        <h3>Angemietet &amp; wachsend</h3>
-        <p>Der Raum wird weiter ausgebaut und auf der Website präsentiert – bleib gern auf dem Laufenden.</p>
+        <h3 data-i18n="kt.highlight3.title">Angemietet &amp; wachsend</h3>
+        <p data-i18n="kt.highlight3.text">Der Raum wird weiter ausgebaut und auf der Website präsentiert – bleib gern auf dem Laufenden.</p>
       </div>
       <div class="card kt-praxis-highlight">
-        <h3>Ab Juli 2026</h3>
-        <p>Regelmäßig <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> – Termine online oder per Anfrage.</p>
+        <h3 data-i18n="kt.highlight4.title">Ab Juli 2026</h3>
+        <p data-i18n-html="kt.highlight4.text">Regelmäßig <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> – Termine online oder per Anfrage.</p>
       </div>
     </div>
 
     <div class="twoCol kt-location kt-location-grid">
       <div class="card">
-        <h3>Anfahrt &amp; Kontakt vor Ort</h3>
-        <p>
+        <h3 data-i18n="kt.location.title">Anfahrt &amp; Kontakt vor Ort</h3>
+        <p data-i18n-html="kt.location.address">
           <strong>Otto-Stadler-Straße 23c</strong><br>
           33102 Paderborn
         </p>
-        <p class="note" style="margin-top:0.75rem">
+        <p class="note" style="margin-top:0.75rem" data-i18n-html="kt.location.phone">
           Tel. <a href="tel:+495251690111">05251-690111</a> · Mobil <a href="tel:+491704790790">0170-4790790</a>
         </p>
         <p style="margin-top:1rem">
-          <a class="btn outline" href="kontakt.html">Nachricht schicken</a>
-          <a class="btn outline" href="preise.html">Preise</a>
+          <a class="btn outline" href="kontakt.html" data-i18n="btn.message">Nachricht schicken</a>
+          <a class="btn outline" href="preise.html" data-i18n="footer.prices">Preise</a>
         </p>
       </div>
       <div class="card map-consent-wrap kt-map-wrap">
         <div class="map-placeholder" data-map-placeholder>
-          <p>Karte nur mit Einwilligung (Google Maps).</p>
-          <button type="button" class="btn primary" data-enable-maps>Karte anzeigen</button>
-          <a class="btn outline" href="https://www.google.com/maps/search/?api=1&amp;query=Otto-Stadler-Straße+23c+33102+Paderborn" target="_blank" rel="noopener noreferrer">In Google Maps öffnen</a>
+          <p data-i18n-html="map.consent">Karte nur mit Einwilligung (Google Maps).</p>
+          <button type="button" class="btn primary" data-enable-maps data-i18n="map.show">Karte anzeigen</button>
+          <a class="btn outline" href="https://www.google.com/maps/search/?api=1&amp;query=Otto-Stadler-Straße+23c+33102+Paderborn" target="_blank" rel="noopener noreferrer" data-i18n="map.open">In Google Maps öffnen</a>
         </div>
         <iframe
           hidden
@@ -401,7 +404,7 @@
           allowfullscreen>
         </iframe>
         <p class="note">
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=Otto-Stadler-Straße+23c+33102+Paderborn" target="_blank" rel="noopener noreferrer">Route in Google Maps öffnen</a>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Otto-Stadler-Straße+23c+33102+Paderborn" target="_blank" rel="noopener noreferrer" data-i18n="map.route">Route in Google Maps öffnen</a>
         </p>
       </div>
     </div>
@@ -409,13 +412,13 @@
 
   <section class="container section">
     <div class="card center kt-cta-band">
-      <h2>Bereit für den ersten Schritt?</h2>
-      <p class="sub center">Termin online buchen oder kurz anfragen – ich melde mich zeitnah.</p>
+      <h2 data-i18n="kt.cta.title">Bereit für den ersten Schritt?</h2>
+      <p class="sub center" data-i18n="kt.cta.sub">Termin online buchen oder kurz anfragen – ich melde mich zeitnah.</p>
       <div class="actions" style="justify-content:center">
-        <a class="btn primary" href="buchung.html">Zum Buchungskalender</a>
+        <a class="btn primary" href="buchung.html" data-i18n="kt.cta.book">Zum Buchungskalender</a>
         <a class="btn outline" href="ueber-mich.html" data-i18n="kt.cta.about">Über mich</a>
       </div>
-      <p class="note" style="margin-top:1rem">
+      <p class="note" style="margin-top:1rem" data-i18n-html="kt.cta.news">
         Mehr Einblicke: <a href="neuigkeiten.html">Aktuelles &amp; Neuigkeiten</a>
       </p>
     </div>
@@ -456,7 +459,7 @@
     </div>
   </footer>
 
-  <script src="assets/js/site-core.39a736bd.js" defer></script>
+  <script src="assets/js/site-core.291477bd.js" defer></script>
   <script src="assets/js/i18n-messages-shared.js" defer></script>
   <script src="assets/js/i18n-messages-therapy.js" defer></script>
   <script src="assets/js/kunsttherapie.js" defer></script>

@@ -17,16 +17,16 @@
   <meta property="og:title" content="Kunsttherapie Paderborn | Psychosoziale Kunsttherapie &amp; Atelier"/>
   <meta property="og:description" content="Kunsttherapie in Paderborn: Di 11:00–12:30 und Do 18:00–19:30. Gruppen, Auszeit, Einzel, Teambuilding – Termin online buchen."/>
   <meta property="og:url" content="https://kunsttherapie.mkmpb.de/"/>
-  <meta property="og:image" content="https://kunsttherapie.mkmpb.de/assets/img/hero-atelier-aussen.jpg"/>
-  <meta property="og:image:width" content="1536"/>
-  <meta property="og:image:height" content="1024"/>
-  <meta property="og:image:alt" content="Kreativer Außenarbeitsplatz – Kunsttherapie in Paderborn"/>
-  <meta name="twitter:image" content="https://kunsttherapie.mkmpb.de/assets/img/hero-atelier-aussen.jpg"/>
-  <meta name="twitter:image:alt" content="Kreativer Außenarbeitsplatz – Kunsttherapie in Paderborn"/>
+  <meta property="og:image" content="https://kunsttherapie.mkmpb.de/assets/img/Gruppen-und-Einzeltherapie-768x524.jpg"/>
+  <meta property="og:image:width" content="768"/>
+  <meta property="og:image:height" content="524"/>
+  <meta property="og:image:alt" content="Atelier – gemeinsam malen und gestalten in Paderborn"/>
+  <meta name="twitter:image" content="https://kunsttherapie.mkmpb.de/assets/img/Gruppen-und-Einzeltherapie-768x524.jpg"/>
+  <meta name="twitter:image:alt" content="Atelier – gemeinsam malen und gestalten in Paderborn"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Kunsttherapie Paderborn | Psychosoziale Kunsttherapie &amp; Atelier"/>
   <meta name="twitter:description" content="Kunsttherapie in Paderborn: Di 11:00–12:30 und Do 18:00–19:30. Gruppen, Auszeit, Einzel, Teambuilding – Termin online buchen."/>
-  <link rel="stylesheet" href="assets/css/style.8f5da864.css"/>
+  <link rel="stylesheet" href="assets/css/style.bf6db863.css"/>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -76,12 +76,12 @@
   <div class="news-popup-backdrop" data-close-popup></div>
   <div class="news-popup-panel card">
     <button type="button" class="news-popup-close" aria-label="Schließen" data-close-popup>&times;</button>
-    <h2 id="newsPopupTitle" class="visually-hidden">Aktuelles aus dem Atelier</h2>
-    <div class="news-popup-kicker">Aktuelles</div>
+    <h2 id="newsPopupTitle" class="visually-hidden" data-i18n="home.popup.title">Aktuelles aus dem Atelier</h2>
+    <div class="news-popup-kicker" data-i18n="home.news.kicker">Aktuelles</div>
     <div id="newsPopupBody" class="news-popup-body"></div>
     <div class="news-popup-actions">
-      <a class="btn outline" href="neuigkeiten.html">Alle Neuigkeiten</a>
-      <button type="button" class="btn primary" data-close-popup>Schließen</button>
+      <a class="btn outline" href="neuigkeiten.html" data-i18n="home.news.all">Alle Neuigkeiten</a>
+      <button type="button" class="btn primary" data-close-popup data-i18n="btn.close">Schließen</button>
     </div>
   </div>
 </div>
@@ -136,8 +136,8 @@
       </div>
       <div class="hero-right hero-right--landing">
         <picture>
-          <source type="image/webp" srcset="assets/img/hero-atelier-aussen-768w.webp" sizes="(max-width: 768px) 100vw, 50vw"/>
-          <img src="assets/img/hero-atelier-aussen.jpg" width="1536" height="1024" alt="Kreativer Außenarbeitsplatz – Gestalten im Grünen" data-i18n-alt="home.hero.imgAlt" fetchpriority="high" decoding="async"/>
+          <source type="image/webp" srcset="assets/img/Gruppen-und-Einzeltherapie-768x524-768w.webp" sizes="(max-width: 768px) 100vw, 50vw"/>
+          <img src="assets/img/Gruppen-und-Einzeltherapie-768x524.jpg" width="768" height="524" alt="Atelier – gemeinsam malen und gestalten in Paderborn" data-i18n-alt="home.hero.imgAlt" fetchpriority="high" decoding="async"/>
         </picture>
       </div>
     </div>
@@ -145,25 +145,25 @@
 
   <section id="neuigkeiten" class="section container home-news" hidden data-limit="3" data-popup-limit="2">
     <div class="section-intro center">
-      <div class="kicker">Aktuelles</div>
-      <h2>Neuigkeiten</h2>
-      <p class="sub center">Was gerade ansteht – direkt aus dem Atelier.</p>
+      <div class="kicker" data-i18n="home.news.kicker">Aktuelles</div>
+      <h2 data-i18n="nav.news">Neuigkeiten</h2>
+      <p class="sub center" data-i18n="home.news.sub">Was gerade ansteht – direkt aus dem Atelier.</p>
     </div>
     <div id="homeNewsLoading" class="home-news-loading">
-      <p class="sub">Neuigkeiten werden geladen …</p>
+      <p class="sub" data-i18n="home.news.loading">Neuigkeiten werden geladen …</p>
     </div>
     <div id="homeNewsList" class="news-grid news-grid-home"></div>
     <p class="center" style="margin-top:1.5rem">
-      <button type="button" class="btn outline" id="openNewsPopupBtn">Aktuelles anzeigen</button>
-      <a class="btn outline" href="neuigkeiten.html">Alle Neuigkeiten</a>
+      <button type="button" class="btn outline" id="openNewsPopupBtn" data-i18n="home.news.show">Aktuelles anzeigen</button>
+      <a class="btn outline" href="neuigkeiten.html" data-i18n="home.news.all">Alle Neuigkeiten</a>
     </p>
   </section>
 
   <section id="galerie" class="section container">
     <div class="section-intro center">
-      <div class="kicker">Einblicke</div>
-      <h2>Kunsttherapie in Aktion</h2>
-      <p class="sub center">Kreativität ohne Leistungsdruck – ein Blick in den Atelier-Alltag. Klick auf ein Bild zum Vergrößern.</p>
+      <div class="kicker" data-i18n="home.gallery.kicker">Einblicke</div>
+      <h2 data-i18n="home.gallery.title">Kunsttherapie in Aktion</h2>
+      <p class="sub center" data-i18n="home.gallery.sub">Kreativität ohne Leistungsdruck – ein Blick in den Atelier-Alltag. Klick auf ein Bild zum Vergrößern.</p>
     </div>
     <div class="image-gallery image-gallery--trio" data-gallery>
       <button type="button" class="card gallery-item" data-gallery-open aria-label="Bild vergrößern: Atelier-Eingang">
@@ -172,11 +172,8 @@
           <img src="assets/img/atelier-eingang.jpg" width="1536" height="1024" alt="Atelier-Eingang mit Blick ins Grüne" loading="lazy" decoding="async"/>
         </picture>
       </button>
-      <button type="button" class="card gallery-item" data-gallery-open aria-label="Bild vergrößern: Kunsttherapie in der Klinik">
-        <picture>
-          <source type="image/webp" srcset="assets/img/galerie-schmerzstation-768w.webp" sizes="(max-width: 600px) 100vw, 33vw"/>
-          <img src="assets/img/galerie-schmerzstation.jpg" width="1536" height="1024" alt="Kunsttherapeutisches Gestalten in der Klinik" data-i18n-alt="home.gallery.img2.alt" loading="lazy" decoding="async"/>
-        </picture>
+      <button type="button" class="card gallery-item" data-gallery-open aria-label="Bild vergrößern: Kunst und Kreativität">
+        <img src="assets/img/Potenziale-Kunsttherapie-Paderborn.jpg" width="1173" height="801" alt="Kunsttherapeutisches Bild – Natur und Kreativität" data-i18n-alt="home.gallery.img2.alt" loading="lazy" decoding="async"/>
       </button>
       <button type="button" class="card gallery-item" data-gallery-open aria-label="Bild vergrößern: Abstraktes Kunstwerk">
         <picture>
@@ -216,14 +213,17 @@
     </div>
     <div class="audience-grid">
       <div class="card audience-card">
+        <svg class="audience-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
         <h3 data-i18n="home.audience.privat">Privat</h3>
         <p data-i18n="home.audience.privat.desc">Gruppe, Auszeit oder Einzel – wenn Worte nicht reichen und Ressourcen gesucht werden.</p>
       </div>
       <div class="card audience-card">
+        <svg class="audience-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5"/><path d="M14 20c0-2.5 1.5-4 4-4"/></svg>
         <h3 data-i18n="home.audience.firmen">Unternehmen</h3>
         <p data-i18n="home.audience.firmen.desc">Teambuilding und kreative Teamtage – Verbindung statt Konkurrenz.</p>
       </div>
       <div class="card audience-card">
+        <svg class="audience-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V8l9-4 9 4v13"/><path d="M9 21V12h6v9"/><path d="M3 21h18"/></svg>
         <h3 data-i18n="home.audience.klinik">Kliniken &amp; Einrichtungen</h3>
         <p data-i18n="home.audience.klinik.desc">Gruppen, Palliativbegleitung, Vorträge – langjährige Klinikerfahrung.</p>
       </div>
@@ -259,26 +259,25 @@
   <section id="atelier" class="section container">
     <div class="card">
       <div class="section-intro" style="margin-bottom:1.25rem;text-align:left">
-        <div class="kicker">Das Atelier</div>
-        <h2>Angemieteter Raum in Paderborn – ab 1. Juli 2026</h2>
-        <p class="sub">
-          Ein <strong>angemieteter Atelier- und Gruppenraum</strong> an der Otto-Stadler-Straße 23c.
-          Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse – Platz zum Malen und Gestalten.
+        <div class="kicker" data-i18n="kt.praxis.kicker">Das Atelier</div>
+        <h2 data-i18n="home.praxis.title">Angemieteter Raum in Paderborn – ab 1. Juli 2026</h2>
+        <p class="sub" data-i18n="home.praxis.sub">
+          Ein angemieteter Atelier- und Gruppenraum an der Otto-Stadler-Straße 23c – hell, ruhig und mit Platz zum Malen und Gestalten.
         </p>
       </div>
       <div class="twoCol">
         <div>
-          <p><span class="pill">Adresse</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn</p>
-          <p style="margin-top:1rem"><span class="pill">Di</span><br>11:00–12:30 · Gruppen &amp; Therapie</p>
+          <p data-i18n-html="home.praxis.address"><span class="pill">Adresse</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn</p>
+          <p style="margin-top:1rem" data-i18n-html="home.praxis.di"><span class="pill">Di</span><br>11:00–12:30 · Gruppen &amp; Therapie</p>
         </div>
         <div>
-          <p><span class="pill">Do</span><br>18:00–19:30 · Auszeit, Workshops</p>
-          <p class="note" style="margin-top:1rem">Raum, Fotos &amp; Details: <a href="kunsttherapie.html#atelier">Atelier entdecken</a></p>
+          <p data-i18n-html="home.praxis.do"><span class="pill">Do</span><br>18:00–19:30 · Auszeit, Workshops</p>
+          <p class="note" style="margin-top:1rem" data-i18n-html="home.praxis.link">Raum, Fotos &amp; Details: <a href="kunsttherapie.html#atelier">Atelier entdecken</a></p>
         </div>
       </div>
       <div class="actions">
-        <a class="btn primary" href="buchung.html">Termin buchen</a>
-        <a class="btn outline" href="kunsttherapie.html#atelier">Mehr zum Atelier</a>
+        <a class="btn primary" href="buchung.html" data-i18n="btn.book">Termin buchen</a>
+        <a class="btn outline" href="kunsttherapie.html#atelier" data-i18n="home.praxis.more">Mehr zum Atelier</a>
       </div>
     </div>
   </section>
@@ -318,7 +317,7 @@
     </div>
   </footer>
 
-  <script src="assets/js/site-core.ae86c1ec.js" defer></script>
+  <script src="assets/js/site-core.291477bd.js" defer></script>
   <script src="assets/js/i18n-messages-shared.js" defer></script>
   <script src="assets/js/i18n-messages-home.js" defer></script>
   <script src="assets/js/quotes.js" defer></script>

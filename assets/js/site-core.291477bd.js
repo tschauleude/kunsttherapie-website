@@ -85,19 +85,25 @@ window.I18N_MESSAGES = {
     'kt.audience': 'Für Unternehmen · für Kliniken & Einrichtungen · für Experten & Interessierte',
     'kt.offers.title': 'Welches Angebot passt?',
     'kt.offers.sub': 'Fünf Angebote – ausführliche Beschreibung per Klick.',
+    'kt.offers.kicker': 'Formate',
     'offer.1.title': 'Gruppentherapie',
+    'offer.1.teaser': 'Begleitetes Malen in der Gruppe – dienstags vormittags.',
     'offer.1.body':
       '<p><strong>Primär dienstags 11:00–12:30 Uhr</strong> – die Gruppenzeiten rotieren und werden im Wechsel auch donnerstags abends angeboten. Viele Menschen kennen bereits kunsttherapeutisches Gestalten in Gruppen, haben die Kunsttherapie schätzen gelernt, Wissen um die Wirksamkeit – und suchen einen freien Platz. Selbstverständlich auch für alle, die durch ressourcenorientierte, visuelle Methoden ganz individuelle Themen gestalten möchten – mit professioneller Begleitung.</p><p><strong>Gruppentherapie, freies und thematisches Gestalten:</strong> Kunst als Weg zurück zum Inneren – um Gesundheit zu erhalten und zu fördern, im Sinne von Resilienz, Krankheitsakzeptanz und psychischer Widerstandsfähigkeit.</p><p>„Bilder sagen mehr als tausend Worte“, sowie „die Heilkraft der Farben“ sind Erfahrungswerte in der Kunsttherapie.</p><p class="note">4–12 Personen · 90 Minuten · im Wechsel auch donnerstags abends</p>',
     'offer.2.title': 'Auszeit: Kreativabende für Freunde & Familien',
+    'offer.2.teaser': 'Kreativabende für Freunde & Familie – ohne Leistungsdruck.',
     'offer.2.body':
       '<p><strong>Donnerstag 18:00–19:30 Uhr.</strong> Viele sagen danach: „Hätte nicht gedacht, dass mir ein Bild so gut gelingt.“</p><p>Buchbar für Familie und Freunde – <strong>nicht einzeln buchbar</strong>. Es geht um Freude durch neue Erfahrungen und eine gute kreative gemeinsame Auszeit.</p><p class="note">Termine auf Anfrage</p>',
     'offer.3.title': 'Einzelsitzungen',
+    'offer.3.teaser': 'Intensiv und persönlich – flexibel nach Vereinbarung.',
     'offer.3.body':
       '<p>Intensiv und persönlich: psychosoziale und klinische Kunsttherapie in Krisen, bei Trauer oder in der Krankheitsverarbeitung – individuell auf die jeweilige Situation abgestimmt.</p><p>Im geschützten Rahmen des Ateliers oder nach Vereinbarung. Termine flexibel außerhalb der Gruppenzeiten – Preis auf Anfrage.</p>',
     'offer.4.title': 'Teambuilding & Institutionen',
+    'offer.4.teaser': 'Raus aus dem Büro, gemeinsam ein Werk gestalten.',
     'offer.4.body':
       '<p>Raus aus dem Büro, rein ins FarbenReich – Kolleginnen und Kollegen MALend ganz neu erleben. Es entsteht ein Werk mit Überraschungseffekt, mit spielerischen Regeln und echter Verbindung, das wertschätzend einen exponierten Platz in der Firma bekommen darf.</p><p class="note">Mindestens 12, maximal 18 Teilnehmer. Bei mehr als 18 Teilnehmern bitte Kontakt aufnehmen. Termine nach Absprache.</p>',
     'offer.5.title': 'Vorträge & Impulse',
+    'offer.5.teaser': 'Impulse aus über 16 Jahren klinischer Kunsttherapie.',
     'offer.5.body':
       '<p>Regelmäßige Vorträge und Impulse aus der Kunsttherapie.</p><p><strong>Warum Kunst statt nur Gespräch?</strong> Ein Einblick in Wirkung, Methoden und Erfahrungen aus über 16 Jahren klinischer Arbeit – für Einrichtungen, Fachpublikum und Interessierte. Auch Gruppen (z.&nbsp;B. Senioren) und palliative Begleitung aus langjähriger Praxis.</p><p class="note">Dauer, Ort und Honorar nach Absprache – Konzept und Material inklusive.</p>',
     'atelier.kicker': "Ausprobieren",
@@ -210,19 +216,25 @@ window.I18N_MESSAGES = {
     'kt.audience': 'For companies · for clinics & institutions · for experts & interested visitors',
     'kt.offers.title': 'Which offer fits?',
     'kt.offers.sub': 'Five services – click for the full description.',
+    'kt.offers.kicker': 'Formats',
     'offer.1.title': 'Group therapy',
+    'offer.1.teaser': 'Guided group painting – Tuesday mornings.',
     'offer.1.body':
       '<p><strong>Primarily Tuesday 11:00–12:30</strong> – group times rotate and are also offered on Thursday evenings on alternate weeks. Many people already know art therapy in groups, value its effectiveness – and are looking for an open place. Also for anyone who wants to work on individual themes through resource-oriented visual methods – with professional support.</p><p><strong>Group therapy, free and themed creating:</strong> art as a path inward – to maintain and support health, in the sense of resilience, illness acceptance, and psychological strength.</p><p>“A picture is worth a thousand words” and “the healing power of colour” are lived experiences in art therapy.</p><p class="note">4–12 people · 90 minutes · on alternate weeks also Thursday evenings</p>',
     'offer.2.title': 'Downtime: creative evenings for friends & family',
+    'offer.2.teaser': 'Creative evenings for friends & family – no pressure to perform.',
     'offer.2.body':
       '<p><strong>Thursday 18:00–19:30.</strong> Many say afterwards: “I never thought I could create something like that.”</p><p>Bookable for family and friends – <strong>not individually</strong>. About joy through new experiences and a good shared creative break.</p><p class="note">Dates on request</p>',
     'offer.3.title': 'One-to-one sessions',
+    'offer.3.teaser': 'Intensive and personal – flexible by arrangement.',
     'offer.3.body':
       '<p>Intensive and personal: psychosocial and clinical art therapy in crisis, grief, or illness – tailored to each situation.</p><p>In the atelier or by arrangement. Flexible times outside group slots – price on request.</p>',
     'offer.4.title': 'Team building & institutions',
+    'offer.4.teaser': 'Out of the office – create a shared artwork together.',
     'offer.4.body':
       '<p>Out of the office, into a world of colour – experience colleagues in a whole new, creative way. A shared artwork with a surprise effect, playful rules, and real connection – worthy of a visible place in the company.</p><p class="note">Minimum 12, maximum 18 participants. For more than 18, please get in touch. Dates by arrangement.</p>',
     'offer.5.title': 'Talks & impulses',
+    'offer.5.teaser': 'Impulses from over 16 years of clinical art therapy.',
     'offer.5.body':
       '<p>Regular talks and impulses from art therapy.</p><p><strong>Why art instead of conversation alone?</strong> An insight into methods, effects, and experience from over 16 years of clinical work – for institutions, professionals, and interested audiences. Including groups (e.g. seniors) and palliative support from long practice.</p><p class="note">Duration, venue, and fee by arrangement – concept and materials included.</p>',
     'atelier.kicker': 'Try the mini studio',
@@ -287,6 +299,7 @@ window.I18N_PAGE_BINDINGS = {
   ],
   therapy: [
     { sel: '.page-kunsttherapie .actions .btn.outline', key: 'btn.inquiry', attr: 'text' },
+    { sel: '#angebote .section-intro .kicker', key: 'kt.offers.kicker', attr: 'text' },
     { sel: '#atelier .section-intro .kicker', key: 'kt.praxis.kicker', attr: 'text' },
     { sel: '#atelier .section-intro h2', key: 'kt.praxis.title', attr: 'text' },
     { sel: '#atelier .section-intro .sub', key: 'kt.praxis.sub', attr: 'html' },

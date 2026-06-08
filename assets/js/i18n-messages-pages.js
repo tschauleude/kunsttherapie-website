@@ -62,8 +62,8 @@
       'home.praxis.link':
         '<p class="note" style="margin-top:1rem">Raum, Fotos &amp; Details: <a href="kunsttherapie.html#atelier">Atelier entdecken</a></p>',
       'home.praxis.more': 'Mehr zum Atelier',
-      'home.hero.imgAlt': 'Kreativer Außenarbeitsplatz – Gestalten im Grünen',
-      'home.gallery.img2.alt': 'Kunsttherapeutisches Gestalten in der Klinik',
+      'home.hero.imgAlt': 'Atelier – gemeinsam malen und gestalten in Paderborn',
+      'home.gallery.img2.alt': 'Kunsttherapeutisches Bild – Natur und Kreativität',
       'home.gallery.img3.alt': 'Abstraktes Aquarell – Farben und Formen',
 
       'kt.effects.title': 'Wie Kunsttherapie wirkt',
@@ -517,8 +517,8 @@
       'home.praxis.link':
         '<p class="note" style="margin-top:1rem">Space, photos &amp; details: <a href="kunsttherapie.html#atelier">Explore the atelier</a></p>',
       'home.praxis.more': 'More about the atelier',
-      'home.hero.imgAlt': 'Creative outdoor workspace – creating in nature',
-      'home.gallery.img2.alt': 'Art therapy in a clinical setting',
+      'home.hero.imgAlt': 'Atelier – painting and creating together in Paderborn',
+      'home.gallery.img2.alt': 'Art therapy image – nature and creativity',
       'home.gallery.img3.alt': 'Abstract watercolour – colours and shapes',
 
       'kt.effects.title': 'How art therapy works',

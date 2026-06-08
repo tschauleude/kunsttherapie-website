@@ -26,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Kontakt – Kunsttherapie Paderborn"/>
   <meta name="twitter:description" content="Nachricht senden, anrufen oder Anfahrt zum Atelier Otto-Stadler-Straße 23c, Paderborn."/>
-  <link rel="stylesheet" href="assets/css/style.8f5da864.css"/>
+  <link rel="stylesheet" href="assets/css/style.bf6db863.css"/>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -102,15 +102,15 @@
 
 <main id="main" class="container section">
   <div class="section-intro center page-hero">
-    <div class="kicker">Kontakt</div>
-    <h1>Fragen, Anfragen &amp; Termine</h1>
-    <p class="sub center">Für einen festen Termin nutze die <a href="buchung.html">Online-Buchung</a>. Für alles andere: kurz schreiben oder anrufen.</p>
+    <div class="kicker" data-i18n="contact.kicker">Kontakt</div>
+    <h1 data-i18n="contact.title">Fragen, Anfragen &amp; Termine</h1>
+    <p class="sub center" data-i18n-html="contact.sub">Für einen festen Termin nutze die <a href="buchung.html">Online-Buchung</a>. Für alles andere: kurz schreiben oder anrufen.</p>
   </div>
 
   <div class="contact-layout">
     <div class="card contact-card">
-      <h2>Erreichbarkeit</h2>
-      <ul class="contact-list">
+      <h2 data-i18n="contact.reach.title">Erreichbarkeit</h2>
+      <ul class="contact-list" data-i18n-html="contact.reach.list">
         <li><strong>Adresse</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li>
         <li><strong>Telefon</strong><br><a href="tel:+495251690111">05251-690111</a></li>
         <li><strong>Mobil</strong><br><a href="tel:+491704790790">0170-4790790</a></li>
@@ -118,40 +118,40 @@
       </ul>
       <p class="note" data-i18n="contact.hours">Atelier ab 1. Juli 2026 · Di 11:00–12:30 · Do 18:00–19:30</p>
       <p class="actions" style="margin-top:1.25rem">
-        <a class="btn primary" href="buchung.html">Online-Termin buchen</a>
-        <a class="btn outline" href="kunsttherapie.html">Angebote</a>
+        <a class="btn primary" href="buchung.html" data-i18n="contact.book">Online-Termin buchen</a>
+        <a class="btn outline" href="kunsttherapie.html" data-i18n="contact.offers">Angebote</a>
       </p>
     </div>
 
     <div class="card contact-card">
-      <h2>Nachricht senden</h2>
+      <h2 data-i18n="contact.form.title">Nachricht senden</h2>
       <form id="contactForm" class="contact-form">
-        <label for="contactName">Name *</label>
+        <label for="contactName" data-i18n="form.name">Name *</label>
         <input type="text" id="contactName" name="name" required autocomplete="name"/>
 
-        <label for="contactEmail">E-Mail *</label>
+        <label for="contactEmail" data-i18n="form.email">E-Mail *</label>
         <input type="email" id="contactEmail" name="email" required autocomplete="email"/>
 
-        <label for="contactPhone">Telefon (optional)</label>
+        <label for="contactPhone" data-i18n="form.phone">Telefon (optional)</label>
         <input type="tel" id="contactPhone" name="phone" autocomplete="tel"/>
 
-        <label for="contactMessage">Nachricht *</label>
-        <textarea id="contactMessage" name="message" rows="5" required placeholder="Worum geht es? z. B. Gruppe, Auszeit, Teambuilding …"></textarea>
+        <label for="contactMessage" data-i18n="contact.form.messageLabel">Nachricht *</label>
+        <textarea id="contactMessage" name="message" rows="5" required data-i18n-placeholder="contact.messagePlaceholder" placeholder="Worum geht es? z. B. Gruppe, Auszeit, Teambuilding …"></textarea>
 
-        <p class="note">Angaben werden nur zur Bearbeitung der Anfrage genutzt (<a href="datenschutz.html"><span data-i18n="footer.privacy">Datenschutz</span></a>).</p>
-        <button type="submit" class="btn primary">Nachricht senden</button>
+        <p class="note" data-i18n-html="contact.privacyNote">Angaben werden nur zur Bearbeitung der Anfrage genutzt (<a href="datenschutz.html"><span data-i18n="footer.privacy">Datenschutz</span></a>).</p>
+        <button type="submit" class="btn primary" data-i18n="contact.submit">Nachricht senden</button>
       </form>
       <div id="contactStatus" class="booking-alert" role="status" hidden></div>
     </div>
   </div>
 
   <section class="section" aria-labelledby="anfahrt-heading">
-    <h2 id="anfahrt-heading">Anfahrt</h2>
+    <h2 id="anfahrt-heading" data-i18n="contact.map.title">Anfahrt</h2>
     <div class="card map-consent-wrap kt-map-wrap map-card">
       <div class="map-placeholder" data-map-placeholder>
-        <p>Die Karte wird nur mit Einwilligung geladen (Google Maps, siehe <a href="datenschutz.html"><span data-i18n="footer.privacy">Datenschutz</span></a>).</p>
-        <button type="button" class="btn primary" data-enable-maps>Karte anzeigen</button>
-        <a class="btn outline" href="https://www.google.com/maps/search/?api=1&amp;query=Otto-Stadler-Straße+23c+33102+Paderborn" target="_blank" rel="noopener noreferrer">In Google Maps öffnen</a>
+        <p data-i18n-html="map.consent">Die Karte wird nur mit Einwilligung geladen (Google Maps, siehe <a href="datenschutz.html"><span data-i18n="footer.privacy">Datenschutz</span></a>).</p>
+        <button type="button" class="btn primary" data-enable-maps data-i18n="map.show">Karte anzeigen</button>
+        <a class="btn outline" href="https://www.google.com/maps/search/?api=1&amp;query=Otto-Stadler-Straße+23c+33102+Paderborn" target="_blank" rel="noopener noreferrer" data-i18n="map.open">In Google Maps öffnen</a>
       </div>
       <iframe
         hidden
@@ -200,7 +200,7 @@
     </div>
   </footer>
 
-  <script src="assets/js/site-core.ae86c1ec.js" defer></script>
+  <script src="assets/js/site-core.291477bd.js" defer></script>
   <script src="assets/js/i18n-messages-shared.js" defer></script>
   <script src="assets/js/i18n-messages-contact.js" defer></script>
   <script src="assets/js/contact.js" defer></script>
