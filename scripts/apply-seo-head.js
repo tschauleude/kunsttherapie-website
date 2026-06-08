@@ -9,6 +9,9 @@ const path = require('path');
 const ORIGIN = 'https://kunsttherapie.mkmpb.de';
 const SITE_NAME = 'Kunsttherapie Paderborn';
 
+const OG_IMAGE = `${ORIGIN}/assets/img/Gruppen-und-Einzeltherapie-768x524.jpg`;
+const OG_IMAGE_ALT = 'Kunsttherapie in Paderborn – Gruppen- und Einzeltherapie';
+
 const PAGES = [
   { file: 'index.html', path: '/', title: 'Kunsttherapie Paderborn', desc: 'Kunsttherapie in Paderborn: Di 11:00–12:30 und Do 18:00–19:30. Gruppen, Auszeit, Einzel, Teambuilding – Termin online buchen.' },
   { file: 'kunsttherapie.html', path: '/kunsttherapie', title: 'Kunsttherapie & Angebote – Paderborn', desc: 'Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn.' },
@@ -18,6 +21,7 @@ const PAGES = [
   { file: 'preise.html', path: '/preise', title: 'Preise – Kunsttherapie Paderborn', desc: 'Transparente Preise für Gruppensitzungen ab 55 €, Programme und Einzelsitzungen auf Anfrage.' },
   { file: 'neuigkeiten.html', path: '/neuigkeiten', title: 'Neuigkeiten – Kunsttherapie Paderborn', desc: 'Aktuelles aus dem Atelier: Termine, Raum und Ankündigungen.' },
   { file: 'events.html', path: '/events', title: 'Veranstaltungen – Kunsttherapie Paderborn', desc: 'Workshops, Teambuilding und Veranstaltungen in Paderborn.' },
+  { file: 'atelier.html', path: '/atelier', title: 'Mini-Atelier – Kunsttherapie Paderborn', desc: 'Ausprobieren im Mini-Atelier: Malen, Zeichnen und Kollage – optional anonym an das Atelier senden.' },
   { file: 'impressum.html', path: '/impressum', title: 'Impressum – Kunsttherapie Paderborn', desc: 'Impressum der Website Kunsttherapie Paderborn.' },
   { file: 'datenschutz.html', path: '/datenschutz', title: 'Datenschutz – Kunsttherapie Paderborn', desc: 'Datenschutzerklärung der Website Kunsttherapie Paderborn.' },
 ];
@@ -28,15 +32,24 @@ function buildSeoBlock(page) {
   const url = ORIGIN + (page.path === '/' ? '/' : page.path);
   return `
   <link rel="canonical" href="${url}"/>
+  <link rel="alternate" hreflang="de" href="${url}"/>
+  <link rel="alternate" hreflang="en" href="${url}"/>
+  <link rel="alternate" hreflang="x-default" href="${url}"/>
   <meta property="og:type" content="website"/>
   <meta property="og:locale" content="de_DE"/>
   <meta property="og:site_name" content="${SITE_NAME}"/>
   <meta property="og:title" content="${page.title}"/>
   <meta property="og:description" content="${page.desc}"/>
   <meta property="og:url" content="${url}"/>
-  <meta name="twitter:card" content="summary"/>
+  <meta property="og:image" content="${OG_IMAGE}"/>
+  <meta property="og:image:width" content="768"/>
+  <meta property="og:image:height" content="524"/>
+  <meta property="og:image:alt" content="${OG_IMAGE_ALT}"/>
+  <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="${page.title}"/>
-  <meta name="twitter:description" content="${page.desc}"/>`;
+  <meta name="twitter:description" content="${page.desc}"/>
+  <meta name="twitter:image" content="${OG_IMAGE}"/>
+  <meta name="twitter:image:alt" content="${OG_IMAGE_ALT}"/>`;
 }
 
 PAGES.forEach((page) => {

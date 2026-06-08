@@ -10,6 +10,7 @@
     "sync-admin": "cp admin.html public/admin.html",
     "sync-chrome": "node scripts/build-chrome.js && node scripts/apply-chrome.js",
     "patch-meta": "node scripts/patch-head-meta.js",
+    "upgrade-seo": "node scripts/upgrade-seo.js",
     "validate-i18n": "node scripts/validate-i18n.js",
     "qa": "node scripts/validate-i18n.js && node --check assets/js/*.js"
   },

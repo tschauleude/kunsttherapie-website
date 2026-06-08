@@ -7,6 +7,8 @@
   const origin = 'https://kunsttherapie.mkmpb.de';
   const path = window.location.pathname.replace(/\/$/, '') || '/';
   const pageUrl = origin + (path === '/' ? '/' : path);
+  const lang = document.documentElement.lang === 'en' ? 'en-GB' : 'de-DE';
+  const ogImage = origin + '/assets/img/Gruppen-und-Einzeltherapie-768x524.jpg';
 
   const localBusiness = {
     '@context': 'https://schema.org',
@@ -16,7 +18,7 @@
     description:
       'Psychosoziale und klinische Kunsttherapie in Paderborn: Gruppen Dienstag morgens, Auszeit Donnerstag abends, Einzelsitzungen und Teambuilding.',
     url: origin + '/',
-    image: origin + '/assets/img/Gruppen-und-Einzeltherapie-768x524.jpg',
+    image: ogImage,
     telephone: '+49-5251-690111',
     email: 'info@kunsttherapie-pb.de',
     priceRange: '€€',
@@ -52,6 +54,7 @@
     ],
     employee: {
       '@type': 'Person',
+      name: 'Martina Schwierzke',
       jobTitle: 'Psychosoziale und klinische Kunsttherapeutin',
     },
     sameAs: [],
@@ -67,7 +70,11 @@
       document.querySelector('meta[name="description"]')?.getAttribute('content') || undefined,
     isPartOf: { '@id': origin + '/#website' },
     about: { '@id': origin + '/#atelier' },
-    inLanguage: 'de-DE',
+    inLanguage: lang,
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      url: ogImage,
+    },
   };
 
   const website = {
@@ -77,7 +84,7 @@
     url: origin + '/',
     name: 'Kunsttherapie Paderborn',
     description: 'Website des Kunsttherapie-Ateliers in Paderborn',
-    inLanguage: 'de-DE',
+    inLanguage: ['de-DE', 'en-GB'],
     publisher: { '@id': origin + '/#atelier' },
   };
 
@@ -88,6 +95,19 @@
 
   const script = document.createElement('script');
   script.type = 'application/ld+json';
+  script.id = 'kt-schema-org';
   script.textContent = JSON.stringify(graph);
   document.head.appendChild(script);
+
+  document.addEventListener('kt-lang-change', function (e) {
+    const nextLang = e.detail?.lang === 'en' ? 'en-GB' : 'de-DE';
+    try {
+      const data = JSON.parse(script.textContent);
+      const page = data['@graph']?.find((n) => n['@type'] === 'WebPage');
+      if (page) page.inLanguage = nextLang;
+      script.textContent = JSON.stringify(data);
+    } catch (_) {
+      /* ignore */
+    }
+  });
 })();
