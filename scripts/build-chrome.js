@@ -15,15 +15,6 @@ const HEADER = `  <a class="skip-link" href="#main">Zum Inhalt springen</a>
         <span class="name">Martina Schwierzke</span>
         <span class="title">Kunsttherapie Paderborn</span>
       </a>
-      <div class="header-tools">
-        <div class="lang-switch" role="group" aria-label="Sprache wählen">
-          <span class="lang-switch-hint" data-i18n="lang.hint">Sprache</span>
-          <div class="lang-switch-btns">
-            <button type="button" class="lang-switch-btn is-active" data-lang="de" aria-pressed="true">DE</button>
-            <button type="button" class="lang-switch-btn" data-lang="en" aria-pressed="false">EN</button>
-          </div>
-        </div>
-      </div>
       <nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
         <ul>
           <li><a href="ueber-mich.html" data-nav="ansatz">Mein Ansatz</a></li>
@@ -34,6 +25,15 @@ const HEADER = `  <a class="skip-link" href="#main">Zum Inhalt springen</a>
           <li><a href="kontakt.html" data-nav="kontakt">Kontakt</a></li>
         </ul>
       </nav>
+      <div class="header-tools">
+        <div class="lang-switch" role="group" aria-label="Sprache wählen">
+          <span class="lang-switch-hint" data-i18n="lang.hint">Sprache</span>
+          <div class="lang-switch-btns">
+            <button type="button" class="lang-switch-btn is-active" data-lang="de" aria-pressed="true">DE</button>
+            <button type="button" class="lang-switch-btn" data-lang="en" aria-pressed="false">EN</button>
+          </div>
+        </div>
+      </div>
     </div>
   </header>`;
 

@@ -127,7 +127,7 @@
       'about.quote': '„Weil ich weiß, dass Zeit endlich ist, lebe ich lieber jetzt."',
       'about.qual.title': 'Qualifikationen',
       'about.qual.list':
-        '<ul style="color:var(--muted); line-height:1.8"><li>Psychosoziale Kunsttherapeutin (2006–2009, anerkanntes Institut)</li><li>Klinische Kunsttherapeutin (2010)</li><li>Heilpraktikerin für Psychotherapie (2011)</li><li>Gestalterin für visuelles Marketing, IHK (2007)</li></ul>',
+        '<li>Psychosoziale Kunsttherapeutin (2006–2009, anerkanntes Institut)</li><li>Klinische Kunsttherapeutin (2010)</li><li>Heilpraktikerin für Psychotherapie (2011)</li><li>Gestalterin für visuelles Marketing, IHK (2007)</li>',
       'about.offers': 'Kunsttherapie & Angebote',
       'about.imgAlt': 'Martina Schwierzke – Kunsttherapeutin in Paderborn',
 
@@ -557,7 +557,7 @@
       'about.quote': '"Because I know time is finite, I prefer to live now."',
       'about.qual.title': 'Qualifications',
       'about.qual.list':
-        '<ul style="color:var(--muted); line-height:1.8"><li>Psychosocial art therapist (2006–2009, accredited institute)</li><li>Clinical art therapist (2010)</li><li>Practitioner for psychotherapy (2011)</li><li>Visual marketing designer, Chamber of Commerce (2007)</li></ul>',
+        '<li>Psychosocial art therapist (2006–2009, accredited institute)</li><li>Clinical art therapist (2010)</li><li>Practitioner for psychotherapy (2011)</li><li>Visual marketing designer, Chamber of Commerce (2007)</li>',
       'about.offers': 'Art therapy & services',
       'about.imgAlt': 'Martina Schwierzke – art therapist in Paderborn',
 
