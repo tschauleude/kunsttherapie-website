@@ -1,0 +1,21 @@
+{
+  "name": "Kunsttherapie Paderborn",
+  "short_name": "Kunsttherapie",
+  "description": "Psychosoziale Kunsttherapie in Paderborn",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f1ea",
+  "theme_color": "#4a6e6a",
+  "icons": [
+    {
+      "src": "/assets/img/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

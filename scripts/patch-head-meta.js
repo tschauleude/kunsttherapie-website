@@ -17,9 +17,13 @@ const META = {
 };
 
 const HEAD_EXTRA = `
-  <meta name="theme-color" content="#557a76"/>
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
-  <link rel="apple-touch-icon" href="assets/img/favicon.svg"/>`;
+  <meta name="theme-color" content="#4a6e6a"/>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/img/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/img/favicon-16x16.png" sizes="16x16" type="image/png">
+  <link rel="shortcut icon" href="assets/img/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="assets/img/site.webmanifest">`;
 
 const ROOT = path.join(__dirname, '..');
 
