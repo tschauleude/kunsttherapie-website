@@ -2,7 +2,13 @@
 /**
  * Frontend build: i18n split, JS bundle, image WebP, hashed assets, HTML patches.
  * Run: node scripts/build-frontend.js
+ * Skip (e.g. emergency restart): SKIP_FRONTEND_BUILD=1 npm start
  */
+if (process.env.SKIP_FRONTEND_BUILD === '1') {
+  console.log('SKIP_FRONTEND_BUILD=1 — skipping frontend build');
+  process.exit(0);
+}
+
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
