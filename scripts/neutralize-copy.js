@@ -39,7 +39,7 @@ const pairs = [
   ['Schreib uns gerne', 'Gern per Kontakt'],
   ['bleib gern auf dem Laufenden', 'auf dem Laufenden bleiben'],
   ['Schreib mir direkt', 'Gern direkt anfragen'],
-  ['sie bestätigt den Termin', 'Martina bestätigt den Termin'],
+  ['Martina bestätigt den Termin', 'Die Anfrage wird per E-Mail bestätigt'],
   ['Danach kannst du ihn', 'Danach lässt sich der Termin'],
   ['kannst du Darstellungseinstellungen', 'sind Darstellungseinstellungen möglich'],
   ['Du kannst deine Einwilligung', 'Die Einwilligung lässt sich'],

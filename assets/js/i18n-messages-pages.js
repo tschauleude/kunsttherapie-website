@@ -10,13 +10,13 @@
       'btn.message': 'Nachricht schicken',
       'form.phone': 'Telefon (optional)',
 
-      'meta.home.title': 'Kunsttherapie Paderborn | Martina Schwierzke',
+      'meta.home.title': 'Kunsttherapie Paderborn',
       'meta.home.description':
-        'Kunsttherapie in Paderborn: Dienstag morgens und Donnerstag abends. Gruppen, Auszeit, Einzel, Teambuilding – Termin online buchen.',
+        'Kunsttherapie in Paderborn: Di 11:00–12:30 und Do 18:00–19:30. Gruppen, Auszeit, Einzel, Teambuilding – Termin online buchen.',
       'meta.therapy.title': 'Kunsttherapie & Angebote – Paderborn',
       'meta.therapy.description':
         'Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn.',
-      'meta.about.title': 'Über Martina Schwierzke – Kunsttherapeutin Paderborn',
+      'meta.about.title': 'Über mich – Kunsttherapeutin Paderborn',
       'meta.about.description':
         'Psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, eigenes Atelier in Paderborn.',
       'meta.booking.title': 'Termin buchen – Kunsttherapie Paderborn',
@@ -34,8 +34,8 @@
       'meta.events.description': 'Workshops, Teambuilding und Veranstaltungen in Paderborn.',
       'meta.atelier.title': 'Mini-Atelier – Kunsttherapie Paderborn',
       'meta.atelier.description':
-        'Ausprobieren im Mini-Atelier: Mini-Atelier zum Malen, Zeichnen und Kollage – optional anonym an Martina senden.',
-      'meta.imprint.title': 'Impressum – Martina Schwierzke',
+        'Ausprobieren im Mini-Atelier: Malen, Zeichnen und Kollage – optional anonym an das Atelier senden.',
+      'meta.imprint.title': 'Impressum – Kunsttherapie Paderborn',
       'meta.imprint.description': 'Impressum der Website Kunsttherapie Paderborn.',
       'meta.privacy.title': 'Datenschutz – Kunsttherapie Paderborn',
       'meta.privacy.description': 'Datenschutzerklärung der Website Kunsttherapie Paderborn.',
@@ -111,12 +111,12 @@
       'kt.cta.title': 'Bereit für den ersten Schritt?',
       'kt.cta.sub': 'Termin online buchen oder kurz anfragen – Rückmeldung folgt zeitnah.',
       'kt.cta.book': 'Zum Buchungskalender',
-      'kt.cta.about': 'Über Martina',
+      'kt.cta.about': 'Über mich',
       'kt.cta.news': 'Mehr Einblicke: <a href="neuigkeiten.html">Aktuelles &amp; Neuigkeiten</a>',
       'kt.praxis.imgAlt': 'Atelier – gemeinsam malen und gestalten',
 
       'about.kicker': 'Über mich',
-      'about.name': 'Martina Schwierzke',
+      'about.name': 'Über mich',
       'about.intro':
         'Als psychosoziale und klinische Kunsttherapeutin und Heilpraktikerin für Psychotherapie arbeite ich selbstständig. Mit über 16 Jahren Erfahrung begleite ich Menschen in schwierigen Situationen – im klinischen Kontext und im eigenen Atelier.',
       'about.passion.title': 'Meine Leidenschaft',
@@ -129,12 +129,12 @@
       'about.qual.list':
         '<ul style="color:var(--muted); line-height:1.8"><li>Psychosoziale Kunsttherapeutin (2006–2009, anerkanntes Institut)</li><li>Klinische Kunsttherapeutin (2010)</li><li>Heilpraktikerin für Psychotherapie (2011)</li><li>Gestalterin für visuelles Marketing, IHK (2007)</li></ul>',
       'about.offers': 'Kunsttherapie & Angebote',
-      'about.imgAlt': 'Martina Schwierzke – Kunsttherapeutin in Paderborn',
+      'about.imgAlt': 'Kunsttherapeutin in Paderborn',
 
       'book.kicker': 'Terminbuchung',
       'book.title': 'Kennenlernen oder Sitzung buchen',
       'book.sub':
-        'Nur <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> sind buchbar (grüne Tage). Die Anfrage geht an Martina – Martina bestätigt den Termin per E-Mail. Danach lässt sich der Termin in Apple- oder Google-Kalender speichern.',
+        'Nur <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> sind buchbar (grüne Tage). Die Anfrage wird per E-Mail bestätigt. Danach lässt sich der Termin in Apple- oder Google-Kalender speichern.',
       'book.prevMonth': 'Vorheriger Monat',
       'book.nextMonth': 'Nächster Monat',
       'book.legend':
@@ -144,7 +144,7 @@
       'book.calendarAria': 'Kalender',
       'book.pickDay': 'Bitte einen Tag wählen',
       'book.slotsHint':
-        'Nur <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> – Termine à 90 Minuten.',
+        'Nur <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> – Termine à 90 Minuten.',
       'book.slotsHintDynamic':
         'Buchbar: {schedule} (je {minutes} Minuten). <strong>Nur grüne Tage</strong> im Kalender anklicken.',
       'book.formTitle': 'Angaben',
@@ -323,7 +323,7 @@
 </p>
 <p>
   <strong>Google Kalender:</strong> Termine können – nach technischer Einrichtung durch das Atelier –
-  mit dem Google-Kalender von Martina Schwierzke synchronisiert werden. Das betrifft die interne
+  mit dem Google-Kalender des Ateliers synchronisiert werden. Das betrifft die interne
   Atelierorganisation; Besucher der Website laden dabei keinen Google-Kalender auf ihrem Gerät.
   Anbieter: Google Ireland Limited / Google LLC (USA). Bei Übermittlung in die USA können
   Standardvertragsklauseln der EU greifen. Details: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Datenschutz</a>.
@@ -331,15 +331,15 @@
 <h2>5. Neuigkeiten auf der Website</h2>
 <p>
   Veröffentlichte Neuigkeiten werden vom Server ausgeliefert. Ein Hinweis-Fenster auf der Startseite merkt sich
-  lokal in deinem Browser (localStorage), welche Meldung zuletzt gesehen hast – ohne Tracking und ohne Cookies
+  lokal im Browser (localStorage), welche Meldung zuletzt gesehen wurde – ohne Tracking und ohne Cookies
   zu Werbezwecken.
 </p>
 <h2>6. Cookies & lokale Speicherung</h2>
 <p>
   <strong>Notwendig (ohne Marketing):</strong> Wir speichern die Auswahl im Cookie-Banner
   (localStorage-Schlüssel <code>kunsttherapie_consent_v1</code>) sowie optional, ob der
-  Neuigkeiten-Hinweis bereits gesehen hast.
-  Über „Barrierefreiheit“ (unten links oder im Footer) sind Darstellungseinstellungen möglich wählen;
+  Neuigkeiten-Hinweis bereits gesehen wurde.
+  Über „Barrierefreiheit“ (unten links oder im Footer) sind Darstellungseinstellungen möglich;
   diese werden nur lokal gespeichert (<code>kunsttherapie-a11y</code>, ohne Tracking).
 </p>
 <p>
@@ -355,13 +355,13 @@
 </p>
 <h2>7. Admin-Bereich</h2>
 <p>
-  Der geschützte Bereich <code>/admin</code> ist nur für Martina Schwierzke bestimmt.
+  Der geschützte Bereich <code>/admin</code> ist nur für autorisierte Nutzer des Ateliers bestimmt.
   Dort wird eine technisch notwendige Session (Login-Cookie) verwendet. Besucher der öffentlichen
   Website erhalten dieses Cookie nicht.
 </p>
 <h2>8. Kontakt per E-Mail oder Telefon</h2>
 <p>
-  Bei Kontakt per E-Mail oder Telefon kontaktierst, verarbeiten wir die mitgeteilten Daten
+  Bei Kontakt per E-Mail oder Telefon werden die mitgeteilten Daten verarbeitet
   zur Bearbeitung der Anfrage (Art. 6 Abs. 1 lit. b oder lit. f DSGVO).
 </p>
 <h2>9. Betroffenenrechte</h2>
@@ -440,13 +440,13 @@
       'btn.message': 'Send message',
       'form.phone': 'Phone (optional)',
 
-      'meta.home.title': 'Art Therapy Paderborn | Martina Schwierzke',
+      'meta.home.title': 'Art Therapy Paderborn',
       'meta.home.description':
         'Art therapy in Paderborn: Tuesday mornings and Thursday evenings. Groups, downtime, one-to-one, team building – book online.',
       'meta.therapy.title': 'Art Therapy & Services – Paderborn',
       'meta.therapy.description':
         'Groups Tuesday mornings, downtime Thursday evenings, team building and one-to-one sessions. Studio at Otto-Stadler-Straße 23c, Paderborn.',
-      'meta.about.title': 'About Martina Schwierzke – Art Therapist Paderborn',
+      'meta.about.title': 'About me – Art Therapist Paderborn',
       'meta.about.description':
         'Psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, own atelier in Paderborn.',
       'meta.booking.title': 'Book appointment – Art Therapy Paderborn',
@@ -464,8 +464,8 @@
       'meta.events.description': 'Workshops, team building, and events in Paderborn.',
       'meta.atelier.title': 'Mini Studio – Art Therapy Paderborn',
       'meta.atelier.description':
-        'Try the mini studio: mini studio for painting, drawing, and collage – optionally send your work to Martina anonymously.',
-      'meta.imprint.title': 'Imprint – Martina Schwierzke',
+        'Try the mini studio: painting, drawing, and collage – optionally send artwork to the atelier anonymously.',
+      'meta.imprint.title': 'Imprint – Art Therapy Paderborn',
       'meta.imprint.description': 'Legal imprint for the Art Therapy Paderborn website.',
       'meta.privacy.title': 'Privacy – Art Therapy Paderborn',
       'meta.privacy.description': 'Privacy policy for the Art Therapy Paderborn website.',
@@ -541,12 +541,12 @@
       'kt.cta.title': 'Ready for the first step?',
       'kt.cta.sub': 'Book online or send a quick enquiry – A reply follows soon soon.',
       'kt.cta.book': 'Go to booking calendar',
-      'kt.cta.about': 'About Martina',
+      'kt.cta.about': 'About me',
       'kt.cta.news': 'More insights: <a href="neuigkeiten.html">News &amp; updates</a>',
       'kt.praxis.imgAlt': 'Atelier – painting and creating together',
 
       'about.kicker': 'About me',
-      'about.name': 'Martina Schwierzke',
+      'about.name': 'Über mich',
       'about.intro':
         'As a psychosocial and clinical art therapist and practitioner for psychotherapy, I work independently. With over 16 years of experience, I support people in difficult situations – in clinical settings and in private practice.',
       'about.passion.title': 'My passion',
@@ -559,12 +559,12 @@
       'about.qual.list':
         '<ul style="color:var(--muted); line-height:1.8"><li>Psychosocial art therapist (2006–2009, accredited institute)</li><li>Clinical art therapist (2010)</li><li>Practitioner for psychotherapy (2011)</li><li>Visual marketing designer, Chamber of Commerce (2007)</li></ul>',
       'about.offers': 'Art therapy & services',
-      'about.imgAlt': 'Martina Schwierzke – art therapist in Paderborn',
+      'about.imgAlt': 'Art therapist in Paderborn',
 
       'book.kicker': 'Booking',
       'book.title': 'Book an introductory or regular session',
       'book.sub':
-        'Only <strong>Tuesday mornings</strong> and <strong>Thursday evenings</strong> can be booked (green days). The request goes to Martina – she confirms by email. The appointment can then be saved the appointment in Apple or Google Calendar.',
+        'Only <strong>Tue 11:00–12:30</strong> and <strong>Thu 18:00–19:30</strong> can be booked (green days). The request is confirmed by email. The appointment can then be saved in Apple or Google Calendar.',
       'book.prevMonth': 'Previous month',
       'book.nextMonth': 'Next month',
       'book.legend':
@@ -752,7 +752,7 @@
 </p>
 <p>
   <strong>Google Calendar:</strong> Appointments may – once set up technically by the practice –
-  be synchronised with Martina Schwierzke's Google Calendar. This affects internal
+  be synchronised with the atelier Google Calendar. This affects internal
   practice organisation; website visitors do not load Google Calendar on their device.
   Provider: Google Ireland Limited / Google LLC (USA). Transfers to the USA may rely on
   EU standard contractual clauses. Details: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy</a>.
@@ -782,7 +782,7 @@
 </p>
 <h2>7. Admin area</h2>
 <p>
-  The protected area <code>/admin</code> is intended for Martina Schwierzke only.
+  The protected area <code>/admin</code> is intended for authorised atelier users only.
   A technically necessary session (login cookie) is used there. Visitors to the public
   website do not receive this cookie.
 </p>
