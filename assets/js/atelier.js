@@ -559,7 +559,7 @@
     }
 
     if (!strokes.length && !collageItems.length) {
-      setStatus('Bitte erst etwas gestalten, bevor du sendest.', 'error');
+      setStatus('Bitte erst etwas gestalten, bevor gesendet wird.', 'error');
       return;
     }
 

@@ -75,7 +75,7 @@
         '<p>Nein – Vorkenntnisse sind nicht nötig. Entscheidend ist, dass sich das Gestalten stimmig anfühlt. <strong>Ausprobieren lohnt sich – der Überraschungseffekt gehört dazu.</strong></p>',
       'kt.faq3.q': 'Materialien & Methoden',
       'kt.faq3.a':
-        '<p>Die Materialien sind sehr facettenreich: Pastellkreide, Collagen, Malen mit flüssigen Farben wie Gouache, Aquarell und Acryl, Zeichnen und Plastizieren in Ton. Regelmäßige Gruppen <strong>Dienstag 11:00–12:30</strong>, Auszeit und Workshops <strong>Donnerstag 18:00–19:30</strong> – Gruppenzeiten rotierend, auch donnerstags am frühen Abend möglich.</p>',
+        '<p>Die Materialien sind sehr facettenreich: Pastellkreide, Collagen, Malen mit flüssigen Farben wie Gouache, Aquarell und Acryl, Zeichnen und Plastizieren in Ton. Regelmäßige Gruppen <strong>Dienstag 11:00–12:30</strong>, Auszeit und Workshops <strong>Donnerstag 18:00–19:30</strong>. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.</p>',
       'kt.faq4.q': 'Methoden & Themen',
       'kt.faq4.a':
         '<ul><li>Raum für nicht gelebte Trauer – z.&nbsp;B. um ein Enkelkind</li><li>Hilfe bei chronischen Schmerzen</li><li>Vision Board: Vorstellungskraft, Klarheit und Struktur finden</li><li>Achtsamkeit malend – die Umwelt bewusst wahrnehmen; Meditationstechniken für innere Ruhe</li><li>Positiver Flow und Techniken erleben</li></ul>',
@@ -87,7 +87,7 @@
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
       'kt.praxis.headline': 'Geschützter Ort in Paderborn',
       'kt.praxis.p1':
-        'Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen. Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag 11:00–12:30</strong> für Gruppen, <strong>Donnerstag 18:00–19:30</strong> für Auszeit und Workshops.',
+        'Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen. Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag 11:00–12:30</strong> für Gruppen, <strong>Donnerstag 18:00–19:30</strong> für Auszeit und Workshops. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.',
       'kt.praxis.p2':
         '<strong>Im Atelier:</strong> helle, ruhige Atmosphäre, Materialien vor Ort, kleine Gruppen, klare Struktur ohne Leistungsdruck. Parken und Anreise mit ÖPNV sind unkompliziert – Details zur Anfahrt siehe unten.',
       'kt.praxis.schedule1': '<strong>Dienstag 11:00–12:30</strong> · Gruppentherapie, professionelles Setting',
@@ -103,7 +103,7 @@
         'Der Raum wird weiter ausgebaut und auf der Website präsentiert – auf dem Laufenden bleiben.',
       'kt.highlight4.title': 'Ab Juli 2026',
       'kt.highlight4.text':
-        'Regelmäßig <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> – Termine online oder per Anfrage.',
+        'Regelmäßig <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> – Gruppenzeiten rotieren, im Wechsel auch donnerstags abends. Termine online oder per Anfrage.',
       'kt.location.title': 'Anfahrt & Kontakt vor Ort',
       'kt.location.address': '<strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn',
       'kt.location.phone':
@@ -324,8 +324,8 @@
 <h2>2. Kurzüberblick</h2>
 <p>
   Diese Website setzt <strong>kein Besucher-Tracking</strong> (kein Google Analytics, keine Werbe-Pixel) ein.
-  Wir speichern keine Marketing-Profile. Daten werden nur übermittelt, wenn etwas aktiv mitteilst
-  (z.&nbsp;B. Terminbuchung oder E-Mail) oder bei Zustimmung zu optionalen Diensten wie Google Maps zustimmst.
+  Wir speichern keine Marketing-Profile. Daten werden nur übermittelt bei aktiver Mitteilung
+  (z.&nbsp;B. Terminbuchung oder E-Mail) oder nach Zustimmung zu optionalen Diensten wie Google Maps.
 </p>
 <h2>3. Hosting</h2>
 <p>
@@ -336,7 +336,7 @@
 </p>
 <h2>4. Terminbuchung</h2>
 <p>
-  Bei einer Online-Terminbuchung, speichern wir die eingegebenen Daten
+  Bei einer Online-Terminbuchung speichern wir die eingegebenen Daten
   (Name, E-Mail, optional Telefon und Nachricht, gewählter Termin) in einer Datenbank auf unserem Server,
   um den Termin zu verwalten und zur Kontaktaufnahme.
 </p>
@@ -529,7 +529,7 @@
         '<p>No prior experience needed. What matters is that creating feels right. <strong>Curiosity welcome – surprise is part of the process.</strong></p>',
       'kt.faq3.q': 'Materials & methods',
       'kt.faq3.a':
-        '<p>Materials are richly varied: pastel chalk, collage, painting with gouache, watercolour, and acrylic, drawing and clay work. Regular groups <strong>Tuesday 11:00–12:30</strong>, downtime and workshops <strong>Thursday 18:00–19:30</strong> – rotating group times, Thursday early evening also possible.</p>',
+        '<p>Materials are richly varied: pastel chalk, collage, painting with gouache, watercolour, and acrylic, drawing and clay work. Regular groups <strong>Tuesday 11:00–12:30</strong>, downtime and workshops <strong>Thursday 18:00–19:30</strong>. Group times rotate: on alternate weeks also on Thursday evenings.</p>',
       'kt.faq4.q': 'Methods & themes',
       'kt.faq4.a':
         '<ul><li>Space for unlived grief – e.g. around a grandchild</li><li>Support with chronic pain</li><li>Vision board: imagination, clarity, and structure</li><li>Mindful painting – perceiving the environment consciously; meditation techniques for inner calm</li><li>Positive flow and creative techniques</li></ul>',
@@ -541,7 +541,7 @@
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
       'kt.praxis.headline': 'A safe place in Paderborn',
       'kt.praxis.p1':
-        'The space has a welcoming atmosphere, a touch of green with a terrace, and everything needed to feel at home quickly. Room to paint and talk in between – <strong>Tuesday 11:00–12:30</strong> for groups, <strong>Thursday 18:00–19:30</strong> for downtime and workshops.',
+        'The space has a welcoming atmosphere, a touch of green with a terrace, and everything needed to feel at home quickly. Room to paint and talk in between – <strong>Tuesday 11:00–12:30</strong> for groups, <strong>Thursday 18:00–19:30</strong> for downtime and workshops. Group times rotate: on alternate weeks also on Thursday evenings.',
       'kt.praxis.p2':
         '<strong>What to expect:</strong> a bright, calm atmosphere, materials on site, small groups, clear structure without pressure to perform. Parking and public transport are straightforward – directions below.',
       'kt.praxis.schedule1': '<strong>Tuesday 11:00–12:30</strong> · Group therapy, professional setting',
@@ -557,7 +557,7 @@
         'The space is being developed further and shown on the website – stay tuned for updates.',
       'kt.highlight4.title': 'From July 2026',
       'kt.highlight4.text':
-        'Regularly <strong>Tuesday 11:00–12:30</strong> and <strong>Thursday 18:00–19:30</strong> – book online or enquire.',
+        'Regularly <strong>Tuesday 11:00–12:30</strong> and <strong>Thursday 18:00–19:30</strong> – group times rotate, on alternate weeks also Thursday evenings. Book online or enquire.',
       'kt.location.title': 'Directions & contact on site',
       'kt.location.address': '<strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn',
       'kt.location.phone':
