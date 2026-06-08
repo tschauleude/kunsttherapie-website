@@ -483,23 +483,24 @@ h3 {
 }
 
 .page-ueber-mich .hero-portrait-frame {
-  flex: 1;
+  flex: 0 1 auto;
   margin: 0 auto;
   width: 100%;
   max-width: 28rem;
-  min-height: min(420px, 55vh);
   overflow: hidden;
   border-radius: calc(var(--radius-card) - 2px);
   background: linear-gradient(165deg, rgba(67, 97, 94, 0.12), rgba(209, 141, 137, 0.08));
 }
 
-.page-ueber-mich .hero-portrait-frame img {
+.page-ueber-mich .hero-portrait-frame img,
+.page-ueber-mich .about-portrait {
   width: 100%;
-  height: 100%;
-  min-height: min(420px, 55vh);
+  max-height: 520px;
+  height: auto;
+  min-height: 0;
   object-fit: cover;
-  /* Panorama: Person rechts im Bild – Fokuspunkt auf Martina, mittig in der Karte */
-  object-position: 71% 42%;
+  object-position: center 25%;
+  border-radius: var(--radius-card);
   display: block;
   filter: contrast(1.02);
 }
@@ -509,10 +510,6 @@ h3 {
     grid-template-columns: 1fr 1fr;
   }
 
-  .page-ueber-mich .hero-portrait-frame,
-  .page-ueber-mich .hero-portrait-frame img {
-    min-height: 100%;
-  }
 }
 
 @media (max-width: 900px) {
@@ -528,10 +525,78 @@ h3 {
     max-width: 22rem;
   }
 
-  .page-ueber-mich .hero-portrait-frame img {
-    min-height: min(380px, 62vw);
-    object-position: 71% 40%;
+  .page-ueber-mich .hero-portrait-frame img,
+  .page-ueber-mich .about-portrait {
+    min-height: 0;
+    max-height: 420px;
   }
+}
+
+.hero-lead {
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: var(--color-teal-dark);
+  font-style: normal;
+  margin: 0.65rem 0 0.85rem;
+}
+
+.proof-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .proof-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.proof-card {
+  padding: 1.25rem 1.15rem 1.1rem;
+  margin: 0;
+}
+
+.proof-card[data-placeholder="true"] {
+  border-style: dashed;
+  border-color: rgba(85, 122, 118, 0.28);
+}
+
+.proof-quote {
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0 0 0.75rem;
+  color: var(--text-main);
+}
+
+.proof-author {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+.proof-partners {
+  margin-top: 1.5rem;
+  font-size: 0.92rem;
+  color: var(--text-light);
+  line-height: 1.55;
+}
+
+.price-hint {
+  margin-top: 1.25rem;
+  font-size: 0.88rem;
+  color: var(--text-light);
+}
+
+.price-hint .pill,
+span.price-hint-pill {
+  display: inline-block;
+  font-size: 0.82rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: rgba(85, 122, 118, 0.08);
+  color: var(--color-teal-dark);
 }
 
 /* === BUTTONS === */
@@ -643,7 +708,7 @@ h3 {
 }
 
 .section-intro {
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.75rem;
 }
 
 .section-intro.center {
@@ -1999,7 +2064,7 @@ body.consent-settings-open {
 
 .kt-offers--four,
 .kt-offers--five {
-  max-width: 52rem;
+  max-width: 64rem;
   margin-left: auto;
   margin-right: auto;
 }
@@ -2232,8 +2297,20 @@ nav[data-site-nav] {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .kt-offers--five .kt-offer--accent {
-    grid-column: 1 / -1;
+  .kt-offers--five {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .kt-offers--five .kt-offer {
+    grid-column: span 2;
+  }
+
+  .kt-offers--five .kt-offer:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .kt-offers--five .kt-offer:nth-child(5) {
+    grid-column: span 2;
   }
 }
 
@@ -2338,7 +2415,7 @@ nav[data-site-nav] {
 @media (min-width: 900px) {
   .kt-praxis-grid {
     grid-template-columns: 1.05fr 1fr;
-    align-items: stretch;
+    align-items: center;
   }
 }
 
@@ -2355,12 +2432,13 @@ nav[data-site-nav] {
 }
 
 .kt-praxis-grid--showcase {
-  align-items: start;
+  align-items: center;
 }
 
 @media (min-width: 900px) {
   .kt-praxis-grid--showcase {
     grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
   }
 }
 

@@ -34,6 +34,7 @@ window.I18N_MESSAGES = {
     'form.message': 'Nachricht (optional)',
     'form.phone': 'Telefon (optional)',
     'btn.book': 'Termin buchen',
+    'btn.intro': 'Kostenloses Kennenlernen',
     'btn.learnMore': 'Mehr erfahren',
     'btn.less': 'Weniger',
     'btn.close': 'Schließen',
@@ -43,6 +44,7 @@ window.I18N_MESSAGES = {
     'home.hero.kicker': 'Kunsttherapie · Paderborn',
     'home.hero.title': 'Kunsttherapie – Dienstag morgens & Donnerstag abends',
     'home.hero.titleHtml': 'Psychosoziale Kunsttherapie in <span class="text-accent">Paderborn</span>',
+    'home.hero.lead': 'Wenn Worte nicht reichen, findet das Gestalten einen Weg.',
     'home.hero.sub':
       'Zwei feste Angebotszeiten, ein geschützter Raum: Gruppen und therapeutische Begleitung am Vormittag, Auszeit und Gestalten am Abend – ohne Leistungsdruck. Für Teams in Unternehmen und Kliniken.',
     'home.hero.note':
@@ -66,6 +68,22 @@ window.I18N_MESSAGES = {
     'home.trust.title': 'Erfahrung & Vertrauen',
     'home.trust.text':
       'Über 16 Jahre in Palliativversorgung, Psychoonkologie und klinischen Gruppen – u. a. MZG und Brüderkrankenhaus. Jetzt mein eigenes Atelier in Paderborn.',
+    'home.proof.title': 'Was Teilnehmende erleben',
+    'home.proof.sub':
+      'Stimmen aus Gruppen und Auszeiten (Beispiele – echte, freigegebene Rückmeldungen folgen).',
+    'home.proof.1.text':
+      'Ich kam mit dem Gefühl, nicht malen zu können – und ging mit einem Bild, das mehr sagte als Worte.',
+    'home.proof.1.author': 'Teilnehmerin, Gruppe Dienstag',
+    'home.proof.2.text':
+      'Ein geschützter Raum, in dem ich einfach sein durfte. Genau das hat mir gefehlt.',
+    'home.proof.2.author': 'Teilnehmer, Auszeit',
+    'home.proof.3.text':
+      'Als Team haben wir uns ganz neu erlebt – ohne Konkurrenz, mit echter Verbindung.',
+    'home.proof.3.author': 'Teamleitung, Firmen-Event',
+    'home.proof.partners':
+      'Langjährige klinische Erfahrung u. a. mit MZG und Brüderkrankenhaus Paderborn.',
+    'home.services.priceHint':
+      'Gruppensitzung 90 Min · 4–12 Personen · ab 55 € · Material inkl.',
     'quotes.1.text':
       '„Ohne die Freiheit des Geistes ist die Kunst weder machbar, denkbar, noch erfahrbar.“',
     'quotes.1.author': 'Georg Meistermann',
@@ -165,6 +183,7 @@ window.I18N_MESSAGES = {
     'form.message': 'Message (optional)',
     'form.phone': 'Phone (optional)',
     'btn.book': 'Book appointment',
+    'btn.intro': 'Free intro call',
     'btn.learnMore': 'Learn more',
     'btn.less': 'Less',
     'btn.close': 'Close',
@@ -174,6 +193,7 @@ window.I18N_MESSAGES = {
     'home.hero.kicker': 'Art Therapy · Paderborn',
     'home.hero.title': 'Art therapy – Tuesday mornings & Thursday evenings',
     'home.hero.titleHtml': 'Art therapy in <span class="text-accent">Paderborn</span>',
+    'home.hero.lead': 'When words fall short, creating finds a way.',
     'home.hero.sub':
       'Two regular time slots, one safe space: groups and therapeutic support on Tuesday mornings, creative downtime on Thursday evenings – no pressure to perform. For corporate teams and clinical settings.',
     'home.hero.note':
@@ -197,6 +217,22 @@ window.I18N_MESSAGES = {
     'home.trust.title': 'Experience & trust',
     'home.trust.text':
       'Over 16 years in palliative care, psycho-oncology, and clinical groups – including MZG and Brüderkrankenhaus. Now my own atelier in Paderborn.',
+    'home.proof.title': 'What participants experience',
+    'home.proof.sub':
+      'Voices from groups and creative evenings (examples – real, approved feedback to follow).',
+    'home.proof.1.text':
+      'I arrived sure I couldn\'t paint – and left with a picture that said more than words could.',
+    'home.proof.1.author': 'Group participant, Tuesday',
+    'home.proof.2.text':
+      'A safe space where I could simply be. That\'s exactly what I had been missing.',
+    'home.proof.2.author': 'Participant, creative evening',
+    'home.proof.3.text':
+      'As a team we saw each other in a whole new way – no competition, real connection.',
+    'home.proof.3.author': 'Team lead, corporate event',
+    'home.proof.partners':
+      'Years of clinical experience, including MZG and Brüderkrankenhaus Paderborn.',
+    'home.services.priceHint':
+      'Group session 90 min · 4–12 people · from €55 · materials incl.',
     'quotes.1.text':
       '“Without freedom of mind, art is neither possible, conceivable, nor experienceable.”',
     'quotes.1.author': 'Georg Meistermann',
@@ -1476,13 +1512,12 @@ window.I18N_PAGE_BINDINGS = {
         yearEl.textContent = String(new Date().getFullYear());
       }
 
+      el.querySelectorAll('[data-i18n="footer.tagline"]').forEach((node) => node.remove());
+
       let taglineEl = el.querySelector('.footer-tagline-text');
       if (!taglineEl) {
         taglineEl = document.createElement('span');
         taglineEl.className = 'footer-tagline-text';
-        [...el.childNodes].forEach((node) => {
-          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) node.remove();
-        });
         const insertBefore = el.querySelector(
           '[data-cookie-settings], [data-a11y-open], .footer-link-btn, .a11y-footer-link'
         );

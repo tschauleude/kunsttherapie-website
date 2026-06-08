@@ -207,13 +207,12 @@
         yearEl.textContent = String(new Date().getFullYear());
       }
 
+      el.querySelectorAll('[data-i18n="footer.tagline"]').forEach((node) => node.remove());
+
       let taglineEl = el.querySelector('.footer-tagline-text');
       if (!taglineEl) {
         taglineEl = document.createElement('span');
         taglineEl.className = 'footer-tagline-text';
-        [...el.childNodes].forEach((node) => {
-          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) node.remove();
-        });
         const insertBefore = el.querySelector(
           '[data-cookie-settings], [data-a11y-open], .footer-link-btn, .a11y-footer-link'
         );

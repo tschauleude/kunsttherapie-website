@@ -63,6 +63,7 @@
         '<p class="note" style="margin-top:1rem">Raum, Fotos &amp; Details: <a href="kunsttherapie.html#atelier">Atelier entdecken</a></p>',
       'home.praxis.more': 'Mehr zum Atelier',
       'home.hero.imgAlt': 'Atelier – gemeinsam malen und gestalten in Paderborn',
+      'home.gallery.img1.alt': 'Materialien im Atelier – Farben, Kreiden, Pinsel',
       'home.gallery.img2.alt': 'Kunsttherapeutisches Bild – Natur und Kreativität',
       'home.gallery.img3.alt': 'Abstraktes Aquarell – Farben und Formen',
 
@@ -80,6 +81,15 @@
       'kt.faq4.q': 'Methoden & Themen',
       'kt.faq4.a':
         '<ul><li>Raum für nicht gelebte Trauer – z.&nbsp;B. um ein Enkelkind</li><li>Hilfe bei chronischen Schmerzen</li><li>Vision Board: Vorstellungskraft, Klarheit und Struktur finden</li><li>Achtsamkeit malend – die Umwelt bewusst wahrnehmen; Meditationstechniken für innere Ruhe</li><li>Positiver Flow und Techniken erleben</li></ul>',
+      'kt.faq5.q': 'Muss ich malen können?',
+      'kt.faq5.a':
+        '<p>Nein. Es geht nicht um Können oder ein schönes Ergebnis, sondern um den Prozess. Jede Spur, jede Farbe ist richtig – Vorerfahrung ist nicht nötig.</p>',
+      'kt.faq6.q': 'Ist Kunsttherapie das Richtige für mich?',
+      'kt.faq6.a':
+        '<p>Kunsttherapie kann begleiten bei Belastung, Trauer, chronischen Schmerzen oder einfach dem Wunsch nach einer kreativen Auszeit. In einem unverbindlichen Kennenlernen klären wir gemeinsam, ob es passt.</p>',
+      'kt.faq7.q': 'Übernimmt die Krankenkasse die Kosten?',
+      'kt.faq7.a':
+        '<p>Die Angebote sind in der Regel Selbstzahler-Leistungen. Bei Fragen zu Kostenübernahme, Firmen- oder Einrichtungs-Abrechnung sprich mich gern direkt an.</p>',
       'kt.praxis.kicker': 'Das Atelier',
       'kt.praxis.title': 'Angemieteter Atelier- und Gruppenraum',
       'kt.praxis.sub':
@@ -153,6 +163,8 @@
       'book.title': 'Kennenlernen oder Sitzung buchen',
       'book.sub':
         'Nur <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> sind buchbar (grüne Tage). Die Anfrage wird per E-Mail bestätigt. Danach lässt sich der Termin in Apple- oder Google-Kalender speichern.',
+      'book.introNote':
+        'Unsicher, ob Kunsttherapie das Richtige ist? Ein kurzes, unverbindliches Kennenlernen klärt offene Fragen – einfach anfragen.',
       'book.prevMonth': 'Vorheriger Monat',
       'book.nextMonth': 'Nächster Monat',
       'book.legend':
@@ -518,6 +530,7 @@
         '<p class="note" style="margin-top:1rem">Space, photos &amp; details: <a href="kunsttherapie.html#atelier">Explore the atelier</a></p>',
       'home.praxis.more': 'More about the atelier',
       'home.hero.imgAlt': 'Atelier – painting and creating together in Paderborn',
+      'home.gallery.img1.alt': 'Studio materials – paints, chalks, brushes',
       'home.gallery.img2.alt': 'Art therapy image – nature and creativity',
       'home.gallery.img3.alt': 'Abstract watercolour – colours and shapes',
 
@@ -535,6 +548,15 @@
       'kt.faq4.q': 'Methods & themes',
       'kt.faq4.a':
         '<ul><li>Space for unlived grief – e.g. around a grandchild</li><li>Support with chronic pain</li><li>Vision board: imagination, clarity, and structure</li><li>Mindful painting – perceiving the environment consciously; meditation techniques for inner calm</li><li>Positive flow and creative techniques</li></ul>',
+      'kt.faq5.q': 'Do I need to be good at painting?',
+      'kt.faq5.a':
+        '<p>No. It\'s not about skill or a pretty result, but about the process. Every mark, every colour is valid – no prior experience needed.</p>',
+      'kt.faq6.q': 'Is art therapy right for me?',
+      'kt.faq6.a':
+        '<p>Art therapy can support you through stress, grief, chronic pain, or simply the wish for a creative break. In a no-obligation intro chat we find out together whether it\'s a fit.</p>',
+      'kt.faq7.q': 'Does health insurance cover the cost?',
+      'kt.faq7.a':
+        '<p>Sessions are generally self-pay. For questions about reimbursement or invoicing for companies and institutions, please get in touch directly.</p>',
       'kt.praxis.kicker': 'The atelier',
       'kt.praxis.title': 'Rented art therapy and group room',
       'kt.praxis.sub':
@@ -608,6 +630,8 @@
       'book.title': 'Book an introductory or regular session',
       'book.sub':
         'Only <strong>Tue 11:00–12:30</strong> and <strong>Thu 18:00–19:30</strong> can be booked (green days). The request is confirmed by email. The appointment can then be saved in Apple or Google Calendar.',
+      'book.introNote':
+        'Not sure if art therapy is right for you? A short, no-obligation intro chat answers your questions – just ask.',
       'book.prevMonth': 'Previous month',
       'book.nextMonth': 'Next month',
       'book.legend':

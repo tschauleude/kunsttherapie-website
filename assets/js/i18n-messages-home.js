@@ -20,6 +20,7 @@
   "home.praxis.link": "<p class=\"note\" style=\"margin-top:1rem\">Raum, Fotos &amp; Details: <a href=\"kunsttherapie.html#atelier\">Atelier entdecken</a></p>",
   "home.praxis.more": "Mehr zum Atelier",
   "home.hero.imgAlt": "Atelier – gemeinsam malen und gestalten in Paderborn",
+  "home.gallery.img1.alt": "Materialien im Atelier – Farben, Kreiden, Pinsel",
   "home.gallery.img2.alt": "Kunsttherapeutisches Bild – Natur und Kreativität",
   "home.gallery.img3.alt": "Abstraktes Aquarell – Farben und Formen"
 }, en: {
@@ -42,6 +43,7 @@
   "home.praxis.link": "<p class=\"note\" style=\"margin-top:1rem\">Space, photos &amp; details: <a href=\"kunsttherapie.html#atelier\">Explore the atelier</a></p>",
   "home.praxis.more": "More about the atelier",
   "home.hero.imgAlt": "Atelier – painting and creating together in Paderborn",
+  "home.gallery.img1.alt": "Studio materials – paints, chalks, brushes",
   "home.gallery.img2.alt": "Art therapy image – nature and creativity",
   "home.gallery.img3.alt": "Abstract watercolour – colours and shapes"
 } };
