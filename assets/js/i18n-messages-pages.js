@@ -90,6 +90,21 @@
       'kt.faq7.q': 'Übernimmt die Krankenkasse die Kosten?',
       'kt.faq7.a':
         '<p>Die Angebote sind in der Regel Selbstzahler-Leistungen. Bei Fragen zu Kostenübernahme, Firmen- oder Einrichtungs-Abrechnung sprich mich gern direkt an.</p>',
+      'kt.faq8.q': 'Wie läuft eine Sitzung ab?',
+      'kt.faq8.a':
+        '<p>Eine Sitzung dauert 90 Minuten. Nach einem kurzen Ankommen gibt es einen Impuls oder ein Thema – oder du gestaltest frei. Das Gestalten steht im Mittelpunkt, am Ende ist Raum für ein Gespräch über das, was entstanden ist. Es gibt kein Richtig oder Falsch und kein Tempo, das du halten musst.</p>',
+      'kt.faq9.q': 'Was muss ich mitbringen?',
+      'kt.faq9.a':
+        '<p>Nur dich selbst. Alle Materialien – Farben, Kreiden, Papier, Collage-Material und mehr – sind vor Ort und im Preis enthalten. Kleidung, die auch mal Farbe abbekommen darf, ist sinnvoll.</p>',
+      'kt.faq10.q': 'Ist Kunsttherapie vertraulich?',
+      'kt.faq10.a':
+        '<p>Ja. Alles, was in den Sitzungen besprochen und gestaltet wird, bleibt vertraulich. Deine Werke gehören dir – sie werden nur mit deiner ausdrücklichen Einwilligung gezeigt oder verwendet.</p>',
+      'kt.faq11.q': 'Einzeln oder lieber in der Gruppe?',
+      'kt.faq11.a':
+        '<p>Beides hat seinen Wert. Die Gruppe lebt vom gemeinsamen Erleben und gegenseitiger Inspiration – ein geschützter Rahmen mit 4–12 Personen. Einzelsitzungen sind intensiver und ganz auf dein Thema abgestimmt. Im Kennenlernen finden wir heraus, was zu dir passt.</p>',
+      'kt.faq12.q': 'Ersetzt Kunsttherapie eine Psychotherapie?',
+      'kt.faq12.a':
+        '<p>Kunsttherapie ist eine eigenständige, ressourcenorientierte Begleitung und kann sehr entlastend wirken. Sie ersetzt jedoch keine ärztliche oder psychotherapeutische Behandlung. Bei akuten oder schweren Beschwerden wende dich bitte zusätzlich an eine Ärztin oder einen Arzt – gern bespreche ich mit dir, wie sich beides ergänzen kann.</p>',
       'kt.praxis.kicker': 'Das Atelier',
       'kt.praxis.title': 'Angemieteter Atelier- und Gruppenraum',
       'kt.praxis.sub':
@@ -557,6 +572,21 @@
       'kt.faq7.q': 'Does health insurance cover the cost?',
       'kt.faq7.a':
         '<p>Sessions are generally self-pay. For questions about reimbursement or invoicing for companies and institutions, please get in touch directly.</p>',
+      'kt.faq8.q': 'What does a session look like?',
+      'kt.faq8.a':
+        '<p>A session lasts 90 minutes. After a short arrival, there\'s a prompt or theme – or you create freely. Creating is at the centre, and at the end there\'s space to talk about what emerged. There\'s no right or wrong and no pace you have to keep.</p>',
+      'kt.faq9.q': 'What do I need to bring?',
+      'kt.faq9.a':
+        '<p>Just yourself. All materials – paints, chalks, paper, collage supplies and more – are provided on site and included in the price. Clothes that can handle a bit of paint are a good idea.</p>',
+      'kt.faq10.q': 'Is art therapy confidential?',
+      'kt.faq10.a':
+        '<p>Yes. Everything discussed and created in sessions stays confidential. Your artwork belongs to you – it is only shown or used with your explicit consent.</p>',
+      'kt.faq11.q': 'One-to-one or in a group?',
+      'kt.faq11.a':
+        '<p>Both have their value. Groups thrive on shared experience and mutual inspiration – a safe setting with 4–12 people. One-to-one sessions are more intensive and fully focused on your theme. In an intro chat we find out what suits you.</p>',
+      'kt.faq12.q': 'Does art therapy replace psychotherapy?',
+      'kt.faq12.a':
+        '<p>Art therapy is an independent, resource-oriented form of support and can be a real relief. However, it does not replace medical or psychotherapeutic treatment. For acute or serious symptoms, please also consult a doctor – I\'m happy to discuss how the two can complement each other.</p>',
       'kt.praxis.kicker': 'The atelier',
       'kt.praxis.title': 'Rented art therapy and group room',
       'kt.praxis.sub':
