@@ -7,26 +7,31 @@ const path = require('path');
 const vm = require('vm');
 
 const root = path.join(__dirname, '..');
+const jsDir = path.join(root, 'assets/js');
 
 function loadMessages() {
   const ctx = { window: { I18N_MESSAGES: { de: {}, en: {} } } };
-  vm.runInNewContext(
-    fs.readFileSync(path.join(root, 'assets/js/i18n-messages.js'), 'utf8'),
-    ctx
-  );
-  vm.runInNewContext(
-    fs.readFileSync(path.join(root, 'assets/js/i18n-messages-pages.js'), 'utf8'),
-    ctx
-  );
+  vm.runInNewContext(fs.readFileSync(path.join(jsDir, 'i18n-messages.js'), 'utf8'), ctx);
+
+  const splitFiles = fs
+    .readdirSync(jsDir)
+    .filter((f) => f.startsWith('i18n-messages-') && f.endsWith('.js') && f !== 'i18n-messages-pages.js')
+    .sort();
+
+  if (splitFiles.length) {
+    for (const file of splitFiles) {
+      vm.runInNewContext(fs.readFileSync(path.join(jsDir, file), 'utf8'), ctx);
+    }
+  } else {
+    vm.runInNewContext(fs.readFileSync(path.join(jsDir, 'i18n-messages-pages.js'), 'utf8'), ctx);
+  }
+
   return ctx.window.I18N_MESSAGES;
 }
 
 function loadBindings() {
   const ctx = { window: {} };
-  vm.runInNewContext(
-    fs.readFileSync(path.join(root, 'assets/js/i18n-page-bindings.js'), 'utf8'),
-    ctx
-  );
+  vm.runInNewContext(fs.readFileSync(path.join(jsDir, 'i18n-page-bindings.js'), 'utf8'), ctx);
   return ctx.window.I18N_PAGE_BINDINGS || {};
 }
 
@@ -69,8 +74,8 @@ const missingI18n = htmlFiles.filter((f) => {
   if (!fs.existsSync(p)) return false;
   const c = fs.readFileSync(p, 'utf8');
   if (c.includes('admin-app')) return false;
-  if (/http-equiv=["']refresh["']/i.test(c) && !c.includes('i18n-messages.js')) return false;
-  return !c.includes('i18n-messages.js');
+  if (/http-equiv=["']refresh["']/i.test(c) && !c.includes('site-core') && !c.includes('i18n-messages')) return false;
+  return !c.includes('site-core') && !c.includes('i18n-messages-shared.js');
 });
 if (missingI18n.length) {
   console.error('HTML ohne i18n:', missingI18n.join(', '));

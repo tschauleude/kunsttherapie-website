@@ -48,6 +48,7 @@ const PAGE_EXTRA_SCRIPTS = {
   buchung: ['booking.js'],
   atelier: ['atelier.js'],
   neuigkeiten: ['news.js'],
+  events: ['events.js'],
 };
 
 const CORE_BUNDLE_SOURCES = [
@@ -274,7 +275,7 @@ function patchHtml(coreBundle, cssFile) {
 
     // Replace all script blocks at end of body
     const scriptBlock = buildScriptTags(pageName, coreBundle, cssFile);
-    html = html.replace(/<script src="assets\/js\/[^<]+<\/script>\n?(\s*<script src="assets\/js\/[^<]+<\/script>\n?)*/g, '');
+    html = html.replace(/(?:^[ \t]*)*<script src="assets\/js\/[^<]+<\/script>\n?/gm, '');
     html = html.replace(/<\/body>/, `${scriptBlock}\n</body>`);
 
     // Email obfuscation class
