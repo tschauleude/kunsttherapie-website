@@ -47,6 +47,8 @@
 
     section.querySelectorAll(':scope > .center').forEach((el) => add(el));
 
+    section.querySelectorAll(':scope > .quote-showcase').forEach((el) => add(el));
+
     section.querySelectorAll(':scope > .card').forEach((el) => add(el));
   }
 
