@@ -9,6 +9,7 @@ const fs = require('fs');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const siteImages = require('./lib/site-images');
+const media = require('./lib/media');
 require('dotenv').config();
 
 const app = express();
@@ -1251,6 +1252,66 @@ app.delete('/api/admin/site-images/:slot', requireAuth, async (req, res) => {
     res.json({ success: true, ...reset });
   } catch (e) {
     res.status(400).json({ error: e.message || 'Zurücksetzen fehlgeschlagen' });
+  }
+});
+
+app.get('/api/admin/media', requireAuth, async (req, res) => {
+  try {
+    const files = await media.listMedia(UPLOAD_DIR, dbAll);
+    res.json({ files });
+  } catch (e) {
+    console.error('admin media list:', e.message);
+    res.status(500).json({ error: 'Mediathek konnte nicht geladen werden' });
+  }
+});
+
+app.post('/api/admin/media/upload', requireAuth, (req, res) => {
+  imageUpload.single('image')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: 'Keine Datei ausgewählt' });
+    }
+    res.json({
+      success: true,
+      url: `/uploads/${req.file.filename}`,
+      filename: req.file.filename,
+    });
+  });
+});
+
+app.delete('/api/admin/media/:filename', requireAuth, async (req, res) => {
+  const filename = path.basename(req.params.filename || '');
+  const url = media.urlFromFilename(filename);
+  if (!url) {
+    return res.status(400).json({ error: 'Ungültiger Dateiname' });
+  }
+
+  try {
+    const usageMap = await media.collectUsage(dbAll);
+    const usedBy = usageMap.get(url) || [];
+    const blocking = usedBy.filter((u) => u.type === 'news' || u.type === 'events');
+
+    if (blocking.length) {
+      return res.status(409).json({
+        error: 'Bild wird noch in Neuigkeiten oder Veranstaltungen verwendet.',
+        usedBy: blocking,
+      });
+    }
+
+    for (const u of usedBy.filter((item) => item.type === 'site')) {
+      await siteImages.resetSlot(dbGet, dbRun, u.ref, UPLOAD_DIR);
+    }
+
+    const filePath = path.join(UPLOAD_DIR, filename);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    res.json({ success: true, filename, url });
+  } catch (e) {
+    res.status(400).json({ error: e.message || 'Löschen fehlgeschlagen' });
   }
 });
 

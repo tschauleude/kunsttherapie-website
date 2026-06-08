@@ -58,13 +58,13 @@
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
     <h2>Verwaltung</h2>
-    <div class="nav-item active" onclick="switchSection('dashboard')">Übersicht</div>
-    <div class="nav-item" onclick="switchSection('news')">Neuigkeiten</div>
-    <div class="nav-item" onclick="switchSection('images')">Bilder</div>
-    <div class="nav-item" onclick="switchSection('texts')">Website-Texte</div>
-    <div class="nav-item" onclick="switchSection('bookings')">Buchungen</div>
-    <div class="nav-item" onclick="switchSection('atelier')">Mini-Atelier</div>
-    <div class="nav-item" onclick="switchSection('events')">Veranstaltungen</div>
+    <div class="nav-item active" onclick="switchSection('dashboard', this)">Übersicht</div>
+    <div class="nav-item" onclick="switchSection('news', this)">Neuigkeiten</div>
+    <div class="nav-item" onclick="switchSection('images', this)">Bilder</div>
+    <div class="nav-item" onclick="switchSection('texts', this)">Website-Texte</div>
+    <div class="nav-item" onclick="switchSection('bookings', this)">Buchungen</div>
+    <div class="nav-item" onclick="switchSection('atelier', this)">Mini-Atelier</div>
+    <div class="nav-item" onclick="switchSection('events', this)">Veranstaltungen</div>
     <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
     <p class="sidebar-links">
       <a href="/" target="_blank" rel="noopener">Website ansehen</a><br>
@@ -280,9 +280,31 @@
     <!-- SITE IMAGES -->
     <section class="admin-section" id="images">
       <h1>Bilder</h1>
-      <p class="sub section-desc">Galerie auf der Startseite, Hero-Bild, Portrait und Atelier-Fotos. JPG, PNG oder WebP – max. ca. 5&nbsp;MB. Alt-Texte weiterhin unter <strong>Website-Texte → Startseite</strong>.</p>
-      <div id="siteImagesList" class="site-images-admin">
-        <p class="note">Bilder werden geladen …</p>
+      <p class="sub section-desc">Website-Bilder pro Bereich zuweisen oder in der Mediathek verwalten. JPG, PNG, GIF oder WebP – max. ca. 5&nbsp;MB. Alt-Texte unter <strong>Website-Texte → Startseite</strong>.</p>
+
+      <div class="images-admin-tabs" role="tablist">
+        <button type="button" class="images-tab is-active" data-images-tab="slots" role="tab" aria-selected="true">Website-Bilder</button>
+        <button type="button" class="images-tab" data-images-tab="library" role="tab" aria-selected="false">Mediathek</button>
+      </div>
+
+      <div id="siteImagesSlotsPanel" class="images-tab-panel is-active" data-images-panel="slots">
+        <div id="siteImagesList" class="site-images-admin">
+          <p class="note">Bilder werden geladen …</p>
+        </div>
+      </div>
+
+      <div id="siteImagesLibraryPanel" class="images-tab-panel" data-images-panel="library" hidden>
+        <div class="media-library-toolbar">
+          <label class="btn outline media-upload-btn">
+            Neues Bild hochladen
+            <input type="file" id="mediaLibraryUpload" accept="image/jpeg,image/png,image/gif,image/webp" hidden/>
+          </label>
+          <button type="button" class="btn-cancel" id="mediaDeleteSelectedBtn" disabled>Ausgewählte löschen</button>
+          <span class="note" id="mediaLibraryHint"></span>
+        </div>
+        <div id="mediaLibraryGrid" class="media-library-grid">
+          <p class="note">Mediathek wird geladen …</p>
+        </div>
       </div>
     </section>
 
@@ -462,12 +484,13 @@ async function handleLogout() {
 // UI FUNCTIONS
 // ============================================================================
 
-function switchSection(sectionId) {
+function switchSection(sectionId, navEl) {
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.getElementById(sectionId).classList.add('active');
 
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  event.target.classList.add('active');
+  const activeNav = navEl || (typeof event !== 'undefined' ? event.target : null);
+  if (activeNav) activeNav.classList.add('active');
 
   if (sectionId === 'news') loadNewsList();
   if (sectionId === 'bookings') {
@@ -542,12 +565,11 @@ async function loadI18nGroup() {
         const badge = field.isOverride
           ? '<span class="i18n-override-badge">Geändert</span>'
           : '';
-        const inputTag = field.html
-          ? `<textarea id="i18n-${field.key}" name="${field.key}" rows="${rows}">${escapeHtml(field.value)}</textarea>`
-          : `<textarea id="i18n-${field.key}" name="${field.key}" rows="${rows}">${escapeHtml(field.value)}</textarea>`;
+        const fieldId = i18nFieldId(field.key);
+        const inputTag = `<textarea id="${fieldId}" name="${field.key}" rows="${rows}">${escapeHtml(field.value)}</textarea>`;
         return `
           <div class="form-group full i18n-field${field.isOverride ? ' is-override' : ''}">
-            <label for="i18n-${field.key}">${field.label} ${badge}</label>
+            <label for="${fieldId}">${field.label} ${badge}</label>
             ${inputTag}
             ${hint}
           </div>`;
@@ -558,11 +580,16 @@ async function loadI18nGroup() {
   }
 }
 
+function i18nFieldId(key) {
+  return 'i18n-' + String(key).replace(/[^a-zA-Z0-9_-]/g, '--');
+}
+
 function escapeHtml(str) {
   return String(str || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 async function saveI18nGroup(e) {
@@ -636,6 +663,13 @@ async function uploadImageFile(fileInput) {
   return data.url;
 }
 
+let siteImageSlots = [];
+let mediaLibraryFiles = [];
+
+function findSiteImageCard(slot) {
+  return document.querySelector(`.site-image-card[data-slot="${CSS.escape(slot)}"]`);
+}
+
 async function uploadSiteImageSlot(slot, fileInput) {
   const file = fileInput?.files?.[0];
   if (!file) throw new Error('Bitte zuerst ein Bild auswählen');
@@ -651,80 +685,165 @@ async function uploadSiteImageSlot(slot, fileInput) {
   return data;
 }
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+async function assignSiteImageUrl(slot, url) {
+  const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Zuweisung fehlgeschlagen');
+  return data;
+}
+
+function renderMediaLibraryOptions(selectedUrl) {
+  if (!mediaLibraryFiles.length) {
+    return '<option value="">— Noch keine Uploads in der Mediathek —</option>';
+  }
+  return (
+    '<option value="">— Bild aus Mediathek wählen —</option>' +
+    mediaLibraryFiles
+      .map(
+        (f) =>
+          `<option value="${escapeHtml(f.url)}"${f.url === selectedUrl ? ' selected' : ''}>${escapeHtml(f.filename)}${f.inUse ? ' (verwendet)' : ''}</option>`
+      )
+      .join('')
+  );
+}
+
+function renderSiteImageSlots() {
+  const container = document.getElementById('siteImagesList');
+  if (!container) return;
+
+  const groups = {};
+  siteImageSlots.forEach((slot) => {
+    if (!groups[slot.group]) groups[slot.group] = [];
+    groups[slot.group].push(slot);
+  });
+
+  let html = '';
+  for (const [group, slots] of Object.entries(groups)) {
+    html += `<div class="site-images-group"><h2>${escapeHtml(group)}</h2><div class="site-images-grid">`;
+    for (const slot of slots) {
+      const status = slot.isCustom
+        ? '<span class="site-image-badge site-image-badge--custom">Eigenes Bild</span>'
+        : '<span class="site-image-badge">Standard</span>';
+      html += `
+        <article class="site-image-card card" data-slot="${escapeHtml(slot.slot)}">
+          <div class="site-image-card-head">
+            <h3>${escapeHtml(slot.label)}</h3>
+            ${status}
+          </div>
+          <img class="upload-preview site-image-preview" src="${escapeHtml(slot.url)}" alt="" loading="lazy"/>
+          <div class="form-group">
+            <label for="lib-${escapeHtml(slot.slot)}">Aus Mediathek</label>
+            <select id="lib-${escapeHtml(slot.slot)}" class="site-image-library-select">${renderMediaLibraryOptions(slot.customUrl)}</select>
+          </div>
+          <div class="form-group">
+            <label>Neu hochladen</label>
+            <input type="file" class="site-image-file" accept="image/jpeg,image/png,image/gif,image/webp"/>
+          </div>
+          <div class="form-actions site-image-actions">
+            <button type="button" class="btn outline btn-sm" data-action="assign-library">Aus Mediathek übernehmen</button>
+            <button type="button" class="btn-save btn-sm" data-action="upload-slot">Hochladen &amp; zuweisen</button>
+            <button type="button" class="btn-cancel btn-sm" data-action="reset-slot"${slot.isCustom ? '' : ' disabled'}>Eigenes Bild entfernen</button>
+          </div>
+        </article>`;
+    }
+    html += '</div></div>';
+  }
+
+  container.innerHTML = html || '<p class="note">Keine Bild-Slots konfiguriert.</p>';
+}
+
+function renderMediaLibrary() {
+  const grid = document.getElementById('mediaLibraryGrid');
+  const hint = document.getElementById('mediaLibraryHint');
+  const deleteBtn = document.getElementById('mediaDeleteSelectedBtn');
+  if (!grid) return;
+
+  if (hint) {
+    hint.textContent = mediaLibraryFiles.length
+      ? `${mediaLibraryFiles.length} Datei(en) – nur unbenutzte Bilder können gelöscht werden`
+      : 'Noch keine hochgeladenen Bilder';
+  }
+
+  if (!mediaLibraryFiles.length) {
+    grid.innerHTML = '<p class="note">Lade ein Bild hoch, um es Website-Bereichen zuzuweisen.</p>';
+    if (deleteBtn) deleteBtn.disabled = true;
+    return;
+  }
+
+  grid.innerHTML = mediaLibraryFiles
+    .map((file) => {
+      const usage =
+        file.usedBy?.length > 0
+          ? `<span class="media-usage">${file.usedBy.map((u) => escapeHtml(`${u.type}:${u.ref}`)).join(', ')}</span>`
+          : '<span class="media-usage media-usage--free">Nicht zugewiesen</span>';
+      return `
+        <label class="media-library-item card${file.inUse ? ' is-used' : ''}">
+          <input type="checkbox" class="media-select" value="${escapeHtml(file.filename)}"${file.inUse ? ' data-in-use="1"' : ''}/>
+          <img src="${escapeHtml(file.url)}" alt="" loading="lazy"/>
+          <span class="media-filename">${escapeHtml(file.filename)}</span>
+          ${usage}
+          <button type="button" class="btn-cancel btn-sm media-delete-one" data-filename="${escapeHtml(file.filename)}"${file.inUse ? ' disabled title="Zuerst Zuweisung entfernen"' : ''}>Löschen</button>
+        </label>`;
+    })
+    .join('');
+
+  grid.querySelectorAll('.media-select').forEach((cb) => {
+    cb.addEventListener('change', updateMediaDeleteButton);
+  });
+  grid.querySelectorAll('.media-delete-one').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      deleteMediaFiles([btn.dataset.filename]);
+    });
+  });
+  updateMediaDeleteButton();
+}
+
+function updateMediaDeleteButton() {
+  const deleteBtn = document.getElementById('mediaDeleteSelectedBtn');
+  if (!deleteBtn) return;
+  const selected = [...document.querySelectorAll('.media-select:checked')];
+  const deletable = selected.filter((cb) => !cb.dataset.inUse);
+  deleteBtn.disabled = deletable.length === 0;
+  deleteBtn.textContent =
+    deletable.length > 0
+      ? `Ausgewählte löschen (${deletable.length})`
+      : 'Ausgewählte löschen';
 }
 
 async function loadSiteImagesList() {
   const container = document.getElementById('siteImagesList');
-  if (!container) return;
-  container.innerHTML = '<p class="note">Bilder werden geladen …</p>';
+  if (container) container.innerHTML = '<p class="note">Bilder werden geladen …</p>';
 
   try {
-    const res = await fetch(`${API_URL}/admin/site-images`, { credentials: 'include' });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Laden fehlgeschlagen');
+    const [slotsRes, mediaRes] = await Promise.all([
+      fetch(`${API_URL}/admin/site-images`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
+    ]);
+    const slotsData = await slotsRes.json();
+    const mediaData = await mediaRes.json();
+    if (!slotsRes.ok) throw new Error(slotsData.error || 'Website-Bilder konnten nicht geladen werden');
+    if (!mediaRes.ok) throw new Error(mediaData.error || 'Mediathek konnte nicht geladen werden');
 
-    const groups = {};
-    (data.slots || []).forEach((slot) => {
-      if (!groups[slot.group]) groups[slot.group] = [];
-      groups[slot.group].push(slot);
-    });
-
-    let html = '';
-    for (const [group, slots] of Object.entries(groups)) {
-      html += `<div class="site-images-group"><h2>${escapeHtml(group)}</h2><div class="site-images-grid">`;
-      for (const slot of slots) {
-        const status = slot.isCustom
-          ? '<span class="site-image-badge site-image-badge--custom">Eigenes Bild</span>'
-          : '<span class="site-image-badge">Standard</span>';
-        html += `
-          <article class="site-image-card card" data-slot="${escapeHtml(slot.slot)}">
-            <div class="site-image-card-head">
-              <h3>${escapeHtml(slot.label)}</h3>
-              ${status}
-            </div>
-            <img class="upload-preview site-image-preview" src="${escapeHtml(slot.url)}" alt="" loading="lazy"/>
-            <div class="form-group">
-              <label>Neues Bild wählen</label>
-              <input type="file" class="site-image-file" accept="image/jpeg,image/png,image/gif,image/webp" data-slot="${escapeHtml(slot.slot)}"/>
-            </div>
-            <div class="form-actions site-image-actions">
-              <button type="button" class="btn-save" onclick="saveSiteImageSlot('${escapeHtml(slot.slot)}')">Hochladen &amp; speichern</button>
-              <button type="button" class="btn-cancel" onclick="resetSiteImageSlot('${escapeHtml(slot.slot)}')" ${slot.isCustom ? '' : 'disabled'}>Standard wiederherstellen</button>
-            </div>
-          </article>`;
-      }
-      html += '</div></div>';
-    }
-
-    container.innerHTML = html || '<p class="note">Keine Bild-Slots konfiguriert.</p>';
-
-    container.querySelectorAll('.site-image-file').forEach((input) => {
-      input.addEventListener('change', () => {
-        const file = input.files?.[0];
-        if (!file) return;
-        const card = input.closest('.site-image-card');
-        const preview = card?.querySelector('.site-image-preview');
-        if (!preview) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          preview.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
-    });
+    siteImageSlots = slotsData.slots || [];
+    mediaLibraryFiles = mediaData.files || [];
+    renderSiteImageSlots();
+    renderMediaLibrary();
   } catch (err) {
-    container.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
+    if (container) {
+      container.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
+    }
+    showMessage('Fehler: ' + err.message, 'error');
   }
 }
 
 async function saveSiteImageSlot(slot) {
-  const card = document.querySelector(`.site-image-card[data-slot="${slot}"]`);
+  const card = findSiteImageCard(slot);
   const fileInput = card?.querySelector('.site-image-file');
   try {
     await uploadSiteImageSlot(slot, fileInput);
@@ -735,20 +854,131 @@ async function saveSiteImageSlot(slot) {
   }
 }
 
+async function assignSiteImageFromLibrary(slot) {
+  const card = findSiteImageCard(slot);
+  const url = card?.querySelector('.site-image-library-select')?.value;
+  if (!url) {
+    showMessage('Bitte ein Bild aus der Mediathek wählen.', 'error');
+    return;
+  }
+  try {
+    await assignSiteImageUrl(slot, url);
+    showMessage('Bild zugewiesen.', 'success');
+    loadSiteImagesList();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
 async function resetSiteImageSlot(slot) {
-  if (!confirm('Dieses Bild auf den Website-Standard zurücksetzen?')) return;
+  if (!confirm('Eigenes Bild entfernen und Website-Standard wiederherstellen?')) return;
   try {
     const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}`, {
       method: 'DELETE',
       credentials: 'include',
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Zurücksetzen fehlgeschlagen');
+    if (!res.ok) throw new Error(data.error || 'Entfernen fehlgeschlagen');
     showMessage('Standardbild wiederhergestellt.', 'success');
     loadSiteImagesList();
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
   }
+}
+
+async function deleteMediaFiles(filenames) {
+  const unique = [...new Set(filenames.filter(Boolean))];
+  if (!unique.length) return;
+  if (!confirm(`Wirklich ${unique.length} Bild(er) dauerhaft löschen?`)) return;
+
+  let deleted = 0;
+  for (const filename of unique) {
+    const res = await fetch(`${API_URL}/admin/media/${encodeURIComponent(filename)}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showMessage(`„${filename}“: ${data.error || 'Löschen fehlgeschlagen'}`, 'error');
+      continue;
+    }
+    deleted += 1;
+  }
+  if (deleted) {
+    showMessage(`${deleted} Bild(er) gelöscht.`, 'success');
+    loadSiteImagesList();
+  }
+}
+
+function initImagesAdmin() {
+  const section = document.getElementById('images');
+  if (!section || section.dataset.bound) return;
+  section.dataset.bound = '1';
+
+  section.querySelectorAll('.images-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      section.querySelectorAll('.images-tab').forEach((t) => {
+        t.classList.toggle('is-active', t === tab);
+        t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+      });
+      section.querySelectorAll('.images-tab-panel').forEach((panel) => {
+        const active = panel.dataset.imagesPanel === tab.dataset.imagesTab;
+        panel.classList.toggle('is-active', active);
+        panel.hidden = !active;
+      });
+    });
+  });
+
+  document.getElementById('siteImagesList')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const slot = btn.closest('.site-image-card')?.dataset.slot;
+    if (!slot) return;
+    if (btn.dataset.action === 'upload-slot') saveSiteImageSlot(slot);
+    if (btn.dataset.action === 'assign-library') assignSiteImageFromLibrary(slot);
+    if (btn.dataset.action === 'reset-slot') resetSiteImageSlot(slot);
+  });
+
+  document.getElementById('siteImagesList')?.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('site-image-file')) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const preview = e.target.closest('.site-image-card')?.querySelector('.site-image-preview');
+    if (!preview) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      preview.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('mediaLibraryUpload')?.addEventListener('change', async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('image', file);
+    try {
+      const res = await fetch(`${API_URL}/admin/media/upload`, {
+        method: 'POST',
+        credentials: 'include',
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload fehlgeschlagen');
+      showMessage('Bild in Mediathek hochgeladen.', 'success');
+      e.target.value = '';
+      loadSiteImagesList();
+    } catch (err) {
+      showMessage('Fehler: ' + err.message, 'error');
+    }
+  });
+
+  document.getElementById('mediaDeleteSelectedBtn')?.addEventListener('click', () => {
+    const filenames = [...document.querySelectorAll('.media-select:checked')]
+      .filter((cb) => !cb.dataset.inUse)
+      .map((cb) => cb.value);
+    deleteMediaFiles(filenames);
+  });
 }
 
 function bindImagePreview(fileInputId, hiddenInputId, previewId) {
@@ -1447,6 +1677,7 @@ async function deleteAtelierSubmission(id) {
 }
 
   checkAuthOnLoad();
+  initImagesAdmin();
   bindImagePreview('newsImageFile', 'newsImage', 'newsImagePreview');
   bindImagePreview('eventImageFile', 'eventImage', 'eventImagePreview');
   const manualBlock = document.getElementById('manualBlock');
