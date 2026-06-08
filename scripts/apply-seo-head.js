@@ -15,7 +15,7 @@ const OG_IMAGE_ALT = 'Kunsttherapie in Paderborn – Gruppen- und Einzeltherapie
 const PAGES = [
   { file: 'index.html', path: '/', title: 'Kunsttherapie Paderborn', desc: 'Kunsttherapie in Paderborn: Di 11:00–12:30 und Do 18:00–19:30. Gruppen, Auszeit, Einzel, Teambuilding – Termin online buchen.' },
   { file: 'kunsttherapie.html', path: '/kunsttherapie', title: 'Kunsttherapie & Angebote – Paderborn', desc: 'Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn.' },
-  { file: 'ueber-mich.html', path: '/ueber-mich', title: 'Über mich – Kunsttherapeutin Paderborn', desc: 'Psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, eigenes Atelier in Paderborn.' },
+  { file: 'ueber-mich.html', path: '/ueber-mich', title: 'Über mich – Kunsttherapeutin Paderborn', desc: 'Ich bin psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, mein eigenes Atelier in Paderborn.' },
   { file: 'buchung.html', path: '/buchung', title: 'Termin buchen – Kunsttherapie Paderborn', desc: 'Online-Termin anfragen: Dienstag morgens und Donnerstag abends. Freie Zeiten im Kalender – Bestätigung per E-Mail.' },
   { file: 'kontakt.html', path: '/kontakt', title: 'Kontakt – Kunsttherapie Paderborn', desc: 'Nachricht senden, anrufen oder Anfahrt zum Atelier Otto-Stadler-Straße 23c, Paderborn.' },
   { file: 'preise.html', path: '/preise', title: 'Preise – Kunsttherapie Paderborn', desc: 'Transparente Preise für Gruppensitzungen ab 55 €, Programme und Einzelsitzungen auf Anfrage.' },

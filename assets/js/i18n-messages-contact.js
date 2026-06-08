@@ -18,7 +18,7 @@
   "contact.submit": "Nachricht senden",
   "contact.map.title": "Anfahrt",
   "contact.mapIframeTitle": "Karte Atelier Otto-Stadler-Straße 23c Paderborn",
-  "contact.msg.success": "Vielen Dank – die Nachricht ist angekommen.",
+  "contact.msg.success": "Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.",
   "contact.msg.error": "Nachricht konnte nicht gesendet werden"
 }, en: {
   "meta.contact.title": "Contact – Art Therapy Paderborn",
@@ -26,7 +26,7 @@
   "contact.kicker": "Contact",
   "contact.title": "Questions, enquiries & appointments",
   "contact.sub": "For a fixed appointment, use <a href=\"buchung.html\">online booking</a>. For everything else: write briefly or call.",
-  "contact.reach.title": "How to reach us",
+  "contact.reach.title": "How to reach me",
   "contact.reach.list": "<li><strong>Address</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Phone</strong><br><a href=\"tel:+495251690111\">05251-690111</a></li><li><strong>Mobile</strong><br><a href=\"tel:+491704790790\">0170-4790790</a></li><li><strong>Email</strong><br><a href=\"#\" class=\"js-email\" data-u=\"info\" data-d=\"kunsttherapie-pb.de\">Send e-mail</a></li>",
   "contact.hours": "Atelier from 1 July · Tue 11:00–12:30 · Thu 18:00–19:30",
   "contact.book": "Book online",
@@ -38,7 +38,7 @@
   "contact.submit": "Send message",
   "contact.map.title": "Directions",
   "contact.mapIframeTitle": "Map: atelier Otto-Stadler-Straße 23c Paderborn",
-  "contact.msg.success": "Thank you – message received has been received.",
+  "contact.msg.success": "Thank you – your message has been received. I'll get back to you soon.",
   "contact.msg.error": "Your message could not be sent"
 } };
   Object.assign(window.I18N_MESSAGES.de, extra.de);

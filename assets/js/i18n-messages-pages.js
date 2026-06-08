@@ -18,7 +18,7 @@
         'Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn.',
       'meta.about.title': 'Über mich – Kunsttherapeutin Paderborn',
       'meta.about.description':
-        'Psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, eigenes Atelier in Paderborn.',
+        'Ich bin psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, mein eigenes Atelier in Paderborn.',
       'meta.booking.title': 'Termin buchen – Kunsttherapie Paderborn',
       'meta.booking.description':
         'Online-Termin anfragen: Dienstag morgens und Donnerstag abends. Freie Zeiten im Kalender – Bestätigung per E-Mail.',
@@ -110,7 +110,7 @@
       'kt.location.phone':
         'Tel. <a href="tel:+495251690111">05251-690111</a> · Mobil <a href="tel:+491704790790">0170-4790790</a>',
       'kt.cta.title': 'Bereit für den ersten Schritt?',
-      'kt.cta.sub': 'Termin online buchen oder kurz anfragen – Rückmeldung folgt zeitnah.',
+      'kt.cta.sub': 'Termin online buchen oder kurz anfragen – ich melde mich zeitnah.',
       'kt.cta.book': 'Zum Buchungskalender',
       'kt.cta.about': 'Über mich',
       'kt.cta.news': 'Mehr Einblicke: <a href="neuigkeiten.html">Aktuelles &amp; Neuigkeiten</a>',
@@ -220,7 +220,7 @@
       'ui.lightbox.title': 'Vergrößertes Bild',
       'ui.lightbox.prev': 'Vorheriges Bild',
       'ui.lightbox.next': 'Nächstes Bild',
-      'contact.msg.success': 'Vielen Dank – die Nachricht ist angekommen.',
+      'contact.msg.success': 'Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.',
       'contact.msg.error': 'Nachricht konnte nicht gesendet werden',
       'ui.scrollTop': 'Nach oben scrollen',
       'ui.lightbox.title': 'Vergrößertes Bild',
@@ -235,7 +235,7 @@
       'prices.tableBody':
         '<tr><td>Gruppensitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis"><strong>ab 55 €</strong></td><td data-label="Hinweis">4–12 Personen, Material inkl.</td></tr><tr><td>Gruppenprogramm (typisch)</td><td data-label="Dauer">4 Einheiten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">je nach Thema/Setting</td></tr><tr><td>Einzelsitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">individuelle Begleitung</td></tr><tr><td>Teambuilding Event</td><td data-label="Dauer">nach Bedarf</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">inkl. Konzept &amp; Material</td></tr>',
       'prices.note':
-        'Fragen zu Preisen oder Rabatten? Gern direkt anfragen – jede Situation ist individuell.',
+        'Fragen zu Preisen oder Rabatten? Schreib mir gern – jede Situation ist individuell.',
       'prices.ask': 'Preis anfragen',
 
       'newsPage.kicker': 'Updates & News',
@@ -473,7 +473,7 @@
         'Groups Tuesday mornings, downtime Thursday evenings, team building and one-to-one sessions. Studio at Otto-Stadler-Straße 23c, Paderborn.',
       'meta.about.title': 'About me – Art Therapist Paderborn',
       'meta.about.description':
-        'Psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, own atelier in Paderborn.',
+        'I am a psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, and my own atelier in Paderborn.',
       'meta.booking.title': 'Book appointment – Art Therapy Paderborn',
       'meta.booking.description':
         'Request an appointment online: Tuesday mornings and Thursday evenings. Available slots in the calendar – confirmation by email.',
@@ -565,7 +565,7 @@
       'kt.location.phone':
         'Tel. <a href="tel:+495251690111">05251-690111</a> · Mobile <a href="tel:+491704790790">0170-4790790</a>',
       'kt.cta.title': 'Ready for the first step?',
-      'kt.cta.sub': 'Book online or send a quick enquiry – A reply follows soon soon.',
+      'kt.cta.sub': 'Book online or send a quick enquiry – I\'ll get back to you soon.',
       'kt.cta.book': 'Go to booking calendar',
       'kt.cta.about': 'About me',
       'kt.cta.news': 'More insights: <a href="neuigkeiten.html">News &amp; updates</a>',
@@ -657,7 +657,7 @@
       'contact.title': 'Questions, enquiries & appointments',
       'contact.sub':
         'For a fixed appointment, use <a href="buchung.html">online booking</a>. For everything else: write briefly or call.',
-      'contact.reach.title': 'How to reach us',
+      'contact.reach.title': 'How to reach me',
       'contact.reach.list':
         '<li><strong>Address</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Phone</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobile</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>Email</strong><br><a href="#" class="js-email" data-u="info" data-d="kunsttherapie-pb.de">Send e-mail</a></li>',
       'contact.hours': 'Atelier from 1 July · Tue 11:00–12:30 · Thu 18:00–19:30',
@@ -676,7 +676,7 @@
       'ui.lightbox.title': 'Enlarged image',
       'ui.lightbox.prev': 'Previous image',
       'ui.lightbox.next': 'Next image',
-      'contact.msg.success': 'Thank you – message received has been received.',
+      'contact.msg.success': 'Thank you – your message has been received. I\'ll get back to you soon.',
       'contact.msg.error': 'Your message could not be sent',
       'ui.scrollTop': 'Scroll to top',
       'ui.lightbox.title': 'Enlarged image',

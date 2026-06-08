@@ -2,7 +2,7 @@
   if (!window.I18N_MESSAGES) window.I18N_MESSAGES = { de: {}, en: {} };
   const extra = { de: {
   "meta.about.title": "Über mich – Kunsttherapeutin Paderborn",
-  "meta.about.description": "Psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, eigenes Atelier in Paderborn.",
+  "meta.about.description": "Ich bin psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, mein eigenes Atelier in Paderborn.",
   "about.kicker": "Über mich",
   "about.name": "Über mich",
   "about.intro": "Als psychosoziale und klinische Kunsttherapeutin und Heilpraktikerin für Psychotherapie arbeite ich selbstständig. Mit über 16 Jahren Erfahrung begleite ich Menschen in schwierigen Situationen – im klinischen Kontext und im eigenen Atelier.",
@@ -16,7 +16,7 @@
   "about.imgAlt": "Kunsttherapeutin in Paderborn"
 }, en: {
   "meta.about.title": "About me – Art Therapist Paderborn",
-  "meta.about.description": "Psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, own atelier in Paderborn.",
+  "meta.about.description": "I am a psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, and my own atelier in Paderborn.",
   "about.kicker": "About me",
   "about.name": "About me",
   "about.intro": "As a psychosocial and clinical art therapist and practitioner for psychotherapy, I work independently. With over 16 years of experience, I support people in difficult situations – in clinical settings and in private practice.",

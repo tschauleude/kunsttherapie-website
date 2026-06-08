@@ -951,7 +951,7 @@ app.post('/api/contact', async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Vielen Dank – die Nachricht ist angekommen. Eine Rückmeldung folgt zeitnah.',
+      message: 'Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.',
     });
   } catch (e) {
     console.error('contact error:', e);

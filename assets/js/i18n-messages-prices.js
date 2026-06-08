@@ -8,7 +8,7 @@
   "prices.sub": "Materialien sind inklusive. Einzelsitzungen sind möglich – bitte direkt anfragen.",
   "prices.tableHead": "<tr><th scope=\"col\">Leistung</th><th scope=\"col\">Dauer</th><th scope=\"col\">Preis</th><th scope=\"col\">Hinweis</th></tr>",
   "prices.tableBody": "<tr><td>Gruppensitzung</td><td data-label=\"Dauer\">90 Minuten</td><td data-label=\"Preis\"><strong>ab 55 €</strong></td><td data-label=\"Hinweis\">4–12 Personen, Material inkl.</td></tr><tr><td>Gruppenprogramm (typisch)</td><td data-label=\"Dauer\">4 Einheiten</td><td data-label=\"Preis\">auf Anfrage</td><td data-label=\"Hinweis\">je nach Thema/Setting</td></tr><tr><td>Einzelsitzung</td><td data-label=\"Dauer\">90 Minuten</td><td data-label=\"Preis\">auf Anfrage</td><td data-label=\"Hinweis\">individuelle Begleitung</td></tr><tr><td>Teambuilding Event</td><td data-label=\"Dauer\">nach Bedarf</td><td data-label=\"Preis\">auf Anfrage</td><td data-label=\"Hinweis\">inkl. Konzept &amp; Material</td></tr>",
-  "prices.note": "Fragen zu Preisen oder Rabatten? Gern direkt anfragen – jede Situation ist individuell.",
+  "prices.note": "Fragen zu Preisen oder Rabatten? Schreib mir gern – jede Situation ist individuell.",
   "prices.ask": "Preis anfragen"
 }, en: {
   "meta.prices.title": "Prices – Art Therapy Paderborn",

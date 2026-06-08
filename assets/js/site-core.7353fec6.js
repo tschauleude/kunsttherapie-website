@@ -65,7 +65,7 @@ window.I18N_MESSAGES = {
       'Kreativabende für Freunde und Familie – gemeinsame Auszeit mit Freude an neuen Erfahrungen. Nicht einzeln buchbar, Termine auf Anfrage.',
     'home.trust.title': 'Erfahrung & Vertrauen',
     'home.trust.text':
-      'Über 16 Jahre in Palliativversorgung, Psychoonkologie und klinischen Gruppen – u. a. MZG und Brüderkrankenhaus. Jetzt eigenes Atelier in Paderborn.',
+      'Über 16 Jahre in Palliativversorgung, Psychoonkologie und klinischen Gruppen – u. a. MZG und Brüderkrankenhaus. Jetzt mein eigenes Atelier in Paderborn.',
     'quotes.1.text':
       '„Ohne die Freiheit des Geistes ist die Kunst weder machbar, denkbar, noch erfahrbar.“',
     'quotes.1.author': 'Georg Meistermann',
@@ -196,7 +196,7 @@ window.I18N_MESSAGES = {
       'Creative evenings for friends and family – shared downtime and new experiences together. Not bookable individually; dates on request.',
     'home.trust.title': 'Experience & trust',
     'home.trust.text':
-      'Over 16 years in palliative care, psycho-oncology, and clinical groups – including MZG and Brüderkrankenhaus. Now her own practice in Paderborn.',
+      'Over 16 years in palliative care, psycho-oncology, and clinical groups – including MZG and Brüderkrankenhaus. Now my own atelier in Paderborn.',
     'quotes.1.text':
       '“Without freedom of mind, art is neither possible, conceivable, nor experienceable.”',
     'quotes.1.author': 'Georg Meistermann',
