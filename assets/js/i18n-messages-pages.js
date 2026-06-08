@@ -49,7 +49,10 @@
       'home.news.all': 'Alle Neuigkeiten',
       'home.gallery.kicker': 'Einblicke',
       'home.gallery.sub':
-        'Kreativität ohne Leistungsdruck – ein Blick in den Atelier-Alltag. Klick auf ein Bild zum Vergrößern.',
+        'Kreativität ohne Leistungsdruck – Gruppenarbeit, Therapieraum und Werke. Klick auf ein Bild zum Vergrößern.',
+      'home.gallery.img1Alt': 'Gemeinsames Gestalten – Materialien und Farben auf dem Tisch',
+      'home.gallery.img2Alt': 'Kunsttherapie in der Gruppe – gemeinsames Gestalten im Therapieraum',
+      'home.gallery.img3Alt': 'Abstraktes Kunstwerk – Farben und Formen',
       'home.services.kicker': 'Leistungen',
       'home.praxis.title': 'Angemieteter Raum in Paderborn – ab 1. Juli',
       'home.praxis.sub':
@@ -83,7 +86,8 @@
       'kt.praxis.title': 'Angemieteter Atelier- und Gruppenraum',
       'kt.praxis.sub':
         'Ab <strong>1. Juli 2026</strong> in Paderborn – ein eigener Raum zum Ankommen, Gestalten und Begegnen. Die Räumlichkeiten werden laufend eingerichtet und hier Schritt für Schritt vorgestellt.',
-      'kt.praxis.photoNote': 'Einblicke aus dem Raum – weitere Fotos und Einrichtungsdetails folgen in Kürze.',
+      'kt.praxis.photoNote':
+        'Einblicke in Gruppenarbeit und Therapieraum – weitere Fotos aus dem Atelier Paderborn folgen in Kürze.',
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
       'kt.praxis.headline': 'Geschützter Ort in Paderborn',
       'kt.praxis.p1':
@@ -113,7 +117,8 @@
       'kt.cta.book': 'Zum Buchungskalender',
       'kt.cta.about': 'Über Martina',
       'kt.cta.news': 'Mehr Einblicke: <a href="neuigkeiten.html">Aktuelles &amp; Neuigkeiten</a>',
-      'kt.praxis.imgAlt': 'Atelier – gemeinsam malen und gestalten',
+      'kt.praxis.imgAlt': 'Gemeinsames Gestalten – Materialien und Farben auf dem Tisch',
+      'kt.praxis.imgAlt2': 'Kunsttherapie in der Gruppe – gemeinsames Gestalten im Therapieraum',
 
       'about.kicker': 'Über mich',
       'about.name': 'Martina Schwierzke',
@@ -479,7 +484,10 @@
       'home.news.all': 'All news',
       'home.gallery.kicker': 'Insights',
       'home.gallery.sub':
-        'Creativity without pressure to perform – a glimpse into studio life. Click an image to enlarge.',
+        'Creativity without pressure to perform – group work, therapy room, and artworks. Click an image to enlarge.',
+      'home.gallery.img1Alt': 'Creating together – materials and colours on the table',
+      'home.gallery.img2Alt': 'Group art therapy – creating together in the therapy room',
+      'home.gallery.img3Alt': 'Abstract artwork – colours and shapes',
       'home.services.kicker': 'Services',
       'home.praxis.title': 'Rented studio space in Paderborn – from 1 July',
       'home.praxis.sub':
@@ -513,7 +521,8 @@
       'kt.praxis.title': 'Rented art therapy and group room',
       'kt.praxis.sub':
         'From <strong>1 July 2026</strong> in Paderborn – a dedicated space to arrive, create, and connect. The rooms are being set up and introduced here step by step.',
-      'kt.praxis.photoNote': 'A first look inside – more photos and setup details coming soon.',
+      'kt.praxis.photoNote':
+        'Glimpses of group work and the therapy room – more photos from the Paderborn atelier coming soon.',
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
       'kt.praxis.headline': 'A safe place in Paderborn',
       'kt.praxis.p1':
@@ -543,7 +552,8 @@
       'kt.cta.book': 'Go to booking calendar',
       'kt.cta.about': 'About Martina',
       'kt.cta.news': 'More insights: <a href="neuigkeiten.html">News &amp; updates</a>',
-      'kt.praxis.imgAlt': 'Atelier – painting and creating together',
+      'kt.praxis.imgAlt': 'Creating together – materials and colours on the table',
+      'kt.praxis.imgAlt2': 'Group art therapy – creating together in the therapy room',
 
       'about.kicker': 'About me',
       'about.name': 'Martina Schwierzke',

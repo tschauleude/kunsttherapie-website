@@ -168,14 +168,37 @@
 
     <div class="kt-praxis-grid">
       <div class="card kt-praxis-media">
-        <img
-          class="kt-praxis-photo"
-          src="assets/img/Gruppen-und-Einzeltherapie-768x524.jpg"
-          alt="Atelier – gemeinsam malen und gestalten"
-          loading="lazy"
-          decoding="async"
-        />
-        <p class="note">Einblicke aus dem Raum – weitere Fotos und Einrichtungsdetails folgen in Kürze.</p>
+        <div class="kt-praxis-gallery image-gallery image-gallery--duo" data-gallery>
+          <button
+            type="button"
+            class="gallery-item"
+            data-gallery-open
+            aria-label="Bild vergrößern: Gemeinsames Gestalten – Materialien und Farben"
+          >
+            <img
+              class="kt-praxis-photo"
+              src="assets/img/Gruppen-und-Einzeltherapie-768x524.jpg"
+              alt="Gemeinsames Gestalten – Materialien und Farben auf dem Tisch"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+          <button
+            type="button"
+            class="gallery-item"
+            data-gallery-open
+            aria-label="Bild vergrößern: Kunsttherapie in der Gruppe – klinischer Raum"
+          >
+            <img
+              class="kt-praxis-photo kt-praxis-photo--clinical"
+              src="assets/img/Kunsttherapie-Schmerzstation.jpg"
+              alt="Kunsttherapie in der Gruppe – gemeinsames Gestalten im Therapieraum"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+        </div>
+        <p class="note">Einblicke in Gruppenarbeit und Therapieraum – weitere Fotos aus dem Atelier Paderborn folgen in Kürze.</p>
       </div>
       <div class="card kt-praxis-copy">
         <div class="kicker">Otto-Stadler-Straße 23c</div>
@@ -317,5 +340,6 @@
 <script src="assets/js/reveal.js"></script>
 <script src="assets/js/scroll-top.js"></script>
 <script src="assets/js/kunsttherapie.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>

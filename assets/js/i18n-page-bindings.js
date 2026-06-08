@@ -65,7 +65,11 @@ window.I18N_PAGE_BINDINGS = {
     { sel: '.kt-cta-band .btn.primary', key: 'kt.cta.book', attr: 'text' },
     { sel: '.kt-cta-band .btn.outline', key: 'kt.cta.about', attr: 'text' },
     { sel: '.kt-cta-band .note', key: 'kt.cta.news', attr: 'html' },
-    { sel: '.kt-praxis-photo', key: 'kt.praxis.imgAlt', attr: 'alt' },
+    { sel: '.kt-praxis-gallery .gallery-item:nth-child(1) img', key: 'kt.praxis.imgAlt', attr: 'alt' },
+    { sel: '.kt-praxis-gallery .gallery-item:nth-child(2) img', key: 'kt.praxis.imgAlt2', attr: 'alt' },
+    { sel: '#galerie .gallery-item:nth-child(1) img', key: 'home.gallery.img1Alt', attr: 'alt' },
+    { sel: '#galerie .gallery-item:nth-child(2) img', key: 'home.gallery.img2Alt', attr: 'alt' },
+    { sel: '#galerie .gallery-item:nth-child(3) img', key: 'home.gallery.img3Alt', attr: 'alt' },
   ],
   about: [
     { sel: '.page-ueber-mich .kicker', key: 'about.kicker', attr: 'text' },
