@@ -49,6 +49,9 @@
       'home.gallery.kicker': 'Einblicke',
       'home.gallery.sub':
         'Kreativität ohne Leistungsdruck – ein Blick in den Atelier-Alltag. Klick auf ein Bild zum Vergrößern.',
+      'home.gallery.alt1': 'Kunsttherapie auf der Schmerzstation – begleitetes Malen im Klinikalltag',
+      'home.gallery.alt2': 'Atelier im Grünen – kreative Auszeit unter freiem Himmel',
+      'home.gallery.alt3': 'Abstraktes Kunstwerk aus dem Gestaltungsprozess – Farben und Formen',
       'home.services.kicker': 'Leistungen',
       'home.praxis.title': 'Angemieteter Raum in Paderborn – ab 1. Juli 2026',
       'home.praxis.sub':
@@ -116,10 +119,10 @@
       'kt.raum.tab.eingang': 'Eingang',
       'kt.raum.tab.innen': 'Atelier innen',
       'kt.raum.tab.gestalten': 'Gestalten',
-      'kt.raum.compare.before': 'Heute',
-      'kt.raum.compare.after': 'Atmosphäre',
+      'kt.raum.compare.before': 'Aktuelles Foto',
+      'kt.raum.compare.after': 'Stimmungsvision',
       'kt.raum.compare.hint':
-        'Ziehen oder wischen, um Eingang und Atmosphäre zu vergleichen · Klick auf einen Punkt für Details · Bild antippen zum Vergrößern',
+        'Regler ziehen: links das Foto vom Eingang, rechts die Stimmungsvision · Punkte antippen für Details · Bild antippen zum Vergrößern',
       'kt.raum.innen.hint': 'Klick auf die Punkte für mehr · Bild antippen zum Vergrößern',
       'kt.raum.gestalten.hint': 'Kreativität ohne Leistungsdruck – ein Blick auf das, was im Atelier entsteht.',
       'kt.raum.hotspot1.title': 'Willkommen',
@@ -502,6 +505,9 @@
       'home.gallery.kicker': 'Insights',
       'home.gallery.sub':
         'Creativity without pressure to perform – a glimpse into studio life. Click an image to enlarge.',
+      'home.gallery.alt1': 'Art therapy on a pain ward – guided painting in a clinical setting',
+      'home.gallery.alt2': 'Open-air atelier in the green – creative downtime outdoors',
+      'home.gallery.alt3': 'Abstract artwork from the creative process – colours and forms',
       'home.services.kicker': 'Services',
       'home.praxis.title': 'Rented studio space in Paderborn – from 1 July',
       'home.praxis.sub':
@@ -569,10 +575,10 @@
       'kt.raum.tab.eingang': 'Entrance',
       'kt.raum.tab.innen': 'Inside the atelier',
       'kt.raum.tab.gestalten': 'Creating',
-      'kt.raum.compare.before': 'Today',
-      'kt.raum.compare.after': 'Atmosphere',
+      'kt.raum.compare.before': 'Current photo',
+      'kt.raum.compare.after': 'Mood vision',
       'kt.raum.compare.hint':
-        'Drag or swipe to compare entrance and atmosphere · Tap a point for details · Tap image to enlarge',
+        'Drag the slider: photo on the left, mood vision on the right · Tap hotspots for details · Tap image to enlarge',
       'kt.raum.innen.hint': 'Tap the points for more · Tap image to enlarge',
       'kt.raum.gestalten.hint': 'Creativity without pressure – a glimpse of what emerges in the atelier.',
       'kt.raum.hotspot1.title': 'Welcome',
@@ -585,7 +591,7 @@
       'kt.raum.hotspot4.text': 'Acrylic, gouache, chalk, collage – all provided.',
 
       'about.kicker': 'About me',
-      'about.name': 'Über mich',
+      'about.name': 'About me',
       'about.intro':
         'As a psychosocial and clinical art therapist and practitioner for psychotherapy, I work independently. With over 16 years of experience, I support people in difficult situations – in clinical settings and in private practice.',
       'about.passion.title': 'My passion',

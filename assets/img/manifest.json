@@ -81,5 +81,62 @@
       }
     ],
     "fallback": "martina-portrait.jpg"
+  },
+  "galerie-kunsttherapie-schmerzstation.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "galerie-kunsttherapie-schmerzstation-480w.webp"
+      },
+      {
+        "w": 768,
+        "webp": "galerie-kunsttherapie-schmerzstation-768w.webp"
+      },
+      {
+        "w": 1536,
+        "webp": "galerie-kunsttherapie-schmerzstation-1536w.webp"
+      }
+    ],
+    "fallback": "galerie-kunsttherapie-schmerzstation.jpg"
+  },
+  "galerie-atelier-aussen.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "galerie-atelier-aussen-480w.webp"
+      },
+      {
+        "w": 768,
+        "webp": "galerie-atelier-aussen-768w.webp"
+      },
+      {
+        "w": 1536,
+        "webp": "galerie-atelier-aussen-1536w.webp"
+      }
+    ],
+    "fallback": "galerie-atelier-aussen.jpg"
+  },
+  "galerie-abstrakt-gestalten.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "galerie-abstrakt-gestalten-480w.webp"
+      },
+      {
+        "w": 768,
+        "webp": "galerie-abstrakt-gestalten-768w.webp"
+      },
+      {
+        "w": 1536,
+        "webp": "galerie-abstrakt-gestalten-1536w.webp"
+      }
+    ],
+    "fallback": "galerie-abstrakt-gestalten.jpg"
   }
 }

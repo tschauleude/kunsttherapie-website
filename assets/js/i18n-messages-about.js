@@ -18,7 +18,7 @@
   "meta.about.title": "About me – Art Therapist Paderborn",
   "meta.about.description": "Psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, own atelier in Paderborn.",
   "about.kicker": "About me",
-  "about.name": "Über mich",
+  "about.name": "About me",
   "about.intro": "As a psychosocial and clinical art therapist and practitioner for psychotherapy, I work independently. With over 16 years of experience, I support people in difficult situations – in clinical settings and in private practice.",
   "about.passion.title": "My passion",
   "about.passion.p1": "For many years I have worked in palliative care and psycho-oncology and lead art therapy groups in clinical settings. Continuing education and supervision are essential to my work.",

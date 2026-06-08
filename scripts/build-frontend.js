@@ -176,6 +176,9 @@ async function optimizeImages() {
     'Potenziale-Kunsttherapie-Paderborn.jpg',
     'atelier-eingang.jpg',
     'martina-portrait.jpg',
+    'galerie-kunsttherapie-schmerzstation.jpg',
+    'galerie-atelier-aussen.jpg',
+    'galerie-abstrakt-gestalten.jpg',
   ];
   const manifest = {};
 
