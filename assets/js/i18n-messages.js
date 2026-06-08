@@ -45,7 +45,7 @@ window.I18N_MESSAGES = {
     'home.hero.sub':
       'Zwei feste Angebotszeiten, ein geschützter Raum: Gruppen und therapeutische Begleitung am Vormittag, Auszeit und Gestalten am Abend – ohne Leistungsdruck. Für Teams in Unternehmen und Kliniken.',
     'home.hero.note':
-      'Di 11:00–12:30 · Do 18:00–19:30 · Gruppenzeiten rotierend, auch donnerstags am frühen Abend möglich · Otto-Stadler-Straße 23c',
+      'Di 11:00–12:30 · Do 18:00–19:30 · Gruppenzeiten rotieren, im Wechsel auch donnerstags abends · Otto-Stadler-Straße 23c',
     'home.audience.title': 'Für wen ist das Angebot?',
     'home.audience.privat': 'Privat',
     'home.audience.privat.desc': 'Gruppe, Auszeit oder Einzel – wenn Worte nicht reichen und Ressourcen gesucht werden.',
@@ -58,7 +58,7 @@ window.I18N_MESSAGES = {
     'home.services.title': 'Zwei Wege – gleich wichtig',
     'home.services.di.title': 'Dienstag morgens · Gruppen & Therapie',
     'home.services.di.text':
-      'Gruppentherapie, freies und thematisches Gestalten – begleitetes Malen, Collage und Zeichnen. Gruppenzeiten rotierend, auch donnerstags am frühen Abend möglich.',
+      'Gruppentherapie, freies und thematisches Gestalten – begleitetes Malen, Collage und Zeichnen. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.',
     'home.services.do.title': 'Donnerstag abends · Auszeit',
     'home.services.do.text':
       'Kreativabende für Freunde und Familie – gemeinsame Auszeit mit Freude an neuen Erfahrungen. Nicht einzeln buchbar, Termine auf Anfrage.',
@@ -71,7 +71,7 @@ window.I18N_MESSAGES = {
     'kt.hero.kicker': 'Ab 1. Juli in Paderborn',
     'kt.hero.title': 'Kunst, die <span class="text-accent">trägt</span> – nicht nur schmückt',
     'kt.hero.sub':
-      'Dienstag 11:00–12:30 Uhr und Donnerstag 18:00–19:30 Uhr – Gruppenzeiten rotierend, auch donnerstags am frühen Abend möglich.',
+      'Dienstag 11:00–12:30 Uhr und Donnerstag 18:00–19:30 Uhr – feste Atelierzeiten. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.',
     'kt.facts.di': 'Di 11:00–12:30 · Gruppen & Therapie',
     'kt.facts.do': 'Do 18:00–19:30 · Auszeit & Workshops',
     'kt.facts.meta': '90 Min · 4–12 Personen · ab 55 €',
@@ -80,7 +80,7 @@ window.I18N_MESSAGES = {
     'kt.offers.sub': 'Vier Angebote – ausführliche Beschreibung per Klick.',
     'offer.1.title': 'Gruppentherapie',
     'offer.1.body':
-      '<p><strong>Dienstag 11:00–12:30 Uhr.</strong> Viele Menschen kennen bereits kunsttherapeutisches Gestalten in Gruppen, haben die Kunsttherapie schätzen gelernt, Wissen um die Wirksamkeit – und suchen einen freien Platz. Selbstverständlich auch für alle, die durch ressourcenorientierte, visuelle Methoden ganz individuelle Themen gestalten möchten – mit professioneller Begleitung.</p><p><strong>Gruppentherapie, freies und thematisches Gestalten:</strong> Kunst als Weg zurück zum Inneren – um Gesundheit zu erhalten und zu fördern, im Sinne von Resilienz, der psychischen Widerstandsfähigkeit.</p><p>„Bilder sagen mehr als tausend Worte“, sowie „die Heilkraft der Farben“ sind Erfahrungswerte in der Kunsttherapie.</p><p class="note">4–12 Personen · 90 Minuten · Gruppenzeiten rotierend, auch donnerstags am frühen Abend möglich</p>',
+      '<p><strong>Primär dienstags 11:00–12:30 Uhr</strong> – die Gruppenzeiten rotieren und werden im Wechsel auch donnerstags abends angeboten. Viele Menschen kennen bereits kunsttherapeutisches Gestalten in Gruppen, haben die Kunsttherapie schätzen gelernt, Wissen um die Wirksamkeit – und suchen einen freien Platz. Selbstverständlich auch für alle, die durch ressourcenorientierte, visuelle Methoden ganz individuelle Themen gestalten möchten – mit professioneller Begleitung.</p><p><strong>Gruppentherapie, freies und thematisches Gestalten:</strong> Kunst als Weg zurück zum Inneren – um Gesundheit zu erhalten und zu fördern, im Sinne von Resilienz, der psychischen Widerstandsfähigkeit.</p><p>„Bilder sagen mehr als tausend Worte“, sowie „die Heilkraft der Farben“ sind Erfahrungswerte in der Kunsttherapie.</p><p class="note">4–12 Personen · 90 Minuten · im Wechsel auch donnerstags abends</p>',
     'offer.2.title': 'Auszeit: Kreativabende für Freunde & Familien',
     'offer.2.body':
       '<p><strong>Donnerstag 18:00–19:30 Uhr.</strong> Viele sagen danach: „Hätte nicht gedacht, dass mir ein Bild so gut gelingt.“</p><p>Buchbar für Familie und Freunde – <strong>nicht einzeln buchbar</strong>. Es geht um Freude durch neue Erfahrungen und eine gute kreative gemeinsame Auszeit.</p><p class="note">Termine auf Anfrage</p>',
@@ -160,7 +160,7 @@ window.I18N_MESSAGES = {
     'home.hero.sub':
       'Two regular time slots, one safe space: groups and therapeutic support on Tuesday mornings, creative downtime on Thursday evenings – no pressure to perform. For corporate teams and clinical settings.',
     'home.hero.note':
-      'Tue 11:00–12:30 · Thu 18:00–19:30 · Rotating group times, Thursday early evening also possible · Otto-Stadler-Straße 23c',
+      'Tue 11:00–12:30 · Thu 18:00–19:30 · Group times rotate, on alternate weeks also Thursday evenings · Otto-Stadler-Straße 23c',
     'home.audience.title': 'Who is this for?',
     'home.audience.privat': 'Individuals',
     'home.audience.privat.desc': 'Group, downtime, or one-to-one – when words are not enough.',
@@ -173,7 +173,7 @@ window.I18N_MESSAGES = {
     'home.services.title': 'Two paths – equally important',
     'home.services.di.title': 'Tuesday mornings · Groups & therapy',
     'home.services.di.text':
-      'Group therapy, free and themed creating – guided painting, collage, and drawing. Rotating group times, Thursday early evening also possible.',
+      'Group therapy, free and themed creating – guided painting, collage, and drawing. Group times rotate: on alternate weeks also on Thursday evenings.',
     'home.services.do.title': 'Thursday evenings · Downtime',
     'home.services.do.text':
       'Creative evenings for friends and family – shared downtime and new experiences together. Not bookable individually; dates on request.',
@@ -186,7 +186,7 @@ window.I18N_MESSAGES = {
     'kt.hero.kicker': 'From 1 July in Paderborn',
     'kt.hero.title': 'Art that <span class="text-accent">supports</span> – not just decorates',
     'kt.hero.sub':
-      'Tuesday 11:00–12:30 and Thursday 18:00–19:30 – rotating group times, Thursday early evening also possible.',
+      'Tuesday 11:00–12:30 and Thursday 18:00–19:30 – fixed studio hours. Group times rotate: on alternate weeks also on Thursday evenings.',
     'kt.facts.di': 'Tue 11:00–12:30 · Groups & therapy',
     'kt.facts.do': 'Thu 18:00–19:30 · Downtime & workshops',
     'kt.facts.meta': '90 min · 4–12 people · from €55',
@@ -195,7 +195,7 @@ window.I18N_MESSAGES = {
     'kt.offers.sub': 'Four services – click for the full description.',
     'offer.1.title': 'Group therapy',
     'offer.1.body':
-      '<p><strong>Tuesday 11:00–12:30.</strong> Many people already know art therapy in groups, value its effectiveness – and are looking for an open place. Also for anyone who wants to work on individual themes through resource-oriented visual methods – with professional support.</p><p><strong>Group therapy, free and themed creating:</strong> art as a path inward – to maintain and support health, in the sense of resilience and psychological strength.</p><p>“A picture is worth a thousand words” and “the healing power of colour” are lived experiences in art therapy.</p><p class="note">4–12 people · 90 minutes · rotating group times, Thursday early evening also possible</p>',
+      '<p><strong>Primarily Tuesday 11:00–12:30</strong> – group times rotate and are also offered on Thursday evenings on alternate weeks. Many people already know art therapy in groups, value its effectiveness – and are looking for an open place. Also for anyone who wants to work on individual themes through resource-oriented visual methods – with professional support.</p><p><strong>Group therapy, free and themed creating:</strong> art as a path inward – to maintain and support health, in the sense of resilience and psychological strength.</p><p>“A picture is worth a thousand words” and “the healing power of colour” are lived experiences in art therapy.</p><p class="note">4–12 people · 90 minutes · on alternate weeks also Thursday evenings</p>',
     'offer.2.title': 'Downtime: creative evenings for friends & family',
     'offer.2.body':
       '<p><strong>Thursday 18:00–19:30.</strong> Many say afterwards: “I never thought I could create something like that.”</p><p>Bookable for family and friends – <strong>not individually</strong>. About joy through new experiences and a good shared creative break.</p><p class="note">Dates on request</p>',
