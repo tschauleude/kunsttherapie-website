@@ -164,6 +164,6 @@ window.I18N_PAGE_BINDINGS = {
     { sel: '#eventsEmpty p:first-child', key: 'eventsPage.empty', attr: 'text' },
     { sel: '#eventsEmpty p:last-child', key: 'eventsPage.emptyHint', attr: 'text' },
   ],
-  imprint: [{ sel: 'main .card.hero-left', key: 'legal.imprint.body', attr: 'html' }],
+  imprint: [{ sel: 'main .legal-prose', key: 'legal.imprint.body', attr: 'html' }],
   privacy: [{ sel: 'main .legal-prose', key: 'legal.privacy.body', attr: 'html' }],
 };

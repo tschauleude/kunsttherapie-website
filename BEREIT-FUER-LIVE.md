@@ -11,6 +11,8 @@
 | Cookie-/A11y-Footer nach Sprachwechsel | ✅ |
 | Buchung/Events/News bei EN aktualisiert | ✅ |
 | `npm run validate-i18n` | ✅ |
+| SEO: og:image, hreflang, Schema.org, sitemap | ✅ |
+| Impressum/Datenschutz: einheitliches legal-prose-Layout | ✅ |
 
 ## Vor dem Upload (Hostinger)
 

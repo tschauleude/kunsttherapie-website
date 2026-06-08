@@ -269,37 +269,39 @@
       'map.route': 'Route in Google Maps öffnen',
 
       'legal.imprint.body': `<h1>Impressum</h1>
+<p class="sub">Angaben gemäß § 5 TMG – Stand: Juni 2026</p>
 <hr class="sep"/>
-<h3>Verantwortliche Person</h3>
+<h2>Verantwortliche Person</h2>
 <p>
   <strong>Martina Schwierzke</strong><br/>
-  Konrad-Martin-Straße 11c<br/>
+  Psychosoziale Kunsttherapie Paderborn<br/>
+  Otto-Stadler-Straße 23c<br/>
   33102 Paderborn<br/>
   Deutschland
 </p>
-<h3>Kontakt</h3>
+<h2>Kontakt</h2>
 <p>
-  Telefon: 05251-690111<br/>
-  Mobil: 0170-4790790<br/>
+  Telefon: <a href="tel:+495251690111">05251-690111</a><br/>
+  Mobil: <a href="tel:+491704790790">0170-4790790</a><br/>
   E-Mail: <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
 </p>
-<h3>Berufsbezeichnung & Kammer</h3>
+<h2>Berufsbezeichnung &amp; Kammer</h2>
 <p>
   Heilpraktikerin für Psychotherapie (amtlich anerkannt)<br/>
   Kunsttherapeutin (DGKT)<br/>
   Registriert: Künstlersozialkasse (KSK)
 </p>
-<h3>Haftungsausschluss</h3>
+<h2>Haftungsausschluss</h2>
 <p>
   Die Inhalte dieser Website wurden mit größter Sorgfalt zusammengestellt. Für die Richtigkeit, Vollständigkeit und Aktualität
   der Inhalte wird jedoch keine Gewähr übernommen. Die Kunsttherapie ersetzt keine ärztliche oder psychologische Fachbehandlung,
   sondern wird als komplementärer Ansatz verstanden.
 </p>
-<h3>Urheberrecht</h3>
+<h2>Urheberrecht</h2>
 <p>
-  © 2026 Kunsttherapie Paderborn – Martina Schwierzke. Alle Inhalte, Texte und Bilder sind urheberrechtlich geschützt.
+  © 2026 Kunsttherapie Paderborn. Alle Inhalte, Texte und Bilder sind urheberrechtlich geschützt.
 </p>
-<div class="actions" style="margin-top:20px">
+<div class="actions">
   <a class="btn" href="index.html">Zurück zur Startseite</a>
 </div>`,
 
@@ -393,7 +395,7 @@
 <p>
   Wir passen diese Erklärung an, wenn sich die Website oder Rechtslage ändert.
 </p>
-<div class="actions" style="margin-top:1.5rem">
+<div class="actions">
   <button type="button" class="btn outline" onclick="openCookieSettings()">Cookie-Einstellungen</button>
   <a class="btn" href="index.html">Zur Startseite</a>
 </div>`,
@@ -715,37 +717,39 @@
       'map.route': 'Open route in Google Maps',
 
       'legal.imprint.body': `<h1>Imprint</h1>
+<p class="sub">Information pursuant to § 5 TMG – as of June 2026</p>
 <hr class="sep"/>
-<h3>Responsible person</h3>
+<h2>Responsible person</h2>
 <p>
   <strong>Martina Schwierzke</strong><br/>
-  Konrad-Martin-Straße 11c<br/>
+  Psychosocial Art Therapy Paderborn<br/>
+  Otto-Stadler-Straße 23c<br/>
   33102 Paderborn<br/>
   Germany
 </p>
-<h3>Contact</h3>
+<h2>Contact</h2>
 <p>
-  Phone: 05251-690111<br/>
-  Mobile: 0170-4790790<br/>
+  Phone: <a href="tel:+495251690111">05251-690111</a><br/>
+  Mobile: <a href="tel:+491704790790">0170-4790790</a><br/>
   Email: <a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a>
 </p>
-<h3>Professional title & registration</h3>
+<h2>Professional title &amp; registration</h2>
 <p>
   Practitioner for psychotherapy (officially recognised)<br/>
   Art therapist (DGKT)<br/>
   Registered with: Künstlersozialkasse (KSK)
 </p>
-<h3>Disclaimer</h3>
+<h2>Disclaimer</h2>
 <p>
   The content of this website has been compiled with the greatest care. However, no guarantee is given for the accuracy,
   completeness, or timeliness of the content. Art therapy does not replace medical or psychological specialist treatment
   but is understood as a complementary approach.
 </p>
-<h3>Copyright</h3>
+<h2>Copyright</h2>
 <p>
-  © 2026 Art Therapy Paderborn – Martina Schwierzke. All content, text, and images are protected by copyright.
+  © 2026 Art Therapy Paderborn. All content, text, and images are protected by copyright.
 </p>
-<div class="actions" style="margin-top:20px">
+<div class="actions">
   <a class="btn" href="index.html">Back to home</a>
 </div>`,
 
@@ -837,7 +841,7 @@
 <p>
   We update this policy when the website or legal situation changes.
 </p>
-<div class="actions" style="margin-top:1.5rem">
+<div class="actions">
   <button type="button" class="btn outline" onclick="openCookieSettings()">Cookie settings</button>
   <a class="btn" href="index.html">Back to home</a>
 </div>`,
