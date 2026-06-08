@@ -75,10 +75,10 @@
       'kt.faq2.q': 'Brauche ich Vorkenntnisse?',
       'kt.faq2.a':
         '<p>Nein – Vorkenntnisse sind nicht nötig. Entscheidend ist, dass sich das Gestalten stimmig anfühlt. <strong>Ausprobieren lohnt sich – der Überraschungseffekt gehört dazu.</strong></p>',
-      'kt.faq3.q': 'Materialien & Methoden',
+      'kt.faq3.q': 'Welche Materialien und Methoden gibt es?',
       'kt.faq3.a':
         '<p>Die Materialien sind sehr facettenreich: Pastellkreide, Collagen, Malen mit flüssigen Farben wie Gouache, Aquarell und Acryl, Zeichnen und Plastizieren in Ton. Regelmäßige Gruppen <strong>Dienstag 11:00–12:30</strong>, Auszeit und Workshops <strong>Donnerstag 18:00–19:30</strong>. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.</p>',
-      'kt.faq4.q': 'Methoden & Themen',
+      'kt.faq4.q': 'Mit welchen Themen kann ich kommen?',
       'kt.faq4.a':
         '<ul><li>Raum für Trauer, die noch keinen Ausdruck gefunden hat</li><li>Hilfe bei chronischen Schmerzen</li><li>Vision Board: Vorstellungskraft, Klarheit und Struktur finden</li><li>Achtsamkeit malend – die Umwelt bewusst wahrnehmen; Meditationstechniken für innere Ruhe</li><li>Positiver Flow und Techniken erleben</li></ul>',
       'kt.faq5.q': 'Muss ich malen können?',
@@ -95,7 +95,7 @@
         '<p>Eine Sitzung dauert 90 Minuten. Nach einem kurzen Ankommen gibt es einen Impuls oder ein Thema – oder du gestaltest frei. Das Gestalten steht im Mittelpunkt, am Ende ist Raum für ein Gespräch über das, was entstanden ist. Es gibt kein Richtig oder Falsch und kein Tempo, das du halten musst.</p>',
       'kt.faq9.q': 'Was muss ich mitbringen?',
       'kt.faq9.a':
-        '<p>Nur dich selbst. Alle Materialien – Farben, Kreiden, Papier, Collage-Material und mehr – sind vor Ort und im Preis enthalten. Kleidung, die auch mal Farbe abbekommen darf, ist sinnvoll.</p>',
+        '<p>Nur dich selbst. Alle Materialien – Farben, Kreiden, Papier, Collage-Material und mehr – sind, je nach Absprache vor Ort und im Preis enthalten. Kleidung, die auch mal Farbe abbekommen darf, ist sinnvoll. Sollte mal etwas mehr an Materialen benötigt werden, kann es zu Zusatzkosten kommen, diese werden dann jedoch individuell im Vorgespräch abgeklärt.</p>',
       'kt.faq10.q': 'Ist Kunsttherapie vertraulich?',
       'kt.faq10.a':
         '<p>Ja. Alles, was in den Sitzungen besprochen und gestaltet wird, bleibt vertraulich. Deine Werke gehören dir – sie werden nur mit deiner ausdrücklichen Einwilligung gezeigt oder verwendet.</p>',
@@ -557,10 +557,10 @@
       'kt.faq2.q': 'Do I need prior experience?',
       'kt.faq2.a':
         '<p>No prior experience needed. What matters is that creating feels right. <strong>Curiosity welcome – surprise is part of the process.</strong></p>',
-      'kt.faq3.q': 'Materials & methods',
+      'kt.faq3.q': 'What materials and methods are available?',
       'kt.faq3.a':
         '<p>Materials are richly varied: pastel chalk, collage, painting with gouache, watercolour, and acrylic, drawing and clay work. Regular groups <strong>Tuesday 11:00–12:30</strong>, downtime and workshops <strong>Thursday 18:00–19:30</strong>. Group times rotate: on alternate weeks also on Thursday evenings.</p>',
-      'kt.faq4.q': 'Methods & themes',
+      'kt.faq4.q': 'What themes can I bring?',
       'kt.faq4.a':
         '<ul><li>Space for grief that has not yet found expression</li><li>Support with chronic pain</li><li>Vision board: imagination, clarity, and structure</li><li>Mindful painting – perceiving the environment consciously; meditation techniques for inner calm</li><li>Positive flow and creative techniques</li></ul>',
       'kt.faq5.q': 'Do I need to be good at painting?',
@@ -577,7 +577,7 @@
         '<p>A session lasts 90 minutes. After a short arrival, there\'s a prompt or theme – or you create freely. Creating is at the centre, and at the end there\'s space to talk about what emerged. There\'s no right or wrong and no pace you have to keep.</p>',
       'kt.faq9.q': 'What do I need to bring?',
       'kt.faq9.a':
-        '<p>Just yourself. All materials – paints, chalks, paper, collage supplies and more – are provided on site and included in the price. Clothes that can handle a bit of paint are a good idea.</p>',
+        '<p>Just yourself. All materials – paints, chalks, paper, collage supplies and more – are provided on site and included in the price, depending on what we agree in advance. Clothes that can handle a bit of paint are a good idea. If you need extra materials beyond the usual range, there may be additional costs – we clarify that individually before your first session.</p>',
       'kt.faq10.q': 'Is art therapy confidential?',
       'kt.faq10.a':
         '<p>Yes. Everything discussed and created in sessions stays confidential. Your artwork belongs to you – it is only shown or used with your explicit consent.</p>',
