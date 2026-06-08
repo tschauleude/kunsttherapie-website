@@ -51,15 +51,15 @@
       'home.gallery.sub':
         'Kreativität ohne Leistungsdruck – ein Blick in den Atelier-Alltag. Klick auf ein Bild zum Vergrößern.',
       'home.services.kicker': 'Leistungen',
-      'home.praxis.title': 'Angemieteter Raum in Paderborn – ab 1. Juni',
+      'home.praxis.title': 'Angemieteter Raum in Paderborn – ab 1. Juli',
       'home.praxis.sub':
-        'Martina hat einen eigenen angemieteten Atelier- und Gruppenraum an der Otto-Stadler-Straße 23c. Dort entsteht ab Juni ein fester Ort für Kunsttherapie – hell, geschützt und mit Materialien vor Ort. Die Einrichtung wird Schritt für Schritt ausgebaut und auf der Website gezeigt.',
+        'Ein angemieteter Atelier- und Gruppenraum an der Otto-Stadler-Straße 23c. Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen – Platz zum Malen und Gestalten.',
       'home.praxis.address':
         '<p><span class="pill">Adresse</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn</p>',
       'home.praxis.di':
-        '<p style="margin-top:1rem"><span class="pill">Di</span><br>Dienstag morgens · Gruppen &amp; Therapie</p>',
+        '<p style="margin-top:1rem"><span class="pill">Di</span><br>11:00–12:30 · Gruppen &amp; Therapie</p>',
       'home.praxis.do':
-        '<p><span class="pill">Do</span><br>Donnerstag abends · Auszeit, Workshops</p>',
+        '<p><span class="pill">Do</span><br>18:00–19:30 · Auszeit, Workshops</p>',
       'home.praxis.link':
         '<p class="note" style="margin-top:1rem">Raum, Fotos &amp; Details: <a href="kunsttherapie.html#atelier">Atelier entdecken</a></p>',
       'home.praxis.more': 'Mehr zum Atelier',
@@ -69,38 +69,41 @@
       'kt.effects.sub': 'In wenigen Sätzen – vertiefend per Klick.',
       'kt.faq1.q': 'Warum Kunst statt nur Gespräch?',
       'kt.faq1.a':
-        '<p>Bilder, Formen und Materialien machen Inneres greifbar – auch wenn Sprache fehlt oder zu viel wird. Das entstandene Werk begleitet den Prozess wie ein Spiegel: Distanz und Nähe zugleich.</p>',
+        '<p>„Ich könnte es malen, nicht in Worte ausdrücken.“ Der Prozess ist ein wesentlicher Teil der Kunsttherapie, wie auch das Werk, das entsteht – als Projektionsfläche, als Spiegel: Distanz und Nähe zugleich.</p>',
       'kt.faq2.q': 'Brauche ich Vorkenntnisse?',
       'kt.faq2.a':
-        '<p>Nein. Entscheidend ist, dass sich das Gestalten stimmig anfühlt – nicht, ob „künstlerisch“ bist. <strong>Ausprobieren lohnt sich – der Überraschungseffekt gehört dazu.</strong></p>',
+        '<p>Nein – Vorkenntnisse sind nicht nötig. Entscheidend ist, dass sich das Gestalten stimmig anfühlt. <strong>Ausprobieren lohnt sich – der Überraschungseffekt gehört dazu.</strong></p>',
       'kt.faq3.q': 'Materialien & Methoden',
       'kt.faq3.a':
-        '<p>Begleitetes Malen, Collagen erstellen, Zeichnen mit Acryl, Gouache und Kreide. Regelmäßige Gruppen <strong>Dienstag morgens</strong>, Auszeit und Workshops <strong>Donnerstag abends</strong>. Kunstworkshops nach Absprache – z.&nbsp;B. Donnerstag abends.</p>',
+        '<p>Die Materialien sind sehr facettenreich: Pastellkreide, Collagen, Malen mit flüssigen Farben wie Gouache, Aquarell und Acryl, Zeichnen und Plastizieren in Ton. Regelmäßige Gruppen <strong>Dienstag 11:00–12:30</strong>, Auszeit und Workshops <strong>Donnerstag 18:00–19:30</strong> – Gruppenzeiten rotierend, auch donnerstags am frühen Abend möglich.</p>',
+      'kt.faq4.q': 'Methoden & Themen',
+      'kt.faq4.a':
+        '<ul><li>Raum für nicht gelebte Trauer – z.&nbsp;B. um ein Enkelkind</li><li>Hilfe bei chronischen Schmerzen</li><li>Vision Board: Vorstellungskraft, Klarheit und Struktur finden</li><li>Achtsamkeit malend – die Umwelt bewusst wahrnehmen; Meditationstechniken für innere Ruhe</li><li>Positiver Flow und Techniken erleben</li></ul>',
       'kt.praxis.kicker': 'Das Atelier',
       'kt.praxis.title': 'Angemieteter Atelier- und Gruppenraum',
       'kt.praxis.sub':
-        'Ab <strong>1. Juni 2026</strong> in Paderborn – ein eigener Raum zum Ankommen, Gestalten und Begegnen. Die Räumlichkeiten werden laufend eingerichtet und hier Schritt für Schritt vorgestellt.',
+        'Ab <strong>1. Juli 2026</strong> in Paderborn – ein eigener Raum zum Ankommen, Gestalten und Begegnen. Die Räumlichkeiten werden laufend eingerichtet und hier Schritt für Schritt vorgestellt.',
       'kt.praxis.photoNote': 'Einblicke aus dem Raum – weitere Fotos und Einrichtungsdetails folgen in Kürze.',
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
       'kt.praxis.headline': 'Geschützter Ort in Paderborn',
       'kt.praxis.p1':
-        'Das Atelier ist ein <strong>angemieteter Raum</strong> – kein improvisiertes Zimmer, sondern ein bewusst gewählter Ort für Kunsttherapie, Gruppen und Auszeiten. Martina richtet den Raum so ein, sich schnell geborgen fühlst: Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag morgens</strong> für Gruppen, <strong>Donnerstag abends</strong> für Auszeit und Workshops.',
+        'Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen. Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag 11:00–12:30</strong> für Gruppen, <strong>Donnerstag 18:00–19:30</strong> für Auszeit und Workshops.',
       'kt.praxis.p2':
         '<strong>Im Atelier:</strong> helle, ruhige Atmosphäre, Materialien vor Ort, kleine Gruppen, klare Struktur ohne Leistungsdruck. Parken und Anreise mit ÖPNV sind unkompliziert – Details zur Anfahrt siehe unten.',
-      'kt.praxis.schedule1': '<strong>Dienstag morgens</strong> · Gruppentherapie, professionelles Setting',
-      'kt.praxis.schedule2': '<strong>Donnerstag abends</strong> · Auszeit, Workshops, Teambuilding',
+      'kt.praxis.schedule1': '<strong>Dienstag 11:00–12:30</strong> · Gruppentherapie, professionelles Setting',
+      'kt.praxis.schedule2': '<strong>Donnerstag 18:00–19:30</strong> · Auszeit, Workshops, Teambuilding',
       'kt.praxis.book': 'Online-Termin wählen',
       'kt.praxis.news': 'Neuigkeiten zum Atelier',
       'kt.highlight1.title': 'Atelierfläche',
-      'kt.highlight1.text': 'Gemeinsames Gestalten mit Acryl, Gouache, Kreide, Collage – Materialien werden gestellt.',
+      'kt.highlight1.text': 'Gemeinsames Gestalten mit Acryl, Gouache, Pastellkreide, Collage – Materialien werden gestellt.',
       'kt.highlight2.title': 'Gruppenraum',
       'kt.highlight2.text': '4–12 Personen, geschützter Rahmen, auch für Seniorengruppen und Einrichtungen.',
       'kt.highlight3.title': 'Angemietet & wachsend',
       'kt.highlight3.text':
         'Der Raum wird weiter ausgebaut und auf der Website präsentiert – auf dem Laufenden bleiben.',
-      'kt.highlight4.title': 'Ab Juni 2026',
+      'kt.highlight4.title': 'Ab Juli 2026',
       'kt.highlight4.text':
-        'Regelmäßig <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> – Termine online oder per Anfrage.',
+        'Regelmäßig <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> – Termine online oder per Anfrage.',
       'kt.location.title': 'Anfahrt & Kontakt vor Ort',
       'kt.location.address': '<strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn',
       'kt.location.phone':
@@ -184,7 +187,7 @@
       'contact.reach.title': 'Erreichbarkeit',
       'contact.reach.list':
         '<li><strong>Adresse</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Telefon</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobil</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>E-Mail</strong><br><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>',
-      'contact.hours': 'Atelier ab 1. Juni · Dienstag morgens · Donnerstag abends',
+      'contact.hours': 'Atelier ab 1. Juli · Di 11:00–12:30 · Do 18:00–19:30',
       'contact.book': 'Online-Termin buchen',
       'contact.offers': 'Angebote',
       'contact.form.title': 'Nachricht senden',
@@ -478,15 +481,15 @@
       'home.gallery.sub':
         'Creativity without pressure to perform – a glimpse into studio life. Click an image to enlarge.',
       'home.services.kicker': 'Services',
-      'home.praxis.title': 'Rented studio space in Paderborn – from 1 June',
+      'home.praxis.title': 'Rented studio space in Paderborn – from 1 July',
       'home.praxis.sub':
-        'Martina has her own rented art therapy and group room at Otto-Stadler-Straße 23c. From June, this becomes a permanent place for art therapy – bright, safe, and with materials on site. The setup is being developed step by step and shown on this website.',
+        'A rented art therapy and group room at Otto-Stadler-Straße 23c. The space has a welcoming atmosphere, a touch of green with a terrace, and everything needed to feel at home quickly – room to paint and create.',
       'home.praxis.address':
         '<p><span class="pill">Address</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn</p>',
       'home.praxis.di':
-        '<p style="margin-top:1rem"><span class="pill">Tue</span><br>Tuesday mornings · Groups &amp; therapy</p>',
+        '<p style="margin-top:1rem"><span class="pill">Tue</span><br>11:00–12:30 · Groups &amp; therapy</p>',
       'home.praxis.do':
-        '<p><span class="pill">Thu</span><br>Thursday evenings · Downtime, workshops</p>',
+        '<p><span class="pill">Thu</span><br>18:00–19:30 · Downtime, workshops</p>',
       'home.praxis.link':
         '<p class="note" style="margin-top:1rem">Space, photos &amp; details: <a href="kunsttherapie.html#atelier">Explore the atelier</a></p>',
       'home.praxis.more': 'More about the atelier',
@@ -496,38 +499,41 @@
       'kt.effects.sub': 'In a few sentences – click for more detail.',
       'kt.faq1.q': 'Why art instead of talk alone?',
       'kt.faq1.a':
-        '<p>Images, shapes, and materials make inner experience tangible – even when words fail or feel overwhelming. The artwork accompanies the process like a mirror: distance and closeness at once.</p>',
+        '<p>“I could paint it, but not put it into words.” The process is essential in art therapy, as is the artwork that emerges – as a projection surface, as a mirror: distance and closeness at once.</p>',
       'kt.faq2.q': 'Do I need prior experience?',
       'kt.faq2.a':
-        '<p>No. What matters is that creating feels feels right – not whether someone considers yourself “artistic”. <strong>Curiosity welcome – surprise is part of the process.</strong></p>',
+        '<p>No prior experience needed. What matters is that creating feels right. <strong>Curiosity welcome – surprise is part of the process.</strong></p>',
       'kt.faq3.q': 'Materials & methods',
       'kt.faq3.a':
-        '<p>Guided painting, collage, and drawing with acrylic, gouache, and chalk. Regular groups on <strong>Tuesday mornings</strong>, downtime and workshops on <strong>Thursday evenings</strong>. Art workshops by arrangement – e.g. Thursday evenings.</p>',
+        '<p>Materials are richly varied: pastel chalk, collage, painting with gouache, watercolour, and acrylic, drawing and clay work. Regular groups <strong>Tuesday 11:00–12:30</strong>, downtime and workshops <strong>Thursday 18:00–19:30</strong> – rotating group times, Thursday early evening also possible.</p>',
+      'kt.faq4.q': 'Methods & themes',
+      'kt.faq4.a':
+        '<ul><li>Space for unlived grief – e.g. around a grandchild</li><li>Support with chronic pain</li><li>Vision board: imagination, clarity, and structure</li><li>Mindful painting – perceiving the environment consciously; meditation techniques for inner calm</li><li>Positive flow and creative techniques</li></ul>',
       'kt.praxis.kicker': 'The atelier',
       'kt.praxis.title': 'Rented art therapy and group room',
       'kt.praxis.sub':
-        'From <strong>1 June 2026</strong> in Paderborn – a dedicated space to arrive, create, and connect. The rooms are being set up and introduced here step by step.',
+        'From <strong>1 July 2026</strong> in Paderborn – a dedicated space to arrive, create, and connect. The rooms are being set up and introduced here step by step.',
       'kt.praxis.photoNote': 'A first look inside – more photos and setup details coming soon.',
       'kt.praxis.addressKicker': 'Otto-Stadler-Straße 23c',
       'kt.praxis.headline': 'A safe place in Paderborn',
       'kt.praxis.p1':
-        'The atelier is a <strong>rented space</strong> – not an improvised room, but a deliberately chosen place for art therapy, groups, and downtime. Martina sets it up to feel at home quickly quickly: space to paint, room for conversation in between – <strong>Tuesday mornings</strong> for groups, <strong>Thursday evenings</strong> for downtime and workshops.',
+        'The space has a welcoming atmosphere, a touch of green with a terrace, and everything needed to feel at home quickly. Room to paint and talk in between – <strong>Tuesday 11:00–12:30</strong> for groups, <strong>Thursday 18:00–19:30</strong> for downtime and workshops.',
       'kt.praxis.p2':
         '<strong>What to expect:</strong> a bright, calm atmosphere, materials on site, small groups, clear structure without pressure to perform. Parking and public transport are straightforward – directions below.',
-      'kt.praxis.schedule1': '<strong>Tuesday mornings</strong> · Group therapy, professional setting',
-      'kt.praxis.schedule2': '<strong>Thursday evenings</strong> · Downtime, workshops, team building',
+      'kt.praxis.schedule1': '<strong>Tuesday 11:00–12:30</strong> · Group therapy, professional setting',
+      'kt.praxis.schedule2': '<strong>Thursday 18:00–19:30</strong> · Downtime, workshops, team building',
       'kt.praxis.book': 'Choose appointment online',
       'kt.praxis.news': 'Atelier news',
       'kt.highlight1.title': 'Studio area',
-      'kt.highlight1.text': 'Shared creating with acrylic, gouache, chalk, collage – materials provided.',
+      'kt.highlight1.text': 'Shared creating with acrylic, gouache, pastel chalk, collage – materials provided.',
       'kt.highlight2.title': 'Group room',
       'kt.highlight2.text': '4–12 people, safe setting, also for senior groups and institutions.',
       'kt.highlight3.title': 'Rented & evolving',
       'kt.highlight3.text':
         'The space is being developed further and shown on the website – stay tuned for updates.',
-      'kt.highlight4.title': 'From June 2026',
+      'kt.highlight4.title': 'From July 2026',
       'kt.highlight4.text':
-        'Regularly on <strong>Tuesday mornings</strong> and <strong>Thursday evenings</strong> – book online or enquire.',
+        'Regularly <strong>Tuesday 11:00–12:30</strong> and <strong>Thursday 18:00–19:30</strong> – book online or enquire.',
       'kt.location.title': 'Directions & contact on site',
       'kt.location.address': '<strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn',
       'kt.location.phone':
@@ -611,7 +617,7 @@
       'contact.reach.title': 'How to reach us',
       'contact.reach.list':
         '<li><strong>Address</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Phone</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobile</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>Email</strong><br><a href="mailto:info@kunsttherapie-pb.de">info@kunsttherapie-pb.de</a></li>',
-      'contact.hours': 'Atelier from 1 June · Tuesday mornings · Thursday evenings',
+      'contact.hours': 'Atelier from 1 July · Tue 11:00–12:30 · Thu 18:00–19:30',
       'contact.book': 'Book online',
       'contact.offers': 'Services',
       'contact.form.title': 'Send a message',

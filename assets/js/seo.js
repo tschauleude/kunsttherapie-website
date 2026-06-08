@@ -40,14 +40,14 @@
       {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: 'Tuesday',
-        opens: '09:00',
-        closes: '13:00',
+        opens: '11:00',
+        closes: '12:30',
       },
       {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: 'Thursday',
-        opens: '17:00',
-        closes: '21:00',
+        opens: '18:00',
+        closes: '19:30',
       },
     ],
     founder: {
