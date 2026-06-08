@@ -1,20 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Kunsttherapie Paderborn">
   <defs>
-    <linearGradient id="bg" x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#5f8f89"/>
-      <stop offset="100%" stop-color="#3f615d"/>
+    <linearGradient id="paint" x1="16" y1="0" x2="16" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a1c34" stop-opacity="0.72"/>
+      <stop offset="18%" stop-color="#103a58" stop-opacity="0.58"/>
+      <stop offset="34%" stop-color="#206c76" stop-opacity="0.5"/>
+      <stop offset="46%" stop-color="#488c84" stop-opacity="0.42"/>
+      <stop offset="56%" stop-color="#a8843a" stop-opacity="0.48"/>
+      <stop offset="64%" stop-color="#dab258" stop-opacity="0.4"/>
+      <stop offset="74%" stop-color="#ebdcb9" stop-opacity="0.36"/>
+      <stop offset="88%" stop-color="#f5f0e8" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#fcfaf6" stop-opacity="0.7"/>
     </linearGradient>
-    <radialGradient id="drop" cx="42%" cy="35%" r="65%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="55%" stop-color="#f7f4ef"/>
-      <stop offset="100%" stop-color="#e8e2d8"/>
+    <radialGradient id="gold" cx="58%" cy="46%" r="52%">
+      <stop offset="0%" stop-color="#d4a848" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#d4a848" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="teal" cx="22%" cy="72%" r="48%">
+      <stop offset="0%" stop-color="#1c5f76" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1c5f76" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="navy" cx="78%" cy="82%" r="45%">
+      <stop offset="0%" stop-color="#123052" stop-opacity="0.48"/>
+      <stop offset="100%" stop-color="#123052" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
-  <circle cx="7.5" cy="7" r="4.2" fill="#d18d89" opacity="0.62"/>
-  <circle cx="25.5" cy="8.5" r="3.6" fill="#a2d4c4" opacity="0.58"/>
-  <circle cx="23.5" cy="25.5" r="3.2" fill="#f0d7a4" opacity="0.55"/>
-  <path fill="url(#drop)" d="M16 6.2c0 0-5.8 8.1-5.8 12.3a5.8 5.8 0 1 0 11.6 0C21.8 14.3 16 6.2 16 6.2z"/>
-  <ellipse cx="13.8" cy="13.6" rx="1.6" ry="2" fill="#fff" opacity="0.42"/>
-  <circle cx="18.6" cy="19.8" r="1.1" fill="#d18d89" opacity="0.35"/>
+  <rect width="32" height="32" rx="6" fill="#f4f1ea"/>
+  <rect width="32" height="32" rx="6" fill="url(#paint)"/>
+  <rect width="32" height="32" rx="6" fill="url(#gold)"/>
+  <rect width="32" height="32" rx="6" fill="url(#teal)"/>
+  <rect width="32" height="32" rx="6" fill="url(#navy)"/>
 </svg>
