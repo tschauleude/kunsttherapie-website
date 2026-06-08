@@ -11,6 +11,21 @@
     return window.I18N_MESSAGES || { de: {}, en: {} };
   }
 
+  async function loadOverrides() {
+    try {
+      const res = await fetch('/api/i18n/overrides', { credentials: 'same-origin' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!window.I18N_MESSAGES) window.I18N_MESSAGES = { de: {}, en: {} };
+      ['de', 'en'].forEach((lang) => {
+        if (!data[lang] || typeof data[lang] !== 'object') return;
+        Object.assign(window.I18N_MESSAGES[lang], data[lang]);
+      });
+    } catch (_) {
+      /* offline / static hosting without API */
+    }
+  }
+
   function detectLang() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === 'de' || stored === 'en') return stored;
@@ -150,7 +165,8 @@
     apply: applyTranslations,
   };
 
-  function boot() {
+  async function boot() {
+    await loadOverrides();
     applyTranslations();
     if (typeof window.ktInitLangSwitch === 'function') {
       window.ktInitLangSwitch();
@@ -162,7 +178,9 @@
 
   function scheduleBoot() {
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', boot);
+      document.addEventListener('DOMContentLoaded', () => {
+        boot();
+      });
       return;
     }
     /* Body-Skripte (z. B. site.js) laufen erst danach – einen Tick warten */

@@ -60,6 +60,7 @@
     <h2>Verwaltung</h2>
     <div class="nav-item active" onclick="switchSection('dashboard')">Übersicht</div>
     <div class="nav-item" onclick="switchSection('news')">Neuigkeiten</div>
+    <div class="nav-item" onclick="switchSection('texts')">Website-Texte</div>
     <div class="nav-item" onclick="switchSection('bookings')">Buchungen</div>
     <div class="nav-item" onclick="switchSection('atelier')">Mini-Atelier</div>
     <div class="nav-item" onclick="switchSection('events')">Veranstaltungen</div>
@@ -82,6 +83,7 @@
           <h3>Was du hier machst</h3>
           <ul>
             <li><strong>Neuigkeiten</strong> – Texte und Fotos für die Seite „Aktuelles“</li>
+            <li><strong>Website-Texte</strong> – Texte auf Startseite, Kunsttherapie, Über mich, Preise usw.</li>
             <li><strong>Buchungen</strong> – Online-Termine von Kunden, Zeiten blockieren, Google Kalender</li>
             <li><strong>Mini-Atelier</strong> – Werke von der Website (anonym oder mit Namen)</li>
             <li><strong>Veranstaltungen</strong> – Workshops &amp; Termine auf der Events-Seite</li>
@@ -272,6 +274,38 @@
       </div>
       <div id="eventsList" class="items-list"></div>
     </section>
+
+    <!-- WEBSITE TEXTS (i18n) -->
+    <section class="admin-section" id="texts">
+      <h1>Website-Texte</h1>
+      <p class="sub section-desc">Texte der öffentlichen Seiten bearbeiten – Deutsch und Englisch. Änderungen sind sofort online sichtbar (Seite ggf. neu laden).</p>
+
+      <div class="form-container i18n-toolbar">
+        <div class="form-row i18n-toolbar-row">
+          <div class="form-group">
+            <label for="i18nGroupSelect">Bereich</label>
+            <select id="i18nGroupSelect" onchange="loadI18nGroup()"></select>
+          </div>
+          <div class="form-group">
+            <label>Sprache</label>
+            <div class="i18n-lang-switch" role="group" aria-label="Sprache">
+              <button type="button" class="i18n-lang-btn is-active" data-i18n-lang="de" onclick="setI18nLang('de')">Deutsch</button>
+              <button type="button" class="i18n-lang-btn" data-i18n-lang="en" onclick="setI18nLang('en')">English</button>
+            </div>
+          </div>
+        </div>
+        <p class="note" id="i18nGroupDesc"></p>
+      </div>
+
+      <form id="i18nForm" class="form-container" onsubmit="saveI18nGroup(event)">
+        <div id="i18nFields" class="i18n-fields"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn-save">Texte speichern</button>
+          <button type="button" class="btn-cancel" onclick="resetI18nGroup()">Standard wiederherstellen</button>
+          <a class="btn outline" id="i18nPreviewLink" href="/" target="_blank" rel="noopener">Vorschau auf Website</a>
+        </div>
+      </form>
+    </section>
   </div>
 </div>
 
@@ -288,7 +322,7 @@ function showAdminApp(username) {
   loadDashboard();
   if (username) {
     const welcome = document.getElementById('dashboardWelcome');
-    if (welcome) welcome.textContent = `Hallo ${username}! Hier pflegst du Neuigkeiten, Buchungen und Veranstaltungen.`;
+    if (welcome) welcome.textContent = `Hallo ${username}! Hier pflegst du Neuigkeiten, Texte, Buchungen und Veranstaltungen.`;
   }
 }
 
@@ -431,6 +465,136 @@ function switchSection(sectionId) {
   }
   if (sectionId === 'atelier') loadAtelierList();
   if (sectionId === 'events') loadEventsList();
+  if (sectionId === 'texts') initTextsSection();
+}
+
+const I18N_PREVIEW = {
+  home: '/',
+  therapy: '/kunsttherapie',
+  about: '/ueber-mich',
+  prices: '/preise',
+  contact: '/kontakt',
+  booking: '/buchung',
+  seo: '/',
+};
+
+let i18nCatalog = [];
+let i18nCurrentLang = 'de';
+
+async function initTextsSection() {
+  try {
+    if (!i18nCatalog.length) {
+      const res = await fetch(`${API_URL}/admin/i18n/catalog`, { credentials: 'include' });
+      i18nCatalog = await res.json();
+      const sel = document.getElementById('i18nGroupSelect');
+      sel.innerHTML = i18nCatalog
+        .map((g) => `<option value="${g.id}">${g.title}</option>`)
+        .join('');
+    }
+    await loadI18nGroup();
+  } catch (err) {
+    showMessage('Texte konnten nicht geladen werden: ' + err.message, 'error');
+  }
+}
+
+function setI18nLang(lang) {
+  i18nCurrentLang = lang;
+  document.querySelectorAll('.i18n-lang-btn').forEach((btn) => {
+    btn.classList.toggle('is-active', btn.dataset.i18nLang === lang);
+  });
+  loadI18nGroup();
+}
+
+async function loadI18nGroup() {
+  const groupId = document.getElementById('i18nGroupSelect')?.value;
+  if (!groupId) return;
+
+  const preview = document.getElementById('i18nPreviewLink');
+  if (preview) preview.href = I18N_PREVIEW[groupId] || '/';
+
+  try {
+    const res = await fetch(`${API_URL}/admin/i18n/${groupId}?lang=${i18nCurrentLang}`, {
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Laden fehlgeschlagen');
+
+    const desc = document.getElementById('i18nGroupDesc');
+    if (desc) desc.textContent = data.description || '';
+
+    const container = document.getElementById('i18nFields');
+    container.innerHTML = data.fields
+      .map((field) => {
+        const rows = field.html ? 5 : field.key.includes('body') || field.key.includes('table') ? 8 : 3;
+        const hint = field.hint ? `<p class="note">${field.hint}</p>` : '';
+        const badge = field.isOverride
+          ? '<span class="i18n-override-badge">Geändert</span>'
+          : '';
+        const inputTag = field.html
+          ? `<textarea id="i18n-${field.key}" name="${field.key}" rows="${rows}">${escapeHtml(field.value)}</textarea>`
+          : `<textarea id="i18n-${field.key}" name="${field.key}" rows="${rows}">${escapeHtml(field.value)}</textarea>`;
+        return `
+          <div class="form-group full i18n-field${field.isOverride ? ' is-override' : ''}">
+            <label for="i18n-${field.key}">${field.label} ${badge}</label>
+            ${inputTag}
+            ${hint}
+          </div>`;
+      })
+      .join('');
+  } catch (err) {
+    showMessage('Fehler beim Laden: ' + err.message, 'error');
+  }
+}
+
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+async function saveI18nGroup(e) {
+  e.preventDefault();
+  const groupId = document.getElementById('i18nGroupSelect').value;
+  const form = document.getElementById('i18nForm');
+  const values = {};
+  form.querySelectorAll('[name]').forEach((el) => {
+    if (el.name) values[el.name] = el.value;
+  });
+
+  try {
+    const res = await fetch(`${API_URL}/admin/i18n/${groupId}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lang: i18nCurrentLang, values }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Speichern fehlgeschlagen');
+    showMessage('Texte gespeichert – auf der Website sichtbar nach Reload.', 'success');
+    loadI18nGroup();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function resetI18nGroup() {
+  const groupId = document.getElementById('i18nGroupSelect').value;
+  const langLabel = i18nCurrentLang === 'en' ? 'Englisch' : 'Deutsch';
+  if (!confirm(`Alle Texte in diesem Bereich (${langLabel}) auf Standard zurücksetzen?`)) return;
+
+  try {
+    const res = await fetch(`${API_URL}/admin/i18n/${groupId}?lang=${i18nCurrentLang}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Zurücksetzen fehlgeschlagen');
+    showMessage('Standardtexte wiederhergestellt.', 'success');
+    loadI18nGroup();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
 }
 
 function showMessage(text, type, elementId) {

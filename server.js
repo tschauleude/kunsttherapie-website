@@ -283,6 +283,7 @@ const booking = require('./lib/booking');
 const googleCalendar = require('./lib/google-calendar');
 const ical = require('./lib/ical');
 const email = require('./lib/email');
+const i18nContent = require('./lib/i18n-content');
 
 function publicBaseUrl(req) {
   const fromEnv = process.env.PUBLIC_SITE_URL;
@@ -1162,6 +1163,77 @@ app.post('/api/admin/upload', requireAuth, (req, res) => {
       url: `/uploads/${req.file.filename}`,
     });
   });
+});
+
+// ============================================================================
+// I18N TEXT OVERRIDES (Admin → Website)
+// ============================================================================
+
+app.get('/api/i18n/overrides', async (req, res) => {
+  try {
+    const overrides = await i18nContent.readOverrides(dbGet);
+    res.setHeader('Cache-Control', 'public, max-age=60');
+    res.json(i18nContent.mergeOverridesForPublic(overrides));
+  } catch (e) {
+    console.error('i18n overrides:', e.message);
+    res.json({ de: {}, en: {} });
+  }
+});
+
+app.get('/api/admin/i18n/catalog', requireAuth, (req, res) => {
+  res.json(i18nContent.CATALOG);
+});
+
+app.get('/api/admin/i18n/:groupId', requireAuth, async (req, res) => {
+  const lang = req.query.lang === 'en' ? 'en' : 'de';
+  const groupId = req.params.groupId;
+  if (!i18nContent.CATALOG.some((g) => g.id === groupId)) {
+    return res.status(404).json({ error: 'Gruppe nicht gefunden' });
+  }
+  try {
+    const overrides = await i18nContent.readOverrides(dbGet);
+    const data = i18nContent.getGroupValues(groupId, lang, overrides);
+    res.json({
+      groupId,
+      lang,
+      title: data.group.title,
+      description: data.group.description || '',
+      fields: data.fields,
+    });
+  } catch (e) {
+    console.error('admin i18n get:', e.message);
+    res.status(500).json({ error: 'Texte konnten nicht geladen werden' });
+  }
+});
+
+app.put('/api/admin/i18n/:groupId', requireAuth, async (req, res) => {
+  const groupId = req.params.groupId;
+  const { lang, values } = req.body || {};
+  const errMsg = i18nContent.validateGroupPayload(groupId, lang, values);
+  if (errMsg) return res.status(400).json({ error: errMsg });
+
+  try {
+    const saved = await i18nContent.saveGroupOverrides(dbGet, dbRun, groupId, lang, values);
+    res.json({ success: true, overrides: i18nContent.mergeOverridesForPublic(saved) });
+  } catch (e) {
+    console.error('admin i18n save:', e.message);
+    res.status(500).json({ error: 'Speichern fehlgeschlagen' });
+  }
+});
+
+app.delete('/api/admin/i18n/:groupId', requireAuth, async (req, res) => {
+  const groupId = req.params.groupId;
+  const lang = req.query.lang === 'en' ? 'en' : 'de';
+  if (!i18nContent.CATALOG.some((g) => g.id === groupId)) {
+    return res.status(404).json({ error: 'Gruppe nicht gefunden' });
+  }
+  try {
+    const saved = await i18nContent.resetGroupOverrides(dbGet, dbRun, groupId, lang);
+    res.json({ success: true, overrides: i18nContent.mergeOverridesForPublic(saved) });
+  } catch (e) {
+    console.error('admin i18n reset:', e.message);
+    res.status(500).json({ error: 'Zurücksetzen fehlgeschlagen' });
+  }
 });
 
 app.get('/api/admin/bookings', requireAuth, (req, res) => {

@@ -376,3 +376,60 @@
     height: auto;
   }
 }
+
+.i18n-toolbar-row {
+  align-items: flex-end;
+}
+
+.i18n-lang-switch {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.i18n-lang-btn {
+  flex: 1;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid rgba(85, 122, 118, 0.3);
+  border-radius: 10px;
+  background: #fff;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.i18n-lang-btn.is-active {
+  background: var(--color-teal);
+  color: #fff;
+  border-color: var(--color-teal);
+}
+
+.i18n-fields .form-group textarea {
+  min-height: 4.5rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.i18n-field.is-override label {
+  color: var(--color-teal-dark);
+}
+
+.i18n-override-badge {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 999px;
+  background: rgba(85, 122, 118, 0.15);
+  color: var(--color-teal-dark);
+  vertical-align: middle;
+}
+
+#texts .form-actions {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+#texts .form-actions .btn.outline {
+  margin-left: auto;
+}
