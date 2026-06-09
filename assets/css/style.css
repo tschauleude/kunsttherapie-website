@@ -1484,6 +1484,13 @@ table.prices th {
   line-height: 1.5;
 }
 
+.prices-material-note {
+  margin: 0.65rem 0 0;
+  font-size: 0.88rem;
+  color: var(--text-light);
+  line-height: 1.55;
+}
+
 @media (max-width: 767px) {
   table.prices {
     border-radius: var(--radius-card);
