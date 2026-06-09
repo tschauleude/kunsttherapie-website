@@ -1327,6 +1327,57 @@ body.lightbox-open {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8);
 }
 
+.atelier-paper {
+  background-color: #faf8f5;
+  background-image:
+    radial-gradient(rgba(85, 122, 118, 0.06) 0.6px, transparent 0.6px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(250, 248, 245, 0) 100%);
+  background-size: 12px 12px, 100% 100%;
+}
+
+.atelier-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.atelier-palette-swatch {
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 1px rgba(85, 122, 118, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.atelier-palette-swatch:hover,
+.atelier-palette-swatch:focus-visible {
+  transform: scale(1.12);
+}
+
+.atelier-palette-swatch.active {
+  box-shadow: 0 0 0 2px var(--color-teal), 0 2px 8px rgba(85, 122, 118, 0.35);
+}
+
+.atelier-save-indicator {
+  margin: 0.5rem 0 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-teal-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.atelier-save-indicator::before {
+  content: '●';
+  font-size: 0.55rem;
+  color: #5cb88a;
+}
+
 .atelier-canvas-hint {
   position: absolute;
   inset: 0;

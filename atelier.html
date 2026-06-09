@@ -30,7 +30,7 @@
   <meta name="twitter:description" content="Ausprobieren im Mini-Atelier: Malen, Zeichnen und Kollage – optional anonym an das Atelier senden."/>
   <meta name="twitter:image" content="https://kunsttherapie.mkmpb.de/assets/img/Gruppen-und-Einzeltherapie-768x524.jpg"/>
   <meta name="twitter:image:alt" content="Kunsttherapie in Paderborn – Gruppen- und Einzeltherapie"/>
-  <link rel="stylesheet" href="assets/css/style.2dd37965.css"/>
+  <link rel="stylesheet" href="assets/css/style.5c8e9a87.css"/>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -107,19 +107,21 @@
   <div class="card canvasWrap" id="atelierApp" data-reveal-skip>
     <div class="kicker" data-i18n="atelier.kicker">Probier's aus</div>
     <h1 data-i18n="atelier.title">Mini-Atelier – <span class="text-accent">einfach loslegen</span></h1>
-    <p class="atelier-invite" data-i18n="atelier.intro">Malen, Linien und Formen setzen, Fotos zur Kollage legen. Optional kann das Werk später an das Atelier gesendet werden.</p>
+    <p class="atelier-invite" data-i18n="atelier.intro">Malen, Linien und Formen setzen, Fotos zur Kollage legen – dein Entwurf wird automatisch auf diesem Gerät gespeichert. Optional kann das Werk ans Atelier gesendet werden.</p>
 
-    <div class="atelier-canvas-wrap">
+    <div class="atelier-canvas-wrap atelier-paper">
       <canvas id="atelierCanvas" role="img" aria-label="Mini-Atelier Zeichenfläche"></canvas>
       <p class="atelier-canvas-hint" aria-hidden="true" data-i18n="atelier.hint">Hier starten …</p>
     </div>
     <div class="atelier-collage-bar" data-collage-bar hidden></div>
+    <p class="atelier-save-indicator" data-save-indicator hidden></p>
     <p class="atelier-status" data-atelier-status hidden role="status"></p>
 
     <p class="atelier-tools-label" data-i18n="atelier.tools">Werkzeuge</p>
     <div class="atelier-toolbar" role="toolbar" aria-label="Werkzeuge">
       <div class="atelier-tool-group">
         <button type="button" class="atelier-tool active" data-tool="brush" aria-pressed="true" data-i18n="atelier.tool.brush">Pinsel</button>
+        <button type="button" class="atelier-tool" data-tool="erase" aria-pressed="false" data-i18n="atelier.tool.eraser">Radierer</button>
         <button type="button" class="atelier-tool" data-tool="line" aria-pressed="false" data-i18n="atelier.tool.line">Linie</button>
         <button type="button" class="atelier-tool" data-tool="rect" aria-pressed="false" data-i18n="atelier.tool.rect">Rechteck</button>
         <button type="button" class="atelier-tool" data-tool="circle" aria-pressed="false" data-i18n="atelier.tool.circle">Oval</button>
@@ -128,8 +130,12 @@
       <div class="atelier-tool-group atelier-options">
         <label class="label" for="atelierColor" data-i18n="atelier.color">Farbe</label>
         <input id="atelierColor" data-color type="color" value="#557a76"/>
+        <div class="atelier-palette" data-palette role="group" aria-label="Farbpalette"></div>
         <label class="label" for="atelierSize" data-i18n="atelier.size">Stärke</label>
-        <input id="atelierSize" data-size type="range" min="2" max="24" value="8"/>
+        <input id="atelierSize" data-size type="range" min="2" max="36" value="8"/>
+        <label class="label" for="atelierOpacity" data-i18n="atelier.opacity">Deckkraft</label>
+        <input id="atelierOpacity" data-opacity type="range" min="15" max="100" value="45"/>
+        <label class="atelier-check"><input type="checkbox" data-soft-brush/> <span data-i18n="atelier.tool.soft">Aquarell</span></label>
         <label class="atelier-check"><input type="checkbox" data-fill/> <span data-i18n="atelier.fill">Fläche füllen</span></label>
       </div>
       <div class="atelier-tool-group">
@@ -137,6 +143,7 @@
         <button type="button" class="btn outline btn-sm" data-redo disabled data-i18n="atelier.redo">Wiederholen</button>
         <button type="button" class="btn outline btn-sm" data-save-draft data-i18n="atelier.save">Speichern</button>
         <button type="button" class="btn outline btn-sm" data-load-draft data-i18n="atelier.load">Laden</button>
+        <button type="button" class="btn outline btn-sm" data-download data-i18n="atelier.download">Als PNG</button>
         <button type="button" class="btn outline btn-sm" data-clear data-i18n="atelier.clear">Leeren</button>
       </div>
     </div>
@@ -217,7 +224,7 @@
     </div>
   </footer>
 
-  <script src="assets/js/site-core.6594178a.js" defer></script>
+  <script src="assets/js/site-core.30128393.js" defer></script>
   <script src="assets/js/i18n-messages-shared.js" defer></script>
   <script src="assets/js/i18n-messages-atelier.js" defer></script>
   <script src="assets/js/atelier.js" defer></script>
