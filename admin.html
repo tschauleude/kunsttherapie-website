@@ -506,12 +506,21 @@ function switchSection(sectionId, navEl) {
 const I18N_PREVIEW = {
   home: '/',
   therapy: '/kunsttherapie',
+  faq: '/kunsttherapie.html#faq',
   about: '/ueber-mich',
   prices: '/preise',
   contact: '/kontakt',
   booking: '/buchung',
   seo: '/',
 };
+
+function i18nFieldRows(field) {
+  if (/^kt\.faq\d+\.a$/.test(field.key)) return 8;
+  if (/^kt\.faq\d+\.q$/.test(field.key)) return 2;
+  if (field.html) return 5;
+  if (field.key.includes('body') || field.key.includes('table')) return 8;
+  return 3;
+}
 
 let i18nCatalog = [];
 let i18nCurrentLang = 'de';
@@ -560,7 +569,7 @@ async function loadI18nGroup() {
     const container = document.getElementById('i18nFields');
     container.innerHTML = data.fields
       .map((field) => {
-        const rows = field.html ? 5 : field.key.includes('body') || field.key.includes('table') ? 8 : 3;
+        const rows = i18nFieldRows(field);
         const hint = field.hint ? `<p class="note">${field.hint}</p>` : '';
         const badge = field.isOverride
           ? '<span class="i18n-override-badge">Geändert</span>'

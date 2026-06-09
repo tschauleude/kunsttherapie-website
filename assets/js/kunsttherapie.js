@@ -67,3 +67,58 @@
 
   document.addEventListener('kt-lang-change', window.ktUpdateToggleLabels);
 })();
+
+/**
+ * FAQ JSON-LD aus aktuellen i18n-Texten (inkl. Admin-Overrides).
+ */
+(function () {
+  const schemaEl = document.getElementById('kt-faq-schema');
+  if (!schemaEl) return;
+
+  function tr(key) {
+    return window.ktI18n?.t(key) ?? null;
+  }
+
+  function faqPlainText(html) {
+    const box = document.createElement('div');
+    box.innerHTML = html || '';
+    return box.textContent.replace(/\s+/g, ' ').trim();
+  }
+
+  function updateFaqSchema() {
+    if (!window.ktI18n) return;
+    const lang = window.ktI18n.getLang();
+    const mainEntity = [];
+
+    for (let i = 1; i <= 12; i += 1) {
+      const q = tr(`kt.faq${i}.q`);
+      const aHtml = tr(`kt.faq${i}.a`);
+      if (!q || !aHtml) continue;
+      mainEntity.push({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faqPlainText(aHtml),
+        },
+      });
+    }
+
+    if (!mainEntity.length) return;
+
+    const origin = window.location.origin || 'https://kunsttherapie.mkmpb.de';
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      '@id': `${origin}${window.location.pathname}#faq`,
+      inLanguage: lang === 'en' ? 'en' : 'de',
+      mainEntity,
+    };
+    schemaEl.textContent = JSON.stringify(schema);
+  }
+
+  document.addEventListener('kt-lang-change', updateFaqSchema);
+  document.addEventListener('DOMContentLoaded', () => {
+    window.setTimeout(updateFaqSchema, 0);
+  });
+})();

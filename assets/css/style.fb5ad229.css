@@ -763,6 +763,28 @@ details .inner {
   padding: 0 1.15rem 1.15rem;
   color: var(--text-light);
   font-size: 0.96rem;
+  line-height: 1.65;
+}
+
+details .inner p {
+  margin: 0 0 0.75rem;
+}
+
+details .inner p:last-child {
+  margin-bottom: 0;
+}
+
+details .inner ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+details .inner li {
+  margin-bottom: 0.45rem;
+}
+
+details .inner li:last-child {
+  margin-bottom: 0;
 }
 
 /* Gallery */
