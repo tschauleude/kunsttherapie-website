@@ -2,52 +2,66 @@
  * Angebots-Karten: „Mehr erfahren“ klappt die Beschreibung in der Karte auf.
  */
 (function () {
-  const root =
-    document.querySelector('.page-kunsttherapie') ||
-    document.querySelector('[data-i18n-page="therapy"]');
-  if (!root) return;
+  function initOfferToggles() {
+    const root =
+      document.querySelector('.page-kunsttherapie') ||
+      document.querySelector('[data-i18n-page="therapy"]');
+    if (!root) return;
 
-  function labelLearn() {
-    return window.ktI18n ? window.ktI18n.t('btn.learnMore') : 'Mehr erfahren';
-  }
+    const offersWrap = root.querySelector('.kt-offers');
+    if (!offersWrap || offersWrap.dataset.ktToggleBound === '1') return;
+    offersWrap.dataset.ktToggleBound = '1';
 
-  function labelLess() {
-    return window.ktI18n ? window.ktI18n.t('btn.less') : 'Weniger';
-  }
+    function labelLearn() {
+      return window.ktI18n ? window.ktI18n.t('btn.learnMore') : 'Mehr erfahren';
+    }
 
-  function scrollOfferIntoView(card) {
-    const header = document.querySelector('header');
-    const headerH = header ? header.getBoundingClientRect().height : 0;
-    const consent =
-      typeof window.isConsentBannerVisible === 'function' && window.isConsentBannerVisible();
-    const banner = consent ? document.querySelector('.consent-banner-inner') : null;
-    const bannerH = banner ? banner.getBoundingClientRect().height : 0;
-    const top = window.scrollY + card.getBoundingClientRect().top - headerH - 12;
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    const target = Math.max(0, Math.min(top, maxScroll - bannerH * 0.35));
-    window.scrollTo({ top: target, behavior: 'smooth' });
-  }
+    function labelLess() {
+      return window.ktI18n ? window.ktI18n.t('btn.less') : 'Weniger';
+    }
 
-  function resetToggles() {
-    root.querySelectorAll('[data-offer] .kt-toggle').forEach((t) => {
-      t.setAttribute('aria-expanded', 'false');
-      t.textContent = labelLearn();
-    });
-  }
+    function scrollOfferIntoView(card) {
+      const header = document.querySelector('header');
+      const headerH = header ? header.getBoundingClientRect().height : 0;
+      const consent =
+        typeof window.isConsentBannerVisible === 'function' && window.isConsentBannerVisible();
+      const banner = consent ? document.querySelector('.consent-banner-inner') : null;
+      const bannerH = banner ? banner.getBoundingClientRect().height : 0;
+      const cardRect = card.getBoundingClientRect();
+      const top = window.scrollY + cardRect.top - headerH - 12;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      let target = Math.max(0, Math.min(top, maxScroll));
 
-  window.ktUpdateToggleLabels = function () {
-    root.querySelectorAll('[data-offer] .kt-toggle').forEach((t) => {
-      const open = t.getAttribute('aria-expanded') === 'true';
-      t.textContent = open ? labelLess() : labelLearn();
-    });
-  };
+      const visibleBottom = window.innerHeight - bannerH - 8;
+      if (cardRect.bottom > visibleBottom) {
+        target = Math.min(maxScroll, window.scrollY + cardRect.bottom - visibleBottom);
+      }
 
-  root.querySelectorAll('[data-offer]').forEach((card) => {
-    const toggle = card.querySelector('.kt-toggle');
-    const body = card.querySelector('.kt-offer-body');
-    if (!toggle || !body) return;
+      const behavior =
+        window.matchMedia('(max-width: 768px), (prefers-reduced-motion: reduce)').matches
+          ? 'auto'
+          : 'smooth';
+      window.scrollTo({ top: target, behavior });
+    }
 
-    toggle.addEventListener('click', () => {
+    function resetToggles() {
+      root.querySelectorAll('[data-offer] .kt-toggle').forEach((t) => {
+        t.setAttribute('aria-expanded', 'false');
+        t.textContent = labelLearn();
+      });
+    }
+
+    window.ktUpdateToggleLabels = function () {
+      root.querySelectorAll('[data-offer] .kt-toggle').forEach((t) => {
+        const open = t.getAttribute('aria-expanded') === 'true';
+        t.textContent = open ? labelLess() : labelLearn();
+      });
+    };
+
+    function toggleOffer(card, toggle) {
+      const body = card.querySelector('.kt-offer-body');
+      if (!body) return;
+
       const open = toggle.getAttribute('aria-expanded') === 'true';
       resetToggles();
       root.querySelectorAll('[data-offer] .kt-offer-body').forEach((b) => {
@@ -60,12 +74,31 @@
         toggle.textContent = labelLess();
         body.hidden = false;
         card.classList.add('is-open');
-        scrollOfferIntoView(card);
+        requestAnimationFrame(() => scrollOfferIntoView(card));
       }
-    });
-  });
+    }
 
-  document.addEventListener('kt-lang-change', window.ktUpdateToggleLabels);
+    offersWrap.addEventListener('click', (e) => {
+      const toggle = e.target.closest('.kt-toggle');
+      if (!toggle || !offersWrap.contains(toggle)) return;
+
+      const card = toggle.closest('[data-offer]');
+      if (!card) return;
+
+      e.preventDefault();
+      toggleOffer(card, toggle);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initOfferToggles);
+  } else {
+    initOfferToggles();
+  }
+
+  document.addEventListener('kt-lang-change', () => {
+    if (typeof window.ktUpdateToggleLabels === 'function') window.ktUpdateToggleLabels();
+  });
 })();
 
 /**

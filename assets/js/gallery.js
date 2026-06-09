@@ -168,11 +168,13 @@
     }
   }
 
-  gallery.querySelectorAll('[data-gallery-open]').forEach((btn, i) => {
+  gallery.querySelectorAll('[data-gallery-open]').forEach((btn) => {
     btn.addEventListener('click', () => {
       lastFocus = btn;
       buildThumbs();
-      show(i);
+      const slides = getSlides();
+      const slideIndex = slides.findIndex((s) => s.btn === btn);
+      if (slideIndex >= 0) show(slideIndex);
     });
   });
 

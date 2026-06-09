@@ -89,9 +89,38 @@
     if (ext) ext.checked = Boolean(consent.external);
   }
 
+  let bannerResizeObserver = null;
+
+  function updateBannerOffset() {
+    const b = document.getElementById('consentBanner');
+    const visible = Boolean(b && !b.hidden);
+    if (!visible) {
+      document.body.classList.remove('consent-banner-visible');
+      document.body.style.removeProperty('--consent-banner-offset');
+      bannerResizeObserver?.disconnect();
+      bannerResizeObserver = null;
+      return;
+    }
+
+    const inner = b.querySelector('.consent-banner-inner');
+    const bannerStyle = inner ? getComputedStyle(b) : null;
+    const pad =
+      (bannerStyle ? parseFloat(bannerStyle.paddingBottom) + parseFloat(bannerStyle.paddingTop) : 0) || 16;
+    const height = inner ? Math.ceil(inner.getBoundingClientRect().height + pad) : 176;
+
+    document.body.classList.add('consent-banner-visible');
+    document.body.style.setProperty('--consent-banner-offset', `${height}px`);
+
+    if (inner && !bannerResizeObserver) {
+      bannerResizeObserver = new ResizeObserver(() => updateBannerOffset());
+      bannerResizeObserver.observe(inner);
+    }
+  }
+
   function hideBanner() {
     const b = document.getElementById('consentBanner');
     if (b) b.hidden = true;
+    updateBannerOffset();
     window.dispatchEvent(new CustomEvent('consent-banner-closed'));
     emitConsentSettled();
   }
@@ -99,6 +128,7 @@
   function showBanner() {
     const b = document.getElementById('consentBanner');
     if (b) b.hidden = false;
+    requestAnimationFrame(updateBannerOffset);
   }
 
   window.isConsentBannerVisible = function isConsentBannerVisible() {
@@ -312,6 +342,7 @@
     document.querySelectorAll('[data-cookie-settings]').forEach((btn) => {
       btn.textContent = tr('consent.footerLink') || 'Cookie-Einstellungen';
     });
+    updateBannerOffset();
   });
 
   if (document.readyState === 'loading') {

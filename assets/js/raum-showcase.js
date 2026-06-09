@@ -45,15 +45,21 @@
   /* ── Vorher/Nachher-Slider ── */
   const compare = root.querySelector('[data-raum-compare]');
   if (compare) {
-    const range = compare.querySelector('[data-raum-compare-range]');
+    const range =
+      compare.querySelector('[data-raum-compare-range]') ||
+      compare.querySelector('#raumCompareRange');
     const afterLayer = compare.querySelector('[data-raum-compare-after]');
     const handle = compare.querySelector('[data-raum-compare-handle]');
 
     function setCompare(pct) {
       const clamped = Math.min(100, Math.max(0, pct));
-      afterLayer.style.clipPath = `inset(0 ${100 - clamped}% 0 0)`;
+      // Rechts Stimmungsvision, links Aktuelles Foto (Nachher-Layer von rechts einblenden)
+      afterLayer.style.clipPath = `inset(0 0 0 ${100 - clamped}%)`;
       if (handle) handle.style.left = `${clamped}%`;
-      if (range) range.value = String(clamped);
+      if (range) {
+        range.value = String(Math.round(clamped));
+        range.setAttribute('aria-valuetext', `${Math.round(clamped)} Prozent`);
+      }
       compare.style.setProperty('--compare-pct', `${clamped}%`);
     }
 
@@ -70,22 +76,49 @@
     let dragging = false;
     let compareDragged = false;
     let compareDragStart = 0;
+    let activePointerId = null;
+    const DRAG_THRESHOLD = 4;
+
     compare.addEventListener('pointerdown', (e) => {
       if (e.target.closest('[data-raum-hotspot]')) return;
-      dragging = true;
+      if (e.pointerType === 'mouse' && e.button > 0) return;
+      activePointerId = e.pointerId;
+      dragging = false;
       compareDragged = false;
       compareDragStart = pointerX(e);
-      compare.setPointerCapture(e.pointerId);
-      setCompare(compareDragStart);
+      try {
+        compare.setPointerCapture(e.pointerId);
+      } catch (_) {
+        /* synthetic / unsupported pointer */
+      }
     });
+
     compare.addEventListener('pointermove', (e) => {
-      if (!dragging) return;
+      if (e.pointerId !== activePointerId) return;
       const x = pointerX(e);
-      if (Math.abs(x - compareDragStart) > 2) compareDragged = true;
+      if (!dragging && Math.abs(x - compareDragStart) < DRAG_THRESHOLD) return;
+      dragging = true;
+      compareDragged = true;
+      compare.classList.add('is-dragging');
       setCompare(x);
     });
-    compare.addEventListener('pointerup', () => { dragging = false; });
-    compare.addEventListener('pointercancel', () => { dragging = false; });
+
+    function endCompareDrag(e) {
+      if (e && activePointerId != null && e.pointerId !== activePointerId) return;
+      dragging = false;
+      activePointerId = null;
+      compare.classList.remove('is-dragging');
+      if (e) {
+        try {
+          compare.releasePointerCapture(e.pointerId);
+        } catch (_) {
+          /* already released */
+        }
+      }
+    }
+
+    compare.addEventListener('pointerup', endCompareDrag);
+    compare.addEventListener('pointercancel', endCompareDrag);
     compare.dataset.raumCompareDragged = '0';
     compare.addEventListener('click', () => {
       compare.dataset.raumCompareDragged = compareDragged ? '1' : '0';
@@ -99,6 +132,11 @@
   root.querySelectorAll('[data-raum-hotspot]').forEach((pin) => {
     const tip = pin.querySelector('.kt-hotspot-tip');
     if (!tip) return;
+
+    const y = parseFloat(pin.style.getPropertyValue('--hotspot-y'));
+    if (!Number.isNaN(y) && y < 34) {
+      pin.classList.add('kt-hotspot--tip-below');
+    }
 
     pin.addEventListener('click', (e) => {
       e.stopPropagation();
