@@ -118,8 +118,10 @@
       if (val != null) el.setAttribute('alt', val);
     });
 
-    document.querySelectorAll('[data-lang]').forEach((btn) => {
-      const active = btn.getAttribute('data-lang') === currentLang;
+    document.querySelectorAll('.lang-switch-btn[data-lang]').forEach((btn) => {
+      const code = btn.getAttribute('data-lang');
+      btn.textContent = code ? code.toUpperCase() : btn.textContent;
+      const active = code === currentLang;
       btn.setAttribute('aria-pressed', active ? 'true' : 'false');
       btn.classList.toggle('is-active', active);
     });

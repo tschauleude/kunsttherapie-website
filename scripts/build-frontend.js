@@ -77,6 +77,7 @@ function hashContent(buf) {
 function pageForKey(key) {
   if (key.startsWith('consent.') || key.startsWith('a11y.') || key.startsWith('ui.')) return 'shared';
   if (key.startsWith('nav.') || key.startsWith('btn.') || key.startsWith('form.')) return 'shared';
+  if (key.startsWith('lang.')) return 'shared';
   if (key.startsWith('map.')) return 'shared';
   if (key.startsWith('meta.home.') || key.startsWith('home.')) return 'home';
   if (key.startsWith('meta.therapy.') || key.startsWith('kt.') || key.startsWith('offer.')) return 'therapy';
