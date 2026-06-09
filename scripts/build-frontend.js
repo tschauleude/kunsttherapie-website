@@ -16,7 +16,11 @@ const crypto = require('crypto');
 const ROOT = path.join(__dirname, '..');
 const ASSETS = path.join(ROOT, 'assets');
 const SITE_PRICING = require(path.join(ROOT, 'lib', 'site-pricing'));
-const { scrubRentedOverrides } = require(path.join(ROOT, 'lib', 'i18n-scrub'));
+const {
+  containsRentedCopy,
+  sanitizeRentedText,
+  scrubRentedOverrides,
+} = require(path.join(ROOT, 'lib', 'i18n-scrub'));
 const JS_DIR = path.join(ASSETS, 'js');
 const CSS_DIR = path.join(ASSETS, 'css');
 const IMG_DIR = path.join(ASSETS, 'img');
@@ -119,6 +123,15 @@ function loadI18nExtra() {
   const overrides = scrubRentedOverrides(loadI18nOverridesJson()).overrides;
   for (const lang of ['de', 'en']) {
     Object.assign(extra[lang], overrides[lang] || {});
+    for (const [key, val] of Object.entries(extra[lang] || {})) {
+      if (typeof val !== 'string') continue;
+      const sanitized = sanitizeRentedText(val);
+      if (containsRentedCopy(sanitized)) {
+        delete extra[lang][key];
+        continue;
+      }
+      extra[lang][key] = sanitized;
+    }
   }
   return extra;
 }

@@ -490,9 +490,40 @@ window.I18N_PAGE_BINDINGS = {
 
   const STORAGE_KEY = 'kt-lang';
   const DEFAULT_LANG = 'de';
+  const RENTED_COPY_PATTERN =
+    /\b(angemietet\w*|gemietet\w*|gemiet\w*|vermiet\w*|untermiet\w*|miete\w*|mieter\w*|pacht\w*|rent(?:ed|ing|s|al)?|leas(?:ed|ing|e)?)\b/i;
+  const RENTED_PREFIX_PATTERN =
+    /\b(angemietet\w*|gemietet\w*|gemiet\w*|vermietet\w*|untermietet\w*|rented|leased|rental)\s+/gi;
 
   function getMessages() {
     return window.I18N_MESSAGES || { de: {}, en: {} };
+  }
+
+  function sanitizeRentedText(val) {
+    if (typeof val !== 'string') return val;
+    return val
+      .replace(RENTED_PREFIX_PATTERN, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/^\s*[-–—]\s*/, '')
+      .trim();
+  }
+
+  function cleanMessage(val) {
+    if (typeof val !== 'string') return val;
+    const sanitized = sanitizeRentedText(val);
+    return RENTED_COPY_PATTERN.test(sanitized) ? null : sanitized;
+  }
+
+  function scrubLoadedMessages() {
+    const msgs = window.I18N_MESSAGES;
+    if (!msgs) return;
+    ['de', 'en'].forEach((lang) => {
+      for (const [key, val] of Object.entries(msgs[lang] || {})) {
+        const cleaned = cleanMessage(val);
+        if (cleaned == null) delete msgs[lang][key];
+        else msgs[lang][key] = cleaned;
+      }
+    });
   }
 
   async function loadOverrides() {
@@ -503,7 +534,10 @@ window.I18N_PAGE_BINDINGS = {
       if (!window.I18N_MESSAGES) window.I18N_MESSAGES = { de: {}, en: {} };
       ['de', 'en'].forEach((lang) => {
         if (!data[lang] || typeof data[lang] !== 'object') return;
-        Object.assign(window.I18N_MESSAGES[lang], data[lang]);
+        for (const [key, val] of Object.entries(data[lang])) {
+          const cleaned = cleanMessage(val);
+          if (cleaned != null) window.I18N_MESSAGES[lang][key] = cleaned;
+        }
       });
     } catch (_) {
       /* offline / static hosting without API */
@@ -522,9 +556,13 @@ window.I18N_PAGE_BINDINGS = {
 
   function t(key) {
     const msgs = getMessages()[currentLang] || {};
-    if (msgs[key] != null) return msgs[key];
+    if (msgs[key] != null) {
+      const cleaned = cleanMessage(msgs[key]);
+      if (cleaned != null) return cleaned;
+    }
     const fallback = getMessages().de[key];
-    return fallback != null ? fallback : null;
+    if (fallback == null) return null;
+    return cleanMessage(fallback);
   }
 
   function localeTag() {
@@ -652,6 +690,7 @@ window.I18N_PAGE_BINDINGS = {
   };
 
   async function boot() {
+    scrubLoadedMessages();
     await loadOverrides();
     applyTranslations();
     if (typeof window.ktInitLangSwitch === 'function') {
