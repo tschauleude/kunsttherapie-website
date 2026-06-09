@@ -44,6 +44,11 @@
       window.scrollTo({ top: target, behavior });
     }
 
+    function syncOffersLayout() {
+      const anyOpen = offersWrap.querySelector('[data-offer].is-open');
+      offersWrap.classList.toggle('kt-offers--has-open', !!anyOpen);
+    }
+
     function resetToggles() {
       root.querySelectorAll('[data-offer] .kt-toggle').forEach((t) => {
         t.setAttribute('aria-expanded', 'false');
@@ -74,20 +79,41 @@
         toggle.textContent = labelLess();
         body.hidden = false;
         card.classList.add('is-open');
-        requestAnimationFrame(() => scrollOfferIntoView(card));
+        requestAnimationFrame(() => {
+          scrollOfferIntoView(card);
+          body.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+        });
       }
+      syncOffersLayout();
+    }
+
+    let lastTouchToggleAt = 0;
+
+    function handleToggleActivate(toggle) {
+      const card = toggle.closest('[data-offer]');
+      if (!card) return;
+      toggleOffer(card, toggle);
     }
 
     offersWrap.addEventListener('click', (e) => {
       const toggle = e.target.closest('.kt-toggle');
       if (!toggle || !offersWrap.contains(toggle)) return;
-
-      const card = toggle.closest('[data-offer]');
-      if (!card) return;
-
+      if (Date.now() - lastTouchToggleAt < 450) return;
       e.preventDefault();
-      toggleOffer(card, toggle);
+      handleToggleActivate(toggle);
     });
+
+    offersWrap.addEventListener(
+      'touchend',
+      (e) => {
+        const toggle = e.target.closest('.kt-toggle');
+        if (!toggle || !offersWrap.contains(toggle)) return;
+        e.preventDefault();
+        lastTouchToggleAt = Date.now();
+        handleToggleActivate(toggle);
+      },
+      { passive: false }
+    );
   }
 
   if (document.readyState === 'loading') {

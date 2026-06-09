@@ -92,7 +92,7 @@ window.I18N_MESSAGES = {
     'quotes.2.author': 'Else Pannek',
     'quotes.nav': 'Zitate wechseln',
     'home.gallery.title': 'Kunsttherapie in Aktion',
-    'home.praxis.title': 'Das Atelier ab Juli',
+    'home.praxis.title': 'Atelier in Paderborn – ab 1. Juli 2026',
     'kt.hero.kicker': 'Ab 1. Juli 2026 in Paderborn',
     'kt.hero.title': 'Kunst, die <span class="text-accent">trägt</span> – nicht nur schmückt',
     'kt.hero.sub':
@@ -241,7 +241,7 @@ window.I18N_MESSAGES = {
     'quotes.2.author': 'Else Pannek',
     'quotes.nav': 'Change quote',
     'home.gallery.title': 'Art therapy in action',
-    'home.praxis.title': 'The atelier from July',
+    'home.praxis.title': 'Atelier in Paderborn – from 1 July 2026',
     'kt.hero.kicker': 'From 1 July 2026 in Paderborn',
     'kt.hero.title': 'Art that <span class="text-accent">supports</span> – not just decorates',
     'kt.hero.sub':

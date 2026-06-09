@@ -818,6 +818,8 @@ summary {
   font-weight: 600;
   cursor: pointer;
   list-style: none;
+  touch-action: manipulation;
+  min-height: 2.75rem;
 }
 
 summary::-webkit-details-marker {
@@ -2570,7 +2572,7 @@ nav[data-site-nav] {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.25rem;
-  align-items: stretch;
+  align-items: start;
 }
 
 @media (min-width: 640px) {
@@ -2650,10 +2652,23 @@ nav[data-site-nav] {
 .kt-offer {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 100%;
+  width: 100%;
+  height: auto;
+  min-height: 0;
   transition: border-color 0.35s, box-shadow 0.35s;
   border: 2px solid transparent;
+}
+
+@media (max-width: 1023px) {
+  .kt-offers.kt-offers--has-open {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .kt-offers.kt-offers--has-open .kt-offer:not(.is-open) {
+    flex: 0 0 auto;
+  }
 }
 
 .page-kunsttherapie .kt-offer.card {
@@ -2698,6 +2713,10 @@ nav[data-site-nav] {
   line-height: 1.65;
   text-align: left;
   animation: ktReveal 0.35s ease;
+}
+
+.kt-offer-body[hidden] {
+  display: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

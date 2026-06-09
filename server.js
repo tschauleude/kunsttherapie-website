@@ -1780,12 +1780,18 @@ app.use((req, res) => {
 // ============================================================================
 
 if (require.main === module) {
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`\n╔════════════════════════════════════════╗`);
   console.log(`║   Kunsttherapie CMS Backend       ║`);
   console.log(`║  Server running on http://localhost:${PORT}      ║`);
   console.log(`║  Admin Panel: http://localhost:${PORT}/admin  ║`);
   console.log(`╚════════════════════════════════════════╝\n`);
+  try {
+    const cleaned = await i18nContent.migrateRentedOverrides(dbGet, dbRun);
+    if (cleaned) console.log('i18n: veraltete angemietet/rented-Overrides aus der DB entfernt');
+  } catch (e) {
+    console.error('i18n migrate:', e.message);
+  }
 });
 }
 
