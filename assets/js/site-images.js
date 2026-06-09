@@ -80,9 +80,20 @@
     }
   }
 
+  function initGalleryLayout() {
+    const gallery = document.querySelector('[data-gallery]');
+    if (!gallery) return;
+    const preset = gallery.dataset.galleryCount;
+    applyGalleryCount(preset ? Number(preset) : 6);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applySiteImages);
+    document.addEventListener('DOMContentLoaded', () => {
+      initGalleryLayout();
+      applySiteImages();
+    });
   } else {
+    initGalleryLayout();
     applySiteImages();
   }
 })();
