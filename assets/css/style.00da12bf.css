@@ -2322,13 +2322,6 @@ body.consent-banner-visible {
   margin-right: auto;
 }
 
-@media (min-width: 640px) {
-  .kt-offers--four,
-  .kt-offers--five {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 .hero-times {
   display: flex;
   flex-wrap: wrap;
@@ -2510,48 +2503,44 @@ nav[data-site-nav] {
 
 .kt-offers {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.25rem;
   align-items: start;
 }
 
-/* Nur die geöffnete Karte wächst – Nachbarn in der Zeile bleiben kompakt */
-.kt-offers .kt-offer {
+.kt-offers > .kt-offer {
   align-self: start;
-  height: auto;
+  min-width: 0;
+  width: 100%;
 }
 
-.kt-offers.kt-offers--has-open .kt-offer:not(.is-open) {
-  height: auto;
-  max-height: none;
-  align-self: start;
+/* Geöffnete Karte: eigene volle Zeile, zentriert – Nachbarn bleiben unverändert kompakt */
+.kt-offers > .kt-offer.is-open {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: min(100%, 44rem);
 }
 
 @media (min-width: 640px) {
   .kt-offers {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
-  .kt-offers {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
+  .kt-offers--four,
   .kt-offers--five {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .kt-offers--five .kt-offer {
-    grid-column: span 2;
+  .kt-offers--five > .kt-offer:nth-child(4):not(.is-open) {
+    grid-column: 2;
   }
 
-  .kt-offers--five .kt-offer:nth-child(4) {
-    grid-column: 2 / span 2;
-  }
-
-  .kt-offers--five .kt-offer:nth-child(5) {
+  .kt-offers--five > .kt-offer:nth-child(5):not(.is-open) {
     grid-column: 1 / -1;
+    justify-self: center;
+    width: min(100%, calc((100% - 2.5rem) / 3 * 2 + 1.25rem));
   }
 }
 
@@ -2604,12 +2593,13 @@ nav[data-site-nav] {
 .kt-offer {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  box-sizing: border-box;
   transition: border-color 0.35s, box-shadow 0.35s;
   border: 2px solid transparent;
 }
 
-.page-kunsttherapie .kt-offer.card {
+.page-kunsttherapie .kt-offer.card,
+[data-i18n-page='therapy'] .kt-offer.card {
   padding: 1.1rem 1.2rem;
 }
 
@@ -2649,7 +2639,14 @@ nav[data-site-nav] {
   font-size: 0.95rem;
   line-height: 1.65;
   text-align: left;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
   animation: ktReveal 0.35s ease;
+}
+
+.kt-offer-body :is(img, table, pre, iframe) {
+  max-width: 100%;
 }
 
 .kt-offer-body[hidden] {
