@@ -2,6 +2,7 @@
 /* DM Sans wird nach Einwilligung per consent.js geladen; Fallback: System-Schrift */
 
 :root {
+  color-scheme: light;
   --bg-main: #f4f1ea;
   --bg-card: rgba(255, 255, 255, 0.9);
   --bg-surface: rgba(255, 255, 255, 0.72);
@@ -635,6 +636,30 @@ span.price-hint-pill {
 
 .btn.outline:hover {
   background: rgba(85, 122, 118, 0.08);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--color-teal);
+  border: none;
+  box-shadow: none;
+  padding: 0.85rem 1rem;
+}
+
+.btn.ghost:hover {
+  background: rgba(85, 122, 118, 0.08);
+  transform: none;
+  box-shadow: none;
+}
+
+.hero-copy .actions {
+  align-items: center;
+}
+
+.hero-copy .actions .btn.primary {
+  flex: 1 1 auto;
+  min-width: min(100%, 11.5rem);
+  text-align: center;
 }
 
 .actions {

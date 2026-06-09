@@ -15,6 +15,7 @@ const crypto = require('crypto');
 
 const ROOT = path.join(__dirname, '..');
 const ASSETS = path.join(ROOT, 'assets');
+const SITE_PRICING = require(path.join(ROOT, 'lib', 'site-pricing'));
 const JS_DIR = path.join(ASSETS, 'js');
 const CSS_DIR = path.join(ASSETS, 'css');
 const IMG_DIR = path.join(ASSETS, 'img');
@@ -296,7 +297,41 @@ function patchHtml(coreBundle, cssFile) {
   }
 }
 
+function syncPricing() {
+  const schemaPath = path.join(ROOT, 'partials', 'schema-local-business.html');
+  let schema = fs.readFileSync(schemaPath, 'utf8');
+  schema = schema.replace(/"priceRange":\s*"[^"]*"/, `"priceRange": "${SITE_PRICING.priceRange}"`);
+  fs.writeFileSync(schemaPath, schema);
+
+  const htmlFiles = fs
+    .readdirSync(ROOT)
+    .filter((f) => f.endsWith('.html') && f !== 'admin.html');
+  for (const file of htmlFiles) {
+    const filePath = path.join(ROOT, file);
+    let html = fs.readFileSync(filePath, 'utf8');
+    if (!html.includes('"priceRange"')) continue;
+    const next = html.replace(/"priceRange":\s*"[^"]*"/g, `"priceRange": "${SITE_PRICING.priceRange}"`);
+    if (next !== html) fs.writeFileSync(filePath, next);
+  }
+
+  const i18nCore = fs.readFileSync(path.join(JS_DIR, 'i18n-messages.js'), 'utf8');
+  const checks = [
+    ['home.services.priceHint', SITE_PRICING.priceHintDe],
+    ['kt.facts.meta', SITE_PRICING.factsMetaDe],
+    ['prices.tableBody', SITE_PRICING.groupPriceDe],
+  ];
+  for (const [key, needle] of checks) {
+    if (!i18nCore.includes(needle)) {
+      throw new Error(`Pricing mismatch: i18n-messages.js missing "${needle}" for ${key}`);
+    }
+  }
+  console.log('Pricing synced:', SITE_PRICING.priceRange);
+}
+
 async function main() {
+  console.log('Syncing pricing…');
+  syncPricing();
+
   console.log('Splitting i18n…');
   splitI18n();
 

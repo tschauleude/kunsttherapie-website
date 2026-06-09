@@ -57,6 +57,8 @@
 <div class="main-container" id="mainContainer">
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
+    <button type="button" class="admin-nav-toggle" id="adminNavToggle" aria-expanded="true" aria-controls="sidebarNav">Menü <span aria-hidden="true">▾</span></button>
+    <div id="sidebarNav">
     <h2>Verwaltung</h2>
     <div class="nav-item active" onclick="switchSection('dashboard', this)">Übersicht</div>
     <div class="nav-item" onclick="switchSection('news', this)">Neuigkeiten</div>
@@ -70,6 +72,7 @@
       <a href="/" target="_blank" rel="noopener">Website ansehen</a><br>
       <a href="/buchung" target="_blank" rel="noopener">Buchungsseite</a>
     </p>
+    </div>
   </div>
 
   <!-- CONTENT -->
@@ -491,6 +494,13 @@ function switchSection(sectionId, navEl) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const activeNav = navEl || (typeof event !== 'undefined' ? event.target : null);
   if (activeNav) activeNav.classList.add('active');
+
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar && window.matchMedia('(max-width: 768px)').matches) {
+    sidebar.classList.add('is-collapsed');
+    const toggle = document.getElementById('adminNavToggle');
+    if (toggle) toggle.setAttribute('aria-expanded', 'false');
+  }
 
   if (sectionId === 'news') loadNewsList();
   if (sectionId === 'bookings') {
@@ -1736,6 +1746,24 @@ async function deleteAtelierSubmission(id) {
     showMessage('Fehler: ' + err.message, 'error');
   }
 }
+
+  const adminNavToggle = document.getElementById('adminNavToggle');
+  const adminSidebar = document.getElementById('sidebar');
+  if (adminNavToggle && adminSidebar) {
+    const syncNavToggle = () => {
+      const collapsed = adminSidebar.classList.contains('is-collapsed');
+      adminNavToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      adminNavToggle.innerHTML = collapsed ? 'Menü <span aria-hidden="true">▸</span>' : 'Menü <span aria-hidden="true">▾</span>';
+    };
+    adminNavToggle.addEventListener('click', () => {
+      adminSidebar.classList.toggle('is-collapsed');
+      syncNavToggle();
+    });
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      adminSidebar.classList.add('is-collapsed');
+      syncNavToggle();
+    }
+  }
 
   checkAuthOnLoad();
   initImagesAdmin();

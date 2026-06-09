@@ -46,7 +46,7 @@ window.I18N_MESSAGES = {
     'home.hero.titleHtml': 'Psychosoziale Kunsttherapie in <span class="text-accent">Paderborn</span>',
     'home.hero.lead': 'Wenn Worte nicht reichen, findet das Gestalten einen Weg.',
     'home.hero.sub':
-      'Zwei feste Angebotszeiten, ein geschützter Raum: Gruppen und therapeutische Begleitung am Vormittag, Auszeit und Gestalten am Abend – ohne Leistungsdruck. Für Teams in Unternehmen und Kliniken.',
+      'Dienstag vormittags und Donnerstag abends in Paderborn – für Privatpersonen, Teams und klinische Einrichtungen.',
     'home.hero.note':
       'Neue Gruppen ab 1. Juli 2026 · Di 11:00–12:30 · Do 18:00–19:30 · Otto-Stadler-Straße 23c',
     'home.audience.title': 'Für wen ist das Angebot?',
@@ -195,7 +195,7 @@ window.I18N_MESSAGES = {
     'home.hero.titleHtml': 'Art therapy in <span class="text-accent">Paderborn</span>',
     'home.hero.lead': 'When words fall short, creating finds a way.',
     'home.hero.sub':
-      'Two regular time slots, one safe space: groups and therapeutic support on Tuesday mornings, creative downtime on Thursday evenings – no pressure to perform. For corporate teams and clinical settings.',
+      'Tuesday mornings and Thursday evenings in Paderborn – for individuals, teams, and clinical settings.',
     'home.hero.note':
       'New groups from 1 July 2026 · Tue 11:00–12:30 · Thu 18:00–19:30 · Otto-Stadler-Straße 23c',
     'home.audience.title': 'Who is this for?',
