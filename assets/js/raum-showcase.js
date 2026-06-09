@@ -52,16 +52,37 @@
     const afterLayer = compare.querySelector('[data-raum-compare-after]');
     const handle = compare.querySelector('[data-raum-compare-handle]');
 
-    function setCompare(pct) {
-      if (!afterLayer) return;
+    let compareFrame = null;
+    let pendingPct = null;
+
+    function applyCompare(pct) {
       const clamped = Math.min(100, Math.max(0, pct));
-      afterLayer.style.clipPath = `inset(0 0 0 ${100 - clamped}%)`;
-      if (handle) handle.style.left = `${clamped}%`;
+      compare.style.setProperty('--compare-pct', `${clamped}%`);
       if (range) {
         range.value = String(Math.round(clamped));
         range.setAttribute('aria-valuetext', `${Math.round(clamped)} Prozent`);
       }
-      compare.style.setProperty('--compare-pct', `${clamped}%`);
+    }
+
+    function setCompare(pct) {
+      if (!afterLayer) return;
+      pendingPct = pct;
+      if (compareFrame != null) return;
+      compareFrame = requestAnimationFrame(() => {
+        compareFrame = null;
+        if (pendingPct == null) return;
+        applyCompare(pendingPct);
+        pendingPct = null;
+      });
+    }
+
+    function setCompareImmediate(pct) {
+      if (compareFrame != null) {
+        cancelAnimationFrame(compareFrame);
+        compareFrame = null;
+      }
+      pendingPct = null;
+      applyCompare(pct);
     }
 
     function pointerX(e) {
@@ -71,7 +92,7 @@
     }
 
     if (range) {
-      range.addEventListener('input', () => setCompare(Number(range.value)));
+      range.addEventListener('input', () => setCompareImmediate(Number(range.value)));
     }
 
     let dragging = false;
@@ -178,7 +199,7 @@
       true
     );
 
-    setCompare(50);
+    setCompareImmediate(50);
   }
 
   /* ── Hotspots ── */
