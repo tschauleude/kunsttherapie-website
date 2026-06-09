@@ -1681,7 +1681,6 @@ app.get('/api/admin/google/callback', async (req, res) => {
 const SITE_PAGES = [
   'index',
   'kunsttherapie',
-  'angebote',
   'ueber-mich',
   'neuigkeiten',
   'events',

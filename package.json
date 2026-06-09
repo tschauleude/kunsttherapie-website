@@ -14,7 +14,8 @@
     "upgrade-seo": "node scripts/upgrade-seo.js",
     "validate-i18n": "node scripts/validate-i18n.js",
     "build-frontend": "node scripts/build-frontend.js",
-    "qa": "node scripts/validate-i18n.js && node --check assets/js/*.js"
+    "qa": "node scripts/validate-i18n.js && node --check assets/js/*.js",
+    "smoke": "node scripts/smoke-check.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
