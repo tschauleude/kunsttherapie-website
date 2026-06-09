@@ -2756,7 +2756,7 @@ nav[data-site-nav] {
   aspect-ratio: 3 / 2;
   background: #e8e4dc;
   cursor: zoom-in;
-  touch-action: none;
+  touch-action: pan-y;
   user-select: none;
 }
 
@@ -2769,8 +2769,6 @@ nav[data-site-nav] {
   inset: 0;
   overflow: hidden;
   border-radius: inherit;
-  touch-action: none;
-  cursor: ew-resize;
 }
 
 .kt-raum-stage img,
@@ -2795,8 +2793,8 @@ nav[data-site-nav] {
   will-change: clip-path;
 }
 
-.kt-raum-compare.is-dragging,
-.kt-raum-compare.is-scrubbing {
+.kt-raum-compare.is-dragging {
+  touch-action: none;
   cursor: ew-resize;
 }
 
@@ -2805,24 +2803,13 @@ nav[data-site-nav] {
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 2.75rem;
-  margin-left: -1.375rem;
-  background: transparent;
-  pointer-events: none;
-  z-index: 4;
-  transition: left 0.05s linear;
-}
-
-.kt-raum-compare-handle::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
   width: 3px;
   margin-left: -1.5px;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  z-index: 4;
+  transition: left 0.05s linear;
 }
 
 .kt-raum-compare.is-dragging .kt-raum-compare-handle {
@@ -2865,15 +2852,14 @@ nav[data-site-nav] {
 
 .kt-raum-compare-range {
   position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
   opacity: 0;
+  cursor: ew-resize;
+  z-index: 5;
+  pointer-events: none;
 }
 
 .kt-raum-compare-labels {

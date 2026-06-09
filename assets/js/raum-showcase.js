@@ -45,6 +45,7 @@
   /* ── Vorher/Nachher-Slider ── */
   const compare = root.querySelector('[data-raum-compare]');
   if (compare) {
+    const media = compare.querySelector('.kt-raum-compare-media') || compare;
     const range =
       compare.querySelector('[data-raum-compare-range]') ||
       compare.querySelector('#raumCompareRange');
@@ -52,8 +53,8 @@
     const handle = compare.querySelector('[data-raum-compare-handle]');
 
     function setCompare(pct) {
+      if (!afterLayer) return;
       const clamped = Math.min(100, Math.max(0, pct));
-      // Rechts Stimmungsvision, links Aktuelles Foto (Nachher-Layer von rechts einblenden)
       afterLayer.style.clipPath = `inset(0 0 0 ${100 - clamped}%)`;
       if (handle) handle.style.left = `${clamped}%`;
       if (range) {
@@ -65,7 +66,7 @@
 
     function pointerX(e) {
       const rect = compare.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientX = e.touches?.[0]?.clientX ?? e.clientX;
       return ((clientX - rect.left) / rect.width) * 100;
     }
 
@@ -77,53 +78,105 @@
     let compareDragged = false;
     let compareDragStart = 0;
     let activePointerId = null;
-    const DRAG_THRESHOLD = 4;
+    const DRAG_THRESHOLD = 3;
 
-    compare.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('[data-raum-hotspot]')) return;
-      if (e.pointerType === 'mouse' && e.button > 0) return;
+    function shouldIgnoreDragTarget(target) {
+      return target?.closest?.('[data-raum-hotspot]');
+    }
+
+    function beginDrag(e) {
+      if (shouldIgnoreDragTarget(e.target)) return false;
+      if (e.pointerType === 'mouse' && e.button > 0) return false;
       activePointerId = e.pointerId;
       dragging = false;
       compareDragged = false;
       compareDragStart = pointerX(e);
+      compare.classList.add('is-scrubbing');
       try {
-        compare.setPointerCapture(e.pointerId);
+        (media.setPointerCapture ? media : compare).setPointerCapture(e.pointerId);
       } catch (_) {
-        /* synthetic / unsupported pointer */
+        /* unsupported */
       }
-    });
+      return true;
+    }
 
-    compare.addEventListener('pointermove', (e) => {
-      if (e.pointerId !== activePointerId) return;
+    function moveDrag(e) {
+      if (activePointerId == null || e.pointerId !== activePointerId) return;
       const x = pointerX(e);
       if (!dragging && Math.abs(x - compareDragStart) < DRAG_THRESHOLD) return;
       dragging = true;
       compareDragged = true;
       compare.classList.add('is-dragging');
+      if (e.cancelable) e.preventDefault();
       setCompare(x);
-    });
+    }
 
-    function endCompareDrag(e) {
+    function endDrag(e) {
       if (e && activePointerId != null && e.pointerId !== activePointerId) return;
       dragging = false;
       activePointerId = null;
-      compare.classList.remove('is-dragging');
+      compare.classList.remove('is-dragging', 'is-scrubbing');
       if (e) {
         try {
-          compare.releasePointerCapture(e.pointerId);
+          (media.releasePointerCapture ? media : compare).releasePointerCapture(e.pointerId);
         } catch (_) {
           /* already released */
         }
       }
     }
 
-    compare.addEventListener('pointerup', endCompareDrag);
-    compare.addEventListener('pointercancel', endCompareDrag);
+    const dragSurface = media;
+    dragSurface.addEventListener('pointerdown', (e) => {
+      beginDrag(e);
+    });
+    dragSurface.addEventListener('pointermove', moveDrag);
+    dragSurface.addEventListener('pointerup', endDrag);
+    dragSurface.addEventListener('pointercancel', endDrag);
+
+    /* Touch-Fallback (ältere iOS) */
+    let touchActive = false;
+    let touchStartPct = 0;
+    dragSurface.addEventListener(
+      'touchstart',
+      (e) => {
+        if (shouldIgnoreDragTarget(e.target)) return;
+        touchActive = true;
+        touchStartPct = pointerX(e);
+        compareDragged = false;
+      },
+      { passive: true }
+    );
+    dragSurface.addEventListener(
+      'touchmove',
+      (e) => {
+        if (!touchActive || shouldIgnoreDragTarget(e.target)) return;
+        const x = pointerX(e);
+        if (!compareDragged && Math.abs(x - touchStartPct) < DRAG_THRESHOLD) return;
+        compareDragged = true;
+        compare.classList.add('is-dragging');
+        e.preventDefault();
+        setCompare(x);
+      },
+      { passive: false }
+    );
+    dragSurface.addEventListener(
+      'touchend',
+      () => {
+        touchActive = false;
+        compare.classList.remove('is-dragging', 'is-scrubbing');
+      },
+      { passive: true }
+    );
+
     compare.dataset.raumCompareDragged = '0';
-    compare.addEventListener('click', () => {
-      compare.dataset.raumCompareDragged = compareDragged ? '1' : '0';
-      compareDragged = false;
-    }, true);
+    compare.addEventListener(
+      'click',
+      () => {
+        compare.dataset.raumCompareDragged = compareDragged ? '1' : '0';
+        compareDragged = false;
+      },
+      true
+    );
 
     setCompare(50);
   }
@@ -182,8 +235,10 @@
 
     function pickLightboxImage(container) {
       if (container.hasAttribute('data-raum-compare')) {
-        const range = container.querySelector('[data-raum-compare-range]');
-        const val = range ? Number(range.value) : 50;
+        const rangeEl =
+          container.querySelector('[data-raum-compare-range]') ||
+          container.querySelector('#raumCompareRange');
+        const val = rangeEl ? Number(rangeEl.value) : 50;
         const afterImg = container.querySelector('.kt-raum-compare-after img');
         const beforeImg = container.querySelector('.kt-raum-compare-before');
         if (val >= 50 && afterImg) return afterImg;
@@ -224,7 +279,9 @@
     });
 
     lbClose.addEventListener('click', closeLb);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeLb(); });
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeLb();
+    });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !overlay.hidden) closeLb();
     });
