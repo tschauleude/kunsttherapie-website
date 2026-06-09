@@ -336,11 +336,6 @@
     wrap.setAttribute('role', 'group');
     wrap.setAttribute('aria-label', window.ktI18n?.t('lang.switch') || 'Sprache');
 
-    const hint = document.createElement('span');
-    hint.className = 'lang-switch-hint';
-    hint.setAttribute('data-i18n', 'lang.hint');
-    hint.textContent = window.ktI18n?.t('lang.hint') || 'Sprache';
-
     const btns = document.createElement('div');
     btns.className = 'lang-switch-btns';
 
@@ -353,7 +348,6 @@
       btns.appendChild(btn);
     });
 
-    wrap.appendChild(hint);
     wrap.appendChild(btns);
     bindLangSwitchButtons(wrap);
 
@@ -395,11 +389,6 @@
     const group = document.querySelector('.lang-switch');
     if (group && window.ktI18n) {
       group.setAttribute('aria-label', window.ktI18n.t('lang.switch') || 'Sprache');
-      const hint = group.querySelector('.lang-switch-hint');
-      if (hint) {
-        const val = window.ktI18n.t('lang.hint');
-        if (val != null) hint.textContent = val;
-      }
     }
   });
 

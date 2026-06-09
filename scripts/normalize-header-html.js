@@ -6,7 +6,6 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const BLOCK = `      <div class="header-tools">
         <div class="lang-switch" role="group" aria-label="Sprache wählen">
-          <span class="lang-switch-hint" data-i18n="lang.hint">Sprache</span>
           <div class="lang-switch-btns">
             <button type="button" class="lang-switch-btn is-active" data-lang="de" aria-pressed="true">DE</button>
             <button type="button" class="lang-switch-btn" data-lang="en" aria-pressed="false">EN</button>

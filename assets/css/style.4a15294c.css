@@ -2234,25 +2234,11 @@ nav[data-site-nav] {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.28rem 0.35rem 0.28rem 0.65rem;
+  padding: 0.28rem 0.35rem;
   background: #fff;
   border: 2px solid var(--color-teal);
   border-radius: 999px;
   box-shadow: 0 3px 14px rgba(85, 122, 118, 0.22);
-}
-
-.lang-switch-hint {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-teal-dark);
-  white-space: nowrap;
-  line-height: 1;
-  min-width: 4.6rem;
-  flex-shrink: 0;
-  text-align: center;
 }
 
 .lang-switch-btns {
@@ -2304,14 +2290,6 @@ nav[data-site-nav] {
     order: 4;
   }
 
-  /* Nur DE/EN-Buttons – aria-label am .lang-switch reicht für Screenreader */
-  .lang-switch-hint {
-    display: none;
-  }
-
-  .lang-switch {
-    padding-left: 0.35rem;
-  }
 }
 
 .kt-facts .pill {
