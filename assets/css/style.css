@@ -2508,15 +2508,16 @@ nav[data-site-nav] {
   align-items: start;
 }
 
-/* Gleiche Kartenhöhe nur im zugeklappten Zustand – offene Karten dürfen die Zeile nicht „festhalten“ */
-@media (min-width: 640px) {
-  .kt-offers:not(:has(.is-open)) {
-    align-items: stretch;
-  }
+/* Nur die geöffnete Karte wächst – Nachbarn in der Zeile bleiben kompakt */
+.kt-offers .kt-offer {
+  align-self: start;
+  height: auto;
+}
 
-  .kt-offers:not(:has(.is-open)) .kt-offer {
-    height: 100%;
-  }
+.kt-offers.kt-offers--has-open .kt-offer:not(.is-open) {
+  height: auto;
+  max-height: none;
+  align-self: start;
 }
 
 @media (min-width: 640px) {
@@ -2616,7 +2617,6 @@ nav[data-site-nav] {
 .kt-offer-head .kt-toggle {
   position: relative;
   z-index: 2;
-  margin-top: auto;
   align-self: flex-start;
   min-height: 2.75rem;
   touch-action: manipulation;

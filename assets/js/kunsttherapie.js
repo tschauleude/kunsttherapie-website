@@ -44,6 +44,11 @@
       window.scrollTo({ top: target, behavior });
     }
 
+    function syncOffersOpenState() {
+      const anyOpen = offersWrap.querySelector('[data-offer].is-open');
+      offersWrap.classList.toggle('kt-offers--has-open', !!anyOpen);
+    }
+
     function resetToggles() {
       root.querySelectorAll('[data-offer] .kt-toggle').forEach((t) => {
         t.setAttribute('aria-expanded', 'false');
@@ -76,6 +81,8 @@
         card.classList.add('is-open');
         requestAnimationFrame(() => scrollOfferIntoView(card));
       }
+
+      syncOffersOpenState();
     }
 
     offersWrap.addEventListener('click', (e) => {
