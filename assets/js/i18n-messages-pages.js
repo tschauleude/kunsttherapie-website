@@ -50,9 +50,9 @@
       'home.gallery.sub':
         'Kreativität ohne Leistungsdruck – ein Blick in den Atelier-Alltag. Klick auf ein Bild zum Vergrößern.',
       'home.services.kicker': 'Leistungen',
-      'home.praxis.title': 'Angemieteter Raum in Paderborn – ab 1. Juli 2026',
+      'home.praxis.title': 'Atelier- und Gruppenraum in Paderborn – ab 1. Juli 2026',
       'home.praxis.sub':
-        'Ein angemieteter Atelier- und Gruppenraum an der Otto-Stadler-Straße 23c – hell, ruhig und mit Platz zum Malen und Gestalten.',
+        'Ein Atelier- und Gruppenraum an der Otto-Stadler-Straße 23c – hell, ruhig und mit Platz zum Malen und Gestalten.',
       'home.praxis.address':
         '<span class="pill">Adresse</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn',
       'home.praxis.di':
@@ -110,7 +110,7 @@
       'kt.faq12.a':
         '<p><strong>Psychotherapie</strong> ist medizinische Behandlung bei entsprechenden Indikationen.</p><p><strong>Kunsttherapie</strong> ist eigenständige, ressourcenorientierte Begleitung und kann sehr entlastend wirken – ersetzt jedoch keine ärztliche oder psychotherapeutische Behandlung.</p><p>Bei akuten oder schweren Beschwerden bitte zusätzlich eine Ärztin oder einen Arzt aufsuchen; gern bespreche ich mit dir, wie sich beides ergänzen kann.</p>',
       'kt.praxis.kicker': 'Das Atelier',
-      'kt.praxis.title': 'Angemieteter Atelier- und Gruppenraum',
+      'kt.praxis.title': 'Atelier- und Gruppenraum',
       'kt.praxis.sub':
         'Ab <strong>1. Juli 2026</strong> in Paderborn – ein eigener Raum zum Ankommen, Gestalten und Begegnen. Die Räumlichkeiten werden laufend eingerichtet und hier Schritt für Schritt vorgestellt.',
       'kt.praxis.photoNote': 'Einblicke aus dem Raum – weitere Fotos und Einrichtungsdetails folgen in Kürze.',
@@ -127,7 +127,7 @@
       'kt.highlight1.text': 'Gemeinsames Gestalten mit Acryl, Gouache, Pastellkreide, Collage – Materialien werden gestellt.',
       'kt.highlight2.title': 'Gruppenraum',
       'kt.highlight2.text': '4–12 Personen, geschützter Rahmen, auch für Seniorengruppen und Einrichtungen.',
-      'kt.highlight3.title': 'Angemietet & wachsend',
+      'kt.highlight3.title': 'Im Aufbau & wachsend',
       'kt.highlight3.text':
         'Der Raum wird weiter ausgebaut und auf der Website präsentiert – auf dem Laufenden bleiben.',
       'kt.highlight4.title': 'Ab Juli 2026',
@@ -542,9 +542,9 @@
       'home.gallery.sub':
         'Creativity without pressure to perform – a glimpse into studio life. Click an image to enlarge.',
       'home.services.kicker': 'Services',
-      'home.praxis.title': 'Rented studio space in Paderborn – from 1 July',
+      'home.praxis.title': 'Studio and group room in Paderborn – from 1 July',
       'home.praxis.sub':
-        'A rented studio and group space on Otto-Stadler-Straße 23c – bright, calm, and with room to paint and create.',
+        'A studio and group space on Otto-Stadler-Straße 23c – bright, calm, and with room to paint and create.',
       'home.praxis.address':
         '<span class="pill">Address</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn',
       'home.praxis.di':
@@ -602,7 +602,7 @@
       'kt.faq12.a':
         '<p><strong>Psychotherapy</strong> is medical treatment for defined indications.</p><p><strong>Art therapy</strong> is independent, resource-oriented support and can be a real relief – but it does not replace medical or psychotherapeutic treatment.</p><p>For acute or serious symptoms, please also consult a doctor – I\'m happy to discuss how the two can complement each other.</p>',
       'kt.praxis.kicker': 'The atelier',
-      'kt.praxis.title': 'Rented art therapy and group room',
+      'kt.praxis.title': 'Studio and group room',
       'kt.praxis.sub':
         'From <strong>1 July 2026</strong> in Paderborn – a dedicated space to arrive, create, and connect. The rooms are being set up and introduced here step by step.',
       'kt.praxis.photoNote': 'A first look inside – more photos and setup details coming soon.',
@@ -619,7 +619,7 @@
       'kt.highlight1.text': 'Shared creating with acrylic, gouache, pastel chalk, collage – materials provided.',
       'kt.highlight2.title': 'Group room',
       'kt.highlight2.text': '4–12 people, safe setting, also for senior groups and institutions.',
-      'kt.highlight3.title': 'Rented & evolving',
+      'kt.highlight3.title': 'Growing & evolving',
       'kt.highlight3.text':
         'The space is being developed further and shown on the website – stay tuned for updates.',
       'kt.highlight4.title': 'From July 2026',
