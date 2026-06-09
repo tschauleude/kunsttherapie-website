@@ -54,13 +54,13 @@
       'home.praxis.sub':
         'Ein angemieteter Atelier- und Gruppenraum an der Otto-Stadler-Straße 23c – hell, ruhig und mit Platz zum Malen und Gestalten.',
       'home.praxis.address':
-        '<p><span class="pill">Adresse</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn</p>',
+        '<span class="pill">Adresse</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn',
       'home.praxis.di':
-        '<p style="margin-top:1rem"><span class="pill">Di</span><br>11:00–12:30 · Gruppen &amp; Therapie</p>',
+        '<span class="pill">Di</span><br>11:00–12:30 · Gruppen &amp; Therapie',
       'home.praxis.do':
-        '<p><span class="pill">Do</span><br>18:00–19:30 · Auszeit, Workshops</p>',
+        '<span class="pill">Do</span><br>18:00–19:30 · Auszeit, Workshops',
       'home.praxis.link':
-        '<p class="note" style="margin-top:1rem">Raum, Fotos &amp; Details: <a href="kunsttherapie.html#atelier">Atelier entdecken</a></p>',
+        'Raum, Fotos &amp; Details: <a href="kunsttherapie.html#atelier">Atelier entdecken</a>',
       'home.praxis.more': 'Mehr zum Atelier',
       'home.hero.imgAlt': 'Atelier – gemeinsam malen und gestalten in Paderborn',
       'home.gallery.img1.alt': 'Materialien im Atelier – Farben, Kreiden, Pinsel',
@@ -535,13 +535,13 @@
       'home.praxis.sub':
         'A rented studio and group space on Otto-Stadler-Straße 23c – bright, calm, and with room to paint and create.',
       'home.praxis.address':
-        '<p><span class="pill">Address</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn</p>',
+        '<span class="pill">Address</span><br><strong>Otto-Stadler-Straße 23c</strong><br>33102 Paderborn',
       'home.praxis.di':
-        '<p style="margin-top:1rem"><span class="pill">Tue</span><br>11:00–12:30 · Groups &amp; therapy</p>',
+        '<span class="pill">Tue</span><br>11:00–12:30 · Groups &amp; therapy',
       'home.praxis.do':
-        '<p><span class="pill">Thu</span><br>18:00–19:30 · Downtime, workshops</p>',
+        '<span class="pill">Thu</span><br>18:00–19:30 · Downtime, workshops',
       'home.praxis.link':
-        '<p class="note" style="margin-top:1rem">Space, photos &amp; details: <a href="kunsttherapie.html#atelier">Explore the atelier</a></p>',
+        'Space, photos &amp; details: <a href="kunsttherapie.html#atelier">Explore the atelier</a>',
       'home.praxis.more': 'More about the atelier',
       'home.hero.imgAlt': 'Atelier – painting and creating together in Paderborn',
       'home.gallery.img1.alt': 'Studio materials – paints, chalks, brushes',
