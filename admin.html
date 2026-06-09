@@ -56,8 +56,8 @@
 <!-- MAIN INTERFACE -->
 <div class="main-container" id="mainContainer">
   <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-    <button type="button" class="admin-nav-toggle" id="adminNavToggle" aria-expanded="true" aria-controls="sidebarNav">Menü <span aria-hidden="true">▾</span></button>
+  <div class="sidebar is-collapsed" id="sidebar">
+    <button type="button" class="admin-nav-toggle" id="adminNavToggle" aria-expanded="false" aria-controls="sidebarNav">Menü <span aria-hidden="true">▸</span></button>
     <div id="sidebarNav">
     <h2>Verwaltung</h2>
     <div class="nav-item active" onclick="switchSection('dashboard', this)">Übersicht</div>
@@ -487,6 +487,24 @@ async function handleLogout() {
 // UI FUNCTIONS
 // ============================================================================
 
+function syncAdminNavToggle() {
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('adminNavToggle');
+  if (!sidebar || !toggle) return;
+  const collapsed = sidebar.classList.contains('is-collapsed');
+  toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  toggle.innerHTML = collapsed
+    ? 'Menü <span aria-hidden="true">▸</span>'
+    : 'Menü <span aria-hidden="true">▾</span>';
+}
+
+function collapseAdminNav() {
+  const sidebar = document.getElementById('sidebar');
+  if (!sidebar) return;
+  sidebar.classList.add('is-collapsed');
+  syncAdminNavToggle();
+}
+
 function switchSection(sectionId, navEl) {
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.getElementById(sectionId).classList.add('active');
@@ -495,11 +513,8 @@ function switchSection(sectionId, navEl) {
   const activeNav = navEl || (typeof event !== 'undefined' ? event.target : null);
   if (activeNav) activeNav.classList.add('active');
 
-  const sidebar = document.getElementById('sidebar');
-  if (sidebar && window.matchMedia('(max-width: 768px)').matches) {
-    sidebar.classList.add('is-collapsed');
-    const toggle = document.getElementById('adminNavToggle');
-    if (toggle) toggle.setAttribute('aria-expanded', 'false');
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    collapseAdminNav();
   }
 
   if (sectionId === 'news') loadNewsList();
@@ -1750,18 +1765,30 @@ async function deleteAtelierSubmission(id) {
   const adminNavToggle = document.getElementById('adminNavToggle');
   const adminSidebar = document.getElementById('sidebar');
   if (adminNavToggle && adminSidebar) {
-    const syncNavToggle = () => {
-      const collapsed = adminSidebar.classList.contains('is-collapsed');
-      adminNavToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
-      adminNavToggle.innerHTML = collapsed ? 'Menü <span aria-hidden="true">▸</span>' : 'Menü <span aria-hidden="true">▾</span>';
-    };
-    adminNavToggle.addEventListener('click', () => {
+    adminNavToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
       adminSidebar.classList.toggle('is-collapsed');
-      syncNavToggle();
+      syncAdminNavToggle();
+    });
+    document.addEventListener('click', (e) => {
+      if (!window.matchMedia('(max-width: 768px)').matches) return;
+      if (adminSidebar.classList.contains('is-collapsed')) return;
+      if (e.target.closest('#sidebar')) return;
+      collapseAdminNav();
+    });
+    window.addEventListener('resize', () => {
+      if (!window.matchMedia('(max-width: 768px)').matches) {
+        adminSidebar.classList.remove('is-collapsed');
+      } else {
+        collapseAdminNav();
+      }
+      syncAdminNavToggle();
     });
     if (window.matchMedia('(max-width: 768px)').matches) {
-      adminSidebar.classList.add('is-collapsed');
-      syncNavToggle();
+      collapseAdminNav();
+    } else {
+      adminSidebar.classList.remove('is-collapsed');
+      syncAdminNavToggle();
     }
   }
 
