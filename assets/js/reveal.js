@@ -4,9 +4,10 @@
 (function () {
   if (document.body.classList.contains('admin-app')) return;
 
-  const STEP_MS = 155;
-  const SECTION_GAP_MS = 320;
-  const INITIAL_DELAY_MS = 320;
+  const STEP_MS = 68;
+  const HEADER_STEP_MS = 36;
+  const SECTION_GAP_MS = 110;
+  const INITIAL_DELAY_MS = 70;
   const SKIP_SELECTOR =
     '.consent-banner, .consent-settings, #newsPopup, .lightbox, [hidden], script, style, noscript';
 
@@ -129,7 +130,7 @@
         prepareElement(el);
         const at = delay;
         window.setTimeout(() => revealElement(el), at);
-        delay += STEP_MS;
+        delay += el.closest('header') ? HEADER_STEP_MS : STEP_MS;
       });
 
       window.setTimeout(resolve, delay + 120);
