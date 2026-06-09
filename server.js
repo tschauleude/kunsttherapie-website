@@ -1788,7 +1788,7 @@ app.listen(PORT, async () => {
   console.log(`╚════════════════════════════════════════╝\n`);
   try {
     const cleaned = await i18nContent.migrateRentedOverrides(dbGet, dbRun);
-    if (cleaned) console.log('i18n: veraltete angemietet/rented-Overrides aus der DB entfernt');
+    if (cleaned) console.log('i18n: veraltete Miet-/Vermiet-Overrides aus der DB entfernt');
   } catch (e) {
     console.error('i18n migrate:', e.message);
   }

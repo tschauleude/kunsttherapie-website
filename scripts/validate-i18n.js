@@ -35,6 +35,9 @@ function loadBindings() {
   return ctx.window.I18N_PAGE_BINDINGS || {};
 }
 
+const RENTED_COPY_PATTERN =
+  /\b(angemietet\w*|gemietet\w*|gemiet\w*|vermiet\w*|untermiet\w*|miete\w*|mieter\w*|pacht\w*|rent(?:ed|ing|s|al)?|leas(?:ed|ing|e)?)\b/i;
+
 const msgs = loadMessages();
 const de = Object.keys(msgs.de);
 const en = Object.keys(msgs.en);
@@ -42,6 +45,15 @@ const deOnly = de.filter((k) => !(k in msgs.en));
 const enOnly = en.filter((k) => !(k in msgs.de));
 
 let exit = 0;
+
+for (const lang of ['de', 'en']) {
+  for (const [key, val] of Object.entries(msgs[lang] || {})) {
+    if (typeof val === 'string' && RENTED_COPY_PATTERN.test(val)) {
+      console.error(`Miet-/Vermiet-Formulierung in ${lang} "${key}": ${val.slice(0, 80)}…`);
+      exit = 1;
+    }
+  }
+}
 if (deOnly.length) {
   console.error('Nur DE:', deOnly.slice(0, 10).join(', '), deOnly.length > 10 ? `…+${deOnly.length - 10}` : '');
   exit = 1;
