@@ -2561,34 +2561,50 @@ nav[data-site-nav] {
 
 .kt-offers > .kt-offer {
   align-self: start;
+  justify-self: stretch;
   min-width: 0;
   width: 100%;
+  height: auto;
+  max-height: none;
 }
 
-/* Geöffnete Karte: eigene volle Zeile, zentriert – Nachbarn bleiben unverändert kompakt */
-.kt-offers > .kt-offer.is-open {
-  grid-column: 1 / -1;
-  justify-self: center;
-  width: min(100%, 44rem);
+/*
+ * Sobald eine Karte offen ist: KEIN Grid mehr (Grid-Zeilen strecken sonst alle
+ * Nachbarn in der Reihe). Stattdessen Flex-Spalte – nur die offene Karte wächst.
+ */
+.kt-offers.kt-offers--has-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.kt-offers.kt-offers--has-open > .kt-offer {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 100%;
+  max-width: 44rem;
+  height: auto;
+  grid-column: auto;
 }
 
 @media (min-width: 640px) {
-  .kt-offers {
+  .kt-offers:not(.kt-offers--has-open) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) {
-  .kt-offers--four,
-  .kt-offers--five {
+  .kt-offers--four:not(.kt-offers--has-open),
+  .kt-offers--five:not(.kt-offers--has-open) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .kt-offers--five > .kt-offer:nth-child(4):not(.is-open) {
+  .kt-offers--five:not(.kt-offers--has-open) > .kt-offer:nth-child(4) {
     grid-column: 2;
   }
 
-  .kt-offers--five > .kt-offer:nth-child(5):not(.is-open) {
+  .kt-offers--five:not(.kt-offers--has-open) > .kt-offer:nth-child(5) {
     grid-column: 1 / -1;
     justify-self: center;
     width: min(100%, calc((100% - 2.5rem) / 3 * 2 + 1.25rem));
@@ -2698,10 +2714,6 @@ nav[data-site-nav] {
     scroll-margin-bottom: max(12rem, calc(var(--consent-banner-offset, 0px) + 2rem));
   }
 
-  .kt-offers > .kt-offer.is-open {
-    width: 100%;
-  }
-
   .kt-offer-body {
     font-size: 1rem;
     line-height: 1.7;
@@ -2733,6 +2745,10 @@ nav[data-site-nav] {
 }
 
 .kt-offer-body[hidden] {
+  display: none !important;
+}
+
+.kt-offers.kt-offers--has-open > .kt-offer:not(.is-open) .kt-offer-body {
   display: none !important;
 }
 
