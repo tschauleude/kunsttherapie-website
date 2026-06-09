@@ -83,8 +83,8 @@ window.I18N_PAGE_BINDINGS = {
   ],
   about: [
     { sel: '.page-ueber-mich h1', key: 'about.name', attr: 'text' },
-    { sel: '.page-ueber-mich .about-kicker', key: 'about.kicker', attr: 'text' },
-    { sel: '.page-ueber-mich .about-prose > p:not(.about-kicker)', key: 'about.intro', attr: 'text' },
+    { sel: '.page-ueber-mich .about-role', key: 'about.kicker', attr: 'text' },
+    { sel: '.page-ueber-mich .about-prose > p:not(.about-role)', key: 'about.intro', attr: 'text' },
     { sel: '.about-journey h2', key: 'about.journey.title', attr: 'text' },
     { sel: '.about-journey p:nth-of-type(1)', key: 'about.journey.p1', attr: 'text' },
     { sel: '.about-journey p:nth-of-type(2)', key: 'about.journey.p2', attr: 'text' },

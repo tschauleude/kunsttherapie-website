@@ -1788,7 +1788,7 @@ app.listen(PORT, async () => {
   console.log(`╚════════════════════════════════════════╝\n`);
   try {
     const cleaned = await i18nContent.migrateRentedOverrides(dbGet, dbRun);
-    if (cleaned) console.log('i18n: veraltete Miet-/Vermiet-Overrides aus der DB entfernt');
+    if (cleaned) console.log('i18n: veraltete CMS-Texte (Miet-/Über-mich-Doppelüberschrift) bereinigt');
     const seeded = await i18nContent.seedOverridesFromFile(dbGet, dbRun);
     if (seeded) console.log('i18n: Texte aus data/i18n-overrides.json in die Datenbank übernommen');
   } catch (e) {
