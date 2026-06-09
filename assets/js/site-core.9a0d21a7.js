@@ -387,14 +387,14 @@ window.I18N_PAGE_BINDINGS = {
     { sel: '[data-raum-panel="innen"] [data-raum-hotspot]:nth-of-type(2) .kt-hotspot-tip span', key: 'kt.raum.hotspot4.text', attr: 'text' },
   ],
   about: [
-    { sel: '.page-ueber-mich .kicker', key: 'about.kicker', attr: 'text' },
     { sel: '.page-ueber-mich h1', key: 'about.name', attr: 'text' },
-    { sel: '.page-ueber-mich .hero-left > .sub', key: 'about.intro', attr: 'text' },
-    { sel: '.page-ueber-mich h3:nth-of-type(1)', key: 'about.passion.title', attr: 'text' },
+    { sel: '.page-ueber-mich h3:nth-of-type(1)', key: 'about.kicker', attr: 'text' },
+    { sel: '.page-ueber-mich .hero-left > p:nth-of-type(1)', key: 'about.intro', attr: 'text' },
+    { sel: '.page-ueber-mich h3:nth-of-type(2)', key: 'about.passion.title', attr: 'text' },
     { sel: '.page-ueber-mich .hero-left > p:nth-of-type(2)', key: 'about.passion.p1', attr: 'text' },
     { sel: '.page-ueber-mich .hero-left > p:nth-of-type(3)', key: 'about.passion.p2', attr: 'text' },
     { sel: '.page-ueber-mich .hero-left > p:nth-of-type(4)', key: 'about.quote', attr: 'text' },
-    { sel: '.page-ueber-mich h3:nth-of-type(2)', key: 'about.qual.title', attr: 'text' },
+    { sel: '.page-ueber-mich h3:nth-of-type(3)', key: 'about.qual.title', attr: 'text' },
     { sel: '.page-ueber-mich ul', key: 'about.qual.list', attr: 'html' },
     { sel: '.page-ueber-mich .actions .btn.primary', key: 'btn.contact', attr: 'text' },
     { sel: '.page-ueber-mich .actions .btn:not(.primary)', key: 'about.offers', attr: 'text' },
@@ -1641,11 +1641,6 @@ window.I18N_PAGE_BINDINGS = {
     wrap.setAttribute('role', 'group');
     wrap.setAttribute('aria-label', window.ktI18n?.t('lang.switch') || 'Sprache');
 
-    const hint = document.createElement('span');
-    hint.className = 'lang-switch-hint';
-    hint.setAttribute('data-i18n', 'lang.hint');
-    hint.textContent = window.ktI18n?.t('lang.hint') || 'Sprache';
-
     const btns = document.createElement('div');
     btns.className = 'lang-switch-btns';
 
@@ -1658,7 +1653,6 @@ window.I18N_PAGE_BINDINGS = {
       btns.appendChild(btn);
     });
 
-    wrap.appendChild(hint);
     wrap.appendChild(btns);
     bindLangSwitchButtons(wrap);
 
@@ -1700,11 +1694,6 @@ window.I18N_PAGE_BINDINGS = {
     const group = document.querySelector('.lang-switch');
     if (group && window.ktI18n) {
       group.setAttribute('aria-label', window.ktI18n.t('lang.switch') || 'Sprache');
-      const hint = group.querySelector('.lang-switch-hint');
-      if (hint) {
-        const val = window.ktI18n.t('lang.hint');
-        if (val != null) hint.textContent = val;
-      }
     }
   });
 
