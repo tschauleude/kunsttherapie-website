@@ -2877,7 +2877,7 @@ nav[data-site-nav] {
 .kt-raum-compare-after {
   position: absolute;
   inset: 0;
-  clip-path: inset(0 0 0 calc(100% - var(--compare-pct, 50%)));
+  clip-path: inset(0 0 0 50%);
 }
 
 .kt-raum-compare.is-dragging .kt-raum-compare-after,
