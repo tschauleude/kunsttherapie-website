@@ -2859,12 +2859,13 @@ nav[data-site-nav] {
   inset: 0;
 }
 
+/* Vision rechts, aktuelles Foto links – Breite ab Trennlinie nach rechts */
 .kt-raum-compare-after {
   position: absolute;
   top: 0;
-  left: 0;
+  right: 0;
   bottom: 0;
-  width: calc(var(--compare-pct) * 1%);
+  width: calc((100 - var(--compare-pct)) * 1%);
   overflow: hidden;
   z-index: 1;
   pointer-events: none;
@@ -2877,9 +2878,9 @@ nav[data-site-nav] {
 .kt-raum-compare-after img {
   position: absolute;
   top: 0;
-  left: 0;
+  right: 0;
   height: 100%;
-  width: calc(100% * 100 / var(--compare-pct, 50));
+  width: calc(100% * 100 / (100 - var(--compare-pct, 50)));
   max-width: none;
   object-fit: cover;
   object-position: center;

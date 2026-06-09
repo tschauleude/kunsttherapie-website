@@ -352,6 +352,9 @@
 
   function commitStroke(p) {
     if (tool === 'brush' || tool === 'erase') {
+      if (currentPath && currentPath.points.length === 1) {
+        currentPath.points.push({ ...currentPath.points[0] });
+      }
       if (currentPath && currentPath.points.length > 1) {
         strokes.push(currentPath);
         pushHistory();
@@ -521,8 +524,8 @@
     render();
     if (strokes.length || collageItems.length) markStarted();
     dirty = false;
-    setSaveIndicator(true);
     if (!silent) {
+      setSaveIndicator(true);
       setStatus(tr('atelier.status.loaded', 'Entwurf geladen.'), 'success');
     }
   }

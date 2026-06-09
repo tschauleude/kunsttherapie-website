@@ -278,7 +278,7 @@ async function submitBooking(e) {
     msg.hidden = false;
     const linksBox = document.getElementById('bookingCalendarLinks');
     if (linksBox) linksBox.hidden = true;
-    if (data.calendarLinks && data.status === 'confirmed') {
+    if (data.calendarLinks) {
       showCalendarLinks(data.calendarLinks, data.emailSent);
     }
     document.getElementById('bookingForm').reset();

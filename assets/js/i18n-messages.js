@@ -125,7 +125,7 @@ window.I18N_MESSAGES = {
     'offer.5.body':
       '<p>Regelmäßige Vorträge und Impulse aus der Kunsttherapie.</p><p><strong>Warum Kunst statt nur Gespräch?</strong> Ein Einblick in Wirkung, Methoden und Erfahrungen aus über 16 Jahren klinischer Arbeit – für Einrichtungen, Fachpublikum und Interessierte. Auch Gruppen (z.&nbsp;B. Senioren) und palliative Begleitung aus langjähriger Praxis.</p><p class="note">Dauer, Ort und Honorar nach Absprache – Konzept und Material inklusive.</p>',
     'atelier.kicker': "Ausprobieren",
-    'atelier.title': 'Mini-Atelier – einfach loslegen',
+    'atelier.title': 'Mini-Atelier – <span class="text-accent">einfach loslegen</span>',
     'atelier.intro':
       'Malen, Linien und Formen setzen, Fotos zur Kollage legen – dein Entwurf wird automatisch auf diesem Gerät gespeichert. Optional kann das Werk ans Atelier gesendet werden.',
     'atelier.hint': 'Hier starten …',
@@ -299,7 +299,7 @@ window.I18N_MESSAGES = {
     'offer.5.body':
       '<p>Regular talks and impulses from art therapy.</p><p><strong>Why art instead of conversation alone?</strong> An insight into methods, effects, and experience from over 16 years of clinical work – for institutions, professionals, and interested audiences. Including groups (e.g. seniors) and palliative support from long practice.</p><p class="note">Duration, venue, and fee by arrangement – concept and materials included.</p>',
     'atelier.kicker': 'Try the mini studio',
-    'atelier.title': 'Mini studio – start creating',
+    'atelier.title': 'Mini studio – <span class="text-accent">start creating</span>',
     'atelier.intro':
       'Paint, draw shapes, add photo collages – your draft is saved automatically on this device. You can optionally send artwork to the atelier.',
     'atelier.hint': 'Start here …',

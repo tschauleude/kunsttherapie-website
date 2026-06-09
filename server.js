@@ -601,7 +601,7 @@ app.get('/api/admin/news/:id', requireAuth, (req, res) => {
 // Get single news
 app.get('/api/news/:id', (req, res) => {
   db.get(
-    `SELECT * FROM news WHERE id = ?`,
+    `SELECT * FROM news WHERE id = ? AND published = 1`,
     [req.params.id],
     (err, row) => {
       if (err) {
@@ -1076,6 +1076,8 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
       console.error('Booking request email failed:', mailErr.message);
     }
 
+    const calendarLinks = ical.buildCalendarLinks(row, `${req.protocol}://${req.get('host')}`);
+
     res.json({
       success: true,
       id: row.id,
@@ -1084,9 +1086,10 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
       startTime: row.start_time,
       endTime: row.end_time,
       emailSent,
+      calendarLinks,
       message: emailSent
-        ? 'Anfrage eingegangen! Die Bestätigung folgt per E-Mail – danach lässt sich der Termin im Kalender speichern.'
-        : 'Anfrage gespeichert! Die Bestätigung folgt zeitnah per E-Mail.',
+        ? 'Anfrage eingegangen! Termin vorläufig im Kalender speichern oder auf die Bestätigungs-E-Mail warten.'
+        : 'Anfrage gespeichert! Termin vorläufig im Kalender speichern – die Bestätigung folgt zeitnah per E-Mail.',
     });
   } catch (e) {
     console.error('booking create error:', e);

@@ -29,7 +29,7 @@ window.I18N_PAGE_BINDINGS = {
     { sel: '.hero-right--landing img', key: 'home.hero.imgAlt', attr: 'alt' },
   ],
   therapy: [
-    { sel: '.page-kunsttherapie .actions .btn.outline', key: 'btn.inquiry', attr: 'text' },
+    { sel: '.kt-hero-card .actions .btn.outline', key: 'btn.inquiry', attr: 'text' },
     { sel: '#angebote .section-intro .kicker', key: 'kt.offers.kicker', attr: 'text' },
     { sel: '#atelier .section-intro .kicker', key: 'kt.praxis.kicker', attr: 'text' },
     { sel: '#atelier .section-intro h2', key: 'kt.praxis.title', attr: 'text' },

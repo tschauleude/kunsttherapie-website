@@ -11,7 +11,10 @@ function eventsLocale() {
 }
 
 function formatEventDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString(eventsLocale(), {
+  const parts = String(dateStr).split('-').map(Number);
+  if (parts.length < 3) return dateStr;
+  const [y, m, d] = parts;
+  return new Date(y, m - 1, d).toLocaleDateString(eventsLocale(), {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
