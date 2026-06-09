@@ -2664,16 +2664,48 @@ nav[data-site-nav] {
 
 .kt-offer-head .kt-toggle {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   align-self: flex-start;
   min-height: 2.75rem;
+  min-width: 2.75rem;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
 }
 
 .kt-offer.is-open {
   box-shadow: 0 12px 32px rgba(85, 122, 118, 0.12);
   scroll-margin-top: 5.5rem;
-  scroll-margin-bottom: 11rem;
+  scroll-margin-bottom: max(11rem, calc(var(--consent-banner-offset, 0px) + 1.5rem));
+}
+
+@media (max-width: 639px) {
+  .page-kunsttherapie .kt-offer.card,
+  [data-i18n-page='therapy'] .kt-offer.card {
+    padding: 1rem 1.05rem;
+  }
+
+  .kt-offer-head .kt-toggle {
+    align-self: stretch;
+    width: 100%;
+    min-height: 3rem;
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+  }
+
+  .kt-offer.is-open {
+    scroll-margin-top: 4.5rem;
+    scroll-margin-bottom: max(12rem, calc(var(--consent-banner-offset, 0px) + 2rem));
+  }
+
+  .kt-offers > .kt-offer.is-open {
+    width: 100%;
+  }
+
+  .kt-offer-body {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
 }
 
 .kt-offer h3 {

@@ -21,24 +21,29 @@
     }
 
     function scrollOfferIntoView(card) {
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
       const header = document.querySelector('header');
       const headerH = header ? header.getBoundingClientRect().height : 0;
       const consent =
         typeof window.isConsentBannerVisible === 'function' && window.isConsentBannerVisible();
       const banner = consent ? document.querySelector('.consent-banner-inner') : null;
-      const bannerH = banner ? banner.getBoundingClientRect().height : 0;
+      const bannerH = banner ? banner.getBoundingClientRect().height + 12 : 0;
+      const margin = isMobile ? 16 : 12;
       const cardRect = card.getBoundingClientRect();
-      const top = window.scrollY + cardRect.top - headerH - 12;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      let target = Math.max(0, Math.min(top, maxScroll));
+      let target = window.scrollY + cardRect.top - headerH - margin;
+      target = Math.max(0, Math.min(target, maxScroll));
 
-      const visibleBottom = window.innerHeight - bannerH - 8;
+      const visibleBottom = window.innerHeight - bannerH - margin;
       if (cardRect.bottom > visibleBottom) {
-        target = Math.min(maxScroll, window.scrollY + cardRect.bottom - visibleBottom);
+        target = Math.min(
+          maxScroll,
+          window.scrollY + cardRect.bottom - visibleBottom
+        );
       }
 
       const behavior =
-        window.matchMedia('(max-width: 768px), (prefers-reduced-motion: reduce)').matches
+        isMobile || window.matchMedia('(prefers-reduced-motion: reduce)').matches
           ? 'auto'
           : 'smooth';
       window.scrollTo({ top: target, behavior });
@@ -73,19 +78,25 @@
       closeAllOffers();
       if (willOpen) {
         setCardOpen(card, true);
-        requestAnimationFrame(() => scrollOfferIntoView(card));
+        /* Doppel-rAF: Mobile braucht Layout nach hidden=false, bevor gescrollt wird */
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => scrollOfferIntoView(card));
+        });
       }
     }
 
-    root.querySelectorAll('[data-offer]').forEach((card) => {
-      const toggle = card.querySelector('.kt-toggle');
-      if (!toggle) return;
-      toggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleOffer(card);
-      });
-    });
+    function onToggleActivate(e) {
+      const toggle = e.target.closest('.kt-toggle');
+      if (!toggle || !offersWrap.contains(toggle)) return;
+      const card = toggle.closest('[data-offer]');
+      if (!card) return;
+      e.preventDefault();
+      e.stopPropagation();
+      toggleOffer(card);
+    }
+
+    /* Event-Delegation: ein Handler für alle Karten, auch nach DOM-Updates */
+    offersWrap.addEventListener('click', onToggleActivate);
   }
 
   if (document.readyState === 'loading') {
