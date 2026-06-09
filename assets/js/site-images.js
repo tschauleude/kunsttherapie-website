@@ -48,7 +48,7 @@
     else if (safe >= 5) gallery.classList.add('image-gallery--six');
 
     const lastVisible = items[safe - 1];
-    if (lastVisible && safe >= 5) {
+    if (lastVisible && safe === 5) {
       lastVisible.classList.add('gallery-item--wide');
     }
 
