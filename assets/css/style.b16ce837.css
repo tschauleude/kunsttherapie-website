@@ -1409,7 +1409,8 @@ body.consent-settings-open {
 }
 
 .consent-banner-inner {
-  pointer-events: auto;
+  /* Nur Buttons fangen Klicks – Seite bleibt nutzbar (z. B. „Mehr erfahren“) */
+  pointer-events: none;
   max-width: 640px;
   margin: 0 auto;
   padding: 1.25rem 1.5rem;
@@ -1417,6 +1418,11 @@ body.consent-settings-open {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
+}
+
+.consent-banner-inner .consent-actions,
+.consent-banner-inner .consent-actions * {
+  pointer-events: auto;
 }
 
 .consent-banner h2 {
@@ -1452,7 +1458,7 @@ body.consent-settings-open {
 
   .consent-banner-inner {
     padding: 1rem;
-    max-height: 55vh;
+    max-height: none;
   }
 
   .consent-banner h2 {
@@ -1460,10 +1466,18 @@ body.consent-settings-open {
     margin-bottom: 0.5rem;
   }
 
-  .consent-lead,
-  .consent-list {
+  .consent-lead {
     font-size: 0.875rem;
     margin-bottom: 0.65rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .consent-banner .consent-list,
+  .consent-banner .consent-banner-inner > .note {
+    display: none;
   }
 
   .consent-actions {
@@ -2378,6 +2392,8 @@ nav[data-site-nav] {
 
 .kt-offer.is-open {
   box-shadow: 0 12px 32px rgba(85, 122, 118, 0.12);
+  scroll-margin-top: 5.5rem;
+  scroll-margin-bottom: 11rem;
 }
 
 .kt-offer h3 {
