@@ -48,8 +48,11 @@
       }
     }
 
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => {
+    dots.forEach((dot) => {
+      dot.addEventListener('click', (e) => {
+        e.preventDefault();
+        const i = Number(dot.dataset.quoteDot);
+        if (!Number.isFinite(i)) return;
         show(i);
         start();
       });
