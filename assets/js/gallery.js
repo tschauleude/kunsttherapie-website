@@ -11,7 +11,7 @@
   }
 
   function getSlides() {
-    return [...gallery.querySelectorAll('[data-gallery-open]')].map((btn) => {
+    return [...gallery.querySelectorAll('[data-gallery-open]:not([hidden])')].map((btn) => {
       const img = btn.querySelector('img');
       return img ? { btn, img } : null;
     }).filter(Boolean);
@@ -30,6 +30,7 @@
 
   updateGalleryAria();
   document.addEventListener('kt-lang-change', updateGalleryAria);
+  document.addEventListener('kt-gallery-count', updateGalleryAria);
 
   const overlay = document.createElement('div');
   overlay.className = 'lightbox lightbox--gallery';

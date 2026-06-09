@@ -674,6 +674,8 @@ async function uploadImageFile(fileInput) {
 
 let siteImageSlots = [];
 let mediaLibraryFiles = [];
+let galleryCount = 6;
+let galleryMax = 6;
 
 function findSiteImageCard(slot) {
   return document.querySelector(`.site-image-card[data-slot="${CSS.escape(slot)}"]`);
@@ -721,6 +723,26 @@ function renderMediaLibraryOptions(selectedUrl) {
   );
 }
 
+function renderGalleryCountSettings() {
+  const options = Array.from({ length: galleryMax }, (_, i) => {
+    const n = i + 1;
+    return `<option value="${n}"${n === galleryCount ? ' selected' : ''}>${n}</option>`;
+  }).join('');
+
+  return `
+    <div class="gallery-count-settings card">
+      <h3>Galerie auf der Startseite</h3>
+      <p class="note">Legt fest, wie viele Galerie-Bilder öffentlich sichtbar sind (Bild 1 bis N).</p>
+      <div class="form-row gallery-count-row">
+        <div class="form-group">
+          <label for="galleryCountInput">Anzahl sichtbarer Bilder</label>
+          <select id="galleryCountInput">${options}</select>
+        </div>
+        <button type="button" class="btn-save btn-sm" id="galleryCountSave">Anzahl speichern</button>
+      </div>
+    </div>`;
+}
+
 function renderSiteImageSlots() {
   const container = document.getElementById('siteImagesList');
   if (!container) return;
@@ -733,7 +755,11 @@ function renderSiteImageSlots() {
 
   let html = '';
   for (const [group, slots] of Object.entries(groups)) {
-    html += `<div class="site-images-group"><h2>${escapeHtml(group)}</h2><div class="site-images-grid">`;
+    html += `<div class="site-images-group"><h2>${escapeHtml(group)}</h2>`;
+    if (group === 'Startseite – Galerie') {
+      html += renderGalleryCountSettings();
+    }
+    html += '<div class="site-images-grid">';
     for (const slot of slots) {
       const status = slot.isCustom
         ? '<span class="site-image-badge site-image-badge--custom">Eigenes Bild</span>'
@@ -764,6 +790,30 @@ function renderSiteImageSlots() {
   }
 
   container.innerHTML = html || '<p class="note">Keine Bild-Slots konfiguriert.</p>';
+
+  const saveBtn = document.getElementById('galleryCountSave');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', saveGalleryCount);
+  }
+}
+
+async function saveGalleryCount() {
+  const select = document.getElementById('galleryCountInput');
+  if (!select) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/site-images/gallery-count`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ galleryCount: Number(select.value) }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Speichern fehlgeschlagen');
+    galleryCount = data.galleryCount;
+    showMessage(`Galerie zeigt jetzt ${galleryCount} Bild(er) auf der Startseite.`, 'success');
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
 }
 
 function renderMediaLibrary() {
@@ -840,6 +890,8 @@ async function loadSiteImagesList() {
     if (!mediaRes.ok) throw new Error(mediaData.error || 'Mediathek konnte nicht geladen werden');
 
     siteImageSlots = slotsData.slots || [];
+    galleryCount = slotsData.galleryCount ?? 6;
+    galleryMax = slotsData.galleryMax ?? 6;
     mediaLibraryFiles = mediaData.files || [];
     renderSiteImageSlots();
     renderMediaLibrary();

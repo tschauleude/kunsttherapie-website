@@ -1241,25 +1241,35 @@ app.post('/api/admin/upload', requireAuth, (req, res) => {
 
 app.get('/api/site-images', async (req, res) => {
   try {
-    const images = await siteImages.getPublicImages(dbAll);
+    const { images, galleryCount } = await siteImages.getPublicImages(dbAll, dbGet);
     res.setHeader('Cache-Control', 'public, max-age=120');
-    res.json({ images });
+    res.json({ images, galleryCount });
   } catch (e) {
     console.error('site-images public:', e.message);
     const fallback = Object.fromEntries(
       siteImages.SITE_IMAGE_SLOTS.map((s) => [s.slot, s.defaultUrl])
     );
-    res.json({ images: fallback });
+    res.json({ images: fallback, galleryCount: siteImages.DEFAULT_GALLERY_COUNT });
   }
 });
 
 app.get('/api/admin/site-images', requireAuth, async (req, res) => {
   try {
     const slots = await siteImages.getAdminSlots(dbAll);
-    res.json({ slots });
+    const galleryCount = await siteImages.getGalleryCount(dbGet);
+    res.json({ slots, galleryCount, galleryMax: siteImages.GALLERY_MAX });
   } catch (e) {
     console.error('site-images admin list:', e.message);
     res.status(500).json({ error: 'Bilder konnten nicht geladen werden' });
+  }
+});
+
+app.put('/api/admin/site-images/gallery-count', requireAuth, async (req, res) => {
+  try {
+    const galleryCount = await siteImages.setGalleryCount(dbRun, req.body?.galleryCount);
+    res.json({ success: true, galleryCount });
+  } catch (e) {
+    res.status(400).json({ error: e.message || 'Speichern fehlgeschlagen' });
   }
 });
 
