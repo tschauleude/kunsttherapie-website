@@ -158,7 +158,7 @@
       'kt.raum.hotspot4.text': 'Acryl, Gouache, Kreide, Collage – alles bereitgestellt.',
 
       'about.kicker': 'Über mich',
-      'about.name': 'Über mich',
+      'about.name': 'Martina Schwierzke',
       'about.intro':
         'Als psychosoziale und klinische Kunsttherapeutin und Heilpraktikerin für Psychotherapie arbeite ich selbstständig. Mit über 16 Jahren Erfahrung begleite ich Menschen in schwierigen Situationen – im klinischen Kontext und im eigenen Atelier.',
       'about.passion.title': 'Meine Leidenschaft',
@@ -643,7 +643,7 @@
       'kt.raum.hotspot4.text': 'Acrylic, gouache, chalk, collage – all provided.',
 
       'about.kicker': 'About me',
-      'about.name': 'About me',
+      'about.name': 'Martina Schwierzke',
       'about.intro':
         'As a psychosocial and clinical art therapist and practitioner for psychotherapy, I work independently. With over 16 years of experience, I support people in difficult situations – in clinical settings and in private practice.',
       'about.passion.title': 'My passion',
