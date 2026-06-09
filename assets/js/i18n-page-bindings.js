@@ -105,7 +105,6 @@ window.I18N_PAGE_BINDINGS = {
     { sel: '.booking-weekdays', key: 'book.weekdays', attr: 'html' },
     { sel: '#calendarGrid', key: 'book.calendarAria', attr: 'aria-label' },
     { sel: '#selectedDayLabel', key: 'book.pickDay', attr: 'text' },
-    { sel: '#slotsHint', key: 'book.slotsHint', attr: 'html' },
     { sel: '#bookingFormPanel h2', key: 'book.formTitle', attr: 'text' },
     { sel: 'label[for="bookName"]', key: 'form.name', attr: 'text' },
     { sel: 'label[for="bookEmail"]', key: 'form.email', attr: 'text' },

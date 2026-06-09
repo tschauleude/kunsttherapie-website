@@ -300,6 +300,30 @@ function weekdayLabels() {
     : ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
 }
 
+const SCHEDULE_SLOT_KEYS = { 2: 'book.scheduleSlot.2', 4: 'book.scheduleSlot.4' };
+
+function fullWeekdayName(dayIndex) {
+  const ref = new Date(2024, 0, 7 + dayIndex);
+  return ref.toLocaleDateString(locale(), { weekday: 'long' });
+}
+
+function timeOfDayLabel(start) {
+  const hour = parseInt(String(start).split(':')[0], 10);
+  const key = hour < 13 ? 'book.timeOfDay.morning' : 'book.timeOfDay.evening';
+  return tr(key);
+}
+
+function scheduleSlotLabel(slot) {
+  const key = SCHEDULE_SLOT_KEYS[slot.day];
+  if (key) {
+    const label = tr(key);
+    if (label) return label;
+  }
+  const tod = timeOfDayLabel(slot.start);
+  const day = fullWeekdayName(slot.day);
+  return tod ? `${day} ${tod}` : day;
+}
+
 function applySlotsHint(cfg) {
   const hint = document.getElementById('slotsHint');
   if (!hint) return;
@@ -310,8 +334,7 @@ function applySlotsHint(cfg) {
     return;
   }
 
-  const dayNames = weekdayLabels();
-  const parts = cfg.schedule.map((s) => `${s.label || dayNames[s.day]} ${s.start}–${s.end}`);
+  const parts = cfg.schedule.map((s) => `${scheduleSlotLabel(s)} ${s.start}–${s.end}`);
   const tpl = tr('book.slotsHintDynamic');
   if (!tpl) return;
   hint.innerHTML = tpl

@@ -410,7 +410,6 @@ window.I18N_PAGE_BINDINGS = {
     { sel: '.booking-weekdays', key: 'book.weekdays', attr: 'html' },
     { sel: '#calendarGrid', key: 'book.calendarAria', attr: 'aria-label' },
     { sel: '#selectedDayLabel', key: 'book.pickDay', attr: 'text' },
-    { sel: '#slotsHint', key: 'book.slotsHint', attr: 'html' },
     { sel: '#bookingFormPanel h2', key: 'book.formTitle', attr: 'text' },
     { sel: 'label[for="bookName"]', key: 'form.name', attr: 'text' },
     { sel: 'label[for="bookEmail"]', key: 'form.email', attr: 'text' },
@@ -1771,9 +1770,10 @@ window.I18N_PAGE_BINDINGS = {
 (function () {
   if (document.body.classList.contains('admin-app')) return;
 
-  const STEP_MS = 155;
-  const SECTION_GAP_MS = 320;
-  const INITIAL_DELAY_MS = 320;
+  const STEP_MS = 68;
+  const HEADER_STEP_MS = 36;
+  const SECTION_GAP_MS = 110;
+  const INITIAL_DELAY_MS = 70;
   const SKIP_SELECTOR =
     '.consent-banner, .consent-settings, #newsPopup, .lightbox, [hidden], script, style, noscript';
 
@@ -1896,7 +1896,7 @@ window.I18N_PAGE_BINDINGS = {
         prepareElement(el);
         const at = delay;
         window.setTimeout(() => revealElement(el), at);
-        delay += STEP_MS;
+        delay += el.closest('header') ? HEADER_STEP_MS : STEP_MS;
       });
 
       window.setTimeout(resolve, delay + 120);
