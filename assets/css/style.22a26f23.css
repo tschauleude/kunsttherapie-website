@@ -2028,6 +2028,7 @@ body.consent-banner-visible {
 }
 
 .quote-dot {
+  position: relative;
   width: 0.45rem;
   height: 0.45rem;
   padding: 0;
@@ -2039,6 +2040,12 @@ body.consent-banner-visible {
     width 0.35s ease,
     background 0.35s ease,
     border-radius 0.35s ease;
+}
+
+.quote-dot::before {
+  content: '';
+  position: absolute;
+  inset: -0.65rem;
 }
 
 .quote-dot:hover,
@@ -2850,6 +2857,8 @@ nav[data-site-nav] {
   border-radius: inherit;
   touch-action: none;
   cursor: ew-resize;
+  contain: layout style paint;
+  container-type: inline-size;
 }
 
 .kt-raum-stage img,
@@ -2869,9 +2878,25 @@ nav[data-site-nav] {
 
 .kt-raum-compare-after {
   position: absolute;
-  inset: 0;
-  clip-path: inset(0 0 0 calc(100% - var(--compare-pct, 50%)));
-  will-change: clip-path;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--compare-pct, 50%);
+  overflow: hidden;
+}
+
+.kt-raum-compare-after img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100cqw;
+  max-width: none;
+}
+
+.kt-raum-compare.is-dragging .kt-raum-compare-after,
+.kt-raum-compare.is-scrubbing .kt-raum-compare-after {
+  will-change: width;
 }
 
 .kt-raum-compare.is-dragging,

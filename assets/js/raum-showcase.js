@@ -54,14 +54,19 @@
 
     let compareFrame = null;
     let pendingPct = null;
+    let dragRect = null;
 
-    function applyCompare(pct) {
+    function syncRange(pct) {
+      if (!range) return;
+      const rounded = Math.round(pct);
+      range.value = String(rounded);
+      range.setAttribute('aria-valuetext', `${rounded} Prozent`);
+    }
+
+    function applyCompare(pct, syncInput = true) {
       const clamped = Math.min(100, Math.max(0, pct));
       compare.style.setProperty('--compare-pct', `${clamped}%`);
-      if (range) {
-        range.value = String(Math.round(clamped));
-        range.setAttribute('aria-valuetext', `${Math.round(clamped)} Prozent`);
-      }
+      if (syncInput) syncRange(clamped);
     }
 
     function setCompare(pct) {
@@ -71,7 +76,7 @@
       compareFrame = requestAnimationFrame(() => {
         compareFrame = null;
         if (pendingPct == null) return;
-        applyCompare(pendingPct);
+        applyCompare(pendingPct, false);
         pendingPct = null;
       });
     }
@@ -82,12 +87,13 @@
         compareFrame = null;
       }
       pendingPct = null;
-      applyCompare(pct);
+      applyCompare(pct, true);
     }
 
     function pointerX(e) {
-      const rect = compare.getBoundingClientRect();
-      const clientX = e.touches?.[0]?.clientX ?? e.clientX;
+      const rect = dragRect || compare.getBoundingClientRect();
+      const clientX = e.clientX;
+      if (!rect.width) return 50;
       return ((clientX - rect.left) / rect.width) * 100;
     }
 
@@ -111,8 +117,8 @@
       activePointerId = e.pointerId;
       dragging = false;
       compareDragged = false;
+      dragRect = compare.getBoundingClientRect();
       compareDragStart = pointerX(e);
-      compare.classList.add('is-scrubbing');
       try {
         (media.setPointerCapture ? media : compare).setPointerCapture(e.pointerId);
       } catch (_) {
@@ -125,17 +131,33 @@
       if (activePointerId == null || e.pointerId !== activePointerId) return;
       const x = pointerX(e);
       if (!dragging && Math.abs(x - compareDragStart) < DRAG_THRESHOLD) return;
-      dragging = true;
+      if (!dragging) {
+        dragging = true;
+        compare.classList.add('is-scrubbing', 'is-dragging');
+      }
       compareDragged = true;
-      compare.classList.add('is-dragging');
       if (e.cancelable) e.preventDefault();
       setCompare(x);
     }
 
     function endDrag(e) {
       if (e && activePointerId != null && e.pointerId !== activePointerId) return;
+      if (pendingPct != null || compareFrame != null) {
+        if (compareFrame != null) {
+          cancelAnimationFrame(compareFrame);
+          compareFrame = null;
+        }
+        if (pendingPct != null) {
+          applyCompare(pendingPct, true);
+          pendingPct = null;
+        } else {
+          const pct = Number.parseFloat(compare.style.getPropertyValue('--compare-pct')) || 50;
+          syncRange(pct);
+        }
+      }
       dragging = false;
       activePointerId = null;
+      dragRect = null;
       compare.classList.remove('is-dragging', 'is-scrubbing');
       if (e) {
         try {
@@ -147,47 +169,14 @@
     }
 
     const dragSurface = media;
-    dragSurface.addEventListener('pointerdown', (e) => {
-      beginDrag(e);
-    });
+    dragSurface.addEventListener('pointerdown', beginDrag);
     dragSurface.addEventListener('pointermove', moveDrag);
     dragSurface.addEventListener('pointerup', endDrag);
     dragSurface.addEventListener('pointercancel', endDrag);
 
-    /* Touch-Fallback (ältere iOS) */
-    let touchActive = false;
-    let touchStartPct = 0;
-    dragSurface.addEventListener(
-      'touchstart',
-      (e) => {
-        if (shouldIgnoreDragTarget(e.target)) return;
-        touchActive = true;
-        touchStartPct = pointerX(e);
-        compareDragged = false;
-      },
-      { passive: true }
-    );
-    dragSurface.addEventListener(
-      'touchmove',
-      (e) => {
-        if (!touchActive || shouldIgnoreDragTarget(e.target)) return;
-        const x = pointerX(e);
-        if (!compareDragged && Math.abs(x - touchStartPct) < DRAG_THRESHOLD) return;
-        compareDragged = true;
-        compare.classList.add('is-dragging');
-        e.preventDefault();
-        setCompare(x);
-      },
-      { passive: false }
-    );
-    dragSurface.addEventListener(
-      'touchend',
-      () => {
-        touchActive = false;
-        compare.classList.remove('is-dragging', 'is-scrubbing');
-      },
-      { passive: true }
-    );
+    window.addEventListener('resize', () => {
+      if (!dragging) dragRect = null;
+    });
 
     compare.dataset.raumCompareDragged = '0';
     compare.addEventListener(
