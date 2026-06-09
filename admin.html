@@ -644,7 +644,10 @@ async function saveI18nGroup(e) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Speichern fehlgeschlagen');
-    showMessage('Texte gespeichert – auf der Website sichtbar nach Reload.', 'success');
+    showMessage(
+      'Texte gespeichert – dauerhaft in data/i18n-overrides.json und im Website-Code. Seite neu laden.',
+      'success'
+    );
     loadI18nGroup();
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');

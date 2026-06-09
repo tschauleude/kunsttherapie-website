@@ -94,13 +94,32 @@ function pageForKey(key) {
   return 'shared';
 }
 
+function loadI18nOverridesJson() {
+  const file = path.join(ROOT, 'data', 'i18n-overrides.json');
+  if (!fs.existsSync(file)) return { de: {}, en: {} };
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return {
+      de: parsed.de && typeof parsed.de === 'object' ? parsed.de : {},
+      en: parsed.en && typeof parsed.en === 'object' ? parsed.en : {},
+    };
+  } catch {
+    return { de: {}, en: {} };
+  }
+}
+
 function loadI18nExtra() {
   const src = path.join(JS_DIR, 'i18n-messages-pages.js');
   const code = fs.readFileSync(src, 'utf8');
   const match = code.match(/const extra = (\{[\s\S]*?\n  \});/);
   if (!match) throw new Error('Could not parse i18n-messages-pages.js');
   // eslint-disable-next-line no-eval
-  return eval(`(${match[1]})`);
+  const extra = eval(`(${match[1]})`);
+  const overrides = loadI18nOverridesJson();
+  for (const lang of ['de', 'en']) {
+    Object.assign(extra[lang], overrides[lang] || {});
+  }
+  return extra;
 }
 
 function writeI18nChunk(name, de, en) {

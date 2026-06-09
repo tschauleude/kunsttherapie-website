@@ -1,0 +1,1769 @@
+TEXTENTWURF MARTINA – Kunsttherapie Website
+============================================================
+
+So nutzt du diese Datei:
+1. Texte hier bearbeiten oder ergänzen (Abschnitte mit ---).
+2. Geänderte Passagen ins Admin-Panel unter „Website-Texte“ übernehmen,
+   ODER die Datei an die Website-Betreuung schicken.
+3. Beim Speichern im Admin werden Texte zusätzlich dauerhaft gespeichert in:
+   - data/i18n-overrides.json (für GitHub / Deploy)
+   - assets/js/i18n-messages-*.js (Website-Code)
+
+Stand: 9.6.2026, 19:06:21
+============================================================
+
+------------------------------------------------------------
+BEREICH: Startseite (home)
+Hero, Zielgruppen, Leistungen, Vertrauen, Atelier-Teaser
+
+[home.hero.kicker]
+Label: Hero – Kicker
+---
+Kunsttherapie · Paderborn
+---
+
+[home.hero.titleHtml]
+Label: Hero – Überschrift (HTML erlaubt)
+---
+Psychosoziale Kunsttherapie in <span class="text-accent">Paderborn</span>
+---
+
+[home.hero.lead]
+Label: Hero – emotionaler Satz
+---
+Wenn Worte nicht reichen, findet das Gestalten einen Weg.
+---
+
+[home.hero.sub]
+Label: Hero – Einleitung (HTML erlaubt)
+---
+Dienstag vormittags und Donnerstag abends in Paderborn – für Privatpersonen, Teams und klinische Einrichtungen.
+---
+
+[home.hero.note]
+Label: Hero – Hinweis unten
+---
+Neue Gruppen ab 1. Juli 2026 · Di 11:00–12:30 · Do 18:00–19:30 · Otto-Stadler-Straße 23c
+---
+
+[home.audience.title]
+Label: Zielgruppen – Überschrift
+---
+Für wen ist das Angebot?
+---
+
+[home.audience.privat]
+Label: Karte Privat – Titel
+---
+Privat
+---
+
+[home.audience.privat.desc]
+Label: Karte Privat – Text
+---
+Gruppe, Auszeit oder Einzel – wenn Worte nicht reichen und Ressourcen gesucht werden.
+---
+
+[home.audience.firmen]
+Label: Karte Unternehmen – Titel
+---
+Unternehmen
+---
+
+[home.audience.firmen.desc]
+Label: Karte Unternehmen – Text
+---
+Teambuilding und kreative Teamtage – Verbindung statt Konkurrenz.
+---
+
+[home.audience.klinik]
+Label: Karte Kliniken – Titel
+---
+Kliniken & Einrichtungen
+---
+
+[home.audience.klinik.desc]
+Label: Karte Kliniken – Text
+---
+Gruppen, Palliativbegleitung, Vorträge – langjährige Klinikerfahrung.
+---
+
+[home.services.title]
+Label: Leistungen – Überschrift
+---
+Zwei Wege – gleich wichtig
+---
+
+[home.services.di.title]
+Label: Dienstag – Titel
+---
+Dienstag morgens · Gruppen & Therapie
+---
+
+[home.services.di.text]
+Label: Dienstag – Text
+---
+Gruppentherapie, freies und thematisches Gestalten – begleitetes Malen, Collage und Zeichnen. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.
+---
+
+[home.services.do.title]
+Label: Donnerstag – Titel
+---
+Donnerstag abends · Auszeit
+---
+
+[home.services.do.text]
+Label: Donnerstag – Text
+---
+Kreativabende für Freunde und Familie – gemeinsame Auszeit mit Freude an neuen Erfahrungen. Nicht einzeln buchbar, Termine auf Anfrage.
+---
+
+[home.services.priceHint]
+Label: Leistungen – Preis-Hinweis
+---
+Gruppensitzung 90 Min · 4–12 Personen · ab 55 € · Material inkl.
+---
+
+[home.trust.title]
+Label: Vertrauen – Überschrift
+---
+Erfahrung & Vertrauen
+---
+
+[home.trust.text]
+Label: Vertrauen – Text
+---
+Über 16 Jahre in Palliativversorgung, Psychoonkologie und klinischen Gruppen – u. a. MZG und Brüderkrankenhaus. Jetzt mein eigenes Atelier in Paderborn.
+---
+
+[home.proof.title]
+Label: Stimmen – Überschrift
+---
+Was Teilnehmende erleben
+---
+
+[home.proof.sub]
+Label: Stimmen – Untertitel
+---
+Stimmen aus Gruppen und Auszeiten (Beispiele – echte, freigegebene Rückmeldungen folgen).
+---
+
+[home.proof.1.text]
+Label: Stimme 1 – Zitat
+---
+Ich kam mit dem Gefühl, nicht malen zu können – und ging mit einem Bild, das mehr sagte als Worte.
+---
+
+[home.proof.1.author]
+Label: Stimme 1 – Autor
+---
+Teilnehmerin, Gruppe Dienstag
+---
+
+[home.proof.2.text]
+Label: Stimme 2 – Zitat
+---
+Ein geschützter Raum, in dem ich einfach sein durfte. Genau das hat mir gefehlt.
+---
+
+[home.proof.2.author]
+Label: Stimme 2 – Autor
+---
+Teilnehmer, Auszeit
+---
+
+[home.proof.3.text]
+Label: Stimme 3 – Zitat
+---
+Als Team haben wir uns ganz neu erlebt – ohne Konkurrenz, mit echter Verbindung.
+---
+
+[home.proof.3.author]
+Label: Stimme 3 – Autor
+---
+Teamleitung, Firmen-Event
+---
+
+[home.proof.partners]
+Label: Stimmen – Kooperationen
+---
+Langjährige klinische Erfahrung u. a. mit MZG und Brüderkrankenhaus Paderborn.
+---
+
+[home.praxis.title]
+Label: Atelier-Block – Überschrift
+---
+Atelier in Paderborn – ab 1. Juli 2026
+---
+
+[home.praxis.sub]
+Label: Atelier-Block – Text
+---
+Atelier- und Gruppenraum an der Otto-Stadler-Straße 23c – hell, ruhig und mit Platz zum Malen und Gestalten.
+---
+
+[home.gallery.title]
+Label: Galerie – Überschrift
+---
+Kunsttherapie in Aktion
+---
+
+[home.gallery.sub]
+Label: Galerie – Untertitel
+---
+Kreativität ohne Leistungsdruck – ein Blick in den Atelier-Alltag. Klick auf ein Bild zum Vergrößern.
+---
+
+[home.gallery.img1.alt]
+Label: Galerie – Bild 1 Alt-Text
+---
+Materialien im Atelier – Farben, Kreiden, Pinsel
+---
+
+[home.gallery.img2.alt]
+Label: Galerie – Bild 2 Alt-Text
+---
+Kunsttherapeutisches Bild – Natur und Kreativität
+---
+
+[home.gallery.img3.alt]
+Label: Galerie – Bild 3 Alt-Text
+---
+Abstraktes Aquarell – Farben und Formen
+---
+
+[home.gallery.img4.alt]
+Label: Galerie – Bild 4 Alt-Text
+---
+Kunsttherapie in sensiblen Settings – behutsame Begleitung
+---
+
+[home.gallery.img5.alt]
+Label: Galerie – Bild 5 Alt-Text
+---
+Atelier von außen – Otto-Stadler-Straße in Paderborn
+---
+
+[home.gallery.img6.alt]
+Label: Galerie – Bild 6 Alt-Text
+---
+Malen mit Pinseln – Kreativität im Sonnenlicht
+---
+
+------------------------------------------------------------
+BEREICH: Kunsttherapie & Angebote (therapy)
+Hero, fünf Angebote, Atelier, Abschluss-CTA (FAQs → eigener Bereich „FAQ“)
+
+[kt.hero.kicker]
+Label: Hero – Kicker
+---
+Ab 1. Juli 2026 in Paderborn
+---
+
+[kt.hero.title]
+Label: Hero – Überschrift (HTML erlaubt)
+---
+Kunst, die <span class="text-accent">trägt</span> – nicht nur schmückt
+---
+
+[kt.hero.sub]
+Label: Hero – Einleitung
+---
+Dienstag 11:00–12:30 Uhr und Donnerstag 18:00–19:30 Uhr – feste Atelierzeiten. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.
+---
+
+[kt.audience]
+Label: Zielgruppen-Zeile
+---
+Für Unternehmen · für Kliniken & Einrichtungen · für Experten & Interessierte
+---
+
+[kt.offers.title]
+Label: Angebote – Überschrift
+---
+Welches Angebot passt?
+---
+
+[kt.offers.sub]
+Label: Angebote – Untertitel
+---
+Fünf Angebote – ausführliche Beschreibung per Klick.
+---
+
+[offer.1.title]
+Label: Angebot 1 – Titel
+---
+Gruppentherapie
+---
+
+[offer.1.teaser]
+Label: Angebot 1 – Teaser
+---
+Begleitetes Malen in der Gruppe – dienstags vormittags.
+---
+
+[offer.1.body]
+Label: Angebot 1 – Details (HTML erlaubt)
+---
+<p><strong>Primär dienstags 11:00–12:30 Uhr</strong> – die Gruppenzeiten rotieren und werden im Wechsel auch donnerstags abends angeboten. Viele Menschen kennen bereits kunsttherapeutisches Gestalten in Gruppen, haben die Kunsttherapie schätzen gelernt, Wissen um die Wirksamkeit – und suchen einen freien Platz. Selbstverständlich auch für alle, die durch ressourcenorientierte, visuelle Methoden ganz individuelle Themen gestalten möchten – mit professioneller Begleitung.</p><p><strong>Gruppentherapie, freies und thematisches Gestalten:</strong> Kunst als Weg zurück zum Inneren – um Gesundheit zu erhalten und zu fördern, im Sinne von Resilienz, Krankheitsakzeptanz und psychischer Widerstandsfähigkeit.</p><p>„Bilder sagen mehr als tausend Worte“, sowie „die Heilkraft der Farben“ sind Erfahrungswerte in der Kunsttherapie.</p><p class="note">4–12 Personen · 90 Minuten · im Wechsel auch donnerstags abends</p>
+---
+
+[offer.2.title]
+Label: Angebot 2 – Titel
+---
+Auszeit: Kreativabende für Freunde & Familien
+---
+
+[offer.2.teaser]
+Label: Angebot 2 – Teaser
+---
+Kreativabende für Freunde & Familie – ohne Leistungsdruck.
+---
+
+[offer.2.body]
+Label: Angebot 2 – Details (HTML erlaubt)
+---
+<p><strong>Donnerstag 18:00–19:30 Uhr.</strong> Viele sagen danach: „Hätte nicht gedacht, dass mir ein Bild so gut gelingt.“</p><p>Buchbar für Familie und Freunde – <strong>nicht einzeln buchbar</strong>. Es geht um Freude durch neue Erfahrungen und eine gute kreative gemeinsame Auszeit.</p><p class="note">Termine auf Anfrage</p>
+---
+
+[offer.3.title]
+Label: Angebot 3 – Titel
+---
+Einzelsitzungen
+---
+
+[offer.3.teaser]
+Label: Angebot 3 – Teaser
+---
+Intensiv und persönlich – flexibel nach Vereinbarung.
+---
+
+[offer.3.body]
+Label: Angebot 3 – Details (HTML erlaubt)
+---
+<p>Intensiv und persönlich: psychosoziale und klinische Kunsttherapie in Krisen, bei Trauer oder in der Krankheitsverarbeitung – individuell auf die jeweilige Situation abgestimmt.</p><p>Im geschützten Rahmen des Ateliers oder nach Vereinbarung. Termine flexibel außerhalb der Gruppenzeiten – Preis auf Anfrage.</p>
+---
+
+[offer.4.title]
+Label: Angebot 4 – Titel
+---
+Teambuilding & Institutionen
+---
+
+[offer.4.teaser]
+Label: Angebot 4 – Teaser
+---
+Raus aus dem Büro, gemeinsam ein Werk gestalten.
+---
+
+[offer.4.body]
+Label: Angebot 4 – Details (HTML erlaubt)
+---
+<p>Raus aus dem Büro, rein ins FarbenReich – Kolleginnen und Kollegen MALend ganz neu erleben. Es entsteht ein Werk mit Überraschungseffekt, mit spielerischen Regeln und echter Verbindung, das wertschätzend einen exponierten Platz in der Firma bekommen darf.</p><p class="note">Mindestens 12, maximal 18 Teilnehmer. Bei mehr als 18 Teilnehmern bitte Kontakt aufnehmen. Termine nach Absprache.</p>
+---
+
+[offer.5.title]
+Label: Angebot 5 – Titel
+---
+Vorträge & Impulse
+---
+
+[offer.5.teaser]
+Label: Angebot 5 – Teaser
+---
+Impulse aus über 16 Jahren klinischer Kunsttherapie.
+---
+
+[offer.5.body]
+Label: Angebot 5 – Details (HTML erlaubt)
+---
+<p>Regelmäßige Vorträge und Impulse aus der Kunsttherapie.</p><p><strong>Warum Kunst statt nur Gespräch?</strong> Ein Einblick in Wirkung, Methoden und Erfahrungen aus über 16 Jahren klinischer Arbeit – für Einrichtungen, Fachpublikum und Interessierte. Auch Gruppen (z.&nbsp;B. Senioren) und palliative Begleitung aus langjähriger Praxis.</p><p class="note">Dauer, Ort und Honorar nach Absprache – Konzept und Material inklusive.</p>
+---
+
+[kt.effects.title]
+Label: Wirkung – Überschrift
+---
+Wie Kunsttherapie wirkt
+---
+
+[kt.effects.sub]
+Label: Wirkung – Untertitel
+---
+In wenigen Sätzen – vertiefend per Klick.
+---
+
+[kt.praxis.title]
+Label: Atelier – Überschrift
+---
+Atelier- und Gruppenraum
+---
+
+[kt.praxis.sub]
+Label: Atelier – Einleitung (HTML erlaubt)
+---
+Ab <strong>1. Juli 2026</strong> in Paderborn – ein eigener Raum zum Ankommen, Gestalten und Begegnen. Die Räumlichkeiten werden laufend eingerichtet und hier Schritt für Schritt vorgestellt.
+---
+
+[kt.praxis.headline]
+Label: Atelier – Headline
+---
+Ankommen und gestalten in Paderborn
+---
+
+[kt.praxis.p1]
+Label: Atelier – Absatz 1 (HTML erlaubt)
+---
+Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen. Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag 11:00–12:30</strong> für Gruppen, <strong>Donnerstag 18:00–19:30</strong> für Auszeit und Workshops. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.
+---
+
+[kt.praxis.p2]
+Label: Atelier – Absatz 2 (HTML erlaubt)
+---
+<strong>Im Atelier:</strong> helle, ruhige Atmosphäre, Materialien vor Ort, kleine Gruppen, klare Struktur ohne Leistungsdruck. Parken und Anreise mit ÖPNV sind unkompliziert – Details zur Anfahrt siehe unten.
+---
+
+[kt.highlight1.title]
+Label: Highlight 1 – Titel
+---
+Atelierfläche
+---
+
+[kt.highlight1.text]
+Label: Highlight 1 – Text
+---
+Gemeinsames Gestalten mit Acryl, Gouache, Pastellkreide, Collage – Materialien werden gestellt.
+---
+
+[kt.highlight2.title]
+Label: Highlight 2 – Titel
+---
+Gruppenraum
+---
+
+[kt.highlight2.text]
+Label: Highlight 2 – Text
+---
+4–12 Personen, geschützter Rahmen, auch für Seniorengruppen und Einrichtungen.
+---
+
+[kt.highlight3.title]
+Label: Highlight 3 – Titel
+---
+Im Aufbau
+---
+
+[kt.highlight3.text]
+Label: Highlight 3 – Text
+---
+Der Raum wird weiter ausgebaut und auf der Website präsentiert – auf dem Laufenden bleiben.
+---
+
+[kt.highlight4.title]
+Label: Highlight 4 – Titel
+---
+Ab Juli 2026
+---
+
+[kt.highlight4.text]
+Label: Highlight 4 – Text (HTML erlaubt)
+---
+Regelmäßig <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> – Gruppenzeiten rotieren, im Wechsel auch donnerstags abends. Termine online oder per Anfrage.
+---
+
+[kt.cta.title]
+Label: Abschluss – Überschrift
+---
+Bereit für den ersten Schritt?
+---
+
+[kt.cta.sub]
+Label: Abschluss – Text
+---
+Termin online buchen oder kurz anfragen – ich melde mich zeitnah.
+---
+
+------------------------------------------------------------
+BEREICH: FAQ (Kunsttherapie) (faq)
+Alle 12 Fragen & Antworten im FAQ-Bereich auf kunsttherapie.html – Änderungen sind sofort sichtbar (Seite neu laden).
+
+[kt.effects.title]
+Label: Bereich – Überschrift
+---
+Wie Kunsttherapie wirkt
+---
+
+[kt.effects.sub]
+Label: Bereich – Untertitel
+---
+In wenigen Sätzen – vertiefend per Klick.
+---
+
+[kt.faq1.q]
+Label: FAQ 1 – Frage
+---
+Warum Kunst statt nur Gespräch?
+---
+
+[kt.faq1.a]
+Label: FAQ 1 – Antwort (HTML erlaubt)
+---
+<p><strong>Nur Gespräch:</strong> Gedanken und Gefühle in Worte fassen – manchmal stößt man an Grenzen.</p><p><strong>Mit Gestalten:</strong> „Ich könnte es malen, nicht in Worte ausdrücken.“ Der Prozess ist ein wesentlicher Teil der Kunsttherapie, wie auch das Werk, das entsteht – als Projektionsfläche, als Spiegel: Distanz und Nähe zugleich.</p>
+---
+
+[kt.faq2.q]
+Label: FAQ 2 – Frage
+---
+Brauche ich Vorkenntnisse?
+---
+
+[kt.faq2.a]
+Label: FAQ 2 – Antwort (HTML erlaubt)
+---
+<p>Nein – Vorkenntnisse sind nicht nötig. Entscheidend ist, dass sich das Gestalten stimmig anfühlt. <strong>Ausprobieren lohnt sich – der Überraschungseffekt gehört dazu.</strong></p>
+---
+
+[kt.faq3.q]
+Label: FAQ 3 – Frage
+---
+Welche Materialien und Methoden gibt es?
+---
+
+[kt.faq3.a]
+Label: FAQ 3 – Antwort (HTML erlaubt)
+---
+<p>Die Materialien sind sehr facettenreich: Pastellkreide, Collagen, Malen mit flüssigen Farben wie Gouache, Aquarell und Acryl, Zeichnen und Plastizieren in Ton. Regelmäßige Gruppen <strong>Dienstag 11:00–12:30</strong>, Auszeit und Workshops <strong>Donnerstag 18:00–19:30</strong>. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.</p>
+---
+
+[kt.faq4.q]
+Label: FAQ 4 – Frage
+---
+Mit welchen Themen kann ich kommen?
+---
+
+[kt.faq4.a]
+Label: FAQ 4 – Antwort (HTML erlaubt)
+---
+<ul><li>Raum für Trauer, die noch keinen Ausdruck gefunden hat</li><li>Hilfe bei chronischen Schmerzen</li><li>Vision Board: Vorstellungskraft, Klarheit und Struktur finden</li><li>Achtsamkeit malend – die Umwelt bewusst wahrnehmen; Meditationstechniken für innere Ruhe</li><li>Positiver Flow und Techniken erleben</li></ul>
+---
+
+[kt.faq5.q]
+Label: FAQ 5 – Frage
+---
+Muss ich malen können?
+---
+
+[kt.faq5.a]
+Label: FAQ 5 – Antwort (HTML erlaubt)
+---
+<p><strong>Nicht entscheidend:</strong> ein schönes Ergebnis oder „können“.</p><p><strong>Im Mittelpunkt:</strong> der Prozess. Jede Spur, jede Farbe ist richtig – Vorerfahrung ist nicht nötig.</p>
+---
+
+[kt.faq6.q]
+Label: FAQ 6 – Frage
+---
+Ist Kunsttherapie das Richtige für mich?
+---
+
+[kt.faq6.a]
+Label: FAQ 6 – Antwort (HTML erlaubt)
+---
+<p>Kunsttherapie kann begleiten bei Belastung, Trauer, chronischen Schmerzen oder einfach dem Wunsch nach einer kreativen Auszeit. In einem unverbindlichen Kennenlernen klären wir gemeinsam, ob es passt.</p>
+---
+
+[kt.faq7.q]
+Label: FAQ 7 – Frage
+---
+Übernimmt die Krankenkasse die Kosten?
+---
+
+[kt.faq7.a]
+Label: FAQ 7 – Antwort (HTML erlaubt)
+---
+<p>Die Angebote sind in der Regel Selbstzahler-Leistungen. Bei Fragen zu Kostenübernahme, Firmen- oder Einrichtungs-Abrechnung sprich mich gern direkt an.</p>
+---
+
+[kt.faq8.q]
+Label: FAQ 8 – Frage
+---
+Wie läuft eine Sitzung ab?
+---
+
+[kt.faq8.a]
+Label: FAQ 8 – Antwort (HTML erlaubt)
+---
+<p>Eine Sitzung dauert 90 Minuten. Nach einem kurzen Ankommen gibt es einen Impuls oder ein Thema – oder du gestaltest frei. Das Gestalten steht im Mittelpunkt, am Ende ist Raum für ein Gespräch über das, was entstanden ist. Es gibt kein Richtig oder Falsch und kein Tempo, das du halten musst.</p>
+---
+
+[kt.faq9.q]
+Label: FAQ 9 – Frage
+---
+Was muss ich mitbringen?
+---
+
+[kt.faq9.a]
+Label: FAQ 9 – Antwort (HTML erlaubt)
+---
+<p>Nur dich selbst. Die gängigen Materialien – Farben, Kreiden, Papier, Collage-Material und mehr – sind je nach Absprache vor Ort und im Preis enthalten. Kleidung, die auch mal Farbe abbekommen darf, ist sinnvoll. Wird im Einzelfall mehr benötigt, kann es zu Zusatzkosten kommen; diese klären wir vorab gemeinsam im Vorgespräch.</p>
+---
+
+[kt.faq10.q]
+Label: FAQ 10 – Frage
+---
+Ist Kunsttherapie vertraulich?
+---
+
+[kt.faq10.a]
+Label: FAQ 10 – Antwort (HTML erlaubt)
+---
+<p>Ja. Alles, was in den Sitzungen besprochen und gestaltet wird, bleibt vertraulich. Deine Werke gehören dir – sie werden nur mit deiner ausdrücklichen Einwilligung gezeigt oder verwendet.</p>
+---
+
+[kt.faq11.q]
+Label: FAQ 11 – Frage
+---
+Einzeln oder lieber in der Gruppe?
+---
+
+[kt.faq11.a]
+Label: FAQ 11 – Antwort (HTML erlaubt)
+---
+<p><strong>Gruppe (4–12 Personen):</strong> gemeinsames Erleben, gegenseitige Inspiration, geschützter Rahmen.</p><p><strong>Einzel:</strong> intensiver und ganz auf dein Thema abgestimmt.</p><p>Im Kennenlernen finden wir heraus, was zu dir passt.</p>
+---
+
+[kt.faq12.q]
+Label: FAQ 12 – Frage
+---
+Ersetzt Kunsttherapie eine Psychotherapie?
+---
+
+[kt.faq12.a]
+Label: FAQ 12 – Antwort (HTML erlaubt)
+---
+<p><strong>Psychotherapie</strong> ist medizinische Behandlung bei entsprechenden Indikationen.</p><p><strong>Kunsttherapie</strong> ist eigenständige, ressourcenorientierte Begleitung und kann sehr entlastend wirken – ersetzt jedoch keine ärztliche oder psychotherapeutische Behandlung.</p><p>Bei akuten oder schweren Beschwerden bitte zusätzlich eine Ärztin oder einen Arzt aufsuchen; gern bespreche ich mit dir, wie sich beides ergänzen kann.</p>
+---
+
+------------------------------------------------------------
+BEREICH: Über mich (about)
+
+[about.kicker]
+Label: Kicker unter dem Namen
+---
+Psychosoziale Kunsttherapeutin · Paderborn
+---
+
+[about.name]
+Label: Name – Hauptüberschrift (H1)
+---
+Martina Schwierzke
+---
+
+[about.intro]
+Label: Einleitung
+---
+Als psychosoziale und klinische Kunsttherapeutin und Heilpraktikerin für Psychotherapie arbeite ich selbstständig. Mit über 16 Jahren Erfahrung begleite ich Menschen in schwierigen Situationen – im klinischen Kontext und im eigenen Atelier.
+---
+
+[about.journey.title]
+Label: Mein Weg – Überschrift
+---
+Mein Weg
+---
+
+[about.journey.p1]
+Label: Mein Weg – Absatz 1
+---
+Schon früh haben mich Bilder und Farben begleitet – als Ausdruck, wenn Worte nicht reichten. In meiner Arbeit verbinde ich diesen Erfahrungsschatz mit einem geschützten Raum für Menschen in belastenden Lebensphasen.
+---
+
+[about.journey.p2]
+Label: Mein Weg – Absatz 2
+---
+Was mich zur Kunsttherapie geführt hat und was mich heute trägt – hier ergänze ich gern persönliche Worte in Ruhe.
+---
+
+[about.passion.title]
+Label: Leidenschaft – Überschrift
+---
+Meine Leidenschaft
+---
+
+[about.passion.p1]
+Label: Leidenschaft – Absatz 1
+---
+Ich bin seit vielen Jahren in der Palliativversorgung und Psychoonkologie tätig und leite kunsttherapeutische Gruppen im klinischen Umfeld. Regelmäßige Weiterbildungen und Supervisionen sind für mich selbstverständlich.
+---
+
+[about.passion.p2]
+Label: Leidenschaft – Absatz 2
+---
+Kunst ist für mich ein existenzieller Freiraum. Natur ist eine wesentliche Inspirations- und Kraftquelle.
+---
+
+[about.quote]
+Label: Zitat
+---
+„Weil ich weiß, dass Zeit endlich ist, lebe ich lieber jetzt.“
+---
+
+[about.qual.title]
+Label: Qualifikationen – Überschrift
+---
+Qualifikationen & Erfahrung
+---
+
+[about.qual.list]
+Label: Qualifikationen – Liste (HTML erlaubt)
+---
+<li>Psychosoziale Kunsttherapeutin (2006–2009, anerkanntes Institut)</li><li>Klinische Kunsttherapeutin (2010)</li><li>Heilpraktikerin für Psychotherapie (2011)</li><li>Über 16 Jahre Erfahrung in Palliativversorgung, Psychoonkologie und klinischen Gruppen</li><li>Langjährige Tätigkeit u. a. am MZG und Brüderkrankenhaus Paderborn</li><li>Regelmäßige Supervision und Weiterbildung</li>
+---
+
+------------------------------------------------------------
+BEREICH: Preise (prices)
+
+[prices.title]
+Label: Überschrift
+---
+Transparent & fair
+---
+
+[prices.sub]
+Label: Einleitung
+---
+Materialien sind inklusive. Einzelsitzungen sind möglich – bitte direkt anfragen.
+---
+
+[prices.tableBody]
+Label: Preistabelle (HTML erlaubt)
+---
+<tr><td>Gruppensitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis"><strong>ab 55 €</strong><span class="price-per">pro Person</span></td><td data-label="Hinweis">4–12 Personen, Material inkl.</td></tr><tr><td>Gruppenprogramm (typisch)</td><td data-label="Dauer">4 Einheiten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">individuell je nach Umfang &amp; Thema</td></tr><tr><td>Einzelsitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">Festpreis im Kennenlernen</td></tr><tr><td>Teambuilding Event</td><td data-label="Dauer">nach Bedarf</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">je nach Teamgröße &amp; Konzept</td></tr>
+---
+
+[prices.onRequest]
+Label: Hinweis zu „auf Anfrage“
+---
+Einzelsitzungen, Gruppenprogramme und Teambuilding kalkuliere ich bewusst individuell – je nach Dauer, Gruppengröße und Setting. Im kostenlosen Kennenlernen nenne ich dir einen transparenten Festpreis.
+---
+
+[prices.unit]
+Label: Hinweis unter der Tabelle (pro Person & Sitzung)
+---
+Alle Preise verstehen sich pro Person und Sitzung.
+---
+
+[prices.note]
+Label: Hinweis unten
+---
+Fragen zu Preisen oder Rabatten? Schreib mir gern – jede Situation ist individuell.
+---
+
+------------------------------------------------------------
+BEREICH: Kontakt (contact)
+
+[contact.title]
+Label: Überschrift
+---
+Fragen, Anfragen & Termine
+---
+
+[contact.sub]
+Label: Einleitung (HTML erlaubt)
+---
+Für einen festen Termin nutze die <a href="buchung.html">Online-Buchung</a>. Für alles andere: kurz schreiben oder anrufen.
+---
+
+[contact.hours]
+Label: Atelierzeiten-Hinweis
+---
+Atelier ab 1. Juli 2026 · Di 11:00–12:30 · Do 18:00–19:30
+---
+
+[contact.form.messageLabel]
+Label: Formular – Nachricht Label
+---
+Nachricht *
+---
+
+[contact.messagePlaceholder]
+Label: Formular – Platzhalter
+---
+Worum geht es? z. B. Gruppe, Auszeit, Teambuilding …
+---
+
+------------------------------------------------------------
+BEREICH: Terminbuchung (booking)
+
+[book.title]
+Label: Überschrift
+---
+Kennenlernen oder Sitzung buchen
+---
+
+[book.sub]
+Label: Einleitung (HTML erlaubt)
+---
+Nur <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> sind buchbar (grüne Tage). Die Anfrage wird per E-Mail bestätigt. Danach lässt sich der Termin in Apple- oder Google-Kalender speichern.
+---
+
+[book.introNote]
+Label: Hinweis Kennenlernen
+---
+Unsicher, ob Kunsttherapie das Richtige ist? Ein kurzes, unverbindliches Kennenlernen klärt offene Fragen – einfach anfragen.
+---
+
+[book.slotsHint]
+Label: Hinweis Zeitslots (HTML erlaubt)
+---
+Nur <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> – Termine à 90 Minuten.
+---
+
+[book.messagePlaceholder]
+Label: Nachricht – Platzhalter
+---
+z.B. Erstgespräch, Gruppe Dienstag morgens, Auszeit Donnerstag abends …
+---
+
+------------------------------------------------------------
+BEREICH: Seitentitel & Google-Vorschau (seo)
+Titel und Kurzbeschreibung für Suchmaschinen (pro Seite)
+
+[meta.home.title]
+Label: Startseite – Titel
+---
+Kunsttherapie Paderborn | Psychosoziale Kunsttherapie & Atelier
+---
+
+[meta.home.description]
+Label: Startseite – Beschreibung
+---
+Kunsttherapie in Paderborn: Di 11:00–12:30 und Do 18:00–19:30. Gruppen, Auszeit, Einzel, Teambuilding – Termin online buchen.
+---
+
+[meta.therapy.title]
+Label: Kunsttherapie – Titel
+---
+Kunsttherapie & Angebote – Paderborn
+---
+
+[meta.therapy.description]
+Label: Kunsttherapie – Beschreibung
+---
+Gruppen Dienstag morgens, Auszeit Donnerstag abends, Teambuilding und Einzelsitzungen. Atelier Otto-Stadler-Straße 23c, Paderborn.
+---
+
+[meta.about.title]
+Label: Über mich – Titel
+---
+Über mich – Kunsttherapeutin Paderborn
+---
+
+[meta.about.description]
+Label: Über mich – Beschreibung
+---
+Ich bin psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, mein eigenes Atelier in Paderborn.
+---
+
+[meta.prices.title]
+Label: Preise – Titel
+---
+Preise – Kunsttherapie Paderborn
+---
+
+[meta.prices.description]
+Label: Preise – Beschreibung
+---
+Transparente Preise für Gruppensitzungen ab 55 €, Programme und Einzelsitzungen auf Anfrage.
+---
+
+[meta.contact.title]
+Label: Kontakt – Titel
+---
+Kontakt – Kunsttherapie Paderborn
+---
+
+[meta.contact.description]
+Label: Kontakt – Beschreibung
+---
+Nachricht senden, anrufen oder Anfahrt zum Atelier Otto-Stadler-Straße 23c, Paderborn.
+---
+
+[meta.booking.title]
+Label: Buchung – Titel
+---
+Termin buchen – Kunsttherapie Paderborn
+---
+
+[meta.booking.description]
+Label: Buchung – Beschreibung
+---
+Online-Termin anfragen: Dienstag morgens und Donnerstag abends. Freie Zeiten im Kalender – Bestätigung per E-Mail.
+---
+
+============================================================
+ENGLISCH – nur bei Bedarf (Kopie der Schlüssel, Werte aus EN-Version)
+
+--- Startseite (EN) ---
+[home.hero.kicker]
+Label: Hero – Kicker
+---
+Art Therapy · Paderborn
+---
+
+[home.hero.titleHtml]
+Label: Hero – Überschrift (HTML erlaubt)
+---
+Art therapy in <span class="text-accent">Paderborn</span>
+---
+
+[home.hero.lead]
+Label: Hero – emotionaler Satz
+---
+When words fall short, creating finds a way.
+---
+
+[home.hero.sub]
+Label: Hero – Einleitung (HTML erlaubt)
+---
+Tuesday mornings and Thursday evenings in Paderborn – for individuals, teams, and clinical settings.
+---
+
+[home.hero.note]
+Label: Hero – Hinweis unten
+---
+New groups from 1 July 2026 · Tue 11:00–12:30 · Thu 18:00–19:30 · Otto-Stadler-Straße 23c
+---
+
+[home.audience.title]
+Label: Zielgruppen – Überschrift
+---
+Who is this for?
+---
+
+[home.audience.privat]
+Label: Karte Privat – Titel
+---
+Individuals
+---
+
+[home.audience.privat.desc]
+Label: Karte Privat – Text
+---
+Group, downtime, or one-to-one – when words are not enough.
+---
+
+[home.audience.firmen]
+Label: Karte Unternehmen – Titel
+---
+Companies
+---
+
+[home.audience.firmen.desc]
+Label: Karte Unternehmen – Text
+---
+Team building and creative off-sites – connection instead of competition.
+---
+
+[home.audience.klinik]
+Label: Karte Kliniken – Titel
+---
+Clinics & institutions
+---
+
+[home.audience.klinik.desc]
+Label: Karte Kliniken – Text
+---
+Groups, palliative care, talks – years of clinical experience.
+---
+
+[home.services.title]
+Label: Leistungen – Überschrift
+---
+Two paths – equally important
+---
+
+[home.services.di.title]
+Label: Dienstag – Titel
+---
+Tuesday mornings · Groups & therapy
+---
+
+[home.services.di.text]
+Label: Dienstag – Text
+---
+Group therapy, free and themed creating – guided painting, collage, and drawing. Group times rotate: on alternate weeks also on Thursday evenings.
+---
+
+[home.services.do.title]
+Label: Donnerstag – Titel
+---
+Thursday evenings · Downtime
+---
+
+[home.services.do.text]
+Label: Donnerstag – Text
+---
+Creative evenings for friends and family – shared downtime and new experiences together. Not bookable individually; dates on request.
+---
+
+[home.services.priceHint]
+Label: Leistungen – Preis-Hinweis
+---
+Group session 90 min · 4–12 people · from €55 · materials incl.
+---
+
+[home.trust.title]
+Label: Vertrauen – Überschrift
+---
+Experience & trust
+---
+
+[home.trust.text]
+Label: Vertrauen – Text
+---
+Over 16 years in palliative care, psycho-oncology, and clinical groups – including MZG and Brüderkrankenhaus. Now my own atelier in Paderborn.
+---
+
+[home.proof.title]
+Label: Stimmen – Überschrift
+---
+What participants experience
+---
+
+[home.proof.sub]
+Label: Stimmen – Untertitel
+---
+Voices from groups and creative evenings (examples – real, approved feedback to follow).
+---
+
+[home.proof.1.text]
+Label: Stimme 1 – Zitat
+---
+I arrived sure I couldn't paint – and left with a picture that said more than words could.
+---
+
+[home.proof.1.author]
+Label: Stimme 1 – Autor
+---
+Group participant, Tuesday
+---
+
+[home.proof.2.text]
+Label: Stimme 2 – Zitat
+---
+A safe space where I could simply be. That's exactly what I had been missing.
+---
+
+[home.proof.2.author]
+Label: Stimme 2 – Autor
+---
+Participant, creative evening
+---
+
+[home.proof.3.text]
+Label: Stimme 3 – Zitat
+---
+As a team we saw each other in a whole new way – no competition, real connection.
+---
+
+[home.proof.3.author]
+Label: Stimme 3 – Autor
+---
+Team lead, corporate event
+---
+
+[home.proof.partners]
+Label: Stimmen – Kooperationen
+---
+Years of clinical experience, including MZG and Brüderkrankenhaus Paderborn.
+---
+
+[home.praxis.title]
+Label: Atelier-Block – Überschrift
+---
+Atelier in Paderborn – from 1 July 2026
+---
+
+[home.praxis.sub]
+Label: Atelier-Block – Text
+---
+Studio and group space on Otto-Stadler-Straße 23c – bright, calm, and with room to paint and create.
+---
+
+[home.gallery.title]
+Label: Galerie – Überschrift
+---
+Art therapy in action
+---
+
+[home.gallery.sub]
+Label: Galerie – Untertitel
+---
+Creativity without pressure to perform – a glimpse into studio life. Click an image to enlarge.
+---
+
+[home.gallery.img1.alt]
+Label: Galerie – Bild 1 Alt-Text
+---
+Studio materials – paints, chalks, brushes
+---
+
+[home.gallery.img2.alt]
+Label: Galerie – Bild 2 Alt-Text
+---
+Art therapy image – nature and creativity
+---
+
+[home.gallery.img3.alt]
+Label: Galerie – Bild 3 Alt-Text
+---
+Abstract watercolour – colours and shapes
+---
+
+[home.gallery.img4.alt]
+Label: Galerie – Bild 4 Alt-Text
+---
+Art therapy in sensitive settings – gentle support
+---
+
+[home.gallery.img5.alt]
+Label: Galerie – Bild 5 Alt-Text
+---
+Atelier exterior – Otto-Stadler-Straße in Paderborn
+---
+
+[home.gallery.img6.alt]
+Label: Galerie – Bild 6 Alt-Text
+---
+Painting with brushes – creativity in sunlight
+---
+
+--- Kunsttherapie & Angebote (EN) ---
+[kt.hero.kicker]
+Label: Hero – Kicker
+---
+From 1 July 2026 in Paderborn
+---
+
+[kt.hero.title]
+Label: Hero – Überschrift (HTML erlaubt)
+---
+Art that <span class="text-accent">supports</span> – not just decorates
+---
+
+[kt.hero.sub]
+Label: Hero – Einleitung
+---
+Tuesday 11:00–12:30 and Thursday 18:00–19:30 – fixed studio hours. Group times rotate: on alternate weeks also on Thursday evenings.
+---
+
+[kt.audience]
+Label: Zielgruppen-Zeile
+---
+For companies · for clinics & institutions · for experts & interested visitors
+---
+
+[kt.offers.title]
+Label: Angebote – Überschrift
+---
+Which offer fits?
+---
+
+[kt.offers.sub]
+Label: Angebote – Untertitel
+---
+Five services – click for the full description.
+---
+
+[offer.1.title]
+Label: Angebot 1 – Titel
+---
+Group therapy
+---
+
+[offer.1.teaser]
+Label: Angebot 1 – Teaser
+---
+Guided group painting – Tuesday mornings.
+---
+
+[offer.1.body]
+Label: Angebot 1 – Details (HTML erlaubt)
+---
+<p><strong>Primarily Tuesday 11:00–12:30</strong> – group times rotate and are also offered on Thursday evenings on alternate weeks. Many people already know art therapy in groups, value its effectiveness – and are looking for an open place. Also for anyone who wants to work on individual themes through resource-oriented visual methods – with professional support.</p><p><strong>Group therapy, free and themed creating:</strong> art as a path inward – to maintain and support health, in the sense of resilience, illness acceptance, and psychological strength.</p><p>“A picture is worth a thousand words” and “the healing power of colour” are lived experiences in art therapy.</p><p class="note">4–12 people · 90 minutes · on alternate weeks also Thursday evenings</p>
+---
+
+[offer.2.title]
+Label: Angebot 2 – Titel
+---
+Downtime: creative evenings for friends & family
+---
+
+[offer.2.teaser]
+Label: Angebot 2 – Teaser
+---
+Creative evenings for friends & family – no pressure to perform.
+---
+
+[offer.2.body]
+Label: Angebot 2 – Details (HTML erlaubt)
+---
+<p><strong>Thursday 18:00–19:30.</strong> Many say afterwards: “I never thought I could create something like that.”</p><p>Bookable for family and friends – <strong>not individually</strong>. About joy through new experiences and a good shared creative break.</p><p class="note">Dates on request</p>
+---
+
+[offer.3.title]
+Label: Angebot 3 – Titel
+---
+One-to-one sessions
+---
+
+[offer.3.teaser]
+Label: Angebot 3 – Teaser
+---
+Intensive and personal – flexible by arrangement.
+---
+
+[offer.3.body]
+Label: Angebot 3 – Details (HTML erlaubt)
+---
+<p>Intensive and personal: psychosocial and clinical art therapy in crisis, grief, or illness – tailored to each situation.</p><p>In the atelier or by arrangement. Flexible times outside group slots – price on request.</p>
+---
+
+[offer.4.title]
+Label: Angebot 4 – Titel
+---
+Team building & institutions
+---
+
+[offer.4.teaser]
+Label: Angebot 4 – Teaser
+---
+Out of the office – create a shared artwork together.
+---
+
+[offer.4.body]
+Label: Angebot 4 – Details (HTML erlaubt)
+---
+<p>Out of the office, into a world of colour – experience colleagues in a whole new, creative way. A shared artwork with a surprise effect, playful rules, and real connection – worthy of a visible place in the company.</p><p class="note">Minimum 12, maximum 18 participants. For more than 18, please get in touch. Dates by arrangement.</p>
+---
+
+[offer.5.title]
+Label: Angebot 5 – Titel
+---
+Talks & impulses
+---
+
+[offer.5.teaser]
+Label: Angebot 5 – Teaser
+---
+Impulses from over 16 years of clinical art therapy.
+---
+
+[offer.5.body]
+Label: Angebot 5 – Details (HTML erlaubt)
+---
+<p>Regular talks and impulses from art therapy.</p><p><strong>Why art instead of conversation alone?</strong> An insight into methods, effects, and experience from over 16 years of clinical work – for institutions, professionals, and interested audiences. Including groups (e.g. seniors) and palliative support from long practice.</p><p class="note">Duration, venue, and fee by arrangement – concept and materials included.</p>
+---
+
+[kt.effects.title]
+Label: Wirkung – Überschrift
+---
+How art therapy works
+---
+
+[kt.effects.sub]
+Label: Wirkung – Untertitel
+---
+In a few sentences – click for more detail.
+---
+
+[kt.praxis.title]
+Label: Atelier – Überschrift
+---
+Art therapy and group studio
+---
+
+[kt.praxis.sub]
+Label: Atelier – Einleitung (HTML erlaubt)
+---
+From <strong>1 July 2026</strong> in Paderborn – a dedicated space to arrive, create, and connect. The rooms are being set up and introduced here step by step.
+---
+
+[kt.praxis.headline]
+Label: Atelier – Headline
+---
+A place to arrive and create in Paderborn
+---
+
+[kt.praxis.p1]
+Label: Atelier – Absatz 1 (HTML erlaubt)
+---
+The space has a welcoming atmosphere, a touch of green with a terrace, and everything needed to feel at home quickly. Room to paint and talk in between – <strong>Tuesday 11:00–12:30</strong> for groups, <strong>Thursday 18:00–19:30</strong> for downtime and workshops. Group times rotate: on alternate weeks also on Thursday evenings.
+---
+
+[kt.praxis.p2]
+Label: Atelier – Absatz 2 (HTML erlaubt)
+---
+<strong>What to expect:</strong> a bright, calm atmosphere, materials on site, small groups, clear structure without pressure to perform. Parking and public transport are straightforward – directions below.
+---
+
+[kt.highlight1.title]
+Label: Highlight 1 – Titel
+---
+Studio area
+---
+
+[kt.highlight1.text]
+Label: Highlight 1 – Text
+---
+Shared creating with acrylic, gouache, pastel chalk, collage – materials provided.
+---
+
+[kt.highlight2.title]
+Label: Highlight 2 – Titel
+---
+Group room
+---
+
+[kt.highlight2.text]
+Label: Highlight 2 – Text
+---
+4–12 people, safe setting, also for senior groups and institutions.
+---
+
+[kt.highlight3.title]
+Label: Highlight 3 – Titel
+---
+Growing & evolving
+---
+
+[kt.highlight3.text]
+Label: Highlight 3 – Text
+---
+The space is being developed further and shown on the website – stay tuned for updates.
+---
+
+[kt.highlight4.title]
+Label: Highlight 4 – Titel
+---
+From July 2026
+---
+
+[kt.highlight4.text]
+Label: Highlight 4 – Text (HTML erlaubt)
+---
+Regularly <strong>Tuesday 11:00–12:30</strong> and <strong>Thursday 18:00–19:30</strong> – group times rotate, on alternate weeks also Thursday evenings. Book online or enquire.
+---
+
+[kt.cta.title]
+Label: Abschluss – Überschrift
+---
+Ready for the first step?
+---
+
+[kt.cta.sub]
+Label: Abschluss – Text
+---
+Book online or send a quick enquiry – I'll get back to you soon.
+---
+
+--- FAQ (Kunsttherapie) (EN) ---
+[kt.effects.title]
+Label: Bereich – Überschrift
+---
+How art therapy works
+---
+
+[kt.effects.sub]
+Label: Bereich – Untertitel
+---
+In a few sentences – click for more detail.
+---
+
+[kt.faq1.q]
+Label: FAQ 1 – Frage
+---
+Why art instead of talk alone?
+---
+
+[kt.faq1.a]
+Label: FAQ 1 – Antwort (HTML erlaubt)
+---
+<p><strong>Talk alone:</strong> putting thoughts and feelings into words – sometimes you hit a limit.</p><p><strong>With creating:</strong> “I could paint it, but not put it into words.” The process is essential in art therapy, as is the artwork that emerges – as a projection surface, as a mirror: distance and closeness at once.</p>
+---
+
+[kt.faq2.q]
+Label: FAQ 2 – Frage
+---
+Do I need prior experience?
+---
+
+[kt.faq2.a]
+Label: FAQ 2 – Antwort (HTML erlaubt)
+---
+<p>No prior experience needed. What matters is that creating feels right. <strong>Curiosity welcome – surprise is part of the process.</strong></p>
+---
+
+[kt.faq3.q]
+Label: FAQ 3 – Frage
+---
+What materials and methods are available?
+---
+
+[kt.faq3.a]
+Label: FAQ 3 – Antwort (HTML erlaubt)
+---
+<p>Materials are richly varied: pastel chalk, collage, painting with gouache, watercolour, and acrylic, drawing and clay work. Regular groups <strong>Tuesday 11:00–12:30</strong>, downtime and workshops <strong>Thursday 18:00–19:30</strong>. Group times rotate: on alternate weeks also on Thursday evenings.</p>
+---
+
+[kt.faq4.q]
+Label: FAQ 4 – Frage
+---
+What themes can I bring?
+---
+
+[kt.faq4.a]
+Label: FAQ 4 – Antwort (HTML erlaubt)
+---
+<ul><li>Space for grief that has not yet found expression</li><li>Support with chronic pain</li><li>Vision board: imagination, clarity, and structure</li><li>Mindful painting – perceiving the environment consciously; meditation techniques for inner calm</li><li>Positive flow and creative techniques</li></ul>
+---
+
+[kt.faq5.q]
+Label: FAQ 5 – Frage
+---
+Do I need to be good at painting?
+---
+
+[kt.faq5.a]
+Label: FAQ 5 – Antwort (HTML erlaubt)
+---
+<p><strong>Not what matters:</strong> skill or a pretty result.</p><p><strong>What matters:</strong> the process. Every mark, every colour is valid – no prior experience needed.</p>
+---
+
+[kt.faq6.q]
+Label: FAQ 6 – Frage
+---
+Is art therapy right for me?
+---
+
+[kt.faq6.a]
+Label: FAQ 6 – Antwort (HTML erlaubt)
+---
+<p>Art therapy can support you through stress, grief, chronic pain, or simply the wish for a creative break. In a no-obligation intro chat we find out together whether it's a fit.</p>
+---
+
+[kt.faq7.q]
+Label: FAQ 7 – Frage
+---
+Does health insurance cover the cost?
+---
+
+[kt.faq7.a]
+Label: FAQ 7 – Antwort (HTML erlaubt)
+---
+<p>Sessions are generally self-pay. For questions about reimbursement or invoicing for companies and institutions, please get in touch directly.</p>
+---
+
+[kt.faq8.q]
+Label: FAQ 8 – Frage
+---
+What does a session look like?
+---
+
+[kt.faq8.a]
+Label: FAQ 8 – Antwort (HTML erlaubt)
+---
+<p>A session lasts 90 minutes. After a short arrival, there's a prompt or theme – or you create freely. Creating is at the centre, and at the end there's space to talk about what emerged. There's no right or wrong and no pace you have to keep.</p>
+---
+
+[kt.faq9.q]
+Label: FAQ 9 – Frage
+---
+What do I need to bring?
+---
+
+[kt.faq9.a]
+Label: FAQ 9 – Antwort (HTML erlaubt)
+---
+<p>Just yourself. The usual materials – paints, chalks, paper, collage supplies and more – are provided on site and included in the price, depending on what we agree in advance. Clothes that can handle a bit of paint are a good idea. If more is needed in individual cases, there may be additional costs; we clarify these together in advance during the intro conversation.</p>
+---
+
+[kt.faq10.q]
+Label: FAQ 10 – Frage
+---
+Is art therapy confidential?
+---
+
+[kt.faq10.a]
+Label: FAQ 10 – Antwort (HTML erlaubt)
+---
+<p>Yes. Everything discussed and created in sessions stays confidential. Your artwork belongs to you – it is only shown or used with your explicit consent.</p>
+---
+
+[kt.faq11.q]
+Label: FAQ 11 – Frage
+---
+One-to-one or in a group?
+---
+
+[kt.faq11.a]
+Label: FAQ 11 – Antwort (HTML erlaubt)
+---
+<p><strong>Group (4–12 people):</strong> shared experience, mutual inspiration, a safe setting.</p><p><strong>One-to-one:</strong> more intensive and fully focused on your theme.</p><p>In an intro chat we find out what suits you.</p>
+---
+
+[kt.faq12.q]
+Label: FAQ 12 – Frage
+---
+Does art therapy replace psychotherapy?
+---
+
+[kt.faq12.a]
+Label: FAQ 12 – Antwort (HTML erlaubt)
+---
+<p><strong>Psychotherapy</strong> is medical treatment for defined indications.</p><p><strong>Art therapy</strong> is independent, resource-oriented support and can be a real relief – but it does not replace medical or psychotherapeutic treatment.</p><p>For acute or serious symptoms, please also consult a doctor – I'm happy to discuss how the two can complement each other.</p>
+---
+
+--- Über mich (EN) ---
+[about.kicker]
+Label: Kicker unter dem Namen
+---
+Psychosocial art therapist · Paderborn
+---
+
+[about.name]
+Label: Name – Hauptüberschrift (H1)
+---
+Martina Schwierzke
+---
+
+[about.intro]
+Label: Einleitung
+---
+As a psychosocial and clinical art therapist and practitioner for psychotherapy, I work independently. With over 16 years of experience, I support people in difficult situations – in clinical settings and in private practice.
+---
+
+[about.journey.title]
+Label: Mein Weg – Überschrift
+---
+My path
+---
+
+[about.journey.p1]
+Label: Mein Weg – Absatz 1
+---
+Images and colours have accompanied me for a long time – as expression when words fall short. In my work I combine this experience with a safe space for people in demanding life phases.
+---
+
+[about.journey.p2]
+Label: Mein Weg – Absatz 2
+---
+What led me to art therapy and what sustains me today – I will add personal words here in due course.
+---
+
+[about.passion.title]
+Label: Leidenschaft – Überschrift
+---
+My passion
+---
+
+[about.passion.p1]
+Label: Leidenschaft – Absatz 1
+---
+For many years I have worked in palliative care and psycho-oncology and lead art therapy groups in clinical settings. Continuing education and supervision are essential to my work.
+---
+
+[about.passion.p2]
+Label: Leidenschaft – Absatz 2
+---
+Art is an existential space of freedom for me. Nature is a vital source of inspiration and strength.
+---
+
+[about.quote]
+Label: Zitat
+---
+"Because I know time is finite, I'd rather live now."
+---
+
+[about.qual.title]
+Label: Qualifikationen – Überschrift
+---
+Qualifications & experience
+---
+
+[about.qual.list]
+Label: Qualifikationen – Liste (HTML erlaubt)
+---
+<li>Psychosocial art therapist (2006–2009, accredited institute)</li><li>Clinical art therapist (2010)</li><li>Practitioner for psychotherapy (2011)</li><li>Over 16 years in palliative care, psycho-oncology, and clinical groups</li><li>Long-standing work including at MZG and Brüderkrankenhaus Paderborn</li><li>Regular supervision and continuing education</li>
+---
+
+--- Preise (EN) ---
+[prices.title]
+Label: Überschrift
+---
+Transparent & fair
+---
+
+[prices.sub]
+Label: Einleitung
+---
+Materials included. One-to-one sessions available – please enquire directly.
+---
+
+[prices.tableBody]
+Label: Preistabelle (HTML erlaubt)
+---
+<tr><td>Group session</td><td data-label="Duration">90 minutes</td><td data-label="Price"><strong>from €55</strong><span class="price-per">per person</span></td><td data-label="Note">4–12 people, materials incl.</td></tr><tr><td>Group programme (typical)</td><td data-label="Duration">4 sessions</td><td data-label="Price">on request</td><td data-label="Note">individual depending on scope &amp; topic</td></tr><tr><td>One-to-one session</td><td data-label="Duration">90 minutes</td><td data-label="Price">on request</td><td data-label="Note">fixed price agreed in intro chat</td></tr><tr><td>Team-building event</td><td data-label="Duration">as needed</td><td data-label="Price">on request</td><td data-label="Note">depending on team size &amp; concept</td></tr>
+---
+
+[prices.onRequest]
+Label: Hinweis zu „auf Anfrage“
+---
+One-to-one sessions, group programmes, and team-building are priced individually – depending on duration, group size, and setting. In a free intro chat I will give you a transparent fixed price.
+---
+
+[prices.unit]
+Label: Hinweis unter der Tabelle (pro Person & Sitzung)
+---
+All prices are per person and per session.
+---
+
+[prices.note]
+Label: Hinweis unten
+---
+Questions about prices or concessions? Write to me directly – every situation is individual.
+---
+
+--- Kontakt (EN) ---
+[contact.title]
+Label: Überschrift
+---
+Questions, enquiries & appointments
+---
+
+[contact.sub]
+Label: Einleitung (HTML erlaubt)
+---
+For a fixed appointment, use <a href="buchung.html">online booking</a>. For everything else: write briefly or call.
+---
+
+[contact.hours]
+Label: Atelierzeiten-Hinweis
+---
+Atelier from 1 July · Tue 11:00–12:30 · Thu 18:00–19:30
+---
+
+[contact.form.messageLabel]
+Label: Formular – Nachricht Label
+---
+Message *
+---
+
+[contact.messagePlaceholder]
+Label: Formular – Platzhalter
+---
+What is it about? e.g. group, downtime, team building …
+---
+
+--- Terminbuchung (EN) ---
+[book.title]
+Label: Überschrift
+---
+Book an introductory or regular session
+---
+
+[book.sub]
+Label: Einleitung (HTML erlaubt)
+---
+Only <strong>Tue 11:00–12:30</strong> and <strong>Thu 18:00–19:30</strong> can be booked (green days). The request is confirmed by email. The appointment can then be saved in Apple or Google Calendar.
+---
+
+[book.introNote]
+Label: Hinweis Kennenlernen
+---
+Not sure if art therapy is right for you? A short, no-obligation intro chat answers your questions – just ask.
+---
+
+[book.slotsHint]
+Label: Hinweis Zeitslots (HTML erlaubt)
+---
+Only <strong>Tuesday mornings</strong> and <strong>Thursday evenings</strong> – 90-minute sessions.
+---
+
+[book.messagePlaceholder]
+Label: Nachricht – Platzhalter
+---
+e.g. introductory call, Tuesday morning group, Thursday evening downtime …
+---
+
+--- Seitentitel & Google-Vorschau (EN) ---
+[meta.home.title]
+Label: Startseite – Titel
+---
+Art Therapy Paderborn | Psychosocial Art Therapy & Studio
+---
+
+[meta.home.description]
+Label: Startseite – Beschreibung
+---
+Art therapy in Paderborn: Tuesday mornings and Thursday evenings. Groups, downtime, one-to-one, team building – book online.
+---
+
+[meta.therapy.title]
+Label: Kunsttherapie – Titel
+---
+Art Therapy & Services – Paderborn
+---
+
+[meta.therapy.description]
+Label: Kunsttherapie – Beschreibung
+---
+Groups Tuesday mornings, downtime Thursday evenings, team building and one-to-one sessions. Studio at Otto-Stadler-Straße 23c, Paderborn.
+---
+
+[meta.about.title]
+Label: Über mich – Titel
+---
+About me – Art Therapist Paderborn
+---
+
+[meta.about.description]
+Label: Über mich – Beschreibung
+---
+I am a psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, and my own atelier in Paderborn.
+---
+
+[meta.prices.title]
+Label: Preise – Titel
+---
+Prices – Art Therapy Paderborn
+---
+
+[meta.prices.description]
+Label: Preise – Beschreibung
+---
+Transparent pricing for group sessions from €55, programmes and one-to-one sessions on request.
+---
+
+[meta.contact.title]
+Label: Kontakt – Titel
+---
+Contact – Art Therapy Paderborn
+---
+
+[meta.contact.description]
+Label: Kontakt – Beschreibung
+---
+Send a message, call, or find directions to the atelier at Otto-Stadler-Straße 23c, Paderborn.
+---
+
+[meta.booking.title]
+Label: Buchung – Titel
+---
+Book appointment – Art Therapy Paderborn
+---
+
+[meta.booking.description]
+Label: Buchung – Beschreibung
+---
+Request an appointment online: Tuesday mornings and Thursday evenings. Available slots in the calendar – confirmation by email.
+---
+
