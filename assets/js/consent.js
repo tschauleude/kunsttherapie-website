@@ -172,11 +172,17 @@
     window.addEventListener('consent-updated', tryRun, { once: true });
   };
 
+  const FLOW_MS = 620;
+
   function hideSettings() {
     const s = document.getElementById('consentSettings');
-    if (s) s.hidden = true;
-    document.body.classList.remove('consent-settings-open');
-    emitConsentSettled();
+    if (!s) return;
+    s.classList.remove('is-visible');
+    window.setTimeout(() => {
+      s.hidden = true;
+      document.body.classList.remove('consent-settings-open');
+      emitConsentSettled();
+    }, FLOW_MS);
   }
 
   function showSettings() {
@@ -185,7 +191,10 @@
       syncToggleInputs(getConsent() || { external: false });
       s.hidden = false;
       document.body.classList.add('consent-settings-open');
-      s.querySelector('.consent-settings-panel')?.focus?.();
+      requestAnimationFrame(() => {
+        s.classList.add('is-visible');
+        s.querySelector('.consent-settings-panel')?.focus?.();
+      });
     }
   }
 

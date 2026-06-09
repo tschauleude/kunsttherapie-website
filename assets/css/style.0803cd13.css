@@ -25,6 +25,14 @@
   --max: 1100px;
   --section-pad: clamp(2.75rem, 5.5vw, 4.25rem);
 
+  /* Fließende Bewegung – ruhig, stetig, nicht ruckartig */
+  --ease-flow: cubic-bezier(0.33, 0, 0.17, 1);
+  --ease-flow-soft: cubic-bezier(0.4, 0, 0.15, 1);
+  --duration-flow: 0.62s;
+  --duration-flow-fast: 0.48s;
+  --duration-flow-slow: 0.78s;
+  --duration-flow-ms: 620;
+
   /* legacy aliases */
   --text: var(--text-main);
   --text-muted: var(--text-light);
@@ -646,7 +654,11 @@ span.price-hint-pill {
   font-size: 1rem;
   font-family: var(--font-body);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    background-color var(--duration-flow-fast) var(--ease-flow-soft),
+    color var(--duration-flow-fast) var(--ease-flow-soft),
+    transform var(--duration-flow-fast) var(--ease-flow),
+    box-shadow var(--duration-flow-fast) var(--ease-flow-soft);
   box-shadow: 0 10px 20px rgba(85, 122, 118, 0.18);
 }
 
@@ -1074,10 +1086,20 @@ body.lightbox-open {
   padding: clamp(1rem, 3vw, 2.5rem);
   background: rgba(24, 22, 20, 0.92);
   backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--duration-flow) var(--ease-flow),
+    visibility var(--duration-flow) var(--ease-flow);
 }
 
 .lightbox[hidden] {
   display: none;
+}
+
+.lightbox.lightbox--visible {
+  opacity: 1;
+  visibility: visible;
 }
 
 .lightbox-stage {
@@ -1087,6 +1109,12 @@ body.lightbox-open {
   gap: 0.65rem;
   max-width: min(1280px, 96vw);
   width: 100%;
+  transform: translateY(0.65rem) scale(0.985);
+  transition: transform var(--duration-flow) var(--ease-flow);
+}
+
+.lightbox.lightbox--visible .lightbox-stage {
+  transform: none;
 }
 
 .lightbox-dialog {
@@ -1109,7 +1137,7 @@ body.lightbox-open {
   object-fit: contain;
   border-radius: 16px;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
-  transition: opacity 0.2s ease;
+  transition: opacity var(--duration-flow-fast) var(--ease-flow);
 }
 
 .lightbox-caption {
@@ -1711,6 +1739,16 @@ body.consent-banner-visible {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
+  transform: translateY(105%);
+  opacity: 0;
+  transition:
+    transform var(--duration-flow) var(--ease-flow),
+    opacity var(--duration-flow-fast) var(--ease-flow);
+}
+
+.consent-banner:not([hidden]) .consent-banner-inner {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .consent-banner-inner .consent-actions,
@@ -1820,6 +1858,12 @@ body.consent-banner-visible {
   position: absolute;
   inset: 0;
   background: rgba(24, 22, 20, 0.5);
+  opacity: 0;
+  transition: opacity var(--duration-flow-fast) var(--ease-flow);
+}
+
+.consent-settings.is-visible .consent-settings-backdrop {
+  opacity: 1;
 }
 
 .consent-settings-panel {
@@ -1829,6 +1873,16 @@ body.consent-banner-visible {
   max-height: 90vh;
   overflow: auto;
   padding: 1.75rem;
+  opacity: 0;
+  transform: translateY(1rem) scale(0.985);
+  transition:
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
+}
+
+.consent-settings.is-visible .consent-settings-panel {
+  opacity: 1;
+  transform: none;
 }
 
 .consent-settings-close {
@@ -2080,7 +2134,7 @@ body.consent-banner-visible {
   background: rgba(24, 22, 20, 0.55);
   backdrop-filter: blur(4px);
   opacity: 0;
-  transition: opacity 0.45s ease;
+  transition: opacity var(--duration-flow-fast) var(--ease-flow);
 }
 
 .news-popup.news-popup-visible .news-popup-backdrop {
@@ -2096,10 +2150,10 @@ body.consent-banner-visible {
   padding: clamp(1.5rem, 4vw, 2rem);
   margin: 0;
   opacity: 0;
-  transform: translateY(1.25rem) scale(0.97);
+  transform: translateY(0.85rem) scale(0.985);
   transition:
-    opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
 }
 
 .news-popup.news-popup-visible .news-popup-panel {
@@ -2649,19 +2703,17 @@ nav[data-site-nav] {
   width: 100%;
   height: auto;
   min-height: 0;
-  transition: border-color 0.35s, box-shadow 0.35s;
+  transition:
+    border-color var(--duration-flow-fast) var(--ease-flow),
+    box-shadow var(--duration-flow-fast) var(--ease-flow);
   border: 2px solid transparent;
 }
 
 @media (max-width: 1023px) {
-  .kt-offers.kt-offers--has-open {
+  .kt-offers {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
-  }
-
-  .kt-offers.kt-offers--has-open .kt-offer:not(.is-open) {
-    flex: 0 0 auto;
   }
 }
 
@@ -2700,13 +2752,19 @@ nav[data-site-nav] {
 }
 
 .kt-offer-body {
+  overflow: hidden;
   padding-top: 0.85rem;
   border-top: 1px solid rgba(85, 122, 118, 0.15);
   margin-top: 0.65rem;
   font-size: 0.95rem;
   line-height: 1.65;
   text-align: left;
-  animation: ktReveal 0.35s ease;
+  transition:
+    max-height var(--duration-flow-slow) var(--ease-flow),
+    opacity var(--duration-flow) var(--ease-flow),
+    margin-top var(--duration-flow) var(--ease-flow),
+    padding-top var(--duration-flow) var(--ease-flow),
+    border-top-color var(--duration-flow-fast) var(--ease-flow);
 }
 
 .kt-offer-body[hidden] {
@@ -2715,7 +2773,7 @@ nav[data-site-nav] {
 
 @media (prefers-reduced-motion: reduce) {
   .kt-offer-body {
-    animation: none;
+    transition: none;
   }
 }
 
@@ -3328,6 +3386,16 @@ nav a[aria-current='page'] {
 
 .booking-form-panel {
   margin-top: 1.5rem;
+  opacity: 0;
+  transform: translateY(0.55rem);
+  transition:
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
+}
+
+.booking-form-panel.booking-form-panel--visible {
+  opacity: 1;
+  transform: none;
 }
 
 .booking-form-panel label {
@@ -3369,19 +3437,15 @@ nav a[aria-current='page'] {
 /* === Sequenzielles Einblenden (reveal.js) === */
 html.reveal-active .reveal-item {
   opacity: 0;
-  transform: translateY(0.75rem) scale(0.985);
-  filter: blur(2px);
+  transform: translateY(0.55rem);
   transition:
-    opacity 0.48s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform, filter;
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow-slow) var(--ease-flow);
 }
 
 html.reveal-active .reveal-item.reveal-visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
-  filter: none;
+  transform: translateY(0);
 }
 
 /* === Nach-oben-Button (scroll-top.js) === */
@@ -3404,11 +3468,11 @@ html.reveal-active .reveal-item.reveal-visible {
   box-shadow: 0 10px 28px rgba(85, 122, 118, 0.32);
   cursor: pointer;
   opacity: 0;
-  transform: translateY(1rem) scale(0.92);
+  transform: translateY(0.75rem) scale(0.96);
   transition:
-    opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.25s ease;
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow),
+    box-shadow var(--duration-flow-fast) var(--ease-flow-soft);
 }
 
 .scroll-top-btn.scroll-top-visible {
@@ -3437,8 +3501,22 @@ html.reveal-active .reveal-item.reveal-visible {
   html.reveal-active .reveal-item {
     opacity: 1;
     transform: none;
-    filter: none;
     transition: none;
+  }
+
+  .consent-banner-inner,
+  .consent-settings-backdrop,
+  .consent-settings-panel,
+  .news-popup-backdrop,
+  .news-popup-panel,
+  .lightbox,
+  .lightbox-stage,
+  .a11y-panel,
+  nav[data-site-nav],
+  .kt-offer-body {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
   }
 
   body:not(.admin-app)::before {
@@ -3476,12 +3554,19 @@ html.reveal-active .reveal-item.reveal-visible {
   }
 
   nav[data-site-nav] {
-    display: none;
+    display: block;
     width: 100%;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition:
+      max-height var(--duration-flow) var(--ease-flow),
+      opacity var(--duration-flow-fast) var(--ease-flow);
   }
 
   body.nav-open nav[data-site-nav] {
-    display: block;
+    max-height: 28rem;
+    opacity: 1;
   }
 
   body.nav-open nav[data-site-nav] ul {
@@ -3609,6 +3694,20 @@ html.a11y-reduce-motion *::after {
   background: var(--bg-card);
   border: 2px solid rgba(85, 122, 118, 0.35);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transform: translateY(0.65rem) scale(0.985);
+  transform-origin: bottom left;
+  transition:
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow),
+    visibility var(--duration-flow-fast) var(--ease-flow);
+  visibility: hidden;
+}
+
+.a11y-panel.a11y-panel--visible {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
 }
 
 .a11y-panel-head {

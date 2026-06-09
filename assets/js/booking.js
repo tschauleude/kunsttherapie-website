@@ -216,9 +216,11 @@ function selectSlot(dateStr, startTime) {
   if (formAt) formAt.value = String(formLoadedAt);
   const timeSuffix = tr('book.timeUnit');
   document.getElementById('bookingSummary').textContent = `${formatDateLabel(dateStr)}, ${startTime}${timeSuffix}`;
-  document.getElementById('bookingFormPanel').style.display = 'block';
+  const panel = document.getElementById('bookingFormPanel');
+  panel.style.display = 'block';
   document.getElementById('bookingMessage').hidden = true;
-  document.getElementById('bookingFormPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  requestAnimationFrame(() => panel.classList.add('booking-form-panel--visible'));
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function showCalendarLinks(links, emailSent) {

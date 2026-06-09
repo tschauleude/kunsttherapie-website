@@ -1,6 +1,7 @@
 const NEWS_API_URL = window.location.origin + '/api';
 const NEWS_POPUP_STORAGE_KEY = 'kunsttherapie_news_popup_id';
 const POPUP_AFTER_CONSENT_MS = 700;
+const FLOW_MS = 620;
 let cachedHomeNews = [];
 
 function escapeHtml(text) {
@@ -79,7 +80,7 @@ function closeNewsPopup() {
   window.setTimeout(() => {
     popup.hidden = true;
     document.body.classList.remove('news-popup-open');
-  }, 280);
+  }, FLOW_MS);
 }
 
 function openNewsPopup(items) {

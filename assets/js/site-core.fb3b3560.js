@@ -917,11 +917,17 @@ window.I18N_PAGE_BINDINGS = {
     window.addEventListener('consent-updated', tryRun, { once: true });
   };
 
+  const FLOW_MS = 620;
+
   function hideSettings() {
     const s = document.getElementById('consentSettings');
-    if (s) s.hidden = true;
-    document.body.classList.remove('consent-settings-open');
-    emitConsentSettled();
+    if (!s) return;
+    s.classList.remove('is-visible');
+    window.setTimeout(() => {
+      s.hidden = true;
+      document.body.classList.remove('consent-settings-open');
+      emitConsentSettled();
+    }, FLOW_MS);
   }
 
   function showSettings() {
@@ -930,7 +936,10 @@ window.I18N_PAGE_BINDINGS = {
       syncToggleInputs(getConsent() || { external: false });
       s.hidden = false;
       document.body.classList.add('consent-settings-open');
-      s.querySelector('.consent-settings-panel')?.focus?.();
+      requestAnimationFrame(() => {
+        s.classList.add('is-visible');
+        s.querySelector('.consent-settings-panel')?.focus?.();
+      });
     }
   }
 
@@ -1264,17 +1273,25 @@ window.I18N_PAGE_BINDINGS = {
     announce(tr('a11y.announce.reset') || 'Alle Einstellungen zurückgesetzt.');
   }
 
+  const FLOW_MS = 620;
+
   function openPanel() {
     panel.hidden = false;
     toggle.setAttribute('aria-expanded', 'true');
     syncForm();
-    panel.querySelector('[data-a11y-close]')?.focus();
+    requestAnimationFrame(() => {
+      panel.classList.add('a11y-panel--visible');
+      panel.querySelector('[data-a11y-close]')?.focus();
+    });
   }
 
   function closePanel() {
-    panel.hidden = true;
+    panel.classList.remove('a11y-panel--visible');
     toggle.setAttribute('aria-expanded', 'false');
-    toggle.focus();
+    window.setTimeout(() => {
+      panel.hidden = true;
+      toggle.focus();
+    }, FLOW_MS);
   }
 
   function refreshPanelI18n() {
@@ -1285,6 +1302,7 @@ window.I18N_PAGE_BINDINGS = {
     applyToggleLabel();
     syncForm();
     panel.hidden = !wasOpen;
+    panel.classList.toggle('a11y-panel--visible', wasOpen);
     document.querySelectorAll('[data-a11y-open]').forEach((el) => {
       el.textContent = tr('a11y.footerBtn') || 'Barrierefreiheit';
     });
@@ -1853,10 +1871,10 @@ window.I18N_PAGE_BINDINGS = {
 (function () {
   if (document.body.classList.contains('admin-app')) return;
 
-  const STEP_MS = 68;
-  const HEADER_STEP_MS = 36;
-  const SECTION_GAP_MS = 110;
-  const INITIAL_DELAY_MS = 70;
+  const STEP_MS = 88;
+  const HEADER_STEP_MS = 48;
+  const SECTION_GAP_MS = 140;
+  const INITIAL_DELAY_MS = 100;
   const SKIP_SELECTOR =
     '.consent-banner, .consent-settings, #newsPopup, .lightbox, [hidden], script, style, noscript';
 
@@ -1982,7 +2000,7 @@ window.I18N_PAGE_BINDINGS = {
         delay += el.closest('header') ? HEADER_STEP_MS : STEP_MS;
       });
 
-      window.setTimeout(resolve, delay + 120);
+      window.setTimeout(resolve, delay + 200);
     });
   }
 
@@ -2072,7 +2090,7 @@ window.I18N_PAGE_BINDINGS = {
       btn.classList.remove('scroll-top-visible');
       window.setTimeout(() => {
         if (window.scrollY <= SHOW_AFTER_PX) btn.hidden = true;
-      }, 400);
+      }, 620);
     }
   }
 

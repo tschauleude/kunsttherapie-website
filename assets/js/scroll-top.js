@@ -40,7 +40,7 @@
       btn.classList.remove('scroll-top-visible');
       window.setTimeout(() => {
         if (window.scrollY <= SHOW_AFTER_PX) btn.hidden = true;
-      }, 400);
+      }, 620);
     }
   }
 

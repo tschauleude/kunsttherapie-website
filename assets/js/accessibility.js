@@ -164,17 +164,25 @@
     announce(tr('a11y.announce.reset') || 'Alle Einstellungen zurückgesetzt.');
   }
 
+  const FLOW_MS = 620;
+
   function openPanel() {
     panel.hidden = false;
     toggle.setAttribute('aria-expanded', 'true');
     syncForm();
-    panel.querySelector('[data-a11y-close]')?.focus();
+    requestAnimationFrame(() => {
+      panel.classList.add('a11y-panel--visible');
+      panel.querySelector('[data-a11y-close]')?.focus();
+    });
   }
 
   function closePanel() {
-    panel.hidden = true;
+    panel.classList.remove('a11y-panel--visible');
     toggle.setAttribute('aria-expanded', 'false');
-    toggle.focus();
+    window.setTimeout(() => {
+      panel.hidden = true;
+      toggle.focus();
+    }, FLOW_MS);
   }
 
   function refreshPanelI18n() {
@@ -185,6 +193,7 @@
     applyToggleLabel();
     syncForm();
     panel.hidden = !wasOpen;
+    panel.classList.toggle('a11y-panel--visible', wasOpen);
     document.querySelectorAll('[data-a11y-open]').forEach((el) => {
       el.textContent = tr('a11y.footerBtn') || 'Barrierefreiheit';
     });

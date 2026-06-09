@@ -2,6 +2,58 @@
  * Angebots-Karten: „Mehr erfahren“ klappt die Beschreibung in der Karte auf.
  */
 (function () {
+  const FLOW_MS = 620;
+
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function animateOfferBody(body, open) {
+    if (prefersReducedMotion()) {
+      body.hidden = !open;
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      let settled = false;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        if (!open) body.hidden = true;
+        body.style.cssText = '';
+        resolve();
+      };
+
+      const onEnd = (e) => {
+        if (e.propertyName !== 'max-height') return;
+        body.removeEventListener('transitionend', onEnd);
+        finish();
+      };
+      body.addEventListener('transitionend', onEnd);
+
+      if (open) {
+        body.hidden = false;
+        body.style.overflow = 'hidden';
+        body.style.maxHeight = '0px';
+        body.style.opacity = '0';
+        requestAnimationFrame(() => {
+          body.style.maxHeight = `${body.scrollHeight}px`;
+          body.style.opacity = '1';
+        });
+      } else {
+        body.style.overflow = 'hidden';
+        body.style.maxHeight = `${body.scrollHeight}px`;
+        body.style.opacity = '1';
+        requestAnimationFrame(() => {
+          body.style.maxHeight = '0px';
+          body.style.opacity = '0';
+        });
+      }
+
+      window.setTimeout(finish, FLOW_MS + 100);
+    });
+  }
+
   function initOfferToggles() {
     const root =
       document.querySelector('.page-kunsttherapie') ||
@@ -11,6 +63,8 @@
     const offersWrap = root.querySelector('.kt-offers');
     if (!offersWrap || offersWrap.dataset.ktToggleBound === '1') return;
     offersWrap.dataset.ktToggleBound = '1';
+
+    let toggling = false;
 
     function labelLearn() {
       return window.ktI18n ? window.ktI18n.t('btn.learnMore') : 'Mehr erfahren';
@@ -37,10 +91,7 @@
         target = Math.min(maxScroll, window.scrollY + cardRect.bottom - visibleBottom);
       }
 
-      const behavior =
-        window.matchMedia('(max-width: 768px), (prefers-reduced-motion: reduce)').matches
-          ? 'auto'
-          : 'smooth';
+      const behavior = prefersReducedMotion() ? 'auto' : 'smooth';
       window.scrollTo({ top: target, behavior });
     }
 
@@ -63,28 +114,39 @@
       });
     };
 
-    function toggleOffer(card, toggle) {
+    async function toggleOffer(card, toggle) {
+      if (toggling) return;
       const body = card.querySelector('.kt-offer-body');
       if (!body) return;
 
-      const open = toggle.getAttribute('aria-expanded') === 'true';
-      resetToggles();
-      root.querySelectorAll('[data-offer] .kt-offer-body').forEach((b) => {
-        b.hidden = true;
-      });
-      root.querySelectorAll('[data-offer]').forEach((c) => c.classList.remove('is-open'));
+      toggling = true;
+      const wasOpen = toggle.getAttribute('aria-expanded') === 'true';
 
-      if (!open) {
+      for (const openCard of [...root.querySelectorAll('[data-offer].is-open')]) {
+        const openBody = openCard.querySelector('.kt-offer-body');
+        const openToggle = openCard.querySelector('.kt-toggle');
+        if (openToggle) {
+          openToggle.setAttribute('aria-expanded', 'false');
+          openToggle.textContent = labelLearn();
+        }
+        openCard.classList.remove('is-open');
+        if (openBody && !openBody.hidden) {
+          await animateOfferBody(openBody, false);
+        }
+      }
+
+      if (!wasOpen) {
         toggle.setAttribute('aria-expanded', 'true');
         toggle.textContent = labelLess();
-        body.hidden = false;
         card.classList.add('is-open');
-        requestAnimationFrame(() => {
-          scrollOfferIntoView(card);
-          body.scrollIntoView({ block: 'nearest', behavior: 'auto' });
-        });
+        await animateOfferBody(body, true);
+        requestAnimationFrame(() => scrollOfferIntoView(card));
+      } else {
+        resetToggles();
       }
+
       syncOffersLayout();
+      toggling = false;
     }
 
     let lastTouchToggleAt = 0;
@@ -98,7 +160,7 @@
     offersWrap.addEventListener('click', (e) => {
       const toggle = e.target.closest('.kt-toggle');
       if (!toggle || !offersWrap.contains(toggle)) return;
-      if (Date.now() - lastTouchToggleAt < 450) return;
+      if (Date.now() - lastTouchToggleAt < 280) return;
       e.preventDefault();
       handleToggleActivate(toggle);
     });
