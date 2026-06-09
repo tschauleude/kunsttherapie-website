@@ -13,6 +13,7 @@
     "patch-meta": "node scripts/patch-head-meta.js",
     "upgrade-seo": "node scripts/upgrade-seo.js",
     "validate-i18n": "node scripts/validate-i18n.js",
+    "textentwurf": "node scripts/generate-textentwurf.js",
     "build-frontend": "node scripts/build-frontend.js",
     "qa": "node scripts/validate-i18n.js && node --check assets/js/*.js",
     "smoke": "node scripts/smoke-check.js"
