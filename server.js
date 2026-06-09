@@ -1791,6 +1791,8 @@ app.listen(PORT, async () => {
     if (cleaned) console.log('i18n: veraltete CMS-Texte (Miet-/Über-mich-Doppelüberschrift) bereinigt');
     const seeded = await i18nContent.seedOverridesFromFile(dbGet, dbRun);
     if (seeded) console.log('i18n: Texte aus data/i18n-overrides.json in die Datenbank übernommen');
+    await i18nContent.syncI18nFromSource(dbGet);
+    console.log('i18n: Übersetzungsdateien aus Quelltexten neu aufgebaut');
   } catch (e) {
     console.error('i18n migrate:', e.message);
   }

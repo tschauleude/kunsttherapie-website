@@ -16,6 +16,7 @@ const crypto = require('crypto');
 const ROOT = path.join(__dirname, '..');
 const ASSETS = path.join(ROOT, 'assets');
 const SITE_PRICING = require(path.join(ROOT, 'lib', 'site-pricing'));
+const { scrubRentedOverrides } = require(path.join(ROOT, 'lib', 'i18n-scrub'));
 const JS_DIR = path.join(ASSETS, 'js');
 const CSS_DIR = path.join(ASSETS, 'css');
 const IMG_DIR = path.join(ASSETS, 'img');
@@ -115,7 +116,7 @@ function loadI18nExtra() {
   if (!match) throw new Error('Could not parse i18n-messages-pages.js');
   // eslint-disable-next-line no-eval
   const extra = eval(`(${match[1]})`);
-  const overrides = loadI18nOverridesJson();
+  const overrides = scrubRentedOverrides(loadI18nOverridesJson()).overrides;
   for (const lang of ['de', 'en']) {
     Object.assign(extra[lang], overrides[lang] || {});
   }
