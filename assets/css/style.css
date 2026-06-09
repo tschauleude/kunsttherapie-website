@@ -2776,6 +2776,7 @@ nav[data-site-nav] {
   cursor: zoom-in;
   touch-action: none;
   user-select: none;
+  --compare-pct: 50;
 }
 
 .kt-raum-stage {
@@ -2789,6 +2790,7 @@ nav[data-site-nav] {
   border-radius: inherit;
   touch-action: none;
   cursor: ew-resize;
+  contain: layout style paint;
 }
 
 .kt-raum-stage img,
@@ -2808,9 +2810,28 @@ nav[data-site-nav] {
 
 .kt-raum-compare-after {
   position: absolute;
-  inset: 0;
-  clip-path: inset(0 0 0 50%);
-  will-change: clip-path;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: calc(var(--compare-pct) * 1%);
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.kt-raum-compare.is-scrubbing .kt-raum-compare-after {
+  will-change: width;
+}
+
+.kt-raum-compare-after img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: calc(100% * 100 / var(--compare-pct, 50));
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
 }
 
 .kt-raum-compare.is-dragging,
@@ -2822,13 +2843,17 @@ nav[data-site-nav] {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 50%;
+  left: calc(var(--compare-pct) * 1%);
   width: 2.75rem;
   margin-left: -1.375rem;
   background: transparent;
   pointer-events: none;
   z-index: 4;
-  transition: left 0.05s linear;
+  transition: none;
+}
+
+.kt-raum-compare.is-scrubbing .kt-raum-compare-handle {
+  will-change: left;
 }
 
 .kt-raum-compare-handle::before {
@@ -2841,10 +2866,6 @@ nav[data-site-nav] {
   margin-left: -1.5px;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
-}
-
-.kt-raum-compare.is-dragging .kt-raum-compare-handle {
-  transition: none;
 }
 
 .kt-raum-compare-grip {

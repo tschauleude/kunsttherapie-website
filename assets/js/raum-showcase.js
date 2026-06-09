@@ -42,56 +42,96 @@
     });
   });
 
-  /* ── Vorher/Nachher-Slider ── */
+  /* ── Vorher/Nachher-Slider (GPU: Breiten-Clip + rAF, Maus folgt ohne Klick) ── */
   const compare = root.querySelector('[data-raum-compare]');
   if (compare) {
     const media = compare.querySelector('.kt-raum-compare-media') || compare;
     const range =
       compare.querySelector('[data-raum-compare-range]') ||
       compare.querySelector('#raumCompareRange');
-    const afterLayer = compare.querySelector('[data-raum-compare-after]');
-    const handle = compare.querySelector('[data-raum-compare-handle]');
 
-    function setCompare(pct) {
-      if (!afterLayer) return;
-      const clamped = Math.min(100, Math.max(0, pct));
-      afterLayer.style.clipPath = `inset(0 0 0 ${100 - clamped}%)`;
-      if (handle) handle.style.left = `${clamped}%`;
-      if (range) {
-        range.value = String(Math.round(clamped));
-        range.setAttribute('aria-valuetext', `${Math.round(clamped)} Prozent`);
-      }
-      compare.style.setProperty('--compare-pct', `${clamped}%`);
+    let compareLeft = 0;
+    let compareWidth = 1;
+    let pendingPct = null;
+    let rafId = 0;
+    let activePointerId = null;
+    let compareDragged = false;
+    let hoverScrub = false;
+
+    function measureCompare() {
+      const rect = compare.getBoundingClientRect();
+      compareLeft = rect.left;
+      compareWidth = Math.max(rect.width, 1);
     }
 
-    function pointerX(e) {
-      const rect = compare.getBoundingClientRect();
+    function clampPct(pct) {
+      return Math.min(99, Math.max(1, pct));
+    }
+
+    function applyCompare(pct) {
+      const clamped = clampPct(pct);
+      compare.style.setProperty('--compare-pct', String(clamped));
+      if (range) {
+        const rounded = Math.round(clamped);
+        if (Number(range.value) !== rounded) {
+          range.value = String(rounded);
+          range.setAttribute('aria-valuetext', `${rounded} Prozent`);
+        }
+      }
+    }
+
+    function flushCompare() {
+      rafId = 0;
+      if (pendingPct == null) return;
+      const pct = pendingPct;
+      pendingPct = null;
+      applyCompare(pct);
+    }
+
+    function setCompare(pct) {
+      pendingPct = pct;
+      if (!rafId) {
+        rafId = requestAnimationFrame(flushCompare);
+      }
+    }
+
+    function pctFromClientX(clientX) {
+      return ((clientX - compareLeft) / compareWidth) * 100;
+    }
+
+    function pctFromEvent(e) {
       const clientX = e.touches?.[0]?.clientX ?? e.clientX;
-      return ((clientX - rect.left) / rect.width) * 100;
+      return pctFromClientX(clientX);
     }
 
     if (range) {
-      range.addEventListener('input', () => setCompare(Number(range.value)));
+      range.addEventListener('input', () => {
+        measureCompare();
+        applyCompare(Number(range.value));
+      });
     }
-
-    let dragging = false;
-    let compareDragged = false;
-    let compareDragStart = 0;
-    let activePointerId = null;
-    const DRAG_THRESHOLD = 3;
 
     function shouldIgnoreDragTarget(target) {
       return target?.closest?.('[data-raum-hotspot]');
     }
 
+    function startScrub() {
+      compare.classList.add('is-scrubbing');
+    }
+
+    function stopScrub() {
+      compare.classList.remove('is-scrubbing', 'is-dragging');
+    }
+
     function beginDrag(e) {
       if (shouldIgnoreDragTarget(e.target)) return false;
       if (e.pointerType === 'mouse' && e.button > 0) return false;
+      measureCompare();
       activePointerId = e.pointerId;
-      dragging = false;
       compareDragged = false;
-      compareDragStart = pointerX(e);
-      compare.classList.add('is-scrubbing');
+      hoverScrub = false;
+      startScrub();
+      setCompare(pctFromEvent(e));
       try {
         (media.setPointerCapture ? media : compare).setPointerCapture(e.pointerId);
       } catch (_) {
@@ -101,21 +141,30 @@
     }
 
     function moveDrag(e) {
-      if (activePointerId == null || e.pointerId !== activePointerId) return;
-      const x = pointerX(e);
-      if (!dragging && Math.abs(x - compareDragStart) < DRAG_THRESHOLD) return;
-      dragging = true;
-      compareDragged = true;
-      compare.classList.add('is-dragging');
-      if (e.cancelable) e.preventDefault();
-      setCompare(x);
+      if (activePointerId != null) {
+        if (e.pointerId !== activePointerId) return;
+        compareDragged = true;
+        compare.classList.add('is-dragging');
+        if (e.cancelable) e.preventDefault();
+        setCompare(pctFromEvent(e));
+        return;
+      }
+
+      if (e.pointerType === 'mouse' && !shouldIgnoreDragTarget(e.target)) {
+        if (!hoverScrub) {
+          hoverScrub = true;
+          measureCompare();
+          startScrub();
+        }
+        setCompare(pctFromEvent(e));
+      }
     }
 
     function endDrag(e) {
       if (e && activePointerId != null && e.pointerId !== activePointerId) return;
-      dragging = false;
       activePointerId = null;
-      compare.classList.remove('is-dragging', 'is-scrubbing');
+      hoverScrub = false;
+      stopScrub();
       if (e) {
         try {
           (media.releasePointerCapture ? media : compare).releasePointerCapture(e.pointerId);
@@ -126,47 +175,22 @@
     }
 
     const dragSurface = media;
-    dragSurface.addEventListener('pointerdown', (e) => {
-      beginDrag(e);
-    });
+    measureCompare();
+    if (typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(measureCompare).observe(compare);
+    }
+    window.addEventListener('resize', measureCompare, { passive: true });
+    dragSurface.addEventListener('pointerenter', measureCompare);
+    dragSurface.addEventListener('pointerdown', beginDrag);
     dragSurface.addEventListener('pointermove', moveDrag);
     dragSurface.addEventListener('pointerup', endDrag);
     dragSurface.addEventListener('pointercancel', endDrag);
-
-    /* Touch-Fallback (ältere iOS) */
-    let touchActive = false;
-    let touchStartPct = 0;
-    dragSurface.addEventListener(
-      'touchstart',
-      (e) => {
-        if (shouldIgnoreDragTarget(e.target)) return;
-        touchActive = true;
-        touchStartPct = pointerX(e);
-        compareDragged = false;
-      },
-      { passive: true }
-    );
-    dragSurface.addEventListener(
-      'touchmove',
-      (e) => {
-        if (!touchActive || shouldIgnoreDragTarget(e.target)) return;
-        const x = pointerX(e);
-        if (!compareDragged && Math.abs(x - touchStartPct) < DRAG_THRESHOLD) return;
-        compareDragged = true;
-        compare.classList.add('is-dragging');
-        e.preventDefault();
-        setCompare(x);
-      },
-      { passive: false }
-    );
-    dragSurface.addEventListener(
-      'touchend',
-      () => {
-        touchActive = false;
-        compare.classList.remove('is-dragging', 'is-scrubbing');
-      },
-      { passive: true }
-    );
+    dragSurface.addEventListener('pointerleave', (e) => {
+      if (activePointerId == null && e.pointerType === 'mouse') {
+        hoverScrub = false;
+        stopScrub();
+      }
+    });
 
     compare.dataset.raumCompareDragged = '0';
     compare.addEventListener(
@@ -178,7 +202,7 @@
       true
     );
 
-    setCompare(50);
+    applyCompare(50);
   }
 
   /* ── Hotspots ── */
