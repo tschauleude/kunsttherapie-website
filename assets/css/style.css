@@ -1599,6 +1599,10 @@ body.consent-settings-open {
 }
 
 /* === DSGVO / COOKIE-EINSTELLUNGEN === */
+body.consent-banner-visible {
+  padding-bottom: var(--consent-banner-offset, 11rem);
+}
+
 .consent-banner {
   position: fixed;
   inset: auto 0 0 0;
@@ -2575,8 +2579,12 @@ nav[data-site-nav] {
 }
 
 .kt-offer-head .kt-toggle {
+  position: relative;
+  z-index: 2;
   margin-top: auto;
   align-self: flex-start;
+  min-height: 2.75rem;
+  touch-action: manipulation;
 }
 
 .kt-offer.is-open {
