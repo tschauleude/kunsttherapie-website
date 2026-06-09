@@ -2841,9 +2841,12 @@ nav[data-site-nav] {
   border-radius: calc(var(--radius-card) - 6px);
   aspect-ratio: 3 / 2;
   background: #e8e4dc;
-  cursor: zoom-in;
   touch-action: none;
   user-select: none;
+}
+
+.kt-raum-stage {
+  cursor: zoom-in;
 }
 
 .kt-raum-stage {

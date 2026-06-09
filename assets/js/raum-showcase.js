@@ -42,6 +42,8 @@
     });
   });
 
+  const COMPARE_ZOOM_DOUBLE_MS = 450;
+
   /* ── Vorher/Nachher-Slider ── */
   const compare = root.querySelector('[data-raum-compare]');
   if (compare) {
@@ -136,6 +138,7 @@
         compare.classList.add('is-scrubbing', 'is-dragging');
       }
       compareDragged = true;
+      delete compare.dataset.raumZoomPrimed;
       if (e.cancelable) e.preventDefault();
       setCompare(x);
     }
@@ -184,6 +187,9 @@
       () => {
         compare.dataset.raumCompareDragged = compareDragged ? '1' : '0';
         compareDragged = false;
+        if (compare.dataset.raumCompareDragged === '1') {
+          delete compare.dataset.raumZoomPrimed;
+        }
       },
       true
     );
@@ -280,6 +286,15 @@
         if (btn.dataset.raumCompareDragged === '1') {
           btn.dataset.raumCompareDragged = '0';
           return;
+        }
+        if (btn.hasAttribute('data-raum-compare')) {
+          const primed = Number(btn.dataset.raumZoomPrimed || 0);
+          const now = Date.now();
+          if (!primed || now - primed > COMPARE_ZOOM_DOUBLE_MS) {
+            btn.dataset.raumZoomPrimed = String(now);
+            return;
+          }
+          delete btn.dataset.raumZoomPrimed;
         }
         const img = pickLightboxImage(btn);
         if (!img) return;
