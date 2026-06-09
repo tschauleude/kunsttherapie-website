@@ -513,6 +513,46 @@ h3 {
 
 }
 
+.page-ueber-mich .about-prose h2 {
+  font-size: 1.2rem;
+  color: var(--color-teal-dark);
+  margin: 0 0 0.75rem;
+}
+
+.page-ueber-mich .about-kicker {
+  margin: 0.35rem 0 1rem;
+}
+
+.page-ueber-mich .about-section + .sep,
+.page-ueber-mich .about-prose > .sep {
+  margin: 1.5rem 0;
+}
+
+.page-ueber-mich .about-qual-list {
+  color: var(--text-light);
+  line-height: 1.8;
+  padding-left: 1.2rem;
+}
+
+.page-ueber-mich .about-quote {
+  font-style: italic;
+  color: var(--color-teal);
+  margin-top: 1rem;
+}
+
+.booking-noscript-fallback {
+  margin-top: 1.5rem;
+}
+
+.booking-noscript-fallback .contact-list {
+  margin-top: 1rem;
+}
+
+.prices-on-request {
+  margin-top: 1.25rem;
+  max-width: 42rem;
+}
+
 @media (max-width: 900px) {
   .page-ueber-mich .hero-grid--about {
     grid-template-columns: 1fr;

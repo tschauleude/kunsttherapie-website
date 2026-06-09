@@ -976,6 +976,14 @@ app.get('/api/bookings/:id/calendar.ics', async (req, res) => {
 });
 
 app.post('/api/contact', async (req, res) => {
+  const honeypot = String(req.body.website ?? req.body._hp ?? '').trim();
+  if (honeypot) {
+    return res.json({
+      success: true,
+      message: 'Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.',
+    });
+  }
+
   const { name, email: fromEmail, phone, message } = req.body;
 
   if (!name || !fromEmail || !message) {

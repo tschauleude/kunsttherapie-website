@@ -161,21 +161,26 @@
       'kt.raum.hotspot4.title': 'Materialien',
       'kt.raum.hotspot4.text': 'Acryl, Gouache, Kreide, Collage – alles bereitgestellt.',
 
-      'about.kicker': 'Über mich',
+      'about.kicker': 'Psychosoziale Kunsttherapeutin · Paderborn',
       'about.name': 'Martina Schwierzke',
       'about.intro':
         'Als psychosoziale und klinische Kunsttherapeutin und Heilpraktikerin für Psychotherapie arbeite ich selbstständig. Mit über 16 Jahren Erfahrung begleite ich Menschen in schwierigen Situationen – im klinischen Kontext und im eigenen Atelier.',
+      'about.journey.title': 'Mein Weg',
+      'about.journey.p1':
+        'Schon früh haben mich Bilder und Farben begleitet – als Ausdruck, wenn Worte nicht reichten. In meiner Arbeit verbinde ich diesen Erfahrungsschatz mit einem geschützten Raum für Menschen in belastenden Lebensphasen.',
+      'about.journey.p2':
+        'Was mich zur Kunsttherapie geführt hat und was mich heute trägt – hier ergänze ich gern persönliche Worte in Ruhe.',
       'about.passion.title': 'Meine Leidenschaft',
       'about.passion.p1':
         'Ich bin seit vielen Jahren in der Palliativversorgung und Psychoonkologie tätig und leite kunsttherapeutische Gruppen im klinischen Umfeld. Regelmäßige Weiterbildungen und Supervisionen sind für mich selbstverständlich.',
       'about.passion.p2':
         'Kunst ist für mich ein existenzieller Freiraum. Natur ist eine wesentliche Inspirations- und Kraftquelle.',
       'about.quote': '„Weil ich weiß, dass Zeit endlich ist, lebe ich lieber jetzt.“',
-      'about.qual.title': 'Qualifikationen',
+      'about.qual.title': 'Qualifikationen & Erfahrung',
       'about.qual.list':
-        '<ul style="color:var(--muted); line-height:1.8"><li>Psychosoziale Kunsttherapeutin (2006–2009, anerkanntes Institut)</li><li>Klinische Kunsttherapeutin (2010)</li><li>Heilpraktikerin für Psychotherapie (2011)</li><li>Gestalterin für visuelles Marketing, IHK (2007)</li></ul>',
+        '<li>Psychosoziale Kunsttherapeutin (2006–2009, anerkanntes Institut)</li><li>Klinische Kunsttherapeutin (2010)</li><li>Heilpraktikerin für Psychotherapie (2011)</li><li>Über 16 Jahre Erfahrung in Palliativversorgung, Psychoonkologie und klinischen Gruppen</li><li>Langjährige Tätigkeit u. a. am MZG und Brüderkrankenhaus Paderborn</li><li>Regelmäßige Supervision und Weiterbildung</li>',
       'about.offers': 'Kunsttherapie & Angebote',
-      'about.imgAlt': 'Kunsttherapeutin in Paderborn',
+      'about.imgAlt': 'Martina Schwierzke – psychosoziale Kunsttherapeutin in Paderborn',
 
       'book.kicker': 'Terminbuchung',
       'book.title': 'Kennenlernen oder Sitzung buchen',
@@ -205,6 +210,12 @@
       'book.privacyNote':
         'Mit der Buchung werden Name, E-Mail und Termindaten auf unserem Server gespeichert (siehe <a href="datenschutz.html">Datenschutz</a>). Kein Marketing-Tracking.',
       'book.submit': 'Termin anfragen',
+      'book.noscript.title': 'Ohne JavaScript buchen',
+      'book.noscript.text':
+        'Der Online-Kalender benötigt JavaScript. Für eine Terminanfrage erreichst du mich direkt:',
+      'book.noscript.phone': 'Telefon',
+      'book.noscript.mobile': 'Mobil',
+      'book.noscript.email': 'E-Mail',
       'book.loading': 'Kalender wird geladen …',
       'book.hintFree':
         'Wähle einen grünen Tag (Dienstag oder Donnerstag), dann eine freie Uhrzeit. Google Kalender ist optional – die Buchung läuft über unsere Website.',
@@ -269,7 +280,9 @@
       'prices.tableHead':
         '<tr><th scope="col">Leistung</th><th scope="col">Dauer</th><th scope="col">Preis</th><th scope="col">Hinweis</th></tr>',
       'prices.tableBody':
-        '<tr><td>Gruppensitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis"><strong>ab 55 €</strong><span class="price-per">pro Person</span></td><td data-label="Hinweis">4–12 Personen, Material inkl.</td></tr><tr><td>Gruppenprogramm (typisch)</td><td data-label="Dauer">4 Einheiten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">je nach Thema/Setting</td></tr><tr><td>Einzelsitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">individuelle Begleitung</td></tr><tr><td>Teambuilding Event</td><td data-label="Dauer">nach Bedarf</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">inkl. Konzept &amp; Material</td></tr>',
+        '<tr><td>Gruppensitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis"><strong>ab 55 €</strong><span class="price-per">pro Person</span></td><td data-label="Hinweis">4–12 Personen, Material inkl.</td></tr><tr><td>Gruppenprogramm (typisch)</td><td data-label="Dauer">4 Einheiten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">individuell je nach Umfang &amp; Thema</td></tr><tr><td>Einzelsitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">Festpreis im Kennenlernen</td></tr><tr><td>Teambuilding Event</td><td data-label="Dauer">nach Bedarf</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">je nach Teamgröße &amp; Konzept</td></tr>',
+      'prices.onRequest':
+        'Einzelsitzungen, Gruppenprogramme und Teambuilding kalkuliere ich bewusst individuell – je nach Dauer, Gruppengröße und Setting. Im kostenlosen Kennenlernen nenne ich dir einen transparenten Festpreis.',
       'prices.unit': 'Alle Preise verstehen sich pro Person und Sitzung.',
       'prices.note':
         'Fragen zu Preisen oder Rabatten? Schreib mir gern – jede Situation ist individuell.',
@@ -653,21 +666,26 @@
       'kt.raum.hotspot4.title': 'Materials',
       'kt.raum.hotspot4.text': 'Acrylic, gouache, chalk, collage – all provided.',
 
-      'about.kicker': 'About me',
+      'about.kicker': 'Psychosocial art therapist · Paderborn',
       'about.name': 'Martina Schwierzke',
       'about.intro':
         'As a psychosocial and clinical art therapist and practitioner for psychotherapy, I work independently. With over 16 years of experience, I support people in difficult situations – in clinical settings and in private practice.',
+      'about.journey.title': 'My path',
+      'about.journey.p1':
+        'Images and colours have accompanied me for a long time – as expression when words fall short. In my work I combine this experience with a safe space for people in demanding life phases.',
+      'about.journey.p2':
+        'What led me to art therapy and what sustains me today – I will add personal words here in due course.',
       'about.passion.title': 'My passion',
       'about.passion.p1':
         'For many years I have worked in palliative care and psycho-oncology and lead art therapy groups in clinical settings. Continuing education and supervision are essential to my work.',
       'about.passion.p2':
         'Art is an existential space of freedom for me. Nature is a vital source of inspiration and strength.',
       'about.quote': '"Because I know time is finite, I\'d rather live now."',
-      'about.qual.title': 'Qualifications',
+      'about.qual.title': 'Qualifications & experience',
       'about.qual.list':
-        '<ul style="color:var(--muted); line-height:1.8"><li>Psychosocial art therapist (2006–2009, accredited institute)</li><li>Clinical art therapist (2010)</li><li>Practitioner for psychotherapy (2011)</li><li>Visual marketing designer, Chamber of Commerce (2007)</li></ul>',
+        '<li>Psychosocial art therapist (2006–2009, accredited institute)</li><li>Clinical art therapist (2010)</li><li>Practitioner for psychotherapy (2011)</li><li>Over 16 years in palliative care, psycho-oncology, and clinical groups</li><li>Long-standing work including at MZG and Brüderkrankenhaus Paderborn</li><li>Regular supervision and continuing education</li>',
       'about.offers': 'Art therapy & services',
-      'about.imgAlt': 'Art therapist in Paderborn',
+      'about.imgAlt': 'Martina Schwierzke – psychosocial art therapist in Paderborn',
 
       'book.kicker': 'Booking',
       'book.title': 'Book an introductory or regular session',
@@ -697,6 +715,12 @@
       'book.privacyNote':
         'With your booking, name, email, and appointment data are stored on our server (see <a href="datenschutz.html">Privacy</a>). No marketing tracking.',
       'book.submit': 'Request appointment',
+      'book.noscript.title': 'Booking without JavaScript',
+      'book.noscript.text':
+        'The online calendar requires JavaScript. To request an appointment, please contact me directly:',
+      'book.noscript.phone': 'Phone',
+      'book.noscript.mobile': 'Mobile',
+      'book.noscript.email': 'Email',
       'book.loading': 'Loading calendar …',
       'book.hintFree':
         'Choose a green day (Tuesday or Thursday), then a free time slot. Google Calendar is optional – booking runs through our website.',
@@ -762,7 +786,9 @@
       'prices.tableHead':
         '<tr><th scope="col">Service</th><th scope="col">Duration</th><th scope="col">Price</th><th scope="col">Note</th></tr>',
       'prices.tableBody':
-        '<tr><td>Group session</td><td data-label="Duration">90 minutes</td><td data-label="Price"><strong>from €55</strong><span class="price-per">per person</span></td><td data-label="Note">4–12 people, materials incl.</td></tr><tr><td>Group programme (typical)</td><td data-label="Duration">4 sessions</td><td data-label="Price">on request</td><td data-label="Note">depending on topic/setting</td></tr><tr><td>One-to-one session</td><td data-label="Duration">90 minutes</td><td data-label="Price">on request</td><td data-label="Note">individual support</td></tr><tr><td>Team-building event</td><td data-label="Duration">as needed</td><td data-label="Price">on request</td><td data-label="Note">incl. concept &amp; materials</td></tr>',
+        '<tr><td>Group session</td><td data-label="Duration">90 minutes</td><td data-label="Price"><strong>from €55</strong><span class="price-per">per person</span></td><td data-label="Note">4–12 people, materials incl.</td></tr><tr><td>Group programme (typical)</td><td data-label="Duration">4 sessions</td><td data-label="Price">on request</td><td data-label="Note">individual depending on scope &amp; topic</td></tr><tr><td>One-to-one session</td><td data-label="Duration">90 minutes</td><td data-label="Price">on request</td><td data-label="Note">fixed price agreed in intro chat</td></tr><tr><td>Team-building event</td><td data-label="Duration">as needed</td><td data-label="Price">on request</td><td data-label="Note">depending on team size &amp; concept</td></tr>',
+      'prices.onRequest':
+        'One-to-one sessions, group programmes, and team-building are priced individually – depending on duration, group size, and setting. In a free intro chat I will give you a transparent fixed price.',
       'prices.unit': 'All prices are per person and per session.',
       'prices.note':
         'Questions about prices or concessions? Write to me directly – every situation is individual.',

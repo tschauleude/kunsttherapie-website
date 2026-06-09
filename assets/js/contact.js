@@ -20,6 +20,7 @@
       email: form.email.value.trim(),
       phone: form.phone.value.trim(),
       message: form.message.value.trim(),
+      website: document.getElementById('contactWebsite')?.value || '',
     };
 
     try {
