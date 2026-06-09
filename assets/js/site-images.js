@@ -60,7 +60,10 @@
 
   async function applySiteImages() {
     try {
-      const res = await fetch('/api/site-images', { credentials: 'same-origin' });
+      const res = await fetch('/api/site-images', {
+        credentials: 'same-origin',
+        cache: 'no-store',
+      });
       if (!res.ok) return;
       const data = await res.json();
       const images = data.images || {};

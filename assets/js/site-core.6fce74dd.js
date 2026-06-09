@@ -497,7 +497,10 @@ window.I18N_PAGE_BINDINGS = {
 
   async function loadOverrides() {
     try {
-      const res = await fetch('/api/i18n/overrides', { credentials: 'same-origin' });
+      const res = await fetch('/api/i18n/overrides', {
+        credentials: 'same-origin',
+        cache: 'no-store',
+      });
       if (!res.ok) return;
       const data = await res.json();
       if (!window.I18N_MESSAGES) window.I18N_MESSAGES = { de: {}, en: {} };
@@ -1808,7 +1811,10 @@ window.I18N_PAGE_BINDINGS = {
 
   async function applySiteImages() {
     try {
-      const res = await fetch('/api/site-images', { credentials: 'same-origin' });
+      const res = await fetch('/api/site-images', {
+        credentials: 'same-origin',
+        cache: 'no-store',
+      });
       if (!res.ok) return;
       const data = await res.json();
       const images = data.images || {};

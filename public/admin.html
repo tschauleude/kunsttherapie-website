@@ -584,6 +584,7 @@ async function loadI18nGroup() {
   try {
     const res = await fetch(`${API_URL}/admin/i18n/${groupId}?lang=${i18nCurrentLang}`, {
       credentials: 'include',
+      cache: 'no-store',
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Laden fehlgeschlagen');
@@ -639,12 +640,20 @@ async function saveI18nGroup(e) {
     const res = await fetch(`${API_URL}/admin/i18n/${groupId}`, {
       method: 'PUT',
       credentials: 'include',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ lang: i18nCurrentLang, values }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Speichern fehlgeschlagen');
-    showMessage('Texte gespeichert – auf der Website sichtbar nach Reload.', 'success');
+    if (res.status === 401) throw new Error('Sitzung abgelaufen – bitte erneut anmelden.');
+    if (!res.ok) {
+      const fieldHint =
+        Array.isArray(data.fields) && data.fields.length
+          ? ` (Felder: ${data.fields.join(', ')})`
+          : '';
+      throw new Error((data.error || 'Speichern fehlgeschlagen') + fieldHint);
+    }
+    showMessage('Texte gespeichert – auf der Website nach Neuladen sichtbar.', 'success');
     loadI18nGroup();
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
@@ -714,9 +723,11 @@ async function uploadSiteImageSlot(slot, fileInput) {
   const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}/upload`, {
     method: 'POST',
     credentials: 'include',
+    cache: 'no-store',
     body: fd,
   });
   const data = await res.json();
+  if (res.status === 401) throw new Error('Sitzung abgelaufen – bitte erneut anmelden.');
   if (!res.ok) throw new Error(data.error || 'Bild konnte nicht gespeichert werden');
   return data;
 }
@@ -725,10 +736,12 @@ async function assignSiteImageUrl(slot, url) {
   const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}`, {
     method: 'PUT',
     credentials: 'include',
+    cache: 'no-store',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url }),
   });
   const data = await res.json();
+  if (res.status === 401) throw new Error('Sitzung abgelaufen – bitte erneut anmelden.');
   if (!res.ok) throw new Error(data.error || 'Zuweisung fehlgeschlagen');
   return data;
 }
@@ -906,8 +919,8 @@ async function loadSiteImagesList() {
 
   try {
     const [slotsRes, mediaRes] = await Promise.all([
-      fetch(`${API_URL}/admin/site-images`, { credentials: 'include' }),
-      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/site-images`, { credentials: 'include', cache: 'no-store' }),
+      fetch(`${API_URL}/admin/media`, { credentials: 'include', cache: 'no-store' }),
     ]);
     const slotsData = await slotsRes.json();
     const mediaData = await mediaRes.json();

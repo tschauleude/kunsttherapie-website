@@ -155,121 +155,141 @@ app.use(session({
 // DATENBANK SETUP
 // ============================================================================
 
+let dbReady = null;
+
+function initializeDatabase() {
+  if (dbReady) return dbReady;
+
+  dbReady = new Promise((resolve, reject) => {
+    db.serialize(() => {
+      db.run(`
+        CREATE TABLE IF NOT EXISTS admins (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT UNIQUE NOT NULL,
+          password TEXT NOT NULL,
+          email TEXT,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS news (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          content TEXT NOT NULL,
+          image TEXT,
+          published INTEGER DEFAULT 0,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS events (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          date TEXT NOT NULL,
+          time TEXT,
+          location TEXT,
+          capacity INTEGER,
+          image TEXT,
+          published INTEGER DEFAULT 0,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS settings (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL
+        )
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS bookings (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL,
+          phone TEXT,
+          date TEXT NOT NULL,
+          start_time TEXT NOT NULL,
+          end_time TEXT NOT NULL,
+          message TEXT,
+          status TEXT DEFAULT 'pending',
+          google_event_id TEXT,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS atelier_submissions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          image_path TEXT NOT NULL,
+          is_anonymous INTEGER DEFAULT 1,
+          submitter_name TEXT,
+          submitter_email TEXT,
+          note TEXT,
+          status TEXT DEFAULT 'new',
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS site_images (
+          slot TEXT PRIMARY KEY,
+          url TEXT NOT NULL,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      db.run(
+        `
+        CREATE TABLE IF NOT EXISTS services (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          price TEXT,
+          duration TEXT,
+          image TEXT,
+          active INTEGER DEFAULT 1,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `,
+        async (err) => {
+          if (err) {
+            dbReady = null;
+            return reject(err);
+          }
+
+          ensureAdminAccounts();
+          console.log(' Database initialized');
+
+          try {
+            const cleaned = await i18nContent.migrateRentedOverrides(dbGet, dbRun);
+            if (cleaned) console.log('i18n: veraltete Miet-/Vermiet-Overrides aus der DB entfernt');
+          } catch (e) {
+            console.error('i18n migrate:', e.message);
+          }
+
+          resolve();
+        }
+      );
+    });
+  });
+
+  return dbReady;
+}
+
 const db = new sqlite3.Database(DB_PATH, (err) => {
   if (err) {
     console.error('Database error:', err);
-  } else {
-    console.log('Connected to SQLite database');
-    initializeDatabase();
+    process.exit(1);
   }
+  console.log('Connected to SQLite database');
 });
-
-function initializeDatabase() {
-  // Admin Users Table
-  db.run(`
-    CREATE TABLE IF NOT EXISTS admins (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      email TEXT,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  // News Table
-  db.run(`
-    CREATE TABLE IF NOT EXISTS news (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      content TEXT NOT NULL,
-      image TEXT,
-      published INTEGER DEFAULT 0,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  // Events Table
-  db.run(`
-    CREATE TABLE IF NOT EXISTS events (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      date TEXT NOT NULL,
-      time TEXT,
-      location TEXT,
-      capacity INTEGER,
-      image TEXT,
-      published INTEGER DEFAULT 0,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  // App settings (e.g. Google refresh token from OAuth)
-  db.run(`
-    CREATE TABLE IF NOT EXISTS settings (
-      key TEXT PRIMARY KEY,
-      value TEXT NOT NULL
-    )
-  `);
-
-  // Bookings (Terminbuchung)
-  db.run(`
-    CREATE TABLE IF NOT EXISTS bookings (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      email TEXT NOT NULL,
-      phone TEXT,
-      date TEXT NOT NULL,
-      start_time TEXT NOT NULL,
-      end_time TEXT NOT NULL,
-      message TEXT,
-      status TEXT DEFAULT 'pending',
-      google_event_id TEXT,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  db.run(`
-    CREATE TABLE IF NOT EXISTS atelier_submissions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      image_path TEXT NOT NULL,
-      is_anonymous INTEGER DEFAULT 1,
-      submitter_name TEXT,
-      submitter_email TEXT,
-      note TEXT,
-      status TEXT DEFAULT 'new',
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  db.run(`
-    CREATE TABLE IF NOT EXISTS site_images (
-      slot TEXT PRIMARY KEY,
-      url TEXT NOT NULL,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  // Services Table
-  db.run(`
-    CREATE TABLE IF NOT EXISTS services (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      price TEXT,
-      duration TEXT,
-      image TEXT,
-      active INTEGER DEFAULT 1,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  ensureAdminAccounts();
-  console.log(' Database initialized');
-}
 
 function ensureAdminAccounts() {
   const envUser = process.env.ADMIN_USERNAME;
@@ -329,6 +349,17 @@ const requireAuth = (req, res, next) => {
   }
   next();
 };
+
+function requireDb(req, res, next) {
+  if (!dbReady) {
+    return res.status(503).json({ error: 'Datenbank wird noch initialisiert – bitte kurz warten.' });
+  }
+  dbReady.then(() => next()).catch(() => {
+    res.status(503).json({ error: 'Datenbank nicht verfügbar' });
+  });
+}
+
+app.use('/api', requireDb);
 
 const booking = require('./lib/booking');
 const googleCalendar = require('./lib/google-calendar');
@@ -1250,7 +1281,7 @@ app.post('/api/admin/upload', requireAuth, (req, res) => {
 app.get('/api/site-images', async (req, res) => {
   try {
     const { images, galleryCount } = await siteImages.getPublicImages(dbAll, dbGet);
-    res.setHeader('Cache-Control', 'public, max-age=120');
+    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
     res.json({ images, galleryCount });
   } catch (e) {
     console.error('site-images public:', e.message);
@@ -1400,7 +1431,7 @@ app.delete('/api/admin/media/:filename', requireAuth, async (req, res) => {
 app.get('/api/i18n/overrides', async (req, res) => {
   try {
     const overrides = await i18nContent.readOverrides(dbGet);
-    res.setHeader('Cache-Control', 'public, max-age=60');
+    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
     res.json(i18nContent.mergeOverridesForPublic(overrides));
   } catch (e) {
     console.error('i18n overrides:', e.message);
@@ -1445,7 +1476,10 @@ app.put('/api/admin/i18n/:groupId', requireAuth, async (req, res) => {
     res.json({ success: true, overrides: i18nContent.mergeOverridesForPublic(saved) });
   } catch (e) {
     console.error('admin i18n save:', e.message);
-    res.status(500).json({ error: 'Speichern fehlgeschlagen' });
+    if (e.code === 'RENTED_COPY') {
+      return res.status(400).json({ error: e.message, fields: e.fields || [] });
+    }
+    res.status(500).json({ error: e.message || 'Speichern fehlgeschlagen' });
   }
 });
 
@@ -1780,19 +1814,20 @@ app.use((req, res) => {
 // ============================================================================
 
 if (require.main === module) {
-app.listen(PORT, async () => {
-  console.log(`\n╔════════════════════════════════════════╗`);
-  console.log(`║   Kunsttherapie CMS Backend       ║`);
-  console.log(`║  Server running on http://localhost:${PORT}      ║`);
-  console.log(`║  Admin Panel: http://localhost:${PORT}/admin  ║`);
-  console.log(`╚════════════════════════════════════════╝\n`);
-  try {
-    const cleaned = await i18nContent.migrateRentedOverrides(dbGet, dbRun);
-    if (cleaned) console.log('i18n: veraltete angemietet/rented-Overrides aus der DB entfernt');
-  } catch (e) {
-    console.error('i18n migrate:', e.message);
-  }
-});
+  initializeDatabase()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`\n╔════════════════════════════════════════╗`);
+        console.log(`║   Kunsttherapie CMS Backend       ║`);
+        console.log(`║  Server running on http://localhost:${PORT}      ║`);
+        console.log(`║  Admin Panel: http://localhost:${PORT}/admin  ║`);
+        console.log(`╚════════════════════════════════════════╝\n`);
+      });
+    })
+    .catch((err) => {
+      console.error('Server start failed:', err);
+      process.exit(1);
+    });
 }
 
 module.exports = app;
