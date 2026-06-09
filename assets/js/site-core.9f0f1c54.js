@@ -325,9 +325,9 @@ window.I18N_PAGE_BINDINGS = {
     { sel: '#atelier .section-intro .kicker', key: 'kt.praxis.kicker', attr: 'text' },
     { sel: '#atelier .section-intro h2', key: 'home.praxis.title', attr: 'text' },
     { sel: '#atelier .section-intro .sub', key: 'home.praxis.sub', attr: 'text' },
-    { sel: '#atelier .twoCol p:nth-child(1)', key: 'home.praxis.address', attr: 'html' },
-    { sel: '#atelier .twoCol > div:first-child p:nth-child(2)', key: 'home.praxis.di', attr: 'html' },
-    { sel: '#atelier .twoCol > div:last-child p:nth-child(1)', key: 'home.praxis.do', attr: 'html' },
+    { sel: '#atelier .twoCol > div:first-child > p:first-child', key: 'home.praxis.address', attr: 'html' },
+    { sel: '#atelier .twoCol > div:first-child > p:nth-of-type(2)', key: 'home.praxis.di', attr: 'html' },
+    { sel: '#atelier .twoCol > div:last-child > p:first-child', key: 'home.praxis.do', attr: 'html' },
     { sel: '#atelier .twoCol .note', key: 'home.praxis.link', attr: 'html' },
     { sel: '#atelier .actions .btn.primary', key: 'btn.book', attr: 'text' },
     { sel: '#atelier .actions .btn.outline', key: 'home.praxis.more', attr: 'text' },
@@ -448,6 +448,7 @@ window.I18N_PAGE_BINDINGS = {
     { sel: 'main > .card > .sub', key: 'prices.sub', attr: 'text' },
     { sel: 'table.prices thead', key: 'prices.tableHead', attr: 'html' },
     { sel: 'table.prices tbody', key: 'prices.tableBody', attr: 'html' },
+    { sel: 'main .prices-unit', key: 'prices.unit', attr: 'text' },
     { sel: 'main .note', key: 'prices.note', attr: 'text' },
     { sel: 'main .actions .btn.primary', key: 'btn.book', attr: 'text' },
     { sel: 'main .actions .btn.outline', key: 'prices.ask', attr: 'text' },
@@ -1707,9 +1708,16 @@ window.I18N_PAGE_BINDINGS = {
 ;
 /**
  * Wendet Admin-Bild-Overrides auf [data-site-image] an (Fallback: HTML-Standard).
+ * Steuert außerdem, wie viele Galerie-Bilder auf der Startseite sichtbar sind.
  */
 (function () {
   if (document.body.classList.contains('admin-app')) return;
+
+  const GALLERY_LAYOUT_CLASSES = [
+    'image-gallery--duo',
+    'image-gallery--trio',
+    'image-gallery--six',
+  ];
 
   function applyToElement(el, url) {
     if (!url) return;
@@ -1727,6 +1735,37 @@ window.I18N_PAGE_BINDINGS = {
     if (img) applyToElement(img, url);
   }
 
+  function applyGalleryCount(count) {
+    const gallery = document.querySelector('[data-gallery]');
+    if (!gallery) return;
+
+    const safe = Math.min(6, Math.max(1, Number.parseInt(count, 10) || 6));
+    const items = [...gallery.querySelectorAll('[data-gallery-open]')];
+
+    items.forEach((item, i) => {
+      const show = i < safe;
+      item.hidden = !show;
+    });
+
+    items.forEach((item) => item.classList.remove('gallery-item--wide'));
+
+    GALLERY_LAYOUT_CLASSES.forEach((cls) => gallery.classList.remove(cls));
+
+    if (safe <= 2) gallery.classList.add('image-gallery--duo');
+    else if (safe === 3) gallery.classList.add('image-gallery--trio');
+    else if (safe >= 5) gallery.classList.add('image-gallery--six');
+
+    const lastVisible = items[safe - 1];
+    if (lastVisible && safe >= 5) {
+      lastVisible.classList.add('gallery-item--wide');
+    }
+
+    gallery.dataset.galleryCount = String(safe);
+    document.dispatchEvent(new CustomEvent('kt-gallery-count', { detail: { count: safe } }));
+  }
+
+  window.ktApplyGalleryCount = applyGalleryCount;
+
   async function applySiteImages() {
     try {
       const res = await fetch('/api/site-images', { credentials: 'same-origin' });
@@ -1740,6 +1779,10 @@ window.I18N_PAGE_BINDINGS = {
         if (!url) return;
         applyToElement(el, url);
       });
+
+      if (data.galleryCount != null) {
+        applyGalleryCount(data.galleryCount);
+      }
     } catch (_) {
       /* statisches Hosting ohne API */
     }

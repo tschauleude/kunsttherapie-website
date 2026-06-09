@@ -68,17 +68,29 @@
     }
 
     let dragging = false;
+    let compareDragged = false;
+    let compareDragStart = 0;
     compare.addEventListener('pointerdown', (e) => {
       if (e.target.closest('[data-raum-hotspot]')) return;
       dragging = true;
+      compareDragged = false;
+      compareDragStart = pointerX(e);
       compare.setPointerCapture(e.pointerId);
-      setCompare(pointerX(e));
+      setCompare(compareDragStart);
     });
     compare.addEventListener('pointermove', (e) => {
-      if (dragging) setCompare(pointerX(e));
+      if (!dragging) return;
+      const x = pointerX(e);
+      if (Math.abs(x - compareDragStart) > 2) compareDragged = true;
+      setCompare(x);
     });
     compare.addEventListener('pointerup', () => { dragging = false; });
     compare.addEventListener('pointercancel', () => { dragging = false; });
+    compare.dataset.raumCompareDragged = '0';
+    compare.addEventListener('click', () => {
+      compare.dataset.raumCompareDragged = compareDragged ? '1' : '0';
+      compareDragged = false;
+    }, true);
 
     setCompare(50);
   }
@@ -128,6 +140,19 @@
     const lbImg = overlay.querySelector('.lightbox-img');
     const lbCaption = overlay.querySelector('.lightbox-caption');
     const lbClose = overlay.querySelector('.lightbox-close');
+    let lastFocus = null;
+
+    function pickLightboxImage(container) {
+      if (container.hasAttribute('data-raum-compare')) {
+        const range = container.querySelector('[data-raum-compare-range]');
+        const val = range ? Number(range.value) : 50;
+        const afterImg = container.querySelector('.kt-raum-compare-after img');
+        const beforeImg = container.querySelector('.kt-raum-compare-before');
+        if (val >= 50 && afterImg) return afterImg;
+        return beforeImg;
+      }
+      return container.querySelector('img');
+    }
 
     function openLb(src, alt, caption) {
       lbImg.src = src;
@@ -142,13 +167,20 @@
       overlay.hidden = true;
       document.body.classList.remove('lightbox-open');
       lbImg.removeAttribute('src');
+      if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+      lastFocus = null;
     }
 
     lightboxTriggers.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         if (e.target.closest('[data-raum-hotspot]') || e.target.closest('[data-raum-compare-range]')) return;
-        const img = btn.querySelector('img');
+        if (btn.dataset.raumCompareDragged === '1') {
+          btn.dataset.raumCompareDragged = '0';
+          return;
+        }
+        const img = pickLightboxImage(btn);
         if (!img) return;
+        lastFocus = e.target.closest('[data-raum-hotspot]') || btn;
         openLb(img.currentSrc || img.src, img.alt, btn.dataset.raumCaption || img.alt);
       });
     });

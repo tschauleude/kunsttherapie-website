@@ -63,9 +63,13 @@
         'Raum, Fotos &amp; Details: <a href="kunsttherapie.html#atelier">Atelier entdecken</a>',
       'home.praxis.more': 'Mehr zum Atelier',
       'home.hero.imgAlt': 'Atelier – gemeinsam malen und gestalten in Paderborn',
+      'home.gallery.openPrefix': 'Bild vergrößern: ',
       'home.gallery.img1.alt': 'Materialien im Atelier – Farben, Kreiden, Pinsel',
       'home.gallery.img2.alt': 'Kunsttherapeutisches Bild – Natur und Kreativität',
       'home.gallery.img3.alt': 'Abstraktes Aquarell – Farben und Formen',
+      'home.gallery.img4.alt': 'Kunsttherapie in sensiblen Settings – behutsame Begleitung',
+      'home.gallery.img5.alt': 'Atelier von außen – Otto-Stadler-Straße in Paderborn',
+      'home.gallery.img6.alt': 'Malen mit Pinseln – Kreativität im Sonnenlicht',
 
       'kt.effects.title': 'Wie Kunsttherapie wirkt',
       'kt.effects.sub': 'In wenigen Sätzen – vertiefend per Klick.',
@@ -250,12 +254,14 @@
       'ui.lightbox.title': 'Vergrößertes Bild',
       'ui.lightbox.prev': 'Vorheriges Bild',
       'ui.lightbox.next': 'Nächstes Bild',
+      'ui.lightbox.thumbs': 'Galerie-Vorschau',
       'contact.msg.success': 'Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.',
       'contact.msg.error': 'Nachricht konnte nicht gesendet werden',
       'ui.scrollTop': 'Nach oben scrollen',
       'ui.lightbox.title': 'Vergrößertes Bild',
       'ui.lightbox.prev': 'Vorheriges Bild',
       'ui.lightbox.next': 'Nächstes Bild',
+      'ui.lightbox.thumbs': 'Galerie-Vorschau',
 
       'prices.kicker': 'Preise',
       'prices.title': 'Transparent & fair',
@@ -263,7 +269,8 @@
       'prices.tableHead':
         '<tr><th scope="col">Leistung</th><th scope="col">Dauer</th><th scope="col">Preis</th><th scope="col">Hinweis</th></tr>',
       'prices.tableBody':
-        '<tr><td>Gruppensitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis"><strong>ab 55 €</strong></td><td data-label="Hinweis">4–12 Personen, Material inkl.</td></tr><tr><td>Gruppenprogramm (typisch)</td><td data-label="Dauer">4 Einheiten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">je nach Thema/Setting</td></tr><tr><td>Einzelsitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">individuelle Begleitung</td></tr><tr><td>Teambuilding Event</td><td data-label="Dauer">nach Bedarf</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">inkl. Konzept &amp; Material</td></tr>',
+        '<tr><td>Gruppensitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis"><strong>ab 55 €</strong><span class="price-per">pro Person</span></td><td data-label="Hinweis">4–12 Personen, Material inkl.</td></tr><tr><td>Gruppenprogramm (typisch)</td><td data-label="Dauer">4 Einheiten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">je nach Thema/Setting</td></tr><tr><td>Einzelsitzung</td><td data-label="Dauer">90 Minuten</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">individuelle Begleitung</td></tr><tr><td>Teambuilding Event</td><td data-label="Dauer">nach Bedarf</td><td data-label="Preis">auf Anfrage</td><td data-label="Hinweis">inkl. Konzept &amp; Material</td></tr>',
+      'prices.unit': 'Alle Preise verstehen sich pro Person und Sitzung.',
       'prices.note':
         'Fragen zu Preisen oder Rabatten? Schreib mir gern – jede Situation ist individuell.',
       'prices.ask': 'Preis anfragen',
@@ -548,9 +555,13 @@
         'Space, photos &amp; details: <a href="kunsttherapie.html#atelier">Explore the atelier</a>',
       'home.praxis.more': 'More about the atelier',
       'home.hero.imgAlt': 'Atelier – painting and creating together in Paderborn',
+      'home.gallery.openPrefix': 'Enlarge image: ',
       'home.gallery.img1.alt': 'Studio materials – paints, chalks, brushes',
       'home.gallery.img2.alt': 'Art therapy image – nature and creativity',
       'home.gallery.img3.alt': 'Abstract watercolour – colours and shapes',
+      'home.gallery.img4.alt': 'Art therapy in sensitive settings – gentle support',
+      'home.gallery.img5.alt': 'Atelier exterior – Otto-Stadler-Straße in Paderborn',
+      'home.gallery.img6.alt': 'Painting with brushes – creativity in sunlight',
 
       'kt.effects.title': 'How art therapy works',
       'kt.effects.sub': 'In a few sentences – click for more detail.',
@@ -736,12 +747,14 @@
       'ui.lightbox.title': 'Enlarged image',
       'ui.lightbox.prev': 'Previous image',
       'ui.lightbox.next': 'Next image',
+      'ui.lightbox.thumbs': 'Gallery preview',
       'contact.msg.success': 'Thank you – your message has been received. I\'ll get back to you soon.',
       'contact.msg.error': 'Your message could not be sent',
       'ui.scrollTop': 'Scroll to top',
       'ui.lightbox.title': 'Enlarged image',
       'ui.lightbox.prev': 'Previous image',
       'ui.lightbox.next': 'Next image',
+      'ui.lightbox.thumbs': 'Gallery preview',
 
       'prices.kicker': 'Prices',
       'prices.title': 'Transparent & fair',
@@ -749,7 +762,8 @@
       'prices.tableHead':
         '<tr><th scope="col">Service</th><th scope="col">Duration</th><th scope="col">Price</th><th scope="col">Note</th></tr>',
       'prices.tableBody':
-        '<tr><td>Group session</td><td data-label="Duration">90 minutes</td><td data-label="Price"><strong>from €55</strong></td><td data-label="Note">4–12 people, materials incl.</td></tr><tr><td>Group programme (typical)</td><td data-label="Duration">4 sessions</td><td data-label="Price">on request</td><td data-label="Note">depending on topic/setting</td></tr><tr><td>One-to-one session</td><td data-label="Duration">90 minutes</td><td data-label="Price">on request</td><td data-label="Note">individual support</td></tr><tr><td>Team-building event</td><td data-label="Duration">as needed</td><td data-label="Price">on request</td><td data-label="Note">incl. concept &amp; materials</td></tr>',
+        '<tr><td>Group session</td><td data-label="Duration">90 minutes</td><td data-label="Price"><strong>from €55</strong><span class="price-per">per person</span></td><td data-label="Note">4–12 people, materials incl.</td></tr><tr><td>Group programme (typical)</td><td data-label="Duration">4 sessions</td><td data-label="Price">on request</td><td data-label="Note">depending on topic/setting</td></tr><tr><td>One-to-one session</td><td data-label="Duration">90 minutes</td><td data-label="Price">on request</td><td data-label="Note">individual support</td></tr><tr><td>Team-building event</td><td data-label="Duration">as needed</td><td data-label="Price">on request</td><td data-label="Note">incl. concept &amp; materials</td></tr>',
+      'prices.unit': 'All prices are per person and per session.',
       'prices.note':
         'Questions about prices or concessions? Write to me directly – every situation is individual.',
       'prices.ask': 'Ask about pricing',
