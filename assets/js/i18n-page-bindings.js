@@ -143,6 +143,7 @@ window.I18N_PAGE_BINDINGS = {
     { sel: 'main > .card > .sub', key: 'prices.sub', attr: 'text' },
     { sel: 'table.prices thead', key: 'prices.tableHead', attr: 'html' },
     { sel: 'table.prices tbody', key: 'prices.tableBody', attr: 'html' },
+    { sel: 'main .prices-unit', key: 'prices.unit', attr: 'text' },
     { sel: 'main .note', key: 'prices.note', attr: 'text' },
     { sel: 'main .actions .btn.primary', key: 'btn.book', attr: 'text' },
     { sel: 'main .actions .btn.outline', key: 'prices.ask', attr: 'text' },
