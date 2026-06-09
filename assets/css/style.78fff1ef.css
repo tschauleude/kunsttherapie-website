@@ -478,16 +478,17 @@ h3 {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   min-height: 100%;
 }
 
 .page-ueber-mich .hero-portrait-frame {
-  flex: 0 1 auto;
-  margin: 0 auto;
+  flex: 1 1 auto;
+  margin: 0;
   width: 100%;
-  max-width: 28rem;
+  min-height: min(520px, 72vh);
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: calc(var(--radius-card) - 2px);
   background: linear-gradient(165deg, rgba(67, 97, 94, 0.12), rgba(209, 141, 137, 0.08));
@@ -496,14 +497,13 @@ h3 {
 .page-ueber-mich .hero-portrait-frame img,
 .page-ueber-mich .about-portrait {
   width: 100%;
-  max-height: 520px;
-  height: auto;
-  min-height: 0;
+  height: 100%;
+  min-height: 100%;
   object-fit: cover;
-  object-position: center 25%;
+  object-position: center 22%;
   border-radius: var(--radius-card);
   display: block;
-  filter: contrast(1.02);
+  filter: contrast(1.04) saturate(1.02);
 }
 
 @media (min-width: 901px) {
@@ -519,8 +519,11 @@ h3 {
   margin: 0 0 0.75rem;
 }
 
-.page-ueber-mich .about-kicker {
-  margin: 0.35rem 0 1rem;
+.page-ueber-mich .about-role {
+  margin: -0.35rem 0 1.1rem;
+  font-size: 1.05rem;
+  color: var(--color-teal);
+  font-weight: 500;
 }
 
 .page-ueber-mich .about-section + .sep,
@@ -559,17 +562,8 @@ h3 {
   }
 
   .page-ueber-mich .hero-portrait-frame {
-    min-height: min(380px, 62vw);
-  }
-
-  .page-ueber-mich .hero-portrait-frame {
-    max-width: 22rem;
-  }
-
-  .page-ueber-mich .hero-portrait-frame img,
-  .page-ueber-mich .about-portrait {
-    min-height: 0;
-    max-height: 420px;
+    min-height: min(420px, 88vw);
+    aspect-ratio: 4 / 5;
   }
 }
 
