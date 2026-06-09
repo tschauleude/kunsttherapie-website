@@ -2262,6 +2262,15 @@ nav[data-site-nav] {
   nav[data-site-nav] {
     order: 4;
   }
+
+  /* Nur DE/EN-Buttons – aria-label am .lang-switch reicht für Screenreader */
+  .lang-switch-hint {
+    display: none;
+  }
+
+  .lang-switch {
+    padding-left: 0.35rem;
+  }
 }
 
 .kt-facts .pill {
