@@ -47,8 +47,8 @@
   "book.icsCal": "In Apple / Outlook (.ics)",
   "book.success": "Anfrage eingegangen. Vielen Dank!",
   "book.error": "Buchung fehlgeschlagen",
-  "book.slotBusy": " (belegt)",
-  "book.timeUnit": " Uhr"
+  "book.slotBusy": "(belegt)",
+  "book.timeUnit": "Uhr"
 }, en: {
   "meta.booking.title": "Book appointment – Art Therapy Paderborn",
   "meta.booking.description": "Request an appointment online: Tuesday mornings and Thursday evenings. Available slots in the calendar – confirmation by email.",
@@ -96,7 +96,7 @@
   "book.icsCal": "Apple / Outlook (.ics)",
   "book.success": "Request received. Thank you!",
   "book.error": "Booking failed",
-  "book.slotBusy": " (unavailable)",
+  "book.slotBusy": "(unavailable)",
   "book.timeUnit": ""
 } };
   Object.assign(window.I18N_MESSAGES.de, extra.de);
