@@ -71,7 +71,7 @@
       'kt.effects.sub': 'In wenigen Sätzen – vertiefend per Klick.',
       'kt.faq1.q': 'Warum Kunst statt nur Gespräch?',
       'kt.faq1.a':
-        '<p>„Ich könnte es malen, nicht in Worte ausdrücken.“ Der Prozess ist ein wesentlicher Teil der Kunsttherapie, wie auch das Werk, das entsteht – als Projektionsfläche, als Spiegel: Distanz und Nähe zugleich.</p>',
+        '<p><strong>Nur Gespräch:</strong> Gedanken und Gefühle in Worte fassen – manchmal stößt man an Grenzen.</p><p><strong>Mit Gestalten:</strong> „Ich könnte es malen, nicht in Worte ausdrücken.“ Der Prozess ist ein wesentlicher Teil der Kunsttherapie, wie auch das Werk, das entsteht – als Projektionsfläche, als Spiegel: Distanz und Nähe zugleich.</p>',
       'kt.faq2.q': 'Brauche ich Vorkenntnisse?',
       'kt.faq2.a':
         '<p>Nein – Vorkenntnisse sind nicht nötig. Entscheidend ist, dass sich das Gestalten stimmig anfühlt. <strong>Ausprobieren lohnt sich – der Überraschungseffekt gehört dazu.</strong></p>',
@@ -83,7 +83,7 @@
         '<ul><li>Raum für Trauer, die noch keinen Ausdruck gefunden hat</li><li>Hilfe bei chronischen Schmerzen</li><li>Vision Board: Vorstellungskraft, Klarheit und Struktur finden</li><li>Achtsamkeit malend – die Umwelt bewusst wahrnehmen; Meditationstechniken für innere Ruhe</li><li>Positiver Flow und Techniken erleben</li></ul>',
       'kt.faq5.q': 'Muss ich malen können?',
       'kt.faq5.a':
-        '<p>Nein. Es geht nicht um Können oder ein schönes Ergebnis, sondern um den Prozess. Jede Spur, jede Farbe ist richtig – Vorerfahrung ist nicht nötig.</p>',
+        '<p><strong>Nicht entscheidend:</strong> ein schönes Ergebnis oder „können“.</p><p><strong>Im Mittelpunkt:</strong> der Prozess. Jede Spur, jede Farbe ist richtig – Vorerfahrung ist nicht nötig.</p>',
       'kt.faq6.q': 'Ist Kunsttherapie das Richtige für mich?',
       'kt.faq6.a':
         '<p>Kunsttherapie kann begleiten bei Belastung, Trauer, chronischen Schmerzen oder einfach dem Wunsch nach einer kreativen Auszeit. In einem unverbindlichen Kennenlernen klären wir gemeinsam, ob es passt.</p>',
@@ -101,10 +101,10 @@
         '<p>Ja. Alles, was in den Sitzungen besprochen und gestaltet wird, bleibt vertraulich. Deine Werke gehören dir – sie werden nur mit deiner ausdrücklichen Einwilligung gezeigt oder verwendet.</p>',
       'kt.faq11.q': 'Einzeln oder lieber in der Gruppe?',
       'kt.faq11.a':
-        '<p>Beides hat seinen Wert. Die Gruppe lebt vom gemeinsamen Erleben und gegenseitiger Inspiration – ein geschützter Rahmen mit 4–12 Personen. Einzelsitzungen sind intensiver und ganz auf dein Thema abgestimmt. Im Kennenlernen finden wir heraus, was zu dir passt.</p>',
+        '<p><strong>Gruppe (4–12 Personen):</strong> gemeinsames Erleben, gegenseitige Inspiration, geschützter Rahmen.</p><p><strong>Einzel:</strong> intensiver und ganz auf dein Thema abgestimmt.</p><p>Im Kennenlernen finden wir heraus, was zu dir passt.</p>',
       'kt.faq12.q': 'Ersetzt Kunsttherapie eine Psychotherapie?',
       'kt.faq12.a':
-        '<p>Kunsttherapie ist eine eigenständige, ressourcenorientierte Begleitung und kann sehr entlastend wirken. Sie ersetzt jedoch keine ärztliche oder psychotherapeutische Behandlung. Bei akuten oder schweren Beschwerden wende dich bitte zusätzlich an eine Ärztin oder einen Arzt – gern bespreche ich mit dir, wie sich beides ergänzen kann.</p>',
+        '<p><strong>Psychotherapie</strong> ist medizinische Behandlung bei entsprechenden Indikationen.</p><p><strong>Kunsttherapie</strong> ist eigenständige, ressourcenorientierte Begleitung und kann sehr entlastend wirken – ersetzt jedoch keine ärztliche oder psychotherapeutische Behandlung.</p><p>Bei akuten oder schweren Beschwerden bitte zusätzlich eine Ärztin oder einen Arzt aufsuchen; gern bespreche ich mit dir, wie sich beides ergänzen kann.</p>',
       'kt.praxis.kicker': 'Das Atelier',
       'kt.praxis.title': 'Angemieteter Atelier- und Gruppenraum',
       'kt.praxis.sub':
@@ -556,7 +556,7 @@
       'kt.effects.sub': 'In a few sentences – click for more detail.',
       'kt.faq1.q': 'Why art instead of talk alone?',
       'kt.faq1.a':
-        '<p>“I could paint it, but not put it into words.” The process is essential in art therapy, as is the artwork that emerges – as a projection surface, as a mirror: distance and closeness at once.</p>',
+        '<p><strong>Talk alone:</strong> putting thoughts and feelings into words – sometimes you hit a limit.</p><p><strong>With creating:</strong> “I could paint it, but not put it into words.” The process is essential in art therapy, as is the artwork that emerges – as a projection surface, as a mirror: distance and closeness at once.</p>',
       'kt.faq2.q': 'Do I need prior experience?',
       'kt.faq2.a':
         '<p>No prior experience needed. What matters is that creating feels right. <strong>Curiosity welcome – surprise is part of the process.</strong></p>',
@@ -568,7 +568,7 @@
         '<ul><li>Space for grief that has not yet found expression</li><li>Support with chronic pain</li><li>Vision board: imagination, clarity, and structure</li><li>Mindful painting – perceiving the environment consciously; meditation techniques for inner calm</li><li>Positive flow and creative techniques</li></ul>',
       'kt.faq5.q': 'Do I need to be good at painting?',
       'kt.faq5.a':
-        '<p>No. It\'s not about skill or a pretty result, but about the process. Every mark, every colour is valid – no prior experience needed.</p>',
+        '<p><strong>Not what matters:</strong> skill or a pretty result.</p><p><strong>What matters:</strong> the process. Every mark, every colour is valid – no prior experience needed.</p>',
       'kt.faq6.q': 'Is art therapy right for me?',
       'kt.faq6.a':
         '<p>Art therapy can support you through stress, grief, chronic pain, or simply the wish for a creative break. In a no-obligation intro chat we find out together whether it\'s a fit.</p>',
@@ -586,10 +586,10 @@
         '<p>Yes. Everything discussed and created in sessions stays confidential. Your artwork belongs to you – it is only shown or used with your explicit consent.</p>',
       'kt.faq11.q': 'One-to-one or in a group?',
       'kt.faq11.a':
-        '<p>Both have their value. Groups thrive on shared experience and mutual inspiration – a safe setting with 4–12 people. One-to-one sessions are more intensive and fully focused on your theme. In an intro chat we find out what suits you.</p>',
+        '<p><strong>Group (4–12 people):</strong> shared experience, mutual inspiration, a safe setting.</p><p><strong>One-to-one:</strong> more intensive and fully focused on your theme.</p><p>In an intro chat we find out what suits you.</p>',
       'kt.faq12.q': 'Does art therapy replace psychotherapy?',
       'kt.faq12.a':
-        '<p>Art therapy is an independent, resource-oriented form of support and can be a real relief. However, it does not replace medical or psychotherapeutic treatment. For acute or serious symptoms, please also consult a doctor – I\'m happy to discuss how the two can complement each other.</p>',
+        '<p><strong>Psychotherapy</strong> is medical treatment for defined indications.</p><p><strong>Art therapy</strong> is independent, resource-oriented support and can be a real relief – but it does not replace medical or psychotherapeutic treatment.</p><p>For acute or serious symptoms, please also consult a doctor – I\'m happy to discuss how the two can complement each other.</p>',
       'kt.praxis.kicker': 'The atelier',
       'kt.praxis.title': 'Rented art therapy and group room',
       'kt.praxis.sub':

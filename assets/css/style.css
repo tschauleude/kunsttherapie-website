@@ -787,6 +787,11 @@ details .inner li:last-child {
   margin-bottom: 0;
 }
 
+details .inner strong {
+  color: var(--color-teal-dark);
+  font-weight: 700;
+}
+
 /* Gallery */
 .image-gallery {
   display: grid;
