@@ -76,8 +76,8 @@
     "fallback": "atelier-eingang.jpg"
   },
   "martina-portrait.jpg": {
-    "width": 960,
-    "height": 1200,
+    "width": 1060,
+    "height": 1216,
     "sources": [
       {
         "w": 480,
@@ -88,8 +88,8 @@
         "webp": "martina-portrait-768w.webp"
       },
       {
-        "w": 960,
-        "webp": "martina-portrait-960w.webp"
+        "w": 1060,
+        "webp": "martina-portrait-1060w.webp"
       }
     ],
     "fallback": "martina-portrait.jpg"
