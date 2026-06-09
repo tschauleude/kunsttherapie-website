@@ -91,7 +91,7 @@
     }
 
     function pointerX(e) {
-      const rect = dragRect || compare.getBoundingClientRect();
+      const rect = dragRect || media.getBoundingClientRect();
       const clientX = e.clientX;
       if (!rect.width) return 50;
       return ((clientX - rect.left) / rect.width) * 100;
@@ -117,7 +117,7 @@
       activePointerId = e.pointerId;
       dragging = false;
       compareDragged = false;
-      dragRect = compare.getBoundingClientRect();
+      dragRect = media.getBoundingClientRect();
       compareDragStart = pointerX(e);
       try {
         (media.setPointerCapture ? media : compare).setPointerCapture(e.pointerId);
