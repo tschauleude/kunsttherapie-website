@@ -14,6 +14,7 @@ let selectedDate = null;
 let selectedStart = null;
 let monthData = null;
 let bookingConfigCache = null;
+let formLoadedAt = 0;
 
 function formatMonth(d) {
   const y = d.getFullYear();
@@ -208,8 +209,11 @@ async function selectDay(dateStr) {
 function selectSlot(dateStr, startTime) {
   selectedDate = dateStr;
   selectedStart = startTime;
+  formLoadedAt = Date.now();
   document.getElementById('bookDate').value = dateStr;
   document.getElementById('bookStart').value = startTime;
+  const formAt = document.getElementById('bookFormAt');
+  if (formAt) formAt.value = String(formLoadedAt);
   const timeSuffix = tr('book.timeUnit');
   document.getElementById('bookingSummary').textContent = `${formatDateLabel(dateStr)}, ${startTime}${timeSuffix}`;
   document.getElementById('bookingFormPanel').style.display = 'block';
@@ -255,6 +259,8 @@ async function submitBooking(e) {
     message: document.getElementById('bookMessage').value,
     date: document.getElementById('bookDate').value,
     startTime: document.getElementById('bookStart').value,
+    website: document.getElementById('bookWebsite')?.value || '',
+    _formAt: Number(document.getElementById('bookFormAt')?.value) || formLoadedAt || 0,
   };
 
   try {

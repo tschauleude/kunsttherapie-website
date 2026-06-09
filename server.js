@@ -4,6 +4,8 @@ const session = require('express-session');
 const sqlite3 = require('sqlite3').verbose();
 const bcryptjs = require('bcryptjs');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
@@ -13,6 +15,7 @@ const media = require('./lib/media');
 require('dotenv').config();
 
 const app = express();
+app.disable('x-powered-by');
 const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, 'public');
@@ -72,10 +75,48 @@ const atelierUpload = multer({
 // MIDDLEWARE
 // ============================================================================
 
+const CSP_DIRECTIVES = {
+  defaultSrc: ["'self'"],
+  imgSrc: ["'self'", 'data:'],
+  styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+  fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+  scriptSrc: ["'self'"],
+  scriptSrcAttr: ["'unsafe-inline'"],
+  connectSrc: ["'self'"],
+  frameSrc: ["'self'", 'https://maps.google.com', 'https://www.google.com'],
+  objectSrc: ["'none'"],
+  baseUri: ["'self'"],
+  frameAncestors: ["'none'"],
+};
+
+app.use(
+  helmet({
+    contentSecurityPolicy: { directives: CSP_DIRECTIVES },
+    crossOriginEmbedderPolicy: false,
+    frameguard: false,
+    hsts: {
+      maxAge: 63072000,
+      includeSubDomains: true,
+      preload: true,
+    },
+  })
+);
+
 const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean)
   : [];
-app.use(cors(corsOrigins.length ? { origin: corsOrigins, credentials: true } : undefined));
+if (corsOrigins.length) {
+  app.use(cors({ origin: corsOrigins, credentials: true }));
+}
+
+const bookingRateLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: parseInt(process.env.BOOKING_RATE_LIMIT || '5', 10),
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Zu viele Buchungsanfragen – bitte in einigen Minuten erneut versuchen.' },
+});
+
 app.use(compression());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -969,11 +1010,30 @@ app.post('/api/contact', async (req, res) => {
   }
 });
 
-app.post('/api/bookings', async (req, res) => {
-  const { name, email, phone, date, startTime, message } = req.body;
+app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
+  const honeypot = String(req.body.website ?? req.body._hp ?? '').trim();
+  if (honeypot) {
+    return res.json({
+      success: true,
+      message: 'Anfrage eingegangen! Die Bestätigung folgt per E-Mail.',
+    });
+  }
+
+  const formAt = Number(req.body._formAt);
+  if (formAt && Date.now() - formAt < 2000) {
+    return res.json({
+      success: true,
+      message: 'Anfrage eingegangen! Die Bestätigung folgt per E-Mail.',
+    });
+  }
+
+  const { name, email, phone, date, startTime, message } = booking.normalizeBookingPayload(req.body);
 
   if (!name || !email || !date || !startTime) {
     return res.status(400).json({ error: 'Name, E-Mail, Datum und Uhrzeit sind erforderlich' });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Ungültige E-Mail-Adresse' });
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(startTime)) {
     return res.status(400).json({ error: 'Ungültiges Datum oder Uhrzeit' });
@@ -1638,7 +1698,7 @@ function sendPage(res, name) {
   if (!fs.existsSync(file)) {
     return res.status(404).send('Seite nicht gefunden');
   }
-  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
   return res.sendFile(file);
 }
 
@@ -1664,6 +1724,7 @@ app.get('/index.html', (req, res) => res.redirect(301, '/'));
 app.get('/admin', (req, res) => {
   const adminFile = path.join(PUBLIC_DIR, 'admin.html');
   const fallback = path.join(ROOT, 'admin.html');
+  res.setHeader('Cache-Control', 'no-cache');
   res.sendFile(fs.existsSync(adminFile) ? adminFile : fallback);
 });
 

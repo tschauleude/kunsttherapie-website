@@ -288,7 +288,7 @@ function patchHtml(coreBundle, cssFile) {
     // Email obfuscation class
     html = html.replace(
       /<a href="mailto:info@kunsttherapie-pb\.de">info@kunsttherapie-pb\.de<\/a>/g,
-      '<a href="#" class="js-email" data-u="info" data-d="kunsttherapie-pb.de" data-i18n="footer.emailLabel">E-Mail schreiben</a>'
+      '<a href="mailto:info@kunsttherapie-pb.de" data-i18n="footer.emailLabel">E-Mail schreiben</a>'
     );
 
     fs.writeFileSync(filePath, html);
