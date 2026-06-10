@@ -1512,6 +1512,19 @@ body.lightbox-open {
   cursor: pointer;
 }
 
+.atelier-options input[type='range'] {
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.atelier-options input[type='range']::-webkit-slider-thumb {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
 .btn-sm {
   padding: 0.45rem 0.85rem;
   font-size: 0.88rem;

@@ -123,6 +123,13 @@ async function testKunsttherapie(browser) {
   await acceptConsent(page);
 
   await page.locator('#angebote').scrollIntoViewIfNeeded();
+  const offerBodyBeforeI18n = await page.evaluate(() => {
+    const body = document.querySelector('.kt-offer-body');
+    return (body?.textContent?.trim().length || 0) > 100;
+  });
+  if (offerBodyBeforeI18n) pass('Offer body has fallback text');
+  else fail('Offer body has fallback text', 'empty before toggle');
+
   await page.locator('#angebote .kt-offer-toggle').first().click();
   await page.waitForTimeout(400);
   const offer = await page.evaluate(() => {
