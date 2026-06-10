@@ -100,6 +100,29 @@ app.use(
   })
 );
 
+/* Admin-Panel: nutzt Inline-Skripte und Google Fonts – ohne gelockerte CSP
+   wäre das komplette Admin (Login, Buttons) blockiert. */
+const ADMIN_CSP = [
+  "default-src 'self'",
+  "img-src 'self' data: blob:",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "script-src 'self' 'unsafe-inline'",
+  "script-src-attr 'unsafe-inline'",
+  "connect-src 'self'",
+  "frame-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
+
+app.use((req, res, next) => {
+  if (req.path === '/admin' || req.path === '/admin.html') {
+    res.setHeader('Content-Security-Policy', ADMIN_CSP);
+  }
+  next();
+});
+
 const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean)
   : [];
@@ -264,6 +287,19 @@ function initializeDatabase() {
         slot TEXT PRIMARY KEY,
         url TEXT NOT NULL,
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    db.run(`
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT,
+        message TEXT NOT NULL,
+        email_sent INTEGER DEFAULT 0,
+        status TEXT DEFAULT 'new',
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -1017,18 +1053,28 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
   }
 
   try {
-    const result = await email.sendContactMessage({
-      name: name.trim(),
-      email: fromEmail.trim(),
-      phone: phone ? phone.trim() : '',
-      message: message.trim(),
-    });
+    /* Nachricht immer zuerst speichern – sie geht nie verloren,
+       auch wenn der E-Mail-Versand (SMTP) nicht konfiguriert ist oder fehlschlägt. */
+    const stored = await dbRun(
+      `INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)`,
+      [name.trim(), fromEmail.trim(), phone ? phone.trim() : null, message.trim()]
+    );
 
-    if (!result.sent) {
-      return res.status(503).json({
-        error:
-          'Nachricht konnte nicht per E-Mail versendet werden. Bitte ruf uns an oder schreib direkt an info@kunsttherapie-pb.de.',
+    let emailSent = false;
+    try {
+      const result = await email.sendContactMessage({
+        name: name.trim(),
+        email: fromEmail.trim(),
+        phone: phone ? phone.trim() : '',
+        message: message.trim(),
       });
+      emailSent = Boolean(result.sent);
+    } catch (mailErr) {
+      console.error('contact email failed:', mailErr.message);
+    }
+
+    if (emailSent) {
+      await dbRun(`UPDATE contact_messages SET email_sent = 1 WHERE id = ?`, [stored.lastID]);
     }
 
     res.json({
@@ -1038,6 +1084,34 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
   } catch (e) {
     console.error('contact error:', e);
     res.status(500).json({ error: 'Nachricht konnte nicht gesendet werden' });
+  }
+});
+
+app.get('/api/admin/contact-messages', requireAuth, (req, res) => {
+  db.all(`SELECT * FROM contact_messages ORDER BY createdAt DESC`, (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Datenbankfehler' });
+    res.json(rows || []);
+  });
+});
+
+app.patch('/api/admin/contact-messages/:id', requireAuth, async (req, res) => {
+  const status = req.body.status === 'read' ? 'read' : 'new';
+  try {
+    await dbRun(`UPDATE contact_messages SET status = ? WHERE id = ?`, [status, req.params.id]);
+    const row = await dbGet(`SELECT * FROM contact_messages WHERE id = ?`, [req.params.id]);
+    if (!row) return res.status(404).json({ error: 'Nachricht nicht gefunden' });
+    res.json(row);
+  } catch (e) {
+    res.status(500).json({ error: 'Datenbankfehler' });
+  }
+});
+
+app.delete('/api/admin/contact-messages/:id', requireAuth, async (req, res) => {
+  try {
+    await dbRun(`DELETE FROM contact_messages WHERE id = ?`, [req.params.id]);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Datenbankfehler' });
   }
 });
 

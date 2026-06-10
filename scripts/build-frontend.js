@@ -56,8 +56,8 @@ const PAGE_I18N = {
 };
 
 const PAGE_EXTRA_SCRIPTS = {
-  index: ['gallery.js', 'quotes.js', 'main.js', 'news.js'],
-  kunsttherapie: ['kunsttherapie.js', 'quotes.js', 'raum-showcase.js'],
+  index: ['gallery.js', 'quotes.js', 'news.js'],
+  kunsttherapie: ['kunsttherapie.js', 'quotes.js', 'gallery.js', 'raum-showcase.js'],
   kontakt: ['contact.js'],
   buchung: ['booking.js'],
   atelier: ['atelier.js'],
@@ -231,6 +231,10 @@ async function optimizeImages() {
     'Sonnige_Pinsel.jpg',
     'atelier-eingang.jpg',
     'martina-portrait.jpg',
+    'methoden-trauer.jpg',
+    'methoden-visionboard.jpg',
+    'methoden-achtsamkeit.jpg',
+    'methoden-flow.jpg',
   ];
   const manifest = {};
 

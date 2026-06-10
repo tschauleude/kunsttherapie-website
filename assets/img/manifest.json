@@ -150,5 +150,57 @@
       }
     ],
     "fallback": "martina-portrait.jpg"
+  },
+  "methoden-trauer.jpg": {
+    "width": 430,
+    "height": 322,
+    "sources": [
+      {
+        "w": 430,
+        "webp": "methoden-trauer-430w.webp"
+      }
+    ],
+    "fallback": "methoden-trauer.jpg"
+  },
+  "methoden-visionboard.jpg": {
+    "width": 674,
+    "height": 468,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "methoden-visionboard-480w.webp"
+      },
+      {
+        "w": 674,
+        "webp": "methoden-visionboard-674w.webp"
+      }
+    ],
+    "fallback": "methoden-visionboard.jpg"
+  },
+  "methoden-achtsamkeit.jpg": {
+    "width": 275,
+    "height": 183,
+    "sources": [
+      {
+        "w": 275,
+        "webp": "methoden-achtsamkeit-275w.webp"
+      }
+    ],
+    "fallback": "methoden-achtsamkeit.jpg"
+  },
+  "methoden-flow.jpg": {
+    "width": 623,
+    "height": 433,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "methoden-flow-480w.webp"
+      },
+      {
+        "w": 623,
+        "webp": "methoden-flow-623w.webp"
+      }
+    ],
+    "fallback": "methoden-flow.jpg"
   }
 }

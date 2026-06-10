@@ -8,6 +8,9 @@
   const HEADER_STEP_MS = 52;
   const SECTION_GAP_MS = 165;
   const INITIAL_DELAY_MS = 90;
+  /* Sicherheitsnetz: Nach spätestens dieser Zeit ist alles sichtbar –
+     auch bei langen Seiten oder schnellem Scrollen. */
+  const FORCE_REVEAL_MS = 2400;
   const SKIP_SELECTOR =
     '.consent-banner, .consent-settings, #newsPopup, .lightbox, [hidden], script, style, noscript';
 
@@ -182,6 +185,10 @@
           });
         })
     );
+
+    window.setTimeout(() => {
+      targets.forEach((el) => revealElement(el));
+    }, FORCE_REVEAL_MS);
   }
 
   window.revealStagger = revealStagger;

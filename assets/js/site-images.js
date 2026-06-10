@@ -28,7 +28,9 @@
   }
 
   function applyGalleryCount(count) {
-    const gallery = document.querySelector('[data-gallery]');
+    /* Nur die Startseiten-Galerie ist in der Anzahl einstellbar –
+       weitere Galerien (z. B. Methoden) behalten alle Bilder. */
+    const gallery = document.querySelector('[data-gallery][data-gallery-adjustable]');
     if (!gallery) return;
 
     const safe = Math.min(6, Math.max(1, Number.parseInt(count, 10) || 6));
@@ -81,7 +83,7 @@
   }
 
   function initGalleryLayout() {
-    const gallery = document.querySelector('[data-gallery]');
+    const gallery = document.querySelector('[data-gallery][data-gallery-adjustable]');
     if (!gallery) return;
     const preset = gallery.dataset.galleryCount;
     applyGalleryCount(preset ? Number(preset) : 6);

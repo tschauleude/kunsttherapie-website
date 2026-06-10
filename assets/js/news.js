@@ -167,6 +167,24 @@ function initNewsPopupControls() {
   document.addEventListener('keydown', (e) => {
     if (!popup.hidden && e.key === 'Escape') closeNewsPopup();
   });
+
+  /* Sofort verdrahten – funktioniert auch, wenn die News noch laden. */
+  const reopenBtn = document.getElementById('openNewsPopupBtn');
+  if (reopenBtn) {
+    reopenBtn.addEventListener('click', async () => {
+      const section = document.getElementById('neuigkeiten');
+      const popupLimit = parseInt(section?.dataset.popupLimit || '2', 10);
+      let items = cachedHomeNews;
+      if (!items.length) {
+        try {
+          items = await fetchPublishedNews();
+        } catch (e) {
+          return;
+        }
+      }
+      if (items.length) openNewsPopup(items.slice(0, popupLimit));
+    });
+  }
 }
 
 async function loadHomeNews() {
@@ -201,11 +219,6 @@ async function loadHomeNews() {
     const popupLimit = parseInt(section.dataset.popupLimit || '2', 10);
     const popupItems = news.slice(0, popupLimit);
     scheduleNewsPopup(popupItems);
-
-    const reopenBtn = document.getElementById('openNewsPopupBtn');
-    if (reopenBtn) {
-      reopenBtn.onclick = () => openNewsPopup(news.slice(0, popupLimit));
-    }
   } catch (err) {
     if (loading) loading.style.display = 'none';
     section.hidden = true;

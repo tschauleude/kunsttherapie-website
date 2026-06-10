@@ -1175,6 +1175,79 @@ details .inner strong {
   }
 }
 
+/* Methoden-Galerie (Kunsttherapie): Bild + Bildunterschrift */
+.methods-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(0.85rem, 2vw, 1.35rem);
+  width: 100%;
+  max-width: min(880px, 94%);
+  margin-inline: auto;
+}
+
+.methods-figure {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.methods-figure .gallery-item.methods-media {
+  border-radius: 0;
+  aspect-ratio: 3/2;
+  max-height: none;
+  box-shadow: none;
+}
+
+.methods-figure .gallery-item.methods-media:hover,
+.methods-figure .gallery-item.methods-media:focus-visible {
+  transform: none;
+  box-shadow: none;
+}
+
+.methods-figure:has(.methods-media:hover),
+.methods-figure:has(.methods-media:focus-visible) {
+  box-shadow: 0 14px 36px rgba(85, 122, 118, 0.24);
+  transform: translateY(-3px);
+}
+
+.methods-figure {
+  transition:
+    box-shadow var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
+}
+
+.methods-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.9rem 1.1rem 1.05rem;
+}
+
+.methods-caption strong {
+  color: var(--color-teal-dark);
+  font-size: 1.02rem;
+}
+
+.methods-caption span {
+  color: var(--text-light);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .methods-gallery {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
+  .methods-figure .gallery-item.methods-media {
+    aspect-ratio: 16/10;
+    max-height: none;
+  }
+}
+
 /* Lightbox – Bilder beim Klick deutlich größer */
 body.lightbox-open {
   overflow: hidden;
@@ -3730,10 +3803,11 @@ nav a[aria-current='page'] {
 }
 
 /* === Sequenzielles Einblenden (reveal.js) === */
+/* Wichtig: kein pointer-events:none – Buttons/Links bleiben während
+   der Einblend-Animation jederzeit klickbar. */
 html.reveal-active .reveal-item {
   opacity: 0;
   transform: translateY(0.85rem);
-  pointer-events: none;
   transition:
     opacity var(--duration-flow) var(--ease-flow),
     transform var(--duration-flow) var(--ease-flow);
@@ -3743,7 +3817,6 @@ html.reveal-active .reveal-item {
 html.reveal-active .reveal-item.reveal-visible {
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
 }
 
 /* === Nach-oben-Button (scroll-top.js) === */

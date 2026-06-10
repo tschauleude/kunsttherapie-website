@@ -65,6 +65,7 @@
     <div class="nav-item" onclick="switchSection('images', this)">Bilder</div>
     <div class="nav-item" onclick="switchSection('texts', this)">Website-Texte</div>
     <div class="nav-item" onclick="switchSection('bookings', this)">Buchungen</div>
+    <div class="nav-item" onclick="switchSection('messages', this)">Nachrichten</div>
     <div class="nav-item" onclick="switchSection('atelier', this)">Mini-Atelier</div>
     <div class="nav-item" onclick="switchSection('events', this)">Veranstaltungen</div>
     <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
@@ -214,6 +215,12 @@
 
       <h2 style="margin-top:2rem">Alle Buchungen</h2>
       <div id="bookingsList" class="items-list"></div>
+    </section>
+
+    <section class="admin-section" id="messages">
+      <h1>Kontakt-Nachrichten</h1>
+      <p class="sub section-desc">Nachrichten aus dem Kontaktformular. Sie werden hier immer gespeichert – auch wenn der E-Mail-Versand nicht eingerichtet ist.</p>
+      <div id="messagesList" class="items-list"></div>
     </section>
 
     <section class="admin-section" id="atelier">
@@ -522,6 +529,7 @@ function switchSection(sectionId, navEl) {
     loadBookingsList();
     loadGoogleStatus();
   }
+  if (sectionId === 'messages') loadMessagesList();
   if (sectionId === 'atelier') loadAtelierList();
   if (sectionId === 'events') loadEventsList();
   if (sectionId === 'images') loadSiteImagesList();
@@ -1591,6 +1599,73 @@ async function loadBookingsList() {
       html || '<div style="padding: 20px; text-align: center; color: #999;">Noch keine Buchungen</div>';
   } catch (err) {
     console.error('Error loading bookings:', err);
+  }
+}
+
+async function loadMessagesList() {
+  const list = document.getElementById('messagesList');
+  if (!list) return;
+  try {
+    const response = await fetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' });
+    const messages = await response.json();
+
+    const html = messages
+      .map((item) => {
+        const date = new Date(item.createdAt).toLocaleString('de-DE', {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        });
+        const isNew = item.status === 'new';
+        return `
+        <div class="item">
+          <div class="item-info">
+            <h3>${escapeHtml(item.name)}${isNew ? ' · <span style="color:#c0392b">Neu</span>' : ''}</h3>
+            <p>${date} | <a href="mailto:${escapeHtml(item.email)}">${escapeHtml(item.email)}</a>${item.phone ? ' | ' + escapeHtml(item.phone) : ''}${item.email_sent ? '' : ' | <em>nicht per E-Mail weitergeleitet</em>'}</p>
+            <p style="white-space:pre-wrap">${escapeHtml(item.message)}</p>
+          </div>
+          <div class="item-actions">
+            ${isNew ? `<button class="btn-small btn-edit" onclick="markMessageRead(${item.id})">Gelesen</button>` : ''}
+            <button class="btn-small btn-delete" onclick="deleteContactMessage(${item.id})">Löschen</button>
+          </div>
+        </div>
+      `;
+      })
+      .join('');
+
+    list.innerHTML =
+      html || '<div style="padding: 20px; text-align: center; color: #999;">Noch keine Nachrichten</div>';
+  } catch (err) {
+    console.error('Error loading messages:', err);
+  }
+}
+
+async function markMessageRead(id) {
+  try {
+    const response = await fetch(`${API_URL}/admin/contact-messages/${id}`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'read' }),
+    });
+    if (response.ok) loadMessagesList();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function deleteContactMessage(id) {
+  if (!confirm('Nachricht endgültig löschen?')) return;
+  try {
+    const response = await fetch(`${API_URL}/admin/contact-messages/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (response.ok) {
+      showMessage('Gelöscht', 'success');
+      loadMessagesList();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
   }
 }
 

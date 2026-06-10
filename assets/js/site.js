@@ -260,15 +260,21 @@
   function initMobileNav() {
     const header = document.querySelector('header .header-inner');
     const nav = document.querySelector('nav[data-site-nav]');
-    if (!header || !nav || header.querySelector('.nav-toggle')) return;
+    if (!header || !nav) return;
 
-    const toggle = document.createElement('button');
-    toggle.type = 'button';
-    toggle.className = 'nav-toggle';
+    /* Statischen Button aus dem HTML wiederverwenden, sonst erzeugen. */
+    let toggle = header.querySelector('.nav-toggle');
+    if (toggle && toggle.dataset.navBound === '1') return;
+
+    if (!toggle) {
+      toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'nav-toggle';
+      toggle.innerHTML =
+        '<span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-label">Menü</span>';
+    }
+    toggle.dataset.navBound = '1';
     toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-controls', 'site-nav');
-    toggle.innerHTML =
-      '<span class="nav-toggle-bar" aria-hidden="true"></span><span class="nav-toggle-label">Menü</span>';
 
     const navId = nav.id || 'site-nav';
     nav.id = navId;
@@ -283,11 +289,13 @@
       document.body.appendChild(backdrop);
     }
 
-    const tools = header.querySelector('.header-tools');
-    if (tools) {
-      tools.appendChild(toggle);
-    } else {
-      header.insertBefore(toggle, nav);
+    if (!toggle.isConnected) {
+      const tools = header.querySelector('.header-tools');
+      if (tools) {
+        tools.appendChild(toggle);
+      } else {
+        header.insertBefore(toggle, nav);
+      }
     }
 
     function setNavOpen(open) {
