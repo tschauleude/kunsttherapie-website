@@ -113,6 +113,7 @@
     document.documentElement.lang = currentLang === 'en' ? 'en' : 'de';
 
     document.querySelectorAll('[data-i18n]').forEach((el) => {
+      if (el.hasAttribute('data-i18n-dynamic')) return;
       const key = el.getAttribute('data-i18n');
       const val = t(key);
       if (val == null) return;

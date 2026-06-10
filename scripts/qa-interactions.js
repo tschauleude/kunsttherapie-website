@@ -123,18 +123,34 @@ async function testKunsttherapie(browser) {
   await acceptConsent(page);
 
   await page.locator('#angebote').scrollIntoViewIfNeeded();
-  await page.locator('#angebote .kt-offer-head').first().click();
+  const offerBodyBeforeI18n = await page.evaluate(() => {
+    const body = document.querySelector('.kt-offer-body');
+    return (body?.textContent?.trim().length || 0) > 100;
+  });
+  if (offerBodyBeforeI18n) pass('Offer body has fallback text');
+  else fail('Offer body has fallback text', 'empty before toggle');
+
+  await page.locator('#angebote .kt-offer-toggle').first().click();
   await page.waitForTimeout(400);
   const offer = await page.evaluate(() => {
     const d = document.querySelector('details[data-offer]');
     return {
       open: d?.open,
-      label: d?.querySelector('.kt-toggle-label')?.textContent?.trim(),
+      label: d?.querySelector('.kt-offer-toggle')?.textContent?.trim(),
       h: d?.querySelector('.kt-offer-body')?.getBoundingClientRect().height || 0,
     };
   });
-  if (offer.open && offer.h > 50 && offer.label) pass('Offer card toggle');
-  else fail('Offer card toggle', JSON.stringify(offer));
+  if (offer.open && offer.h > 50 && offer.label && /weniger|less/i.test(offer.label)) {
+    pass('Offer card toggle');
+  } else fail('Offer card toggle', JSON.stringify(offer));
+
+  await page.locator('[data-quote-next]').first().click();
+  await page.waitForTimeout(400);
+  const quoteNext = await page.evaluate(
+    () => document.querySelectorAll('[data-quote-slide]')[1]?.classList.contains('is-active')
+  );
+  if (quoteNext) pass('Quote next arrow');
+  else fail('Quote next arrow');
 
   await page.locator('#faq .kt-details summary').first().click();
   await page.waitForTimeout(200);

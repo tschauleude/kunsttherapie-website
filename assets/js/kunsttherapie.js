@@ -1,5 +1,5 @@
 /**
- * Angebots-Karten: native <details> + Akkordeon (nur eine Karte offen).
+ * Angebots-Karten: <details> + eigener Toggle-Button + Akkordeon.
  */
 (function () {
   function initOfferToggles() {
@@ -25,10 +25,21 @@
       return v || 'Weniger';
     }
 
-    function updateLabel(details) {
-      const label = details.querySelector('.kt-toggle-label');
-      if (!label) return;
-      label.textContent = details.open ? labelLess() : labelLearn();
+    function ensureOfferBody(details) {
+      const body = details.querySelector('.kt-offer-body');
+      if (!body || body.textContent.trim()) return;
+      const key = body.getAttribute('data-i18n-html');
+      if (!key) return;
+      const html = window.ktI18n?.t(key);
+      if (html) body.innerHTML = html;
+    }
+
+    function updateToggle(details) {
+      const btn = details.querySelector('.kt-offer-toggle');
+      if (!btn) return;
+      const text = details.open ? labelLess() : labelLearn();
+      btn.textContent = text || (details.open ? 'Weniger' : 'Mehr erfahren');
+      btn.setAttribute('aria-expanded', details.open ? 'true' : 'false');
     }
 
     function scrollOfferIntoView(card) {
@@ -60,24 +71,49 @@
       offersWrap.classList.toggle('kt-offers--has-open', !!anyOpen);
     }
 
+    function closeOthers(except) {
+      offers.forEach((other) => {
+        if (other !== except && other.open) other.open = false;
+      });
+    }
+
+    function setOpen(details, open) {
+      ensureOfferBody(details);
+      if (open) {
+        closeOthers(details);
+        details.open = true;
+        requestAnimationFrame(() => scrollOfferIntoView(details));
+      } else {
+        details.open = false;
+      }
+      updateToggle(details);
+      syncOffersLayout();
+    }
+
     window.ktUpdateToggleLabels = function () {
-      offers.forEach(updateLabel);
+      offers.forEach((details) => {
+        ensureOfferBody(details);
+        updateToggle(details);
+      });
     };
 
     offers.forEach((details) => {
-      updateLabel(details);
+      ensureOfferBody(details);
+      updateToggle(details);
+
+      const btn = details.querySelector('.kt-offer-toggle');
+      btn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setOpen(details, !details.open);
+      });
 
       details.addEventListener('toggle', () => {
-        updateLabel(details);
-
-        if (details.open) {
-          offers.forEach((other) => {
-            if (other !== details && other.open) other.open = false;
-          });
-          requestAnimationFrame(() => scrollOfferIntoView(details));
-        }
-
+        ensureOfferBody(details);
+        if (details.open) closeOthers(details);
+        updateToggle(details);
         syncOffersLayout();
+        if (details.open) requestAnimationFrame(() => scrollOfferIntoView(details));
       });
     });
 
