@@ -51,12 +51,12 @@
 
 :root {
   color-scheme: light;
-  --bg-main: #f4f1ea;
-  --bg-card: rgba(255, 255, 255, 0.9);
-  --bg-surface: rgba(255, 255, 255, 0.72);
-  --bg-paint-opacity: 0.46;
-  --text-main: #4a4a4a;
-  --text-light: #7a7a7a;
+  --bg-main: #f2efe8;
+  --bg-card: rgba(255, 255, 255, 0.92);
+  --bg-surface: rgba(255, 255, 255, 0.76);
+  --bg-paint-opacity: 0.5;
+  --text-main: #3d3d3d;
+  --text-light: #767676;
   --color-teal: #4a6e6a;
   --color-teal-dark: #3a5855;
   --color-rose: #d18d89;
@@ -68,13 +68,19 @@
   --font-accent: var(--font-body);
   --ease-flow: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
-  --duration-flow: 0.62s;
-  --duration-tap: 0.18s;
-  --radius-organic: 14px;
-  --radius-card: 14px;
+  --duration-flow: 0.55s;
+  --duration-tap: 0.15s;
+  --radius-organic: 18px;
+  --radius-card: 20px;
   --radius-pill: 50px;
   --max: 1100px;
-  --section-pad: clamp(2.75rem, 5.5vw, 4.25rem);
+  --section-pad: clamp(3rem, 6vw, 4.5rem);
+
+  /* Shadow system – multi-layer for depth */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05), 0 0 0 1px rgba(255,255,255,0.65) inset;
+  --shadow: 0 8px 32px rgba(0,0,0,0.055), 0 2px 8px rgba(0,0,0,0.04), 0 0 0 1px rgba(255,255,255,0.7) inset;
+  --shadow-lg: 0 20px 50px rgba(0,0,0,0.09), 0 6px 18px rgba(0,0,0,0.05), 0 0 0 1px rgba(255,255,255,0.7) inset;
+  --shadow-float: 0 28px 60px rgba(0,0,0,0.1), 0 8px 22px rgba(0,0,0,0.06);
 
   /* legacy aliases */
   --text: var(--text-main);
@@ -83,8 +89,7 @@
   --accent: var(--color-rose);
   --bg: var(--bg-main);
   --card-bg: #fff;
-  --line: rgba(85, 122, 118, 0.15);
-  --shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+  --line: rgba(85, 122, 118, 0.14);
   --radius: 20px;
   --font: var(--font-body);
 }
@@ -131,32 +136,37 @@ body:not(.admin-app)::before {
   pointer-events: none;
   opacity: var(--bg-paint-opacity);
   background:
-    radial-gradient(ellipse 90% 55% at 58% 48%, rgba(212, 168, 72, 0.38) 0%, transparent 58%),
-    radial-gradient(ellipse 70% 45% at 22% 72%, rgba(28, 95, 118, 0.45) 0%, transparent 62%),
-    radial-gradient(ellipse 80% 50% at 78% 82%, rgba(18, 48, 82, 0.42) 0%, transparent 55%),
+    radial-gradient(ellipse 95% 60% at 60% 42%, rgba(212, 168, 72, 0.42) 0%, transparent 55%),
+    radial-gradient(ellipse 75% 50% at 20% 68%, rgba(28, 95, 118, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse 85% 55% at 80% 85%, rgba(18, 48, 82, 0.46) 0%, transparent 52%),
+    radial-gradient(ellipse 55% 40% at 88% 18%, rgba(209, 141, 137, 0.28) 0%, transparent 55%),
     linear-gradient(
       0deg,
-      rgba(10, 28, 52, 0.55) 0%,
-      rgba(16, 58, 88, 0.42) 14%,
-      rgba(32, 108, 118, 0.36) 30%,
-      rgba(72, 140, 132, 0.28) 42%,
-      rgba(168, 132, 58, 0.32) 52%,
-      rgba(218, 178, 88, 0.26) 58%,
-      rgba(235, 220, 185, 0.22) 68%,
-      rgba(245, 240, 232, 0.38) 82%,
-      rgba(252, 250, 246, 0.52) 100%
+      rgba(10, 28, 52, 0.58) 0%,
+      rgba(16, 58, 88, 0.46) 14%,
+      rgba(32, 108, 118, 0.38) 30%,
+      rgba(72, 140, 132, 0.3) 42%,
+      rgba(168, 132, 58, 0.35) 52%,
+      rgba(218, 178, 88, 0.28) 58%,
+      rgba(235, 220, 185, 0.24) 68%,
+      rgba(245, 240, 232, 0.4) 82%,
+      rgba(252, 250, 246, 0.55) 100%
     );
-  animation: pagePaintDrift 32s ease-in-out infinite alternate;
+  animation: pagePaintDrift 36s ease-in-out infinite alternate;
 }
 
 @keyframes pagePaintDrift {
   0% {
-    opacity: calc(var(--bg-paint-opacity) * 0.9);
+    opacity: calc(var(--bg-paint-opacity) * 0.88);
     transform: scale(1) translate(0, 0);
+  }
+  33% {
+    opacity: calc(var(--bg-paint-opacity) * 0.96);
+    transform: scale(1.02) translate(-0.6%, 0.4%);
   }
   100% {
     opacity: var(--bg-paint-opacity);
-    transform: scale(1.04) translate(-1.2%, 0.8%);
+    transform: scale(1.05) translate(-1.5%, 0.9%);
   }
 }
 
@@ -230,12 +240,15 @@ header.header-scrolled {
   flex-wrap: wrap;
   gap: 1.25rem;
   background: var(--bg-surface);
-  padding: 0.85rem 1.75rem;
+  padding: 0.9rem 1.85rem;
   border-radius: var(--radius-pill);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.06),
+    0 1px 3px rgba(0,0,0,0.04),
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  border: 1px solid rgba(255, 255, 255, 0.8);
   transition:
     padding var(--duration-flow) var(--ease-flow),
     box-shadow var(--duration-flow) var(--ease-flow),
@@ -243,9 +256,12 @@ header.header-scrolled {
 }
 
 header.header-scrolled .header-inner {
-  padding: 0.65rem 1.45rem;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.09);
+  padding: 0.65rem 1.55rem;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0,0,0,0.05),
+    0 0 0 1px rgba(255,255,255,0.85) inset;
 }
 
 .brand.logo-text,
@@ -432,12 +448,24 @@ nav a.nav-cta[aria-current="page"] {
 .contact-form input,
 .contact-form textarea {
   width: 100%;
-  padding: 0.65rem 0.85rem;
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid rgba(85, 122, 118, 0.18);
+  border-radius: 14px;
   font-family: inherit;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03), 0 0 0 1px rgba(255,255,255,0.6) inset;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--color-teal);
+  background: rgba(255,255,255,0.96);
+  box-shadow: 0 0 0 3px rgba(74, 110, 106, 0.1), 0 2px 8px rgba(0,0,0,0.03);
+  outline: none;
 }
 
 .contact-form input:focus-visible,
@@ -727,11 +755,14 @@ span.price-hint-pill {
   color: var(--color-teal-dark);
 }
 
-/* === BUTTONS === */
+/* === BUTTONS – Haptic & Float === */
 .btn {
-  display: inline-block;
-  padding: 0.85rem 2rem;
-  background-color: var(--color-teal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.9rem 2.1rem;
+  background: linear-gradient(145deg, var(--color-teal) 0%, var(--color-teal-dark) 100%);
   color: #fff;
   border: none;
   border-radius: var(--radius-pill);
@@ -740,40 +771,70 @@ span.price-hint-pill {
   font-family: var(--font-body);
   cursor: pointer;
   touch-action: manipulation;
+  will-change: transform, box-shadow;
   transition:
-    transform var(--duration-tap) var(--ease-flow),
-    background-color var(--duration-flow) var(--ease-flow),
-    box-shadow var(--duration-flow) var(--ease-flow),
-    border-color var(--duration-flow) var(--ease-flow);
-  box-shadow: 0 10px 20px rgba(85, 122, 118, 0.18);
+    transform 0.22s cubic-bezier(0.34, 1.45, 0.64, 1),
+    box-shadow 0.28s var(--ease-flow),
+    background-color 0.28s var(--ease-flow);
+  box-shadow:
+    0 6px 18px rgba(74, 110, 106, 0.28),
+    0 2px 6px rgba(74, 110, 106, 0.18),
+    0 0 0 1px rgba(255,255,255,0.15) inset;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer overlay on hover */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 60%);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  pointer-events: none;
 }
 
 .btn:hover {
-  transform: translateY(-2px);
-  background-color: var(--color-teal-dark);
-  box-shadow: 0 14px 28px rgba(85, 122, 118, 0.28);
+  transform: translateY(-3px);
+  box-shadow:
+    0 12px 28px rgba(74, 110, 106, 0.35),
+    0 4px 10px rgba(74, 110, 106, 0.22),
+    0 0 0 1px rgba(255,255,255,0.2) inset;
+}
+
+.btn:hover::after {
+  opacity: 1;
 }
 
 .btn:active {
-  transform: translateY(0) scale(0.98);
-  transition-duration: 0.08s;
+  transform: translateY(0) scale(0.97);
+  transition-duration: 0.09s;
+  box-shadow:
+    0 3px 10px rgba(74, 110, 106, 0.25),
+    0 1px 4px rgba(74, 110, 106, 0.15);
 }
 
 .btn.primary {
-  background-color: var(--color-teal);
+  background: linear-gradient(145deg, var(--color-teal) 0%, var(--color-teal-dark) 100%);
   color: #fff;
 }
 
 .btn.outline {
-  background: transparent;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--color-teal);
-  border: 2px solid var(--color-teal);
-  box-shadow: none;
+  border: 2px solid rgba(74, 110, 106, 0.4);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 0 0 1px rgba(255,255,255,0.6) inset;
 }
 
 .btn.outline:hover {
-  background: rgba(85, 122, 118, 0.08);
+  background: rgba(255,255,255,0.9);
+  border-color: var(--color-teal);
+  box-shadow: 0 6px 18px rgba(74, 110, 106, 0.15), 0 0 0 1px rgba(255,255,255,0.8) inset;
 }
 
 .btn.ghost {
@@ -782,12 +843,17 @@ span.price-hint-pill {
   border: none;
   box-shadow: none;
   padding: 0.85rem 1rem;
+  backdrop-filter: none;
 }
 
 .btn.ghost:hover {
   background: rgba(85, 122, 118, 0.08);
   transform: none;
   box-shadow: none;
+}
+
+.btn.ghost::after {
+  display: none;
 }
 
 .hero-copy .actions {
@@ -811,25 +877,46 @@ span.price-hint-pill {
   justify-content: center;
 }
 
-/* === CARDS (organisch) === */
+/* === CARDS (Glassmorphism + Float) === */
 .card {
   background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
   padding: clamp(2rem, 4vw, 3rem) clamp(1.75rem, 3vw, 2.5rem);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow);
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  position: relative;
+}
+
+/* Glasshighlight-Streifen oben */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    160deg,
+    rgba(255,255,255,0.45) 0%,
+    rgba(255,255,255,0) 45%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card > * {
+  position: relative;
+  z-index: 1;
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .card,
   .header-inner {
-    background: rgba(255, 255, 255, 0.96);
+    background: rgba(255, 255, 255, 0.97);
   }
 }
 
-/* Karten: beim Hover keine Ecken-, Größen- oder Positionsänderung */
+/* Karten: ruhig beim Standard-Hover */
 .card:hover,
 .card:focus-within {
   border-radius: var(--radius-card);
@@ -845,13 +932,13 @@ span.price-hint-pill {
 /* Lesbarkeit: freistehende Intro-Texte auf dem Verlauf */
 .page-hero,
 .section-intro {
-  padding: clamp(1rem, 3vw, 1.5rem);
+  padding: clamp(1.25rem, 3vw, 1.75rem);
   border-radius: var(--radius-card);
   background: var(--bg-surface);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow);
 }
 
 .section-intro h1,
@@ -889,23 +976,27 @@ span.price-hint-pill {
 .card--clickable {
   cursor: pointer;
   touch-action: manipulation;
+  will-change: transform, box-shadow;
   transition:
-    transform var(--duration-tap) var(--ease-flow),
-    box-shadow var(--duration-flow) var(--ease-flow),
-    border-color var(--duration-flow) var(--ease-flow);
+    transform 0.32s cubic-bezier(0.34, 1.45, 0.64, 1),
+    box-shadow 0.32s var(--ease-flow),
+    border-color 0.32s var(--ease-flow);
 }
 
 .card--clickable:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(85, 122, 118, 0.14);
+  transform: translateY(-5px) scale(1.005);
+  box-shadow: var(--shadow-float);
+  border-color: rgba(255,255,255,0.9);
 }
 
 .card--clickable:active {
-  transform: translateY(0) scale(0.995);
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: 0.1s;
+  box-shadow: var(--shadow);
 }
 
 .card--clickable:focus-visible {
-  outline: 2px solid var(--color-teal);
+  outline: 2.5px solid var(--color-teal);
   outline-offset: 3px;
 }
 
@@ -1438,13 +1529,16 @@ body.lightbox-open {
 
 .pill {
   display: inline-block;
-  padding: 0.3rem 0.75rem;
+  padding: 0.35rem 0.85rem;
   border-radius: var(--radius-pill);
-  background: rgba(162, 212, 196, 0.35);
+  background: rgba(162, 212, 196, 0.3);
   color: var(--color-teal-dark);
-  font-weight: 600;
-  font-size: 0.78rem;
+  font-weight: 700;
+  font-size: 0.76rem;
+  letter-spacing: 0.03em;
   margin-bottom: 0.35rem;
+  border: 1px solid rgba(74, 110, 106, 0.18);
+  box-shadow: 0 1px 4px rgba(74, 110, 106, 0.1);
 }
 
 /* Mini-Atelier */
@@ -1804,11 +1898,12 @@ table.prices th {
 .site-footer,
 .footer {
   margin-top: auto;
-  background: var(--bg-surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
   padding: 3.5rem 0 1.5rem;
-  border-top: 2px dashed rgba(85, 122, 118, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.04), 0 0 0 1px rgba(255,255,255,0.6) inset;
   font-size: 0.9rem;
   position: relative;
   z-index: 10;
@@ -2352,8 +2447,9 @@ body.consent-banner-visible {
 .news-popup-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(24, 22, 20, 0.55);
-  backdrop-filter: blur(4px);
+  background: rgba(16, 18, 18, 0.6);
+  backdrop-filter: blur(10px) saturate(1.3);
+  -webkit-backdrop-filter: blur(10px) saturate(1.3);
   opacity: 0;
   transition: opacity var(--duration-flow) var(--ease-flow);
 }
@@ -2371,10 +2467,11 @@ body.consent-banner-visible {
   padding: clamp(1.5rem, 4vw, 2rem);
   margin: 0;
   opacity: 0;
-  transform: translateY(1.1rem) scale(0.97);
+  transform: translateY(1.5rem) scale(0.96);
   transition:
-    opacity var(--duration-flow) var(--ease-flow),
-    transform var(--duration-flow) var(--ease-flow);
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.34, 1.45, 0.64, 1);
+  box-shadow: var(--shadow-float), 0 0 0 1px rgba(255,255,255,0.6) inset;
 }
 
 .news-popup.news-popup-visible .news-popup-panel {
