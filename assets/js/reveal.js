@@ -25,10 +25,11 @@
     if (el.matches(SKIP_SELECTOR)) return true;
     if (el.closest(SKIP_SELECTOR)) return true;
     if (el.closest('[data-reveal-skip]')) return true;
+    if (el.closest('[data-gallery]')) return true;
     /* Klickbare Karten/Buttons nicht blockieren (pointer-events während Reveal) */
     if (
       el.matches(
-        '.card--clickable, .card-hit-area, button, a.btn, [data-gallery-open], [data-quote-prev], [data-quote-next], [data-quote-dot], .quote-arrow, .quote-nav'
+        '.card--clickable, .card-hit-area, button, a.btn, .gallery-item, [data-gallery-open], [data-quote-prev], [data-quote-next], [data-quote-dot], .quote-arrow, .quote-nav'
       )
     ) {
       return true;

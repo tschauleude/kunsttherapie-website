@@ -2,6 +2,9 @@
  * Startseiten-Galerie: Lightbox mit Vorschaustreifen, Wischgesten und Tastatur.
  */
 (function () {
+  if (window.__ktGalleryInit) return;
+  window.__ktGalleryInit = true;
+
   const gallery = document.querySelector('[data-gallery]');
   if (!gallery) return;
 
@@ -182,14 +185,31 @@
     }
   }
 
-  gallery.querySelectorAll('[data-gallery-open]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      lastFocus = btn;
-      buildThumbs();
-      const slides = getSlides();
-      const slideIndex = slides.findIndex((s) => s.btn === btn);
-      if (slideIndex >= 0) show(slideIndex);
-    });
+  function openFromButton(btn) {
+    if (!btn || btn.hidden) return;
+    lastFocus = btn;
+    buildThumbs();
+    const slides = getSlides();
+    const slideIndex = slides.findIndex((s) => s.btn === btn);
+    if (slideIndex >= 0) {
+      // Gleicher Klick soll die Lightbox nicht sofort wieder schließen.
+      requestAnimationFrame(() => show(slideIndex));
+    }
+  }
+
+  gallery.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-gallery-open]');
+    if (!btn || !gallery.contains(btn)) return;
+    e.preventDefault();
+    openFromButton(btn);
+  });
+
+  gallery.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const btn = e.target.closest('[data-gallery-open]');
+    if (!btn || !gallery.contains(btn)) return;
+    e.preventDefault();
+    openFromButton(btn);
   });
 
   btnClose.addEventListener('click', close);

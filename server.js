@@ -12,6 +12,7 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const siteImages = require('./lib/site-images');
 const media = require('./lib/media');
+const contentVersions = require('./lib/content-versions');
 require('dotenv').config();
 
 const app = express();
@@ -278,6 +279,18 @@ function initializeDatabase() {
         active INTEGER DEFAULT 1,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    db.run(`
+      CREATE TABLE IF NOT EXISTS content_versions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        kind TEXT NOT NULL,
+        label TEXT NOT NULL,
+        snapshot TEXT NOT NULL,
+        meta TEXT,
+        createdBy TEXT,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `, (err) => {
       if (err) {
@@ -1297,6 +1310,12 @@ app.get('/api/admin/site-images', requireAuth, async (req, res) => {
 
 app.put('/api/admin/site-images/gallery-count', requireAuth, async (req, res) => {
   try {
+    await contentVersions.snapshotBeforeChange(dbRun, dbGet, dbAll, {
+      kind: 'site_images',
+      label: `Galerie-Anzahl (${req.body?.galleryCount ?? '?'})`,
+      createdBy: req.session.username || null,
+      meta: { action: 'gallery_count' },
+    });
     const galleryCount = await siteImages.setGalleryCount(dbRun, req.body?.galleryCount);
     res.json({ success: true, galleryCount });
   } catch (e) {
@@ -1308,6 +1327,12 @@ app.put('/api/admin/site-images/:slot', requireAuth, async (req, res) => {
   const { slot } = req.params;
   const { url } = req.body || {};
   try {
+    await contentVersions.snapshotBeforeChange(dbRun, dbGet, dbAll, {
+      kind: 'site_images',
+      label: `Bild: ${slot}`,
+      createdBy: req.session.username || null,
+      meta: { action: 'set_slot', slot },
+    });
     const saved = await siteImages.setSlotUrl(dbGet, dbRun, slot, url, UPLOAD_DIR);
     res.json({ success: true, ...saved });
   } catch (e) {
@@ -1330,6 +1355,12 @@ app.post('/api/admin/site-images/:slot/upload', requireAuth, (req, res) => {
     }
 
     try {
+      await contentVersions.snapshotBeforeChange(dbRun, dbGet, dbAll, {
+        kind: 'site_images',
+        label: `Upload: ${slot}`,
+        createdBy: req.session.username || null,
+        meta: { action: 'upload', slot },
+      });
       const url = `/uploads/${req.file.filename}`;
       const saved = await siteImages.setSlotUrl(dbGet, dbRun, slot, url, UPLOAD_DIR);
       res.json({ success: true, url, ...saved });
@@ -1349,6 +1380,12 @@ app.post('/api/admin/site-images/:slot/upload', requireAuth, (req, res) => {
 app.delete('/api/admin/site-images/:slot', requireAuth, async (req, res) => {
   const { slot } = req.params;
   try {
+    await contentVersions.snapshotBeforeChange(dbRun, dbGet, dbAll, {
+      kind: 'site_images',
+      label: `Zurücksetzen: ${slot}`,
+      createdBy: req.session.username || null,
+      meta: { action: 'reset', slot },
+    });
     const reset = await siteImages.resetSlot(dbGet, dbRun, slot, UPLOAD_DIR);
     res.json({ success: true, ...reset });
   } catch (e) {
@@ -1467,6 +1504,13 @@ app.put('/api/admin/i18n/:groupId', requireAuth, async (req, res) => {
   if (errMsg) return res.status(400).json({ error: errMsg });
 
   try {
+    const group = i18nContent.CATALOG.find((g) => g.id === groupId);
+    await contentVersions.snapshotBeforeChange(dbRun, dbGet, dbAll, {
+      kind: 'i18n',
+      label: `Texte: ${group?.title || groupId} (${lang || 'de'})`,
+      createdBy: req.session.username || null,
+      meta: { action: 'save', groupId, lang },
+    });
     const saved = await i18nContent.saveGroupOverrides(dbGet, dbRun, groupId, lang, values);
     res.json({ success: true, overrides: i18nContent.mergeOverridesForPublic(saved) });
   } catch (e) {
@@ -1482,11 +1526,69 @@ app.delete('/api/admin/i18n/:groupId', requireAuth, async (req, res) => {
     return res.status(404).json({ error: 'Gruppe nicht gefunden' });
   }
   try {
+    const group = i18nContent.CATALOG.find((g) => g.id === groupId);
+    await contentVersions.snapshotBeforeChange(dbRun, dbGet, dbAll, {
+      kind: 'i18n',
+      label: `Texte zurückgesetzt: ${group?.title || groupId} (${lang})`,
+      createdBy: req.session.username || null,
+      meta: { action: 'reset', groupId, lang },
+    });
     const saved = await i18nContent.resetGroupOverrides(dbGet, dbRun, groupId, lang);
     res.json({ success: true, overrides: i18nContent.mergeOverridesForPublic(saved) });
   } catch (e) {
     console.error('admin i18n reset:', e.message);
     res.status(500).json({ error: 'Zurücksetzen fehlgeschlagen' });
+  }
+});
+
+// ============================================================================
+// CONTENT VERSIONS (Rollback)
+// ============================================================================
+
+app.get('/api/admin/content-versions', requireAuth, async (req, res) => {
+  try {
+    const kind = typeof req.query.kind === 'string' ? req.query.kind : undefined;
+    const versions = await contentVersions.listVersions(dbAll, {
+      kind,
+      limit: req.query.limit,
+    });
+    res.json({ versions, kinds: contentVersions.KINDS, maxVersions: contentVersions.MAX_VERSIONS });
+  } catch (e) {
+    console.error('content-versions list:', e.message);
+    res.status(500).json({ error: 'Versionen konnten nicht geladen werden' });
+  }
+});
+
+app.post('/api/admin/content-versions/snapshot', requireAuth, async (req, res) => {
+  try {
+    const label = req.body?.label || 'Manueller Sicherungspunkt';
+    const id = await contentVersions.createVersion(dbRun, {
+      kind: 'content_bundle',
+      label,
+      snapshot: await contentVersions.captureBundle(dbGet, dbAll),
+      createdBy: req.session.username || null,
+      meta: { action: 'manual_snapshot' },
+    });
+    res.json({ success: true, id });
+  } catch (e) {
+    console.error('content-versions snapshot:', e.message);
+    res.status(500).json({ error: e.message || 'Sicherung fehlgeschlagen' });
+  }
+});
+
+app.post('/api/admin/content-versions/:id/restore', requireAuth, async (req, res) => {
+  const id = Number.parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) {
+    return res.status(400).json({ error: 'Ungültige Versions-ID' });
+  }
+  try {
+    const result = await contentVersions.restoreVersion(dbGet, dbRun, dbAll, id, {
+      createdBy: req.session.username || null,
+    });
+    res.json({ success: true, ...result });
+  } catch (e) {
+    console.error('content-versions restore:', e.message);
+    res.status(400).json({ error: e.message || 'Wiederherstellung fehlgeschlagen' });
   }
 });
 

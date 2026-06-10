@@ -993,6 +993,7 @@ details .inner strong {
 
 .gallery-item {
   position: relative;
+  z-index: 1;
   overflow: hidden;
   border-radius: var(--radius-card);
   aspect-ratio: 4/3;
@@ -1005,6 +1006,8 @@ details .inner strong {
   text-align: left;
   font: inherit;
   background: var(--card-bg, #fff);
+  pointer-events: auto;
+  touch-action: manipulation;
   transition:
     box-shadow var(--duration-flow) var(--ease-flow),
     transform var(--duration-flow) var(--ease-flow);
@@ -3774,6 +3777,11 @@ html.reveal-active .reveal-item {
 html.reveal-active .reveal-item.reveal-visible {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
+}
+
+html.reveal-active .gallery-item,
+html.reveal-active [data-gallery-open] {
   pointer-events: auto;
 }
 
