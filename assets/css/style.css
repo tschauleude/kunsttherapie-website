@@ -1127,8 +1127,13 @@ body.lightbox-open {
   display: none;
 }
 
+.lightbox:not(.lightbox-visible) {
+  pointer-events: none;
+}
+
 .lightbox.lightbox-visible {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .lightbox-dialog {
@@ -1869,6 +1874,11 @@ body.consent-banner-visible {
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  pointer-events: none;
+}
+
+.consent-settings.consent-settings-visible {
+  pointer-events: auto;
 }
 
 .consent-settings-backdrop {
@@ -2172,10 +2182,15 @@ body.consent-banner-visible {
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  pointer-events: none;
 }
 
 .news-popup[hidden] {
   display: none;
+}
+
+.news-popup.news-popup-visible {
+  pointer-events: auto;
 }
 
 .news-popup-backdrop {
@@ -2820,6 +2835,7 @@ nav[data-site-nav] {
   margin-top: 0;
   border-top-width: 0;
   visibility: hidden;
+  pointer-events: none;
 }
 
 .kt-praxis-grid {
@@ -3493,6 +3509,7 @@ nav a[aria-current='page'] {
 html.reveal-active .reveal-item {
   opacity: 0;
   transform: translateY(0.85rem);
+  pointer-events: none;
   transition:
     opacity var(--duration-flow) var(--ease-flow),
     transform var(--duration-flow) var(--ease-flow);
@@ -3502,6 +3519,7 @@ html.reveal-active .reveal-item {
 html.reveal-active .reveal-item.reveal-visible {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 /* === Nach-oben-Button (scroll-top.js) === */
@@ -3756,6 +3774,7 @@ html.a11y-reduce-motion *::after {
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
   opacity: 0;
   transform: translateY(0.75rem) scale(0.98);
+  pointer-events: none;
   transition:
     opacity var(--duration-flow) var(--ease-flow),
     transform var(--duration-flow) var(--ease-flow);
@@ -3764,6 +3783,7 @@ html.a11y-reduce-motion *::after {
 .a11y-panel.a11y-panel-visible {
   opacity: 1;
   transform: none;
+  pointer-events: auto;
 }
 
 .a11y-panel-head {

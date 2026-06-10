@@ -96,12 +96,15 @@ function openNewsPopup(items) {
     .map((item, index) => renderNewsPopupBlock(item, index === 0))
     .join('');
 
-  popup.hidden = false;
   document.body.classList.add('news-popup-open');
-  requestAnimationFrame(() => {
+  const focusClose = () => popup.querySelector('.news-popup-close')?.focus();
+  if (window.flowMotion) {
+    window.flowMotion.open(popup, 'news-popup-visible').then(focusClose);
+  } else {
+    popup.hidden = false;
     popup.classList.add('news-popup-visible');
-    popup.querySelector('.news-popup-close')?.focus();
-  });
+    focusClose();
+  }
 
   const latestId = String(items[0].id);
   try {
