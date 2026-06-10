@@ -274,6 +274,15 @@
     nav.id = navId;
     toggle.setAttribute('aria-controls', navId);
 
+    let backdrop = document.querySelector('.nav-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.className = 'nav-backdrop';
+      backdrop.hidden = true;
+      backdrop.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(backdrop);
+    }
+
     const tools = header.querySelector('.header-tools');
     if (tools) {
       tools.appendChild(toggle);
@@ -281,25 +290,52 @@
       header.insertBefore(toggle, nav);
     }
 
-    toggle.addEventListener('click', () => {
-      const open = document.body.classList.toggle('nav-open');
+    function setNavOpen(open) {
+      document.body.classList.toggle('nav-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      backdrop.hidden = !open;
+    }
+
+    toggle.addEventListener('click', () => {
+      setNavOpen(!document.body.classList.contains('nav-open'));
     });
 
+    backdrop.addEventListener('click', () => setNavOpen(false));
+
     nav.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => {
-        document.body.classList.remove('nav-open');
-        toggle.setAttribute('aria-expanded', 'false');
-      });
+      link.addEventListener('click', () => setNavOpen(false));
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!document.body.classList.contains('nav-open')) return;
+      if (e.target.closest('nav[data-site-nav], .nav-toggle')) return;
+      setNavOpen(false);
     });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && document.body.classList.contains('nav-open')) {
-        document.body.classList.remove('nav-open');
-        toggle.setAttribute('aria-expanded', 'false');
+        setNavOpen(false);
         toggle.focus();
       }
     });
+  }
+
+  function initHeaderScroll() {
+    const header = document.querySelector('header');
+    if (!header) return;
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        header.classList.toggle('header-scrolled', window.scrollY > 28);
+        ticking = false;
+      });
+    };
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 
   function setFooterYear() {
@@ -375,6 +411,7 @@
     initSkipLink();
     initEmailLinks();
     initMobileNav();
+    initHeaderScroll();
     initLangSwitch();
     applySiteChrome();
     markCurrentNav();

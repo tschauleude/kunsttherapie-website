@@ -1,5 +1,17 @@
 const API_URL = window.location.origin + '/api';
 
+async function parseJsonResponse(res, fallbackError) {
+  let data = {};
+  try {
+    data = await res.json();
+  } catch (e) {
+    if (!res.ok) throw new Error(fallbackError);
+    return data;
+  }
+  if (!res.ok) throw new Error(data.error || fallbackError);
+  return data;
+}
+
 function tr(key) {
   const v = window.ktI18n?.t(key);
   return v != null ? v : '';
@@ -171,18 +183,21 @@ function showBookingForm() {
 }
 
 async function selectDay(dateStr) {
+  const dayLabel = document.getElementById('selectedDayLabel');
+  const list = document.getElementById('slotsList');
+  if (!dayLabel || !list) return;
+
   selectedDate = dateStr;
   selectedStart = null;
   hideBookingForm();
-  document.getElementById('selectedDayLabel').textContent = formatDateLabel(dateStr);
+  dayLabel.textContent = formatDateLabel(dateStr);
   renderCalendar();
 
-  const list = document.getElementById('slotsList');
   list.innerHTML = `<p class="sub">${tr('book.loadingSlots')}</p>`;
 
   try {
     const res = await fetch(`${API_URL}/bookings/slots?date=${dateStr}`);
-    const data = await res.json();
+    const data = await parseJsonResponse(res, tr('book.slotsError') || 'Zeiten konnten nicht geladen werden.');
     if (!data.workingDay) {
       list.innerHTML = `<p class="sub">${tr('book.noSlotsDay')}</p>`;
       return;
@@ -219,16 +234,22 @@ async function selectDay(dateStr) {
 }
 
 function selectSlot(dateStr, startTime) {
+  const bookDate = document.getElementById('bookDate');
+  const bookStart = document.getElementById('bookStart');
+  const bookingSummary = document.getElementById('bookingSummary');
+  const bookingMessage = document.getElementById('bookingMessage');
+  if (!bookDate || !bookStart || !bookingSummary) return;
+
   selectedDate = dateStr;
   selectedStart = startTime;
   formLoadedAt = Date.now();
-  document.getElementById('bookDate').value = dateStr;
-  document.getElementById('bookStart').value = startTime;
+  bookDate.value = dateStr;
+  bookStart.value = startTime;
   const formAt = document.getElementById('bookFormAt');
   if (formAt) formAt.value = String(formLoadedAt);
   const timeSuffix = tr('book.timeUnit');
-  document.getElementById('bookingSummary').textContent = `${formatDateLabel(dateStr)}, ${startTime}${timeSuffix}`;
-  document.getElementById('bookingMessage').hidden = true;
+  bookingSummary.textContent = `${formatDateLabel(dateStr)}, ${startTime}${timeSuffix}`;
+  if (bookingMessage) bookingMessage.hidden = true;
   showBookingForm();
 }
 
@@ -260,6 +281,7 @@ async function submitBooking(e) {
   e.preventDefault();
   const msg = document.getElementById('bookingMessage');
   const btn = document.getElementById('bookSubmit');
+  if (!msg || !btn) return;
   btn.disabled = true;
   msg.hidden = true;
 
@@ -280,10 +302,7 @@ async function submitBooking(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || tr('book.error'));
-    }
+    const data = await parseJsonResponse(res, tr('book.error') || 'Buchung fehlgeschlagen.');
     msg.textContent = data.message || tr('book.success');
     msg.className = 'booking-alert booking-alert-success';
     msg.hidden = false;

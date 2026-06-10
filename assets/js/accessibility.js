@@ -164,24 +164,38 @@
     announce(tr('a11y.announce.reset') || 'Alle Einstellungen zurückgesetzt.');
   }
 
+  let panelBusy = false;
+
   function openPanel() {
-    panel.hidden = false;
-    toggle.setAttribute('aria-expanded', 'true');
+    if (panelBusy || !panel.hidden) return;
+    panelBusy = true;
     syncForm();
-    const focusClose = () => panel.querySelector('[data-a11y-close]')?.focus();
+
+    const finish = () => {
+      toggle.setAttribute('aria-expanded', 'true');
+      panelBusy = false;
+      panel.querySelector('[data-a11y-close]')?.focus();
+    };
+
     if (window.flowMotion) {
-      window.flowMotion.open(panel, 'a11y-panel-visible').then(focusClose);
+      window.flowMotion.open(panel, 'a11y-panel-visible').then(finish);
       return;
     }
+    panel.hidden = false;
     panel.classList.add('a11y-panel-visible');
-    focusClose();
+    finish();
   }
 
   function closePanel() {
+    if (panelBusy || panel.hidden) return;
+    panelBusy = true;
+
     const finish = () => {
       toggle.setAttribute('aria-expanded', 'false');
+      panelBusy = false;
       toggle.focus();
     };
+
     if (window.flowMotion) {
       window.flowMotion.close(panel, 'a11y-panel-visible').then(finish);
       return;
