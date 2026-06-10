@@ -1954,6 +1954,10 @@ app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'Nicht gefunden' });
   }
+  const page404 = path.join(ROOT, '404.html');
+  if (fs.existsSync(page404)) {
+    return res.status(404).sendFile(page404);
+  }
   res.status(404).type('text/html; charset=utf-8').send(
     '<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Seite nicht gefunden</title></head><body><p>Seite nicht gefunden.</p><p><a href="/">Zur Startseite</a></p></body></html>'
   );

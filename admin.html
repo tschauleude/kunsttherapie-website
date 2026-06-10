@@ -856,11 +856,37 @@ function showMessage(text, type, elementId) {
   }
 }
 
+async function compressImageFile(file, maxPx = 1600, quality = 0.82) {
+  if (!file.type.startsWith('image/') || file.type === 'image/gif') return file;
+  if (file.size < 300 * 1024) return file;
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const { width, height } = img;
+      const scale = Math.min(1, maxPx / Math.max(width, height));
+      if (scale === 1 && file.size < 800 * 1024) { resolve(file); return; }
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(width * scale);
+      canvas.height = Math.round(height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        (blob) => resolve(blob ? new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg', lastModified: Date.now() }) : file),
+        'image/jpeg', quality
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+
 async function uploadImageFile(fileInput) {
   const file = fileInput?.files?.[0];
   if (!file) return null;
+  const compressed = await compressImageFile(file);
   const fd = new FormData();
-  fd.append('image', file);
+  fd.append('image', compressed);
   const res = await fetch(`${API_URL}/admin/upload`, {
     method: 'POST',
     credentials: 'include',
@@ -1630,6 +1656,10 @@ function closeNewsForm() {
 
 async function saveNews(e) {
   e.preventDefault();
+  const btn = e.currentTarget.querySelector('[type="submit"]');
+  const origText = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
+
   const id = document.getElementById('newsId').value;
   const title = document.getElementById('newsTitle').value;
   const content = document.getElementById('newsContent').value;
@@ -1640,11 +1670,16 @@ async function saveNews(e) {
   const method = id ? 'PUT' : 'POST';
 
   try {
-    const uploaded = await uploadImageFile(document.getElementById('newsImageFile'));
+    const fileInput = document.getElementById('newsImageFile');
+    if (fileInput?.files?.[0]) {
+      if (btn) btn.textContent = 'Bild wird hochgeladen …';
+    }
+    const uploaded = await uploadImageFile(fileInput);
     if (uploaded) {
       image = uploaded;
       document.getElementById('newsImage').value = image;
     }
+    if (btn) btn.textContent = 'Wird gespeichert …';
     const response = await fetch(url, {
       method,
       credentials: 'include',
@@ -1663,6 +1698,8 @@ async function saveNews(e) {
     }
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
   }
 }
 
@@ -1765,6 +1802,10 @@ function closeEventForm() {
 
 async function saveEvent(e) {
   e.preventDefault();
+  const btn = e.currentTarget.querySelector('[type="submit"]');
+  const origText = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
+
   const id = document.getElementById('eventId').value;
   const title = document.getElementById('eventTitle').value;
   const description = document.getElementById('eventDescription').value;
@@ -1779,11 +1820,16 @@ async function saveEvent(e) {
   const method = id ? 'PUT' : 'POST';
 
   try {
-    const uploaded = await uploadImageFile(document.getElementById('eventImageFile'));
+    const fileInput = document.getElementById('eventImageFile');
+    if (fileInput?.files?.[0]) {
+      if (btn) btn.textContent = 'Bild wird hochgeladen …';
+    }
+    const uploaded = await uploadImageFile(fileInput);
     if (uploaded) {
       image = uploaded;
       document.getElementById('eventImage').value = image;
     }
+    if (btn) btn.textContent = 'Wird gespeichert …';
     const response = await fetch(url, {
       method,
       credentials: 'include',
@@ -1802,6 +1848,8 @@ async function saveEvent(e) {
     }
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
   }
 }
 

@@ -39,6 +39,7 @@ const SITE_PAGES = [
   'atelier',
   'impressum',
   'datenschutz',
+  '404',
 ];
 
 const PAGE_I18N = {

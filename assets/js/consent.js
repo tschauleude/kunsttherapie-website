@@ -222,7 +222,7 @@
           <p class="note">${tr('consent.note')}</p>
           <div class="consent-actions">
             <button type="button" class="btn primary" data-consent-all>${tr('consent.acceptAll')}</button>
-            <button type="button" class="btn outline" data-consent-essential>${tr('consent.essential')}</button>
+            <button type="button" class="btn primary" data-consent-essential>${tr('consent.essential')}</button>
             <button type="button" class="btn outline" data-consent-settings>${tr('consent.settings')}</button>
           </div>
         </div>
