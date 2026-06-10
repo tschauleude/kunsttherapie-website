@@ -1,5 +1,5 @@
 /**
- * Angebots-Karten: „Mehr erfahren“ klappt die Beschreibung in der Karte auf.
+ * Angebots-Karten: native <details> + Akkordeon (nur eine Karte offen).
  */
 (function () {
   function initOfferToggles() {
@@ -12,12 +12,23 @@
     if (!offersWrap || offersWrap.dataset.ktToggleBound === '1') return;
     offersWrap.dataset.ktToggleBound = '1';
 
+    const offers = [...offersWrap.querySelectorAll('details[data-offer]')];
+    if (!offers.length) return;
+
     function labelLearn() {
-      return window.ktI18n ? window.ktI18n.t('btn.learnMore') : 'Mehr erfahren';
+      const v = window.ktI18n?.t('btn.learnMore');
+      return v || 'Mehr erfahren';
     }
 
     function labelLess() {
-      return window.ktI18n ? window.ktI18n.t('btn.less') : 'Weniger';
+      const v = window.ktI18n?.t('btn.less');
+      return v || 'Weniger';
+    }
+
+    function updateLabel(details) {
+      const label = details.querySelector('.kt-toggle-label');
+      if (!label) return;
+      label.textContent = details.open ? labelLess() : labelLearn();
     }
 
     function scrollOfferIntoView(card) {
@@ -45,108 +56,32 @@
     }
 
     function syncOffersLayout() {
-      const anyOpen = offersWrap.querySelector('[data-offer].is-open');
+      const anyOpen = offersWrap.querySelector('details[data-offer][open]');
       offersWrap.classList.toggle('kt-offers--has-open', !!anyOpen);
     }
 
-    async function closeBody(body) {
-      if (!body || body.hidden) return;
-      if (window.flowMotion) await window.flowMotion.collapse(body);
-      else body.hidden = true;
-    }
-
     window.ktUpdateToggleLabels = function () {
-      root.querySelectorAll('[data-offer] .kt-toggle').forEach((t) => {
-        const open = t.getAttribute('aria-expanded') === 'true';
-        t.textContent = open ? labelLess() : labelLearn();
-      });
+      offers.forEach(updateLabel);
     };
 
-    let offerToggleBusy = false;
+    offers.forEach((details) => {
+      updateLabel(details);
 
-    async function toggleOffer(card, toggle) {
-      if (offerToggleBusy) return;
-      const body = card.querySelector('.kt-offer-body');
-      if (!body) return;
+      details.addEventListener('toggle', () => {
+        updateLabel(details);
 
-      offerToggleBusy = true;
-      try {
-        const willOpen = toggle.getAttribute('aria-expanded') !== 'true';
-        const closeJobs = [];
-
-        root.querySelectorAll('[data-offer]').forEach((c) => {
-          const otherBody = c.querySelector('.kt-offer-body');
-          const otherToggle = c.querySelector('.kt-toggle');
-          if (c !== card && otherBody && !otherBody.hidden) {
-            closeJobs.push(closeBody(otherBody));
-          }
-          c.classList.remove('is-open');
-          if (otherToggle) {
-            otherToggle.setAttribute('aria-expanded', 'false');
-            otherToggle.textContent = labelLearn();
-          }
-        });
-
-        await Promise.all(closeJobs);
-
-        if (willOpen) {
-          toggle.setAttribute('aria-expanded', 'true');
-          toggle.textContent = labelLess();
-          card.classList.add('is-open');
-          if (window.flowMotion) await window.flowMotion.expand(body);
-          else body.hidden = false;
-          requestAnimationFrame(() => scrollOfferIntoView(card));
-        } else {
-          await closeBody(body);
-          toggle.setAttribute('aria-expanded', 'false');
-          toggle.textContent = labelLearn();
-          card.classList.remove('is-open');
+        if (details.open) {
+          offers.forEach((other) => {
+            if (other !== details && other.open) other.open = false;
+          });
+          requestAnimationFrame(() => scrollOfferIntoView(details));
         }
+
         syncOffersLayout();
-      } finally {
-        offerToggleBusy = false;
-      }
-    }
-
-    let lastTouchToggleAt = 0;
-
-    function resolveToggleTarget(e) {
-      const toggle = e.target.closest('.kt-toggle');
-      if (toggle && offersWrap.contains(toggle)) return toggle;
-
-      const head = e.target.closest('.kt-offer-head');
-      if (!head || !offersWrap.contains(head)) return null;
-      if (e.target.closest('a, button:not(.kt-toggle)')) return null;
-
-      const card = head.closest('[data-offer]');
-      return card ? card.querySelector('.kt-toggle') : null;
-    }
-
-    function handleToggleActivate(toggle) {
-      const card = toggle.closest('[data-offer]');
-      if (!card) return;
-      toggleOffer(card, toggle);
-    }
-
-    offersWrap.addEventListener('click', (e) => {
-      const toggle = resolveToggleTarget(e);
-      if (!toggle) return;
-      if (Date.now() - lastTouchToggleAt < 450) return;
-      e.preventDefault();
-      handleToggleActivate(toggle);
+      });
     });
 
-    offersWrap.addEventListener(
-      'touchend',
-      (e) => {
-        const toggle = resolveToggleTarget(e);
-        if (!toggle) return;
-        e.preventDefault();
-        lastTouchToggleAt = Date.now();
-        handleToggleActivate(toggle);
-      },
-      { passive: false }
-    );
+    syncOffersLayout();
   }
 
   if (document.readyState === 'loading') {

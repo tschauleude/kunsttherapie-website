@@ -123,13 +123,17 @@ async function testKunsttherapie(browser) {
   await acceptConsent(page);
 
   await page.locator('#angebote').scrollIntoViewIfNeeded();
-  await page.locator('[data-offer] h3').first().click();
-  await page.waitForTimeout(800);
-  const offer = await page.evaluate(() => ({
-    aria: document.querySelector('.kt-toggle')?.getAttribute('aria-expanded'),
-    h: document.querySelector('.kt-offer-body')?.getBoundingClientRect().height || 0,
-  }));
-  if (offer.aria === 'true' && offer.h > 50) pass('Offer card toggle');
+  await page.locator('#angebote .kt-offer-head').first().click();
+  await page.waitForTimeout(400);
+  const offer = await page.evaluate(() => {
+    const d = document.querySelector('details[data-offer]');
+    return {
+      open: d?.open,
+      label: d?.querySelector('.kt-toggle-label')?.textContent?.trim(),
+      h: d?.querySelector('.kt-offer-body')?.getBoundingClientRect().height || 0,
+    };
+  });
+  if (offer.open && offer.h > 50 && offer.label) pass('Offer card toggle');
   else fail('Offer card toggle', JSON.stringify(offer));
 
   await page.locator('#faq .kt-details summary').first().click();
