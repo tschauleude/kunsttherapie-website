@@ -37,7 +37,7 @@ Wenn Worte nicht reichen, findet das Gestalten einen Weg.
 [home.hero.sub]
 Label: Hero – Einleitung (HTML erlaubt)
 ---
-Dienstag vormittags und Donnerstag abends in Paderborn – für Privatpersonen, Teams und klinische Einrichtungen.
+Dienstag vormittags und Donnerstag abends in Paderborn – für Unternehmen, Kliniken und Einrichtungen.
 ---
 
 [home.hero.note]
@@ -305,7 +305,7 @@ Begleitetes Malen in der Gruppe – dienstags vormittags.
 [offer.1.body]
 Label: Angebot 1 – Details (HTML erlaubt)
 ---
-<p><strong>Primär dienstags 11:00–12:30 Uhr</strong> – die Gruppenzeiten rotieren und werden im Wechsel auch donnerstags abends angeboten. Viele Menschen kennen bereits kunsttherapeutisches Gestalten in Gruppen, haben die Kunsttherapie schätzen gelernt, Wissen um die Wirksamkeit – und suchen einen freien Platz. Selbstverständlich auch für alle, die durch ressourcenorientierte, visuelle Methoden ganz individuelle Themen gestalten möchten – mit professioneller Begleitung.</p><p><strong>Gruppentherapie, freies und thematisches Gestalten:</strong> Kunst als Weg zurück zum Inneren – um Gesundheit zu erhalten und zu fördern, im Sinne von Resilienz, Krankheitsakzeptanz und psychischer Widerstandsfähigkeit.</p><p>„Bilder sagen mehr als tausend Worte“, sowie „die Heilkraft der Farben“ sind Erfahrungswerte in der Kunsttherapie.</p><p class="note">4–12 Personen · 90 Minuten · im Wechsel auch donnerstags abends</p>
+<p><strong>Primär dienstags 11:00–12:30 Uhr</strong> – die Gruppenzeiten rotieren und werden im Wechsel auch donnerstags abends angeboten. Viele Menschen kennen bereits kunsttherapeutisches Gestalten in Gruppen, haben die Kunsttherapie schätzen gelernt, Wissen um die Wirksamkeit – und suchen einen freien Platz. Selbstverständlich auch für alle, die durch ressourcenorientierte, visuelle Methoden ganz individuelle Themen gestalten möchten – mit professioneller Begleitung.</p><p><strong>Gruppentherapie, freies und thematisches Gestalten:</strong> Kunst als Weg zurück zu deinem Inneren – um Gesundheit zu erhalten und zu fördern, im Sinne unserer Resilienz und psychischen Widerstandsfähigkeit.</p><p>„Bilder sagen mehr als tausend Worte“, sowie „die Heilkraft der Farben“ sind Erfahrungswerte in der Kunsttherapie.</p><p class="note">4–12 Personen · 90 Minuten · im Wechsel auch donnerstags abends</p>
 ---
 
 [offer.2.title]
@@ -359,7 +359,7 @@ Raus aus dem Büro, gemeinsam ein Werk gestalten.
 [offer.4.body]
 Label: Angebot 4 – Details (HTML erlaubt)
 ---
-<p>Raus aus dem Büro, rein ins FarbenReich – Kolleginnen und Kollegen MALend ganz neu erleben. Es entsteht ein Werk mit Überraschungseffekt, mit spielerischen Regeln und echter Verbindung, das wertschätzend einen exponierten Platz in der Firma bekommen darf.</p><p class="note">Mindestens 12, maximal 18 Teilnehmer. Bei mehr als 18 Teilnehmern bitte Kontakt aufnehmen. Termine nach Absprache.</p>
+<p>Raus aus dem Büro, rein ins FarbenReich – erleben Sie sich und Ihre Kolleginnen und Kollegen MALend ganz neu. Sie gestalten ein Werk mit Überraschungseffekt, mit spielerischen Regeln und echter Verbindung, das wertschätzend einen exponierten Platz in der Firma bekommen darf.</p><p class="note">Mindestens 12, maximal 18 Teilnehmer. Bei mehr als 18 Teilnehmern bitte Kontakt aufnehmen. Termine nach Absprache.</p>
 ---
 
 [offer.5.title]
@@ -408,12 +408,6 @@ Ab <strong>1. Juli 2026</strong> in Paderborn – ein eigener Raum zum Ankommen,
 Label: Atelier – Headline
 ---
 Ankommen und gestalten in Paderborn
----
-
-[kt.praxis.p1]
-Label: Atelier – Absatz 1 (HTML erlaubt)
----
-Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen. Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag 11:00–12:30</strong> für Gruppen, <strong>Donnerstag 18:00–19:30</strong> für Auszeit und Workshops. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.
 ---
 
 [kt.praxis.p2]
@@ -1293,14 +1287,8 @@ Label: Atelier – Headline
 A place to arrive and create in Paderborn
 ---
 
-[kt.praxis.p1]
-Label: Atelier – Absatz 1 (HTML erlaubt)
----
-The space has a welcoming atmosphere, a touch of green with a terrace, and everything needed to feel at home quickly. Room to paint and talk in between – <strong>Tuesday 11:00–12:30</strong> for groups, <strong>Thursday 18:00–19:30</strong> for downtime and workshops. Group times rotate: on alternate weeks also on Thursday evenings.
----
-
 [kt.praxis.p2]
-Label: Atelier – Absatz 2 (HTML erlaubt)
+Label: Atelier – Beschreibung (HTML erlaubt)
 ---
 <strong>What to expect:</strong> a bright, calm atmosphere, materials on site, small groups, clear structure without pressure to perform. Parking and public transport are straightforward – directions below.
 ---

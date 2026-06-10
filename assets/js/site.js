@@ -413,9 +413,32 @@
       if (!link) return;
       card.dataset.cardClickBound = '1';
 
+      if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '0');
+      if (!card.getAttribute('role')) card.setAttribute('role', 'link');
+
+      const label = link.textContent?.trim() || link.getAttribute('aria-label');
+      if (label && !card.getAttribute('aria-label')) {
+        card.setAttribute('aria-label', label);
+      }
+
+      function followLink() {
+        if (link.target === '_blank') {
+          window.open(link.href, '_blank', 'noopener');
+        } else {
+          link.click();
+        }
+      }
+
       card.addEventListener('click', (e) => {
         if (e.target.closest('a, button')) return;
-        link.click();
+        followLink();
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        if (e.target.closest('a, button')) return;
+        e.preventDefault();
+        followLink();
       });
     });
   }

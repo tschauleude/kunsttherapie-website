@@ -739,6 +739,7 @@ span.price-hint-pill {
   font-size: 1rem;
   font-family: var(--font-body);
   cursor: pointer;
+  touch-action: manipulation;
   transition:
     transform var(--duration-tap) var(--ease-flow),
     background-color var(--duration-flow) var(--ease-flow),
@@ -887,6 +888,25 @@ span.price-hint-pill {
 /* Ganze Karte klickbar – Klick auf Titel/Text leitet zum .card-hit-area-Link (site.js) */
 .card--clickable {
   cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    transform var(--duration-tap) var(--ease-flow),
+    box-shadow var(--duration-flow) var(--ease-flow),
+    border-color var(--duration-flow) var(--ease-flow);
+}
+
+.card--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(85, 122, 118, 0.14);
+}
+
+.card--clickable:active {
+  transform: translateY(0) scale(0.995);
+}
+
+.card--clickable:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 3px;
 }
 
 .feature p,
