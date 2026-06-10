@@ -107,22 +107,20 @@
 <main id="main">
   <section class="hero container">
     <div class="card hero-left">
-      <div class="kicker">Termine</div>
-      <h1>Events & Workshops</h1>
-      <p class="sub">
-        Kommende Events, Workshops und Gruppentherapien. Anmeldung per Kontakt.
-      </p>
+      <div class="kicker" data-i18n="eventsPage.kicker">Termine</div>
+      <h1 data-i18n="eventsPage.title">Events & Workshops</h1>
+      <p class="sub" data-i18n="eventsPage.sub">Kommende Events, Workshops und Gruppentherapien. Anmeldung per Kontakt.</p>
     </div>
   </section>
 
   <section class="section container">
     <div id="eventsLoading" style="text-align: center; padding: 40px;">
-      <p style="color: var(--text-light); font-size: 1.1rem;">Termine werden geladen...</p>
+      <p style="color: var(--text-light); font-size: 1.1rem;" data-i18n="eventsPage.loading">Termine werden geladen...</p>
     </div>
     <div id="eventsList" class="events-grid"></div>
     <div id="eventsEmpty" style="display: none; text-align: center; padding: 40px;">
-      <p style="color: var(--text-light);">Momentan sind keine Events geplant.</p>
-      <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 10px;">Meld dich gern bei Interesse an einer Gruppe oder einem Workshop.</p>
+      <p style="color: var(--text-light);" data-i18n="eventsPage.empty">Momentan sind keine Events geplant.</p>
+      <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 10px;" data-i18n="eventsPage.emptyHint">Meld dich gern bei Interesse an einer Gruppe oder einem Workshop.</p>
     </div>
   </section>
 </main>
