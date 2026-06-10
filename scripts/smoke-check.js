@@ -27,6 +27,14 @@ function exists(rel) {
 const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/asset-manifest.json'), 'utf8'));
 for (const [key, file] of Object.entries(manifest)) {
   if (key === 'builtAt') continue;
+  if (key === 'pageBundles' && file && typeof file === 'object') {
+    for (const [page, bundle] of Object.entries(file)) {
+      const rel = `assets/js/${bundle}`;
+      if (exists(rel)) pass(`manifest pageBundles.${page}: ${bundle}`);
+      else fail(`manifest file missing: ${rel}`);
+    }
+    continue;
+  }
   const rel = key === 'coreBundle' ? `assets/js/${file}` : `assets/css/${file}`;
   if (exists(rel)) pass(`manifest ${key}: ${file}`);
   else fail(`manifest file missing: ${rel}`);

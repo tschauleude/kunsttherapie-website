@@ -429,17 +429,6 @@ nav a.nav-cta[aria-current="page"] {
   margin-bottom: 0.25rem;
 }
 
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: 0.65rem 0.85rem;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  font-family: inherit;
-  font-size: 1rem;
-  background: rgba(255, 255, 255, 0.9);
-}
-
 .contact-form input:focus-visible,
 .contact-form textarea:focus-visible,
 button:focus-visible,
@@ -2444,8 +2433,17 @@ body.consent-banner-visible {
 
 .news-image {
   width: 100%;
-  min-height: 240px;
+  aspect-ratio: 16 / 10;
+  min-height: 200px;
   object-fit: cover;
+}
+
+.home-news-loading {
+  min-height: 4.5rem;
+}
+
+.home-news--empty {
+  display: none !important;
 }
 
 .news-image-placeholder,

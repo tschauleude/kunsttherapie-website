@@ -180,16 +180,18 @@ async function loadHomeNews() {
     if (loading) loading.style.display = 'none';
 
     if (!news.length) {
+      section.classList.add('home-news--empty');
       section.hidden = true;
       return;
     }
+
+    section.classList.remove('home-news--empty');
 
     cachedHomeNews = news;
 
     const limit = parseInt(section.dataset.limit || '3', 10);
     const items = news.slice(0, limit);
     list.innerHTML = items.map((item) => renderNewsCard(item, 160)).join('');
-    section.hidden = false;
 
     if (window.revealStagger) {
       const intro = section.querySelector('.section-intro');
@@ -208,6 +210,7 @@ async function loadHomeNews() {
     }
   } catch (err) {
     if (loading) loading.style.display = 'none';
+    section.classList.add('home-news--empty');
     section.hidden = true;
     console.error('Home news error:', err);
   }

@@ -12,11 +12,16 @@
         "webp": "hero-atelier-aussen-768w.webp"
       },
       {
+        "w": 1024,
+        "webp": "hero-atelier-aussen-1024w.webp"
+      },
+      {
         "w": 1536,
         "webp": "hero-atelier-aussen-1536w.webp"
       }
     ],
-    "fallback": "hero-atelier-aussen.jpg"
+    "fallback": "hero-atelier-aussen.jpg",
+    "sig": "1781107119040.3948:252707"
   },
   "galerie-abstrakt.jpg": {
     "width": 1536,
@@ -31,11 +36,16 @@
         "webp": "galerie-abstrakt-768w.webp"
       },
       {
+        "w": 1024,
+        "webp": "galerie-abstrakt-1024w.webp"
+      },
+      {
         "w": 1536,
         "webp": "galerie-abstrakt-1536w.webp"
       }
     ],
-    "fallback": "galerie-abstrakt.jpg"
+    "fallback": "galerie-abstrakt.jpg",
+    "sig": "1781107119020.3948:468370"
   },
   "galerie-schmerzstation.jpg": {
     "width": 1536,
@@ -50,11 +60,16 @@
         "webp": "galerie-schmerzstation-768w.webp"
       },
       {
+        "w": 1024,
+        "webp": "galerie-schmerzstation-1024w.webp"
+      },
+      {
         "w": 1536,
         "webp": "galerie-schmerzstation-1536w.webp"
       }
     ],
-    "fallback": "galerie-schmerzstation.jpg"
+    "fallback": "galerie-schmerzstation.jpg",
+    "sig": "1781107119040.3948:243940"
   },
   "galerie-material.jpg": {
     "width": 3783,
@@ -69,11 +84,16 @@
         "webp": "galerie-material-768w.webp"
       },
       {
-        "w": 3783,
-        "webp": "galerie-material-3783w.webp"
+        "w": 1024,
+        "webp": "galerie-material-1024w.webp"
+      },
+      {
+        "w": 1536,
+        "webp": "galerie-material-1536w.webp"
       }
     ],
-    "fallback": "galerie-material.jpg"
+    "fallback": "galerie-material.jpg",
+    "sig": "1781107119040.3948:2607338"
   },
   "Potenziale-Kunsttherapie-Paderborn.jpg": {
     "width": 1173,
@@ -88,11 +108,16 @@
         "webp": "Potenziale-Kunsttherapie-Paderborn-768w.webp"
       },
       {
+        "w": 1024,
+        "webp": "Potenziale-Kunsttherapie-Paderborn-1024w.webp"
+      },
+      {
         "w": 1173,
         "webp": "Potenziale-Kunsttherapie-Paderborn-1173w.webp"
       }
     ],
-    "fallback": "Potenziale-Kunsttherapie-Paderborn.jpg"
+    "fallback": "Potenziale-Kunsttherapie-Paderborn.jpg",
+    "sig": "1781107118936.3948:142196"
   },
   "Sonnige_Pinsel.jpg": {
     "width": 3783,
@@ -107,11 +132,16 @@
         "webp": "Sonnige_Pinsel-768w.webp"
       },
       {
-        "w": 3783,
-        "webp": "Sonnige_Pinsel-3783w.webp"
+        "w": 1024,
+        "webp": "Sonnige_Pinsel-1024w.webp"
+      },
+      {
+        "w": 1536,
+        "webp": "Sonnige_Pinsel-1536w.webp"
       }
     ],
-    "fallback": "Sonnige_Pinsel.jpg"
+    "fallback": "Sonnige_Pinsel.jpg",
+    "sig": "1781107118960.3948:2607338"
   },
   "atelier-eingang.jpg": {
     "width": 1536,
@@ -126,11 +156,56 @@
         "webp": "atelier-eingang-768w.webp"
       },
       {
+        "w": 1024,
+        "webp": "atelier-eingang-1024w.webp"
+      },
+      {
         "w": 1536,
         "webp": "atelier-eingang-1536w.webp"
       }
     ],
-    "fallback": "atelier-eingang.jpg"
+    "fallback": "atelier-eingang.jpg",
+    "sig": "1781107119016.3948:2862595"
+  },
+  "atelier-eingang-vision.jpg": {
+    "width": 1536,
+    "height": 1024,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "atelier-eingang-vision-480w.webp"
+      },
+      {
+        "w": 768,
+        "webp": "atelier-eingang-vision-768w.webp"
+      },
+      {
+        "w": 1024,
+        "webp": "atelier-eingang-vision-1024w.webp"
+      },
+      {
+        "w": 1536,
+        "webp": "atelier-eingang-vision-1536w.webp"
+      }
+    ],
+    "fallback": "atelier-eingang-vision.jpg",
+    "sig": "1781107118996.3948:2880574"
+  },
+  "Gruppen-und-Einzeltherapie-768x524.jpg": {
+    "width": 768,
+    "height": 524,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "Gruppen-und-Einzeltherapie-768x524-480w.webp"
+      },
+      {
+        "w": 768,
+        "webp": "Gruppen-und-Einzeltherapie-768x524-768w.webp"
+      }
+    ],
+    "fallback": "Gruppen-und-Einzeltherapie-768x524.jpg",
+    "sig": "1781107118972.3948:101859"
   },
   "martina-portrait.jpg": {
     "width": 1060,
@@ -145,11 +220,16 @@
         "webp": "martina-portrait-768w.webp"
       },
       {
+        "w": 1024,
+        "webp": "martina-portrait-1024w.webp"
+      },
+      {
         "w": 1060,
         "webp": "martina-portrait-1060w.webp"
       }
     ],
-    "fallback": "martina-portrait.jpg"
+    "fallback": "martina-portrait.jpg",
+    "sig": "1781107119060.3948:126702"
   },
   "martina-malstudie.jpg": {
     "width": 623,
@@ -164,7 +244,8 @@
         "webp": "martina-malstudie-623w.webp"
       }
     ],
-    "fallback": "martina-malstudie.jpg"
+    "fallback": "martina-malstudie.jpg",
+    "sig": "1781107792341.666:35897"
   },
   "martina-vision-board.jpg": {
     "width": 674,
@@ -179,7 +260,8 @@
         "webp": "martina-vision-board-674w.webp"
       }
     ],
-    "fallback": "martina-vision-board.jpg"
+    "fallback": "martina-vision-board.jpg",
+    "sig": "1781107792341.666:56268"
   },
   "martina-pastell-gruppe.jpg": {
     "width": 430,
@@ -190,7 +272,8 @@
         "webp": "martina-pastell-gruppe-430w.webp"
       }
     ],
-    "fallback": "martina-pastell-gruppe.jpg"
+    "fallback": "martina-pastell-gruppe.jpg",
+    "sig": "1781107792341.666:25769"
   },
   "martina-atelier-arbeit.jpg": {
     "width": 784,
@@ -209,6 +292,7 @@
         "webp": "martina-atelier-arbeit-784w.webp"
       }
     ],
-    "fallback": "martina-atelier-arbeit.jpg"
+    "fallback": "martina-atelier-arbeit.jpg",
+    "sig": "1781107792337.666:74498"
   }
 }

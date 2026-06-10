@@ -55,8 +55,8 @@ const PAGE_I18N = {
   datenschutz: 'privacy',
 };
 
-const PAGE_EXTRA_SCRIPTS = {
-  index: ['gallery.js', 'quotes.js', 'main.js', 'news.js'],
+const PAGE_BUNDLE_SOURCES = {
+  index: ['gallery.js', 'quotes.js', 'news.js'],
   kunsttherapie: ['kunsttherapie.js', 'quotes.js', 'raum-showcase.js'],
   kontakt: ['contact.js'],
   buchung: ['booking.js'],
@@ -64,6 +64,9 @@ const PAGE_EXTRA_SCRIPTS = {
   neuigkeiten: ['news.js'],
   events: ['events.js'],
 };
+
+const MAX_WEBP_WIDTH = 1536;
+const WEBP_WIDTH_STEPS = [480, 768, 1024, 1536];
 
 const CORE_BUNDLE_SOURCES = [
   'i18n-messages.js',
@@ -177,6 +180,32 @@ function splitI18n() {
   return files;
 }
 
+async function buildPageBundles() {
+  const bundles = {};
+  for (const [pageName, files] of Object.entries(PAGE_BUNDLE_SOURCES)) {
+    const parts = files.map((f) => {
+      const p = path.join(JS_DIR, f);
+      if (!fs.existsSync(p)) throw new Error(`Missing page script ${f} for ${pageName}`);
+      return fs.readFileSync(p, 'utf8');
+    });
+    const combined = parts.join('\n;\n');
+    const { code } = await minifyJs(combined, {
+      compress: true,
+      mangle: true,
+      format: { comments: false },
+    });
+    const minified = code || combined;
+    const hash = hashContent(minified);
+    const outName = `page-${pageName}.${hash}.js`;
+    fs.writeFileSync(path.join(JS_DIR, outName), minified);
+    fs.readdirSync(JS_DIR)
+      .filter((f) => f.startsWith(`page-${pageName}.`) && f.endsWith('.js') && f !== outName)
+      .forEach((f) => fs.unlinkSync(path.join(JS_DIR, f)));
+    bundles[pageName] = outName;
+  }
+  return bundles;
+}
+
 async function buildCoreBundle() {
   const parts = CORE_BUNDLE_SOURCES.map((f) => {
     const p = path.join(JS_DIR, f);
@@ -230,32 +259,52 @@ async function optimizeImages() {
     'Potenziale-Kunsttherapie-Paderborn.jpg',
     'Sonnige_Pinsel.jpg',
     'atelier-eingang.jpg',
+    'atelier-eingang-vision.jpg',
+    'Gruppen-und-Einzeltherapie-768x524.jpg',
     'martina-portrait.jpg',
     'martina-malstudie.jpg',
     'martina-vision-board.jpg',
     'martina-pastell-gruppe.jpg',
     'martina-atelier-arbeit.jpg',
   ];
+  const manifestPath = path.join(IMG_DIR, 'manifest.json');
+  const prevManifest = fs.existsSync(manifestPath)
+    ? JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
+    : {};
   const manifest = {};
+
+  function sourceSignature(file) {
+    const srcPath = path.join(IMG_DIR, file);
+    if (!fs.existsSync(srcPath)) return null;
+    const stat = fs.statSync(srcPath);
+    return `${stat.mtimeMs}:${stat.size}`;
+  }
 
   for (const file of targets) {
     const srcPath = path.join(IMG_DIR, file);
     if (!fs.existsSync(srcPath)) continue;
     const base = path.basename(file, path.extname(file));
     const meta = await sharp(srcPath).metadata();
-    const widths = [meta.width];
-    if (meta.width > 768) widths.unshift(768);
-    if (meta.width > 480) widths.unshift(480);
+    const sig = sourceSignature(file);
+    const prev = prevManifest[file];
+    const uniqueWidths = WEBP_WIDTH_STEPS.filter((w) => meta.width >= w);
+    if (!uniqueWidths.length || (meta.width <= MAX_WEBP_WIDTH && !uniqueWidths.includes(meta.width))) {
+      uniqueWidths.push(Math.min(meta.width, MAX_WEBP_WIDTH));
+    }
+    const sortedWidths = [...new Set(uniqueWidths)].sort((a, b) => a - b);
 
-    const uniqueWidths = [...new Set(widths)].sort((a, b) => a - b);
+    if (prev?.sig === sig && prev.sources?.length === sortedWidths.length) {
+      manifest[file] = { ...prev, sig };
+      continue;
+    }
+
     const sources = [];
-
-    for (const w of uniqueWidths) {
+    for (const w of sortedWidths) {
       const webpName = `${base}-${w}w.webp`;
       const webpPath = path.join(IMG_DIR, webpName);
       await sharp(srcPath)
         .resize({ width: w, withoutEnlargement: true })
-        .webp({ quality: 82 })
+        .webp({ quality: 80 })
         .toFile(webpPath);
       sources.push({ w, webp: webpName });
     }
@@ -265,25 +314,40 @@ async function optimizeImages() {
       height: meta.height,
       sources,
       fallback: file,
+      sig,
     };
   }
 
-  fs.writeFileSync(path.join(IMG_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2));
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
   return manifest;
 }
 
-function buildScriptTags(pageName, coreBundle, cssFile) {
+function buildScriptTags(pageName, coreBundle, pageBundles) {
   const i18nPage = PAGE_I18N[pageName];
   const scripts = [
     `assets/js/${coreBundle}`,
     'assets/js/i18n-messages-shared.js',
   ];
   if (i18nPage) scripts.push(`assets/js/i18n-messages-${i18nPage}.js`);
-  (PAGE_EXTRA_SCRIPTS[pageName] || []).forEach((s) => scripts.push(`assets/js/${s}`));
+  if (pageBundles[pageName]) scripts.push(`assets/js/${pageBundles[pageName]}`);
   return scripts.map((s) => `  <script src="${s}" defer></script>`).join('\n');
 }
 
-function patchHtml(coreBundle, cssFile) {
+function injectPreloads(html, pageName) {
+  if (pageName !== 'index') return html;
+  if (html.includes('rel="preload" href="assets/img/hero-atelier-aussen-768w.webp"')) return html;
+
+  const preloads = [
+    '<link rel="preload" href="assets/img/hero-atelier-aussen-768w.webp" as="image" type="image/webp" fetchpriority="high"/>',
+  ].join('\n  ');
+
+  return html.replace(
+    /(<link rel="stylesheet" href="assets\/css\/style[^"]+\.css"\s*\/>)/,
+    `$1\n  ${preloads}`
+  );
+}
+
+function patchHtml(coreBundle, cssFile, pageBundles) {
   for (const pageName of SITE_PAGES) {
     const filePath = path.join(ROOT, `${pageName}.html`);
     if (!fs.existsSync(filePath)) continue;
@@ -333,7 +397,9 @@ function patchHtml(coreBundle, cssFile) {
     );
 
     // Replace all script blocks at end of body
-    const scriptBlock = buildScriptTags(pageName, coreBundle, cssFile);
+    html = injectPreloads(html, pageName);
+
+    const scriptBlock = buildScriptTags(pageName, coreBundle, pageBundles);
     html = html.replace(/(?:^[ \t]*)*<script src="assets\/js\/[^<]+<\/script>\n?/gm, '');
     html = html.replace(/<\/body>/, `${scriptBlock}\n</body>`);
 
@@ -388,6 +454,9 @@ async function main() {
   console.log('Building JS core bundle…');
   const coreBundle = await buildCoreBundle();
 
+  console.log('Building page JS bundles…');
+  const pageBundles = await buildPageBundles();
+
   console.log('Hashing CSS…');
   const cssFile = hashCss();
 
@@ -395,10 +464,11 @@ async function main() {
   await optimizeImages();
 
   console.log('Patching HTML…');
-  patchHtml(coreBundle, cssFile);
+  patchHtml(coreBundle, cssFile, pageBundles);
 
   const manifest = {
     coreBundle,
+    pageBundles,
     cssFile,
     builtAt: new Date().toISOString(),
   };

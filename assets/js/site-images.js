@@ -4,6 +4,9 @@
  */
 (function () {
   if (document.body.classList.contains('admin-app')) return;
+  const needsImages =
+    document.querySelector('[data-site-image]') || document.querySelector('[data-gallery]');
+  if (!needsImages) return;
 
   const GALLERY_LAYOUT_CLASSES = [
     'image-gallery--duo',
@@ -16,6 +19,7 @@
 
     if (el.tagName === 'IMG') {
       el.src = url;
+      if (url.startsWith('/assets/')) return;
       const picture = el.closest('picture');
       if (picture) {
         picture.querySelectorAll('source').forEach((source) => source.remove());

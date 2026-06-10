@@ -1901,7 +1901,8 @@ function sendPage(res, name) {
   if (!fs.existsSync(file)) {
     return res.status(404).send('Seite nicht gefunden');
   }
-  res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
+  res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=120, must-revalidate');
+  res.setHeader('Vary', 'Accept-Encoding');
   return res.sendFile(file);
 }
 

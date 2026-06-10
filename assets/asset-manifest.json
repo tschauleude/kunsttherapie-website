@@ -1,5 +1,14 @@
 {
-  "coreBundle": "site-core.4f7d9afc.js",
-  "cssFile": "style.7560c21a.css",
-  "builtAt": "2026-06-10T17:35:52.280Z"
+  "coreBundle": "site-core.6520434f.js",
+  "pageBundles": {
+    "index": "page-index.14643d0b.js",
+    "kunsttherapie": "page-kunsttherapie.04723217.js",
+    "kontakt": "page-kontakt.4987c5e8.js",
+    "buchung": "page-buchung.ea6c4af9.js",
+    "atelier": "page-atelier.cd240cfb.js",
+    "neuigkeiten": "page-neuigkeiten.907dddde.js",
+    "events": "page-events.60585afe.js"
+  },
+  "cssFile": "style.34c9f0a2.css",
+  "builtAt": "2026-06-10T17:52:35.127Z"
 }
