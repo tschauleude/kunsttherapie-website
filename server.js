@@ -247,6 +247,19 @@ function initializeDatabase() {
     `);
 
     db.run(`
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT,
+        message TEXT NOT NULL,
+        status TEXT DEFAULT 'new',
+        email_sent INTEGER DEFAULT 0,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    db.run(`
       CREATE TABLE IF NOT EXISTS atelier_submissions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         image_path TEXT NOT NULL,
@@ -1016,24 +1029,39 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
     return res.status(400).json({ error: 'Ungültige E-Mail-Adresse' });
   }
 
-  try {
-    const result = await email.sendContactMessage({
-      name: name.trim(),
-      email: fromEmail.trim(),
-      phone: phone ? phone.trim() : '',
-      message: message.trim(),
-    });
+  const clean = {
+    name: name.trim(),
+    email: fromEmail.trim(),
+    phone: phone ? phone.trim() : '',
+    message: message.trim(),
+  };
 
-    if (!result.sent) {
-      return res.status(503).json({
-        error:
-          'Nachricht konnte nicht per E-Mail versendet werden. Bitte ruf uns an oder schreib direkt an info@kunsttherapie-pb.de.',
-      });
+  try {
+    const saved = await dbRun(
+      `INSERT INTO contact_messages (name, email, phone, message, status)
+       VALUES (?, ?, ?, ?, 'new')`,
+      [clean.name, clean.email, clean.phone || null, clean.message]
+    );
+
+    let emailSent = false;
+    try {
+      const result = await email.sendContactMessage(clean);
+      emailSent = Boolean(result.sent);
+      if (emailSent) {
+        await dbRun(`UPDATE contact_messages SET email_sent = 1, status = 'sent' WHERE id = ?`, [
+          saved.lastID,
+        ]);
+      }
+    } catch (mailErr) {
+      console.error('contact email failed:', mailErr.message);
     }
 
     res.json({
       success: true,
-      message: 'Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.',
+      emailSent,
+      message: emailSent
+        ? 'Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.'
+        : 'Vielen Dank – die Nachricht ist gespeichert. Ich melde mich zeitnah.',
     });
   } catch (e) {
     console.error('contact error:', e);
