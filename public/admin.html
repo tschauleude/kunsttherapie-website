@@ -102,11 +102,19 @@
           <p>Veranstaltungen: <strong id="eventsCount">0</strong></p>
         </div>
         <hr class="sep" style="margin:1.5rem 0"/>
-        <h3>Versionen &amp; Wiederherstellen</h3>
-        <p class="note">Bei jedem Speichern von Texten oder Bildern wird automatisch ein Sicherungspunkt angelegt. Du kannst einen früheren Stand wiederherstellen, falls etwas nicht passt.</p>
-        <div class="form-row" style="margin-bottom:1rem">
-          <button type="button" class="btn outline btn-sm" onclick="createContentSnapshot()">Jetzt Sicherungspunkt erstellen</button>
-          <button type="button" class="btn-cancel btn-sm" onclick="loadContentVersions()">Liste aktualisieren</button>
+        <h3>Dauerhafte Speicherung &amp; Versionen</h3>
+        <p class="note">Texte und Bilder werden in der <strong>Datenbank</strong> und zusätzlich als <strong>JSON-Dateien</strong> unter <code>data/</code> gesichert. Bei jedem Speichern entsteht außerdem ein Versions-Sicherungspunkt.</p>
+        <div id="contentPersistStatus" class="stats-box content-persist-status">
+          <p class="note">Speicher-Status wird geladen …</p>
+        </div>
+        <div class="form-row" style="margin-bottom:1rem;flex-wrap:wrap">
+          <button type="button" class="btn outline btn-sm" onclick="createContentSnapshot()">Sicherungspunkt erstellen</button>
+          <button type="button" class="btn outline btn-sm" onclick="exportContentBackup()">Backup herunterladen</button>
+          <label class="btn outline btn-sm media-upload-btn" style="cursor:pointer">
+            Backup einspielen
+            <input type="file" id="contentBackupImport" accept="application/json,.json" hidden onchange="importContentBackup(event)"/>
+          </label>
+          <button type="button" class="btn-cancel btn-sm" onclick="loadContentVersions()">Versionen aktualisieren</button>
         </div>
         <div id="contentVersionsList" class="items-list content-versions-list">
           <p class="note">Versionen werden geladen …</p>
@@ -668,7 +676,7 @@ async function saveI18nGroup(e) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Speichern fehlgeschlagen');
     showMessage(
-      'Texte gespeichert – dauerhaft in data/i18n-overrides.json und im Website-Code. Seite neu laden.',
+      'Texte gespeichert – in Datenbank, data/i18n-overrides.json und als Version gesichert. Seite neu laden.',
       'success'
     );
     loadI18nGroup();
@@ -1141,9 +1149,96 @@ async function loadDashboard() {
     document.getElementById('bookingsCount').textContent = bookings.filter((b) => b.status !== 'cancelled').length;
     document.getElementById('atelierCount').textContent = atelier.filter((a) => a.status === 'new').length;
     document.getElementById('eventsCount').textContent = events.length;
-    await loadContentVersions();
+    await Promise.all([loadContentVersions(), loadContentPersistStatus()]);
   } catch (err) {
     console.error('Dashboard load error:', err);
+  }
+}
+
+function persistStatusBadge(ok) {
+  return ok
+    ? '<span class="persist-badge persist-badge--ok">gesichert</span>'
+    : '<span class="persist-badge persist-badge--warn">leer</span>';
+}
+
+function formatPersistDate(iso) {
+  if (!iso) return '–';
+  try {
+    return new Date(iso).toLocaleString('de-DE');
+  } catch {
+    return iso;
+  }
+}
+
+async function loadContentPersistStatus() {
+  const box = document.getElementById('contentPersistStatus');
+  if (!box) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/content-backup/status`, { credentials: 'include' });
+    if (!res.ok) throw new Error('Status nicht geladen');
+    const data = await res.json();
+    const p = data.persistence || {};
+    const texts = p.texts || {};
+    const images = p.images || {};
+    const backups = p.backups || {};
+    box.innerHTML = `
+      <h4>Speicher-Status</h4>
+      <p><strong>Texte</strong> · DB: ${persistStatusBadge(texts.database)} (${texts.keysDatabase || 0} Einträge) · Datei: ${persistStatusBadge(texts.file)} · <code>${escapeHtml(texts.filePath || '')}</code></p>
+      <p class="note">Letzte Datei-Änderung Texte: ${formatPersistDate(texts.fileUpdatedAt)}</p>
+      <p><strong>Bilder</strong> · DB: ${persistStatusBadge(images.database)} (${images.slotsDatabase || 0} Slots) · Datei: ${persistStatusBadge(images.file)} · Galerie: ${images.galleryCount ?? '–'} Bilder</p>
+      <p class="note">Letzte Datei-Änderung Bilder: ${formatPersistDate(images.fileUpdatedAt)}</p>
+      <p><strong>Versionen in DB</strong>: ${data.versionsInDatabase || 0} / ${data.maxVersions || 80}</p>
+      <p><strong>Datei-Backups</strong>: ${backups.count || 0} in <code>data/backups/</code>${backups.latest ? ` · zuletzt ${formatPersistDate(backups.latest.updatedAt)}` : ''}</p>
+      <p class="note">Tipp: Nach wichtigen Änderungen <em>Backup herunterladen</em> und sicher aufbewahren. Der Ordner <code>data/</code> und <code>public/uploads/</code> sollten beim Hosting erhalten bleiben.</p>
+    `;
+  } catch (err) {
+    box.innerHTML = `<p class="note">Speicher-Status nicht verfügbar: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+async function exportContentBackup() {
+  try {
+    const res = await fetch(`${API_URL}/admin/content-backup/export`, { credentials: 'include' });
+    if (!res.ok) throw new Error('Export fehlgeschlagen');
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `kunsttherapie-cms-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    showMessage('Backup heruntergeladen', 'success');
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function importContentBackup(event) {
+  const file = event.target.files?.[0];
+  event.target.value = '';
+  if (!file) return;
+  if (!confirm('Backup wirklich einspielen? Der aktuelle Stand wird vorher automatisch gesichert.')) return;
+
+  try {
+    const text = await file.text();
+    const bundle = JSON.parse(text);
+    const res = await fetch(`${API_URL}/admin/content-backup/restore`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bundle),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Wiederherstellung fehlgeschlagen');
+    showMessage('Backup eingespielt – Website ggf. neu laden.', 'success');
+    loadContentVersions();
+    loadContentPersistStatus();
+    if (document.getElementById('siteImagesList')) loadSiteImagesList();
+    if (document.getElementById('i18nGroupSelect')?.value) loadI18nGroup();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
   }
 }
 
@@ -1210,6 +1305,7 @@ async function createContentSnapshot() {
     if (!res.ok) throw new Error(data.error || 'Sicherung fehlgeschlagen');
     showMessage(`Sicherungspunkt #${data.id} erstellt`, 'success');
     loadContentVersions();
+    loadContentPersistStatus();
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
   }
@@ -1228,6 +1324,7 @@ async function restoreContentVersion(id) {
     if (!res.ok) throw new Error(data.error || 'Wiederherstellung fehlgeschlagen');
     showMessage('Stand wiederhergestellt – Website ggf. neu laden.', 'success');
     loadContentVersions();
+    loadContentPersistStatus();
     if (document.getElementById('siteImagesList')) loadSiteImagesList();
     if (document.getElementById('i18nGroupSelect')?.value) loadI18nGroup();
   } catch (err) {

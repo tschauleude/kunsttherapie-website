@@ -767,3 +767,26 @@
 .site-image-library-select {
   width: 100%;
 }
+
+.content-persist-status code {
+  font-size: 0.85em;
+}
+
+.persist-badge {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.persist-badge--ok {
+  background: rgba(85, 122, 118, 0.14);
+  color: var(--color-teal-dark);
+}
+
+.persist-badge--warn {
+  background: rgba(209, 141, 137, 0.18);
+  color: #8a4a46;
+}

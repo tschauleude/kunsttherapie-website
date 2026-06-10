@@ -1,0 +1,17 @@
+{
+  "exportedAt": "2026-06-10T17:34:52.047Z",
+  "i18n": {
+    "overrides": {
+      "de": {},
+      "en": {}
+    }
+  },
+  "site_images": {
+    "slots": {},
+    "galleryCount": 6
+  },
+  "_meta": {
+    "updatedAt": "2026-06-10T17:34:52.047Z",
+    "hint": "Vollständiger CMS-Stand (Texte + Bilder). Automatisch bei Speichern aktualisiert."
+  }
+}

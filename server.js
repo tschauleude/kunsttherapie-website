@@ -13,6 +13,7 @@ const { v4: uuidv4 } = require('uuid');
 const siteImages = require('./lib/site-images');
 const media = require('./lib/media');
 const contentVersions = require('./lib/content-versions');
+const contentPersist = require('./lib/content-persist');
 require('dotenv').config();
 
 const app = express();
@@ -1317,6 +1318,7 @@ app.put('/api/admin/site-images/gallery-count', requireAuth, async (req, res) =>
       meta: { action: 'gallery_count' },
     });
     const galleryCount = await siteImages.setGalleryCount(dbRun, req.body?.galleryCount);
+    await contentPersist.persistAll(dbGet, dbAll);
     res.json({ success: true, galleryCount });
   } catch (e) {
     res.status(400).json({ error: e.message || 'Speichern fehlgeschlagen' });
@@ -1334,6 +1336,7 @@ app.put('/api/admin/site-images/:slot', requireAuth, async (req, res) => {
       meta: { action: 'set_slot', slot },
     });
     const saved = await siteImages.setSlotUrl(dbGet, dbRun, slot, url, UPLOAD_DIR);
+    await contentPersist.persistAll(dbGet, dbAll);
     res.json({ success: true, ...saved });
   } catch (e) {
     res.status(400).json({ error: e.message || 'Speichern fehlgeschlagen' });
@@ -1363,6 +1366,7 @@ app.post('/api/admin/site-images/:slot/upload', requireAuth, (req, res) => {
       });
       const url = `/uploads/${req.file.filename}`;
       const saved = await siteImages.setSlotUrl(dbGet, dbRun, slot, url, UPLOAD_DIR);
+      await contentPersist.persistAll(dbGet, dbAll);
       res.json({ success: true, url, ...saved });
     } catch (e) {
       if (req.file?.path && fs.existsSync(req.file.path)) {
@@ -1387,6 +1391,7 @@ app.delete('/api/admin/site-images/:slot', requireAuth, async (req, res) => {
       meta: { action: 'reset', slot },
     });
     const reset = await siteImages.resetSlot(dbGet, dbRun, slot, UPLOAD_DIR);
+    await contentPersist.persistAll(dbGet, dbAll);
     res.json({ success: true, ...reset });
   } catch (e) {
     res.status(400).json({ error: e.message || 'Zurücksetzen fehlgeschlagen' });
@@ -1512,6 +1517,7 @@ app.put('/api/admin/i18n/:groupId', requireAuth, async (req, res) => {
       meta: { action: 'save', groupId, lang },
     });
     const saved = await i18nContent.saveGroupOverrides(dbGet, dbRun, groupId, lang, values);
+    await contentPersist.persistAll(dbGet, dbAll);
     res.json({ success: true, overrides: i18nContent.mergeOverridesForPublic(saved) });
   } catch (e) {
     console.error('admin i18n save:', e.message);
@@ -1534,6 +1540,7 @@ app.delete('/api/admin/i18n/:groupId', requireAuth, async (req, res) => {
       meta: { action: 'reset', groupId, lang },
     });
     const saved = await i18nContent.resetGroupOverrides(dbGet, dbRun, groupId, lang);
+    await contentPersist.persistAll(dbGet, dbAll);
     res.json({ success: true, overrides: i18nContent.mergeOverridesForPublic(saved) });
   } catch (e) {
     console.error('admin i18n reset:', e.message);
@@ -1562,17 +1569,68 @@ app.get('/api/admin/content-versions', requireAuth, async (req, res) => {
 app.post('/api/admin/content-versions/snapshot', requireAuth, async (req, res) => {
   try {
     const label = req.body?.label || 'Manueller Sicherungspunkt';
+    const { backupPath } = await contentPersist.persistAll(dbGet, dbAll);
     const id = await contentVersions.createVersion(dbRun, {
       kind: 'content_bundle',
       label,
       snapshot: await contentVersions.captureBundle(dbGet, dbAll),
       createdBy: req.session.username || null,
-      meta: { action: 'manual_snapshot' },
+      meta: { action: 'manual_snapshot', backupPath },
     });
-    res.json({ success: true, id });
+    res.json({ success: true, id, backupPath });
   } catch (e) {
     console.error('content-versions snapshot:', e.message);
     res.status(500).json({ error: e.message || 'Sicherung fehlgeschlagen' });
+  }
+});
+
+app.get('/api/admin/content-backup/status', requireAuth, async (req, res) => {
+  try {
+    const status = await contentPersist.getStatus(dbGet, dbAll);
+    const versionCount = await dbGet(`SELECT COUNT(*) AS count FROM content_versions`);
+    res.json({
+      ...status,
+      versionsInDatabase: versionCount?.count || 0,
+      maxVersions: contentVersions.MAX_VERSIONS,
+    });
+  } catch (e) {
+    console.error('content-backup status:', e.message);
+    res.status(500).json({ error: 'Status konnte nicht geladen werden' });
+  }
+});
+
+app.get('/api/admin/content-backup/export', requireAuth, async (req, res) => {
+  try {
+    const bundle = await contentPersist.captureBundle(dbGet, dbAll);
+    const stamp = new Date().toISOString().slice(0, 10);
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="kunsttherapie-cms-backup-${stamp}.json"`);
+    res.send(JSON.stringify(bundle, null, 2));
+  } catch (e) {
+    console.error('content-backup export:', e.message);
+    res.status(500).json({ error: 'Export fehlgeschlagen' });
+  }
+});
+
+app.post('/api/admin/content-backup/restore', requireAuth, async (req, res) => {
+  try {
+    const bundle = req.body;
+    if (!bundle || typeof bundle !== 'object') {
+      return res.status(400).json({ error: 'Backup-Daten fehlen' });
+    }
+
+    await contentVersions.snapshotBeforeChange(dbRun, dbGet, dbAll, {
+      kind: 'content_bundle',
+      label: 'Vor Backup-Wiederherstellung',
+      createdBy: req.session.username || null,
+      meta: { action: 'pre_backup_restore' },
+    });
+
+    await contentPersist.restoreBundle(dbGet, dbRun, dbAll, bundle, UPLOAD_DIR);
+    res.json({ success: true, message: 'Backup wiederhergestellt' });
+  } catch (e) {
+    console.error('content-backup restore:', e.message);
+    res.status(400).json({ error: e.message || 'Wiederherstellung fehlgeschlagen' });
   }
 });
 
@@ -1921,6 +1979,7 @@ app.listen(PORT, async () => {
     if (seeded) console.log('i18n: Texte aus data/i18n-overrides.json in die Datenbank übernommen');
     await i18nContent.syncI18nFromSource(dbGet);
     console.log('i18n: Übersetzungsdateien aus Quelltexten neu aufgebaut');
+    await contentPersist.bootstrap(dbGet, dbRun, dbAll, UPLOAD_DIR, contentVersions);
   } catch (e) {
     console.error('i18n migrate:', e.message);
   }
