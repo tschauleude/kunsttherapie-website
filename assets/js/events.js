@@ -38,7 +38,7 @@ function renderEventCard(item) {
   ].filter(Boolean);
 
   return `
-    <div class="event-card">
+    <div class="event-card card card--clickable">
       ${imageHtml}
       <div class="event-content">
         <div class="event-date">${escapeHtml(date)}</div>
@@ -47,7 +47,7 @@ function renderEventCard(item) {
           ${meta.map((m) => `<span>${escapeHtml(m)}</span>`).join('')}
         </div>
         <p>${escapeHtml(item.description)}</p>
-        <a href="kontakt" class="event-cta">${window.ktI18n?.t('eventsPage.signUp') || 'Anmelden'}</a>
+        <a href="kontakt" class="event-cta card-hit-area">${window.ktI18n?.t('eventsPage.signUp') || 'Anmelden'}</a>
       </div>
     </div>
   `;
@@ -68,6 +68,7 @@ function renderEventsList(events) {
 
   if (empty) empty.style.display = 'none';
   list.innerHTML = events.map(renderEventCard).join('');
+  if (window.ktInitCardClickable) window.ktInitCardClickable(list);
   if (window.revealStagger) {
     window.revealStagger(list.querySelectorAll('.event-card'));
   }

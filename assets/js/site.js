@@ -406,6 +406,22 @@
     }
   }
 
+  function initCardClickable(root = document) {
+    root.querySelectorAll('.card--clickable').forEach((card) => {
+      if (card.dataset.cardClickBound === '1') return;
+      const link = card.querySelector('a.card-hit-area[href]');
+      if (!link) return;
+      card.dataset.cardClickBound = '1';
+
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('a, button')) return;
+        link.click();
+      });
+    });
+  }
+
+  window.ktInitCardClickable = initCardClickable;
+
   function init() {
     redirectLegacyPraxisHash();
     initSkipLink();
@@ -413,6 +429,7 @@
     initMobileNav();
     initHeaderScroll();
     initLangSwitch();
+    initCardClickable();
     applySiteChrome();
     markCurrentNav();
     initHomeScrollSpy();
