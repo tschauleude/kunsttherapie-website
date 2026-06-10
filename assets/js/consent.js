@@ -24,7 +24,11 @@
       ...getConsent(),
       ...partial,
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch (e) {
+      /* private mode / quota – UI trotzdem aktualisieren */
+    }
     applyConsent(next);
     window.dispatchEvent(new CustomEvent('consent-updated', { detail: next }));
     hideBanner();
@@ -153,16 +157,23 @@
     window.addEventListener('consent-updated', tryRun, { once: true });
   };
 
+  let settingsBusy = false;
+
   function hideSettings() {
     const s = document.getElementById('consentSettings');
-    if (!s) {
+    if (!s || s.hidden) {
       emitConsentSettled();
       return;
     }
+    if (settingsBusy) return;
+    settingsBusy = true;
+
     const finish = () => {
       document.body.classList.remove('consent-settings-open');
+      settingsBusy = false;
       emitConsentSettled();
     };
+
     if (window.flowMotion) {
       window.flowMotion.close(s, 'consent-settings-visible').then(finish);
       return;
@@ -174,15 +185,23 @@
 
   function showSettings() {
     const s = document.getElementById('consentSettings');
-    if (!s) return;
+    if (!s || settingsBusy) return;
+    if (!s.hidden) return;
+
+    settingsBusy = true;
     syncToggleInputs(getConsent() || { external: false });
-    s.hidden = false;
-    document.body.classList.add('consent-settings-open');
-    const focusPanel = () => s.querySelector('.consent-settings-panel')?.focus?.();
+
+    const focusPanel = () => {
+      document.body.classList.add('consent-settings-open');
+      settingsBusy = false;
+      s.querySelector('.consent-settings-panel')?.focus?.();
+    };
+
     if (window.flowMotion) {
       window.flowMotion.open(s, 'consent-settings-visible').then(focusPanel);
       return;
     }
+    s.hidden = false;
     s.classList.add('consent-settings-visible');
     focusPanel();
   }

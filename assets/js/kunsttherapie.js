@@ -62,42 +62,50 @@
       });
     };
 
+    let offerToggleBusy = false;
+
     async function toggleOffer(card, toggle) {
+      if (offerToggleBusy) return;
       const body = card.querySelector('.kt-offer-body');
       if (!body) return;
 
-      const willOpen = toggle.getAttribute('aria-expanded') !== 'true';
-      const closeJobs = [];
+      offerToggleBusy = true;
+      try {
+        const willOpen = toggle.getAttribute('aria-expanded') !== 'true';
+        const closeJobs = [];
 
-      root.querySelectorAll('[data-offer]').forEach((c) => {
-        const otherBody = c.querySelector('.kt-offer-body');
-        const otherToggle = c.querySelector('.kt-toggle');
-        if (c !== card && otherBody && !otherBody.hidden) {
-          closeJobs.push(closeBody(otherBody));
+        root.querySelectorAll('[data-offer]').forEach((c) => {
+          const otherBody = c.querySelector('.kt-offer-body');
+          const otherToggle = c.querySelector('.kt-toggle');
+          if (c !== card && otherBody && !otherBody.hidden) {
+            closeJobs.push(closeBody(otherBody));
+          }
+          c.classList.remove('is-open');
+          if (otherToggle) {
+            otherToggle.setAttribute('aria-expanded', 'false');
+            otherToggle.textContent = labelLearn();
+          }
+        });
+
+        await Promise.all(closeJobs);
+
+        if (willOpen) {
+          toggle.setAttribute('aria-expanded', 'true');
+          toggle.textContent = labelLess();
+          card.classList.add('is-open');
+          if (window.flowMotion) await window.flowMotion.expand(body);
+          else body.hidden = false;
+          requestAnimationFrame(() => scrollOfferIntoView(card));
+        } else {
+          await closeBody(body);
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.textContent = labelLearn();
+          card.classList.remove('is-open');
         }
-        c.classList.remove('is-open');
-        if (otherToggle) {
-          otherToggle.setAttribute('aria-expanded', 'false');
-          otherToggle.textContent = labelLearn();
-        }
-      });
-
-      await Promise.all(closeJobs);
-
-      if (willOpen) {
-        toggle.setAttribute('aria-expanded', 'true');
-        toggle.textContent = labelLess();
-        card.classList.add('is-open');
-        if (window.flowMotion) await window.flowMotion.expand(body);
-        else body.hidden = false;
-        requestAnimationFrame(() => scrollOfferIntoView(card));
-      } else {
-        await closeBody(body);
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.textContent = labelLearn();
-        card.classList.remove('is-open');
+        syncOffersLayout();
+      } finally {
+        offerToggleBusy = false;
       }
-      syncOffersLayout();
     }
 
     let lastTouchToggleAt = 0;

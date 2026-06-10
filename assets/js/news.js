@@ -74,11 +74,22 @@ async function fetchPublishedNews() {
 
 function closeNewsPopup() {
   const popup = document.getElementById('newsPopup');
-  if (!popup) return;
+  if (!popup || popup.hidden) return;
+
+  const latestId = popup.dataset.latestNewsId;
   const finish = () => {
     popup.hidden = true;
     document.body.classList.remove('news-popup-open');
+    delete popup.dataset.latestNewsId;
+    if (latestId) {
+      try {
+        localStorage.setItem(NEWS_POPUP_STORAGE_KEY, latestId);
+      } catch (e) {
+        /* ignore */
+      }
+    }
   };
+
   if (window.flowMotion) {
     window.flowMotion.close(popup, 'news-popup-visible').then(finish);
     return;
@@ -96,21 +107,19 @@ function openNewsPopup(items) {
     .map((item, index) => renderNewsPopupBlock(item, index === 0))
     .join('');
 
-  document.body.classList.add('news-popup-open');
-  const focusClose = () => popup.querySelector('.news-popup-close')?.focus();
+  popup.dataset.latestNewsId = String(items[0].id);
+
+  const afterOpen = () => {
+    document.body.classList.add('news-popup-open');
+    popup.querySelector('.news-popup-close')?.focus();
+  };
+
   if (window.flowMotion) {
-    window.flowMotion.open(popup, 'news-popup-visible').then(focusClose);
+    window.flowMotion.open(popup, 'news-popup-visible').then(afterOpen);
   } else {
     popup.hidden = false;
     popup.classList.add('news-popup-visible');
-    focusClose();
-  }
-
-  const latestId = String(items[0].id);
-  try {
-    localStorage.setItem(NEWS_POPUP_STORAGE_KEY, latestId);
-  } catch (e) {
-    /* ignore */
+    afterOpen();
   }
 }
 

@@ -11,8 +11,14 @@
   const SKIP_SELECTOR =
     '.consent-banner, .consent-settings, #newsPopup, .lightbox, [hidden], script, style, noscript';
 
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let queue = Promise.resolve();
+
+  function prefersReducedMotion() {
+    return (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      document.documentElement.classList.contains('a11y-reduce-motion')
+    );
+  }
 
   function isSkipped(el) {
     if (!el || !(el instanceof Element)) return true;
@@ -108,7 +114,7 @@
   function runSequence(elements, startDelay = 0) {
     if (!elements.length) return Promise.resolve();
 
-    if (reducedMotion) {
+    if (prefersReducedMotion()) {
       elements.forEach((el) => {
         prepareElement(el);
         revealElement(el);
@@ -152,7 +158,7 @@
 
     document.documentElement.classList.add('reveal-active');
 
-    if (reducedMotion) {
+    if (prefersReducedMotion()) {
       targets.forEach((el) => {
         prepareElement(el);
         revealElement(el);
@@ -160,12 +166,17 @@
       return;
     }
 
-    requestAnimationFrame(() => {
-      targets.forEach((el) => prepareElement(el));
-      requestAnimationFrame(() => {
-        runSequence(targets, INITIAL_DELAY_MS);
-      });
-    });
+    queue = queue.then(
+      () =>
+        new Promise((resolve) => {
+          requestAnimationFrame(() => {
+            targets.forEach((el) => prepareElement(el));
+            requestAnimationFrame(() => {
+              runSequence(targets, INITIAL_DELAY_MS).then(resolve);
+            });
+          });
+        })
+    );
   }
 
   window.revealStagger = revealStagger;

@@ -12,6 +12,7 @@
     btn.type = 'button';
     btn.className = 'scroll-top-btn';
     btn.hidden = true;
+    btn.setAttribute('aria-hidden', 'true');
     const label = window.ktI18n?.t('ui.scrollTop') || 'Nach oben scrollen';
     btn.setAttribute('aria-label', label);
     btn.dataset.i18nAria = 'ui.scrollTop';
@@ -35,11 +36,15 @@
     const show = window.scrollY > SHOW_AFTER_PX;
     if (show && btn.hidden) {
       btn.hidden = false;
+      btn.setAttribute('aria-hidden', 'false');
       requestAnimationFrame(() => btn.classList.add('scroll-top-visible'));
     } else if (!show && !btn.hidden) {
       btn.classList.remove('scroll-top-visible');
       window.setTimeout(() => {
-        if (window.scrollY <= SHOW_AFTER_PX) btn.hidden = true;
+        if (window.scrollY <= SHOW_AFTER_PX) {
+          btn.hidden = true;
+          btn.setAttribute('aria-hidden', 'true');
+        }
       }, 400);
     }
   }
