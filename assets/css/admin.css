@@ -1096,6 +1096,112 @@ hr.sep {
   }
 }
 
+/* ---------- ALLE DATEIEN GRID ---------- */
+.all-files-card {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 0.5rem;
+}
+
+.all-files-card .media-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.badge--static {
+  background: rgba(74, 110, 106, 0.12);
+  color: var(--accent);
+}
+
+.badge--upload {
+  background: rgba(180, 140, 80, 0.12);
+  color: #8a6c3a;
+}
+
+/* ---------- STYLE GUIDE ---------- */
+.style-guide-content {
+  padding: 1.5rem 0;
+}
+
+.style-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.style-guide-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(85, 122, 118, 0.15);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.style-guide-card--tips {
+  grid-column: 1 / -1;
+}
+
+.style-guide-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.style-guide-card h3 {
+  margin: 0 0 0.9rem;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.style-guide-spec {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(85, 122, 118, 0.08);
+  font-size: 0.875rem;
+}
+
+.style-guide-spec:last-of-type {
+  border-bottom: none;
+}
+
+.style-guide-spec .label {
+  font-weight: 600;
+  color: var(--text-light);
+  min-width: 90px;
+  flex-shrink: 0;
+}
+
+.style-guide-spec .val {
+  color: var(--text);
+}
+
+.style-guide-tips {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.style-guide-tips code {
+  background: rgba(74, 110, 106, 0.08);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.82rem;
+}
+
 /* ---------- UTILITY ---------- */
 .btn-sm {
   padding: 0.45rem 0.9rem;

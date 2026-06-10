@@ -1454,6 +1454,62 @@ app.delete('/api/admin/media/:filename', requireAuth, async (req, res) => {
 });
 
 // ============================================================================
+// STATIC ASSET IMAGES (assets/img/) — list + delete
+// ============================================================================
+
+const STATIC_IMG_DIR = path.join(ROOT, 'assets', 'img');
+const PROTECTED_STATIC = new Set([
+  'favicon.svg', 'favicon.ico', 'favicon-32x32.png', 'favicon-16x16.png',
+  'apple-touch-icon.png', 'site.webmanifest', 'logo.jpg',
+]);
+const STATIC_IMG_EXT = /\.(jpe?g|png|gif|webp|svg)$/i;
+
+app.get('/api/admin/static-images', requireAuth, (req, res) => {
+  try {
+    const files = fs.readdirSync(STATIC_IMG_DIR, { withFileTypes: true })
+      .filter((d) => d.isFile() && STATIC_IMG_EXT.test(d.name))
+      .map((d) => {
+        const filePath = path.join(STATIC_IMG_DIR, d.name);
+        const stat = fs.statSync(filePath);
+        return {
+          filename: d.name,
+          url: `/assets/img/${d.name}`,
+          size: stat.size,
+          updatedAt: stat.mtime.toISOString(),
+          protected: PROTECTED_STATIC.has(d.name),
+        };
+      })
+      .sort((a, b) => a.filename.localeCompare(b.filename));
+    res.json({ files });
+  } catch (e) {
+    res.status(500).json({ error: 'Statische Bilder konnten nicht geladen werden' });
+  }
+});
+
+app.delete('/api/admin/static-images/:filename', requireAuth, (req, res) => {
+  const filename = path.basename(req.params.filename || '');
+  if (!filename || filename.includes('..')) {
+    return res.status(400).json({ error: 'Ungültiger Dateiname' });
+  }
+  if (PROTECTED_STATIC.has(filename)) {
+    return res.status(403).json({ error: 'Dieses Bild ist systemgeschützt und kann nicht gelöscht werden.' });
+  }
+  if (!STATIC_IMG_EXT.test(filename)) {
+    return res.status(400).json({ error: 'Nur Bilddateien können gelöscht werden' });
+  }
+  const filePath = path.join(STATIC_IMG_DIR, filename);
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'Datei nicht gefunden' });
+  }
+  try {
+    fs.unlinkSync(filePath);
+    res.json({ success: true, filename, url: `/assets/img/${filename}` });
+  } catch (e) {
+    res.status(500).json({ error: 'Löschen fehlgeschlagen' });
+  }
+});
+
+// ============================================================================
 // I18N TEXT OVERRIDES (Admin → Website)
 // ============================================================================
 

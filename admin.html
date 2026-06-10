@@ -342,11 +342,13 @@
     <!-- SITE IMAGES -->
     <section class="admin-section" id="images">
       <h1>Bilder</h1>
-      <p class="sub section-desc">Website-Bilder pro Bereich zuweisen oder in der Mediathek verwalten. JPG, PNG, GIF oder WebP – max. ca. 5&nbsp;MB. Alt-Texte unter <strong>Website-Texte → Startseite</strong>.</p>
+      <p class="sub section-desc">Website-Bilder pro Bereich zuweisen, Mediathek verwalten oder alle Dateien einsehen. Alt-Texte unter <strong>Website-Texte → Startseite</strong>.</p>
 
       <div class="images-admin-tabs" role="tablist">
         <button type="button" class="images-tab is-active" data-images-tab="slots" role="tab" aria-selected="true">Website-Bilder</button>
         <button type="button" class="images-tab" data-images-tab="library" role="tab" aria-selected="false">Mediathek</button>
+        <button type="button" class="images-tab" data-images-tab="allfiles" role="tab" aria-selected="false">Alle Dateien</button>
+        <button type="button" class="images-tab" data-images-tab="styleguide" role="tab" aria-selected="false">Style-Leitfaden</button>
       </div>
 
       <div id="siteImagesSlotsPanel" class="images-tab-panel is-active" data-images-panel="slots">
@@ -366,6 +368,82 @@
         </div>
         <div id="mediaLibraryGrid" class="media-library-grid">
           <p class="note">Mediathek wird geladen …</p>
+        </div>
+      </div>
+
+      <div id="allFilesPanel" class="images-tab-panel" data-images-panel="allfiles" hidden>
+        <div class="media-library-toolbar">
+          <p class="note" style="margin:0">Alle Bilder auf dem Server – hochgeladene Dateien und statische Website-Bilder. <strong>Systemdateien</strong> (Favicon, Logo) sind gesperrt und können nicht gelöscht werden.</p>
+        </div>
+        <div id="allFilesGrid" class="media-library-grid">
+          <p class="note">Dateien werden geladen …</p>
+        </div>
+      </div>
+
+      <div id="styleGuidePanel" class="images-tab-panel" data-images-panel="styleguide" hidden>
+        <div class="style-guide-content">
+          <h2 style="margin-top:0">Bildempfehlungen für die Website</h2>
+          <p class="sub">Diese Empfehlungen helfen dabei, dass alle Bilder optimal auf der Website aussehen – scharf, schnell ladend und stimmig.</p>
+
+          <div class="style-guide-grid">
+            <div class="style-guide-card">
+              <div class="style-guide-icon">🖼️</div>
+              <h3>Galerie-Bilder</h3>
+              <div class="style-guide-spec"><span class="label">Maße</span><span class="val">768 × 524 px</span></div>
+              <div class="style-guide-spec"><span class="label">Format</span><span class="val">JPEG oder WebP</span></div>
+              <div class="style-guide-spec"><span class="label">Dateigröße</span><span class="val">max. 200 KB</span></div>
+              <div class="style-guide-spec"><span class="label">Empfehlung</span><span class="val">Landschaftsformat, natürliches Licht, kräftige Farben</span></div>
+            </div>
+
+            <div class="style-guide-card">
+              <div class="style-guide-icon">🏠</div>
+              <h3>Hero-Banner (Startseite)</h3>
+              <div class="style-guide-spec"><span class="label">Maße</span><span class="val">1536 × 1024 px</span></div>
+              <div class="style-guide-spec"><span class="label">Format</span><span class="val">JPEG oder WebP</span></div>
+              <div class="style-guide-spec"><span class="label">Dateigröße</span><span class="val">max. 300 KB</span></div>
+              <div class="style-guide-spec"><span class="label">Empfehlung</span><span class="val">Ruhiger Hintergrund, Motiv nicht zu nah am Rand</span></div>
+            </div>
+
+            <div class="style-guide-card">
+              <div class="style-guide-icon">👤</div>
+              <h3>Portrait / Profilfoto</h3>
+              <div class="style-guide-spec"><span class="label">Maße</span><span class="val">960 × 1200 px</span></div>
+              <div class="style-guide-spec"><span class="label">Format</span><span class="val">JPEG oder WebP</span></div>
+              <div class="style-guide-spec"><span class="label">Dateigröße</span><span class="val">max. 300 KB</span></div>
+              <div class="style-guide-spec"><span class="label">Empfehlung</span><span class="val">Hochformat, klarer Hintergrund, gutes Licht</span></div>
+            </div>
+
+            <div class="style-guide-card">
+              <div class="style-guide-icon">🎨</div>
+              <h3>Gruppenfotos / Impressionen</h3>
+              <div class="style-guide-spec"><span class="label">Maße</span><span class="val">430 × 322 px (min.)</span></div>
+              <div class="style-guide-spec"><span class="label">Format</span><span class="val">JPEG oder WebP</span></div>
+              <div class="style-guide-spec"><span class="label">Dateigröße</span><span class="val">max. 100 KB</span></div>
+              <div class="style-guide-spec"><span class="label">Empfehlung</span><span class="val">Stimmungsvolle Szenen, keine erkennbaren Gesichter ohne Einwilligung</span></div>
+            </div>
+
+            <div class="style-guide-card">
+              <div class="style-guide-icon">🏛️</div>
+              <h3>Atelier-Außenansicht</h3>
+              <div class="style-guide-spec"><span class="label">Maße</span><span class="val">1536 × 1024 px</span></div>
+              <div class="style-guide-spec"><span class="label">Format</span><span class="val">JPEG oder WebP</span></div>
+              <div class="style-guide-spec"><span class="label">Dateigröße</span><span class="val">max. 250 KB</span></div>
+              <div class="style-guide-spec"><span class="label">Empfehlung</span><span class="val">Gute Belichtung, zeigt Eingang und Atmosphäre</span></div>
+            </div>
+
+            <div class="style-guide-card style-guide-card--tips">
+              <div class="style-guide-icon">✅</div>
+              <h3>Allgemeine Tipps</h3>
+              <ul class="style-guide-tips">
+                <li>Dateinamen: Kleinbuchstaben, Bindestriche statt Leerzeichen <em>(z. B. <code>mein-bild.jpg</code>)</em></li>
+                <li>Keine Umlaute oder Sonderzeichen im Dateinamen</li>
+                <li>WebP ist kleiner als JPEG – bevorzugt verwenden</li>
+                <li>Keine Wasserzeichen, Rahmen oder Logos im Bild</li>
+                <li>Farben: warme, erdige Töne passen zur Marke</li>
+                <li>Kein harter Blitz – weiches, natürliches Licht bevorzugen</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1072,6 +1150,74 @@ async function deleteMediaFiles(filenames) {
   }
 }
 
+async function loadAllFiles() {
+  const grid = document.getElementById('allFilesGrid');
+  if (grid) grid.innerHTML = '<p class="note">Dateien werden geladen …</p>';
+  try {
+    const [staticRes, uploadRes] = await Promise.all([
+      fetch(`${API_URL}/admin/static-images`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
+    ]);
+    const staticData = await staticRes.json();
+    const uploadData = await uploadRes.json();
+    if (!staticRes.ok) throw new Error(staticData.error || 'Statische Bilder konnten nicht geladen werden');
+    if (!uploadRes.ok) throw new Error(uploadData.error || 'Mediathek konnten nicht geladen werden');
+
+    const staticFiles = (staticData.files || []).map((f) => ({ ...f, source: 'static' }));
+    const uploadFiles = (uploadData.files || []).map((f) => ({ ...f, source: 'upload', protected: false }));
+    const all = [...staticFiles, ...uploadFiles].sort((a, b) => a.filename.localeCompare(b.filename));
+
+    if (!grid) return;
+    if (!all.length) {
+      grid.innerHTML = '<p class="note">Keine Dateien gefunden.</p>';
+      return;
+    }
+    grid.innerHTML = all.map((f) => {
+      const sizeKb = (f.size / 1024).toFixed(1);
+      const sourceLabel = f.source === 'static' ? 'Website-Asset' : 'Hochgeladen';
+      const sourceCls = f.source === 'static' ? 'badge--static' : 'badge--upload';
+      const deleteBtn = f.protected
+        ? `<button class="btn-cancel all-files-delete" disabled title="Systemdatei – gesperrt">🔒 Gesperrt</button>`
+        : `<button class="btn-cancel all-files-delete" data-source="${f.source}" data-filename="${escapeHtml(f.filename)}" title="Bild löschen">Löschen</button>`;
+      return `<div class="media-card all-files-card">
+        <div class="media-thumb-wrap">
+          <img src="${escapeHtml(f.url)}" alt="${escapeHtml(f.filename)}" class="media-thumb" loading="lazy"/>
+        </div>
+        <div class="media-info">
+          <span class="media-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
+          <span class="media-meta">${sizeKb} KB</span>
+          <span class="badge ${sourceCls}">${sourceLabel}</span>
+        </div>
+        <div class="media-actions">${deleteBtn}</div>
+      </div>`;
+    }).join('');
+
+    grid.querySelectorAll('.all-files-delete:not([disabled])').forEach((btn) => {
+      btn.addEventListener('click', () => deleteAnyImage(btn.dataset.source, btn.dataset.filename));
+    });
+  } catch (err) {
+    if (grid) grid.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function deleteAnyImage(source, filename) {
+  if (!confirm(`Bild „${filename}" dauerhaft löschen?`)) return;
+  try {
+    const endpoint = source === 'static'
+      ? `${API_URL}/admin/static-images/${encodeURIComponent(filename)}`
+      : `${API_URL}/admin/media/${encodeURIComponent(filename)}`;
+    const res = await fetch(endpoint, { method: 'DELETE', credentials: 'include' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Löschen fehlgeschlagen');
+    showMessage(`„${filename}" gelöscht.`, 'success');
+    loadAllFiles();
+    loadSiteImagesList();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
 function initImagesAdmin() {
   const section = document.getElementById('images');
   if (!section || section.dataset.bound) return;
@@ -1088,6 +1234,7 @@ function initImagesAdmin() {
         panel.classList.toggle('is-active', active);
         panel.hidden = !active;
       });
+      if (tab.dataset.imagesTab === 'allfiles') loadAllFiles();
     });
   });
 
