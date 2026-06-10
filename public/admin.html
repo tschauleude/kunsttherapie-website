@@ -67,6 +67,7 @@
     <div class="nav-item" onclick="switchSection('bookings', this)">Buchungen</div>
     <div class="nav-item" onclick="switchSection('atelier', this)">Mini-Atelier</div>
     <div class="nav-item" onclick="switchSection('events', this)">Veranstaltungen</div>
+    <div class="nav-item" onclick="switchSection('services', this)">Angebote &amp; Preise</div>
     <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
     <p class="sidebar-links">
       <a href="/" target="_blank" rel="noopener">Website ansehen</a><br>
@@ -100,6 +101,7 @@
           <p>Buchungen: <strong id="bookingsCount">0</strong></p>
           <p>Mini-Atelier: <strong id="atelierCount">0</strong> neu</p>
           <p>Veranstaltungen: <strong id="eventsCount">0</strong></p>
+          <p>Angebote: <strong id="servicesCount">0</strong></p>
         </div>
         <hr class="sep" style="margin:1.5rem 0"/>
         <h3>Versionen &amp; Wiederherstellen</h3>
@@ -288,6 +290,52 @@
         </form>
       </div>
       <div id="eventsList" class="items-list"></div>
+    </section>
+
+    <!-- SERVICES/ANGEBOTE SECTION -->
+    <section class="admin-section" id="services">
+      <h1>Angebote &amp; Preise</h1>
+      <p class="sub section-desc">Deine Angebote mit Titel, Beschreibung und Preis. Diese erscheinen auf der Buchungsseite und in der Übersicht.</p>
+      <button class="btn-add" onclick="openServiceForm()">Neues Angebot</button>
+      <div id="serviceForm" class="form-container" style="display: none;">
+        <h2>Angebot bearbeiten</h2>
+        <form onsubmit="saveService(event)">
+          <input type="hidden" id="serviceId">
+          <div class="form-group full">
+            <label>Titel</label>
+            <input type="text" id="serviceTitle" required placeholder="z.B. Gruppen-Kunsttherapie">
+          </div>
+          <div class="form-group full">
+            <label>Beschreibung</label>
+            <textarea id="serviceDescription" required rows="5" placeholder="Was beinhaltet dieses Angebot?"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Preis</label>
+              <input type="text" id="servicePrice" placeholder="z.B. 55 € / Einheit">
+            </div>
+            <div class="form-group">
+              <label>Dauer</label>
+              <input type="text" id="serviceDuration" placeholder="z.B. 90 Minuten">
+            </div>
+          </div>
+          <div class="form-group full">
+            <label>Bild-URL (optional)</label>
+            <input type="text" id="serviceImage" placeholder="https://... oder leer lassen">
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="serviceActive">
+              Aktiv (sichtbar)
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-save">Speichern</button>
+            <button type="button" class="btn-cancel" onclick="closeServiceForm()">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+      <div id="servicesList" class="items-list"></div>
     </section>
 
     <!-- SITE IMAGES -->
@@ -534,6 +582,7 @@ function switchSection(sectionId, navEl) {
   }
   if (sectionId === 'atelier') loadAtelierList();
   if (sectionId === 'events') loadEventsList();
+  if (sectionId === 'services') loadServicesList();
   if (sectionId === 'images') loadSiteImagesList();
   if (sectionId === 'texts') initTextsSection();
 }
@@ -1125,22 +1174,25 @@ function toggleManualBlockFields() {
 
 async function loadDashboard() {
   try {
-    const [newsRes, bookingsRes, eventsRes, atelierRes] = await Promise.all([
+    const [newsRes, bookingsRes, eventsRes, atelierRes, servicesRes] = await Promise.all([
       fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/atelier`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/services`, { credentials: 'include' }),
     ]);
 
     const news = await newsRes.json();
     const bookings = await bookingsRes.json();
     const events = await eventsRes.json();
     const atelier = atelierRes.ok ? await atelierRes.json() : [];
+    const services = servicesRes.ok ? await servicesRes.json() : [];
 
     document.getElementById('newsCount').textContent = news.length;
     document.getElementById('bookingsCount').textContent = bookings.filter((b) => b.status !== 'cancelled').length;
     document.getElementById('atelierCount').textContent = atelier.filter((a) => a.status === 'new').length;
     document.getElementById('eventsCount').textContent = events.length;
+    document.getElementById('servicesCount').textContent = services.filter((s) => s.active).length;
     await loadContentVersions();
   } catch (err) {
     console.error('Dashboard load error:', err);
