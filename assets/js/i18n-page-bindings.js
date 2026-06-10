@@ -17,7 +17,7 @@ window.I18N_PAGE_BINDINGS = {
     { sel: '#galerie .section-intro h2', key: 'home.gallery.title', attr: 'text' },
     { sel: '#galerie .section-intro .sub', key: 'home.gallery.sub', attr: 'text' },
     { sel: '#angebote .section-intro .kicker', key: 'home.services.kicker', attr: 'text' },
-    { sel: '#atelier .section-intro .kicker', key: 'kt.praxis.kicker', attr: 'text' },
+    { sel: '#atelier .section-intro .kicker', key: 'home.praxis.kicker', attr: 'text' },
     { sel: '#atelier .section-intro h2', key: 'home.praxis.title', attr: 'text' },
     { sel: '#atelier .section-intro .sub', key: 'home.praxis.sub', attr: 'text' },
     { sel: '#atelier .twoCol > div:first-child > p:first-child', key: 'home.praxis.address', attr: 'html' },
