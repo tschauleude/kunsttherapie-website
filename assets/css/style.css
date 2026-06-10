@@ -3048,6 +3048,47 @@ nav[data-site-nav] {
   text-align: left;
 }
 
+.kt-method-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 760px) {
+  .kt-method-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.kt-method-card.card {
+  margin: 0;
+  padding: 0.85rem;
+  overflow: hidden;
+}
+
+.kt-method-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: calc(var(--radius-card) - 6px);
+  box-shadow: 0 10px 24px rgba(47, 67, 64, 0.1);
+}
+
+.kt-method-card figcaption {
+  padding: 0.85rem 0.25rem 0.15rem;
+}
+
+.kt-method-card h3 {
+  margin: 0 0 0.35rem;
+  color: var(--color-teal-dark);
+}
+
+.kt-method-card p {
+  margin: 0;
+  color: var(--text-light);
+}
+
 .kt-praxis-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -3733,7 +3774,6 @@ nav a[aria-current='page'] {
 html.reveal-active .reveal-item {
   opacity: 0;
   transform: translateY(0.85rem);
-  pointer-events: none;
   transition:
     opacity var(--duration-flow) var(--ease-flow),
     transform var(--duration-flow) var(--ease-flow);
@@ -3743,7 +3783,6 @@ html.reveal-active .reveal-item {
 html.reveal-active .reveal-item.reveal-visible {
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
 }
 
 /* === Nach-oben-Button (scroll-top.js) === */

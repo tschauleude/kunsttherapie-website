@@ -34,8 +34,9 @@
 
     function updateHint(details) {
       const hint = details.querySelector('.kt-offer-hint');
-      if (!hint) return;
-      hint.textContent = details.open ? hintCollapse() : hintExpand();
+      const summary = details.querySelector('summary');
+      if (hint) hint.textContent = details.open ? hintCollapse() : hintExpand();
+      if (summary) summary.setAttribute('aria-expanded', details.open ? 'true' : 'false');
     }
 
     function scrollOfferIntoView(card) {
@@ -77,6 +78,13 @@
     offers.forEach((details) => {
       ensureOfferBody(details);
       updateHint(details);
+
+      details.addEventListener('click', (event) => {
+        if (details.open) return;
+        if (event.target.closest('summary, a, button, input, select, textarea')) return;
+        event.preventDefault();
+        details.open = true;
+      });
 
       details.addEventListener('toggle', () => {
         ensureOfferBody(details);

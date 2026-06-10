@@ -150,5 +150,46 @@
       }
     ],
     "fallback": "martina-portrait.jpg"
+  },
+  "martina-gruppenbild.jpg": {
+    "width": 430,
+    "height": 322,
+    "sources": [
+      {
+        "w": 430,
+        "webp": "martina-gruppenbild-430w.webp"
+      }
+    ],
+    "fallback": "martina-gruppenbild.jpg"
+  },
+  "martina-vision-board.jpg": {
+    "width": 674,
+    "height": 468,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "martina-vision-board-480w.webp"
+      },
+      {
+        "w": 674,
+        "webp": "martina-vision-board-674w.webp"
+      }
+    ],
+    "fallback": "martina-vision-board.jpg"
+  },
+  "martina-kreativprozess.jpg": {
+    "width": 623,
+    "height": 433,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "martina-kreativprozess-480w.webp"
+      },
+      {
+        "w": 623,
+        "webp": "martina-kreativprozess-623w.webp"
+      }
+    ],
+    "fallback": "martina-kreativprozess.jpg"
   }
 }
