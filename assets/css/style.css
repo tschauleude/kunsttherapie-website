@@ -2866,13 +2866,17 @@ nav[data-site-nav] {
     gap: 0.75rem 1.5rem;
   }
 
+  .kt-offers--five .kt-offer--accent:not([open]) .kt-offer-head-content {
+    display: contents;
+  }
+
   .kt-offers--five .kt-offer--accent:not([open]) h3 {
     grid-column: 1;
   }
 
   .kt-offers--five .kt-offer--accent[open] .kt-offer-head {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
   }
 
@@ -2881,9 +2885,15 @@ nav[data-site-nav] {
     min-width: 0;
   }
 
-  .kt-offers--five .kt-offer--accent:not([open]) .kt-offer-toggle {
+  .kt-offers--five .kt-offer--accent:not([open]) .kt-offer-chevron {
     grid-column: 3;
+    grid-row: 1 / span 2;
+    align-self: center;
     justify-self: end;
+  }
+
+  .kt-offers--five .kt-offer--accent:not([open]) .kt-offer-hint {
+    grid-column: 1 / -1;
   }
 }
 
@@ -2897,8 +2907,27 @@ nav[data-site-nav] {
   height: auto;
   min-height: 0;
   overflow: visible;
-  transition: border-color 0.35s, box-shadow 0.35s;
-  border: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    border-color 0.35s var(--ease-flow),
+    box-shadow 0.35s var(--ease-flow),
+    transform 0.25s var(--ease-flow);
+  border: 2px solid rgba(85, 122, 118, 0.14);
+}
+
+.kt-offer:not([open]):hover {
+  border-color: rgba(85, 122, 118, 0.38);
+  box-shadow: 0 10px 28px rgba(85, 122, 118, 0.12);
+  transform: translateY(-2px);
+}
+
+.kt-offer:not([open]):active {
+  transform: translateY(0);
+}
+
+.kt-offer:focus-within {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 3px;
 }
 
 @media (max-width: 1023px) {
@@ -2919,28 +2948,82 @@ nav[data-site-nav] {
 
 .kt-offer-head {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
   flex: 0 0 auto;
-  gap: 0.65rem;
-  min-height: 0;
+  min-height: 2.75rem;
+  padding: 0;
   cursor: pointer;
   list-style: none;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .kt-offer-head::-webkit-details-marker {
   display: none;
 }
 
-.kt-offer-head .kt-offer-toggle {
-  margin-top: auto;
-  align-self: flex-start;
-  min-width: 10.5rem;
-  min-height: 2.75rem;
-  white-space: nowrap;
-  line-height: 1.25;
-  font-size: 0.88rem;
-  flex-shrink: 0;
+.kt-offer-head-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.kt-offer-hint {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-teal);
+  opacity: 0.88;
+}
+
+.kt-offer:not([open]):hover .kt-offer-hint {
+  opacity: 1;
+}
+
+.kt-offer-chevron {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  margin-top: 0.1rem;
+  border-radius: 50%;
+  background: rgba(85, 122, 118, 0.1);
+  position: relative;
+  transition:
+    transform 0.35s var(--ease-flow),
+    background 0.25s var(--ease-flow);
+}
+
+.kt-offer-chevron::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-top: -0.3rem;
+  margin-left: -0.35rem;
+  border-right: 2px solid var(--color-teal);
+  border-bottom: 2px solid var(--color-teal);
+  transform: rotate(45deg);
+  transition: transform 0.35s var(--ease-flow);
+}
+
+.kt-offer[open] .kt-offer-chevron {
+  background: rgba(85, 122, 118, 0.16);
+}
+
+.kt-offer[open] .kt-offer-chevron::before {
+  margin-top: -0.15rem;
+  transform: rotate(-135deg);
+}
+
+.kt-offer:not([open]):hover .kt-offer-chevron {
+  background: rgba(85, 122, 118, 0.18);
 }
 
 .kt-offer[open] {
@@ -3715,6 +3798,15 @@ html.reveal-active .reveal-item.reveal-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .kt-offer:not([open]):hover {
+    transform: none;
+  }
+
+  .kt-offer-chevron,
+  .kt-offer-chevron::before {
+    transition: none;
+  }
+
   html.reveal-active .reveal-item,
   .lightbox,
   .lightbox-dialog,

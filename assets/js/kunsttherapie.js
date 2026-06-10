@@ -1,5 +1,5 @@
 /**
- * Angebots-Karten: <details> + eigener Toggle-Button + Akkordeon.
+ * Angebots-Karten: natives <details> + Akkordeon, ganze Karte klickbar.
  */
 (function () {
   function initOfferToggles() {
@@ -15,14 +15,12 @@
     const offers = [...offersWrap.querySelectorAll('details[data-offer]')];
     if (!offers.length) return;
 
-    function labelLearn() {
-      const v = window.ktI18n?.t('btn.learnMore');
-      return v || 'Mehr erfahren';
+    function hintExpand() {
+      return window.ktI18n?.t('offer.expandHint') || 'Details anzeigen';
     }
 
-    function labelLess() {
-      const v = window.ktI18n?.t('btn.less');
-      return v || 'Weniger';
+    function hintCollapse() {
+      return window.ktI18n?.t('offer.collapseHint') || 'Weniger anzeigen';
     }
 
     function ensureOfferBody(details) {
@@ -34,12 +32,10 @@
       if (html) body.innerHTML = html;
     }
 
-    function updateToggle(details) {
-      const btn = details.querySelector('.kt-offer-toggle');
-      if (!btn) return;
-      const text = details.open ? labelLess() : labelLearn();
-      btn.textContent = text || (details.open ? 'Weniger' : 'Mehr erfahren');
-      btn.setAttribute('aria-expanded', details.open ? 'true' : 'false');
+    function updateHint(details) {
+      const hint = details.querySelector('.kt-offer-hint');
+      if (!hint) return;
+      hint.textContent = details.open ? hintCollapse() : hintExpand();
     }
 
     function scrollOfferIntoView(card) {
@@ -71,49 +67,27 @@
       offersWrap.classList.toggle('kt-offers--has-open', !!anyOpen);
     }
 
-    function closeOthers(except) {
-      offers.forEach((other) => {
-        if (other !== except && other.open) other.open = false;
-      });
-    }
-
-    function setOpen(details, open) {
-      ensureOfferBody(details);
-      if (open) {
-        closeOthers(details);
-        details.open = true;
-        requestAnimationFrame(() => scrollOfferIntoView(details));
-      } else {
-        details.open = false;
-      }
-      updateToggle(details);
-      syncOffersLayout();
-    }
-
     window.ktUpdateToggleLabels = function () {
       offers.forEach((details) => {
         ensureOfferBody(details);
-        updateToggle(details);
+        updateHint(details);
       });
     };
 
     offers.forEach((details) => {
       ensureOfferBody(details);
-      updateToggle(details);
-
-      const btn = details.querySelector('.kt-offer-toggle');
-      btn?.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setOpen(details, !details.open);
-      });
+      updateHint(details);
 
       details.addEventListener('toggle', () => {
         ensureOfferBody(details);
-        if (details.open) closeOthers(details);
-        updateToggle(details);
+        if (details.open) {
+          offers.forEach((other) => {
+            if (other !== details && other.open) other.open = false;
+          });
+          requestAnimationFrame(() => scrollOfferIntoView(details));
+        }
+        updateHint(details);
         syncOffersLayout();
-        if (details.open) requestAnimationFrame(() => scrollOfferIntoView(details));
       });
     });
 
