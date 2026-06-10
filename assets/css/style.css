@@ -2246,42 +2246,6 @@ body.consent-banner-visible {
   isolation: isolate;
 }
 
-.quote-arrow {
-  position: relative;
-  z-index: 13;
-  pointer-events: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  padding: 0;
-  border: 2px solid rgba(85, 122, 118, 0.28);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.85);
-  color: var(--color-teal-dark);
-  font-size: 1.35rem;
-  line-height: 1;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  transition:
-    background var(--duration-flow) var(--ease-flow),
-    border-color var(--duration-flow) var(--ease-flow),
-    transform var(--duration-tap) var(--ease-flow);
-}
-
-.quote-arrow:hover,
-.quote-arrow:focus-visible {
-  background: rgba(85, 122, 118, 0.1);
-  border-color: var(--color-teal);
-  outline: none;
-}
-
-.quote-arrow:active {
-  transform: scale(0.94);
-}
-
 .quote-dot {
   position: relative;
   z-index: 11;
@@ -3794,10 +3758,7 @@ html.reveal-active .reveal-item.reveal-visible {
 html.reveal-active .gallery-item,
 html.reveal-active [data-gallery-open],
 html.reveal-active .quote-nav,
-html.reveal-active .quote-arrow,
-html.reveal-active .quote-dot,
-html.reveal-active [data-quote-prev],
-html.reveal-active [data-quote-next] {
+html.reveal-active .quote-dot {
   pointer-events: auto;
 }
 

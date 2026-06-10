@@ -145,13 +145,13 @@ async function testKunsttherapie(browser) {
     pass('Offer card toggle');
   } else fail('Offer card toggle', JSON.stringify(offer));
 
-  await page.locator('[data-quote-next]').first().click();
+  await page.locator('[data-quote-dot="1"]').first().click();
   await page.waitForTimeout(400);
-  const quoteNext = await page.evaluate(
+  const quoteDot = await page.evaluate(
     () => document.querySelectorAll('[data-quote-slide]')[1]?.classList.contains('is-active')
   );
-  if (quoteNext) pass('Quote next arrow');
-  else fail('Quote next arrow');
+  if (quoteDot) pass('Quote dot switches (kunsttherapie)');
+  else fail('Quote dot switches (kunsttherapie)');
 
   await page.locator('#faq .kt-details summary').first().click();
   await page.waitForTimeout(200);

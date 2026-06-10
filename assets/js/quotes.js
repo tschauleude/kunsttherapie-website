@@ -92,13 +92,10 @@
   document.addEventListener(
     'click',
     (e) => {
-      const prevBtn = e.target.closest('[data-quote-prev]');
-      const nextBtn = e.target.closest('[data-quote-next]');
       const dot = e.target.closest('[data-quote-dot]');
+      if (!dot) return;
 
-      if (!prevBtn && !nextBtn && !dot) return;
-
-      const root = (prevBtn || nextBtn || dot).closest('[data-quote-showcase]');
+      const root = dot.closest('[data-quote-showcase]');
       if (!root) return;
 
       const state = showcases.get(root);
@@ -107,13 +104,8 @@
       e.preventDefault();
       e.stopPropagation();
 
-      if (prevBtn) state.prev();
-      else if (nextBtn) state.next();
-      else if (dot) {
-        const i = Number(dot.dataset.quoteDot);
-        if (Number.isFinite(i)) state.show(i);
-      }
-
+      const i = Number(dot.dataset.quoteDot);
+      if (Number.isFinite(i)) state.show(i);
       state.start();
     },
     true

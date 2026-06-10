@@ -1,5 +1,6 @@
 node_modules/
 .env
 database.sqlite
+data/backups/content-*.json
 *.log
 .DS_Store
