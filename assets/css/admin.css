@@ -505,12 +505,6 @@
   margin-bottom: 1rem;
   font-size: 0.93rem;
   font-weight: 500;
-  animation: toastIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes toastIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: none; }
 }
 
 .admin-app .message.active {
@@ -527,6 +521,29 @@
   background: rgba(229, 115, 115, 0.1);
   color: #8b3a38;
   border: 1px solid rgba(229, 115, 115, 0.22);
+}
+
+/* Fixed toast overlay */
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.admin-app #adminToast {
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  z-index: 9999;
+  max-width: 400px;
+  min-width: 220px;
+  margin: 0;
+  padding: 1rem 1.35rem;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.07);
+  backdrop-filter: blur(12px);
+  animation: toastSlideIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* ---------- DASHBOARD ---------- */
@@ -1034,6 +1051,15 @@ hr.sep {
 
 .media-usage--free {
   color: var(--color-teal-dark);
+}
+
+.media-usage--site {
+  color: #8a6c3a;
+}
+
+.media-usage--blocked {
+  color: #8b3a38;
+  font-weight: 600;
 }
 
 .media-library-item .media-delete-one {

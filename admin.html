@@ -830,9 +830,9 @@ function showMessage(text, type, elementId) {
   if (!msg) return;
   msg.textContent = text;
   msg.className = `message ${type} active`;
-  msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  clearTimeout(msg._hideTimer);
   if (type === 'success') {
-    setTimeout(() => msg.classList.remove('active'), 4000);
+    msg._hideTimer = setTimeout(() => msg.classList.remove('active'), 4000);
   }
 }
 
@@ -1015,17 +1015,33 @@ function renderMediaLibrary() {
 
   grid.innerHTML = mediaLibraryFiles
     .map((file) => {
-      const usage =
-        file.usedBy?.length > 0
-          ? `<span class="media-usage">${file.usedBy.map((u) => escapeHtml(`${u.type}:${u.ref}`)).join(', ')}</span>`
-          : '<span class="media-usage media-usage--free">Nicht zugewiesen</span>';
+      const blockingUse = file.usedBy?.filter((u) => u.type === 'news' || u.type === 'events') ?? [];
+      const siteUse = file.usedBy?.filter((u) => u.type === 'site') ?? [];
+      const isBlocked = blockingUse.length > 0;
+      const isSiteOnly = siteUse.length > 0 && !isBlocked;
+
+      let usageLabel;
+      if (blockingUse.length) {
+        usageLabel = `<span class="media-usage media-usage--blocked">In Verwendung: ${blockingUse.map((u) => escapeHtml(`${u.type}:${u.ref}`)).join(', ')}</span>`;
+      } else if (siteUse.length) {
+        usageLabel = `<span class="media-usage media-usage--site">Website-Bereich zugewiesen (wird beim Löschen automatisch entfernt)</span>`;
+      } else {
+        usageLabel = '<span class="media-usage media-usage--free">Nicht zugewiesen</span>';
+      }
+
+      const deleteTitle = isBlocked
+        ? 'Bild wird in Neuigkeiten/Events verwendet – erst dort entfernen'
+        : isSiteOnly
+          ? 'Bild löschen (Zuweisung wird automatisch zurückgesetzt)'
+          : 'Bild löschen';
+
       return `
         <label class="media-library-item card${file.inUse ? ' is-used' : ''}">
-          <input type="checkbox" class="media-select" value="${escapeHtml(file.filename)}"${file.inUse ? ' data-in-use="1"' : ''}/>
+          <input type="checkbox" class="media-select" value="${escapeHtml(file.filename)}"${isBlocked ? ' data-in-use="1"' : ''}/>
           <img src="${escapeHtml(file.url)}" alt="" loading="lazy"/>
           <span class="media-filename">${escapeHtml(file.filename)}</span>
-          ${usage}
-          <button type="button" class="btn-cancel btn-sm media-delete-one" data-filename="${escapeHtml(file.filename)}"${file.inUse ? ' disabled title="Zuerst Zuweisung entfernen"' : ''}>Löschen</button>
+          ${usageLabel}
+          <button type="button" class="btn-cancel btn-sm media-delete-one" data-filename="${escapeHtml(file.filename)}"${isBlocked ? ' disabled' : ''} title="${deleteTitle}">Löschen</button>
         </label>`;
     })
     .join('');
@@ -1085,12 +1101,16 @@ async function loadSiteImagesList() {
 async function saveSiteImageSlot(slot) {
   const card = findSiteImageCard(slot);
   const fileInput = card?.querySelector('.site-image-file');
+  const btn = card?.querySelector('[data-action="upload-slot"]');
+  const origLabel = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird hochgeladen …'; }
   try {
     await uploadSiteImageSlot(slot, fileInput);
-    showMessage('Bild gespeichert – auf der Website nach Laden sichtbar.', 'success');
+    showMessage('✓ Bild hochgeladen und zugewiesen – auf der Website nach Laden sichtbar.', 'success');
     loadSiteImagesList();
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = origLabel; }
   }
 }
 
@@ -1101,12 +1121,16 @@ async function assignSiteImageFromLibrary(slot) {
     showMessage('Bitte ein Bild aus der Mediathek wählen.', 'error');
     return;
   }
+  const btn = card?.querySelector('[data-action="assign-library"]');
+  const origLabel = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird zugewiesen …'; }
   try {
     await assignSiteImageUrl(slot, url);
-    showMessage('Bild zugewiesen.', 'success');
+    showMessage('✓ Bild zugewiesen – auf der Website sofort sichtbar.', 'success');
     loadSiteImagesList();
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = origLabel; }
   }
 }
 
@@ -1129,7 +1153,14 @@ async function resetSiteImageSlot(slot) {
 async function deleteMediaFiles(filenames) {
   const unique = [...new Set(filenames.filter(Boolean))];
   if (!unique.length) return;
-  if (!confirm(`Wirklich ${unique.length} Bild(er) dauerhaft löschen?`)) return;
+  const siteUsed = unique.filter((fn) => {
+    const f = mediaLibraryFiles.find((m) => m.filename === fn);
+    return f?.usedBy?.some((u) => u.type === 'site');
+  });
+  const msg = siteUsed.length
+    ? `Wirklich ${unique.length} Bild(er) löschen?\n\n${siteUsed.length} Bild(er) sind einem Website-Bereich zugewiesen – die Zuweisung wird automatisch zurückgesetzt.`
+    : `Wirklich ${unique.length} Bild(er) dauerhaft löschen?`;
+  if (!confirm(msg)) return;
 
   let deleted = 0;
   for (const filename of unique) {
