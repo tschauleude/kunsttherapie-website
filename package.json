@@ -16,7 +16,8 @@
     "textentwurf": "node scripts/generate-textentwurf.js",
     "build-frontend": "node scripts/build-frontend.js",
     "qa": "node scripts/validate-i18n.js && node --check assets/js/*.js",
-    "smoke": "node scripts/smoke-check.js"
+    "smoke": "node scripts/smoke-check.js",
+    "qa:interactions": "node scripts/qa-interactions.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

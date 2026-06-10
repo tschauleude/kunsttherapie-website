@@ -2820,11 +2820,11 @@ nav[data-site-nav] {
     gap: 0.75rem 1.5rem;
   }
 
-  .kt-offers--five .kt-offer--accent:not(.is-open) h3 {
+  .kt-offers--five .kt-offer--accent:not([open]) h3 {
     grid-column: 1;
   }
 
-  .kt-offers--five .kt-offer--accent.is-open .kt-offer-head {
+  .kt-offers--five .kt-offer--accent[open] .kt-offer-head {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -2835,20 +2835,19 @@ nav[data-site-nav] {
     min-width: 0;
   }
 
-  .kt-offers--five .kt-offer--accent .kt-toggle {
+  .kt-offers--five .kt-offer--accent .kt-toggle-label {
     grid-column: 3;
     justify-self: end;
     flex-shrink: 0;
   }
 }
 
-.kt-offers .kt-offer.is-open {
+.kt-offers .kt-offer[open] {
   border-color: #557a76;
 }
 
 .kt-offer {
-  display: flex;
-  flex-direction: column;
+  display: block;
   width: 100%;
   height: auto;
   min-height: 0;
@@ -2863,7 +2862,7 @@ nav[data-site-nav] {
     gap: 1.25rem;
   }
 
-  .kt-offers.kt-offers--has-open .kt-offer:not(.is-open) {
+  .kt-offers.kt-offers--has-open .kt-offer:not([open]) {
     flex: 0 0 auto;
   }
 }
@@ -2879,18 +2878,28 @@ nav[data-site-nav] {
   gap: 0.65rem;
   min-height: 0;
   cursor: pointer;
-}
-
-.kt-offer-head .kt-toggle {
-  position: relative;
-  z-index: 2;
-  margin-top: auto;
-  align-self: flex-start;
-  min-height: 2.75rem;
+  list-style: none;
   touch-action: manipulation;
 }
 
-.kt-offer.is-open {
+.kt-offer-head::-webkit-details-marker {
+  display: none;
+}
+
+.kt-offer-head .kt-toggle-label {
+  margin-top: auto;
+  align-self: flex-start;
+  min-width: 10.5rem;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  pointer-events: none;
+  line-height: 1.25;
+}
+
+.kt-offer[open] {
   box-shadow: 0 12px 32px rgba(85, 122, 118, 0.12);
   scroll-margin-top: 5.5rem;
   scroll-margin-bottom: 11rem;
@@ -2910,17 +2919,6 @@ nav[data-site-nav] {
   font-size: 0.95rem;
   line-height: 1.65;
   text-align: left;
-  overflow: hidden;
-}
-
-.kt-offer-body[hidden] {
-  display: block;
-  height: 0;
-  padding-top: 0;
-  margin-top: 0;
-  border-top-width: 0;
-  visibility: hidden;
-  pointer-events: none;
 }
 
 .kt-praxis-grid {
