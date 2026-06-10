@@ -1233,3 +1233,309 @@ hr.sep {
   padding: 0.45rem 0.9rem;
   font-size: 0.85rem;
 }
+
+/* ---------- ALL FILES PANEL ---------- */
+.af-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.6rem 0 0.9rem;
+}
+
+.af-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.af-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.af-select-all-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  cursor: pointer;
+  user-select: none;
+}
+
+.af-select-all-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+#afCount {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  opacity: 0.75;
+}
+
+#afBulkDelete {
+  display: none;
+}
+
+#afBulkDelete.af-bulk-visible {
+  display: inline-flex;
+}
+
+.af-view-toggle {
+  display: flex;
+  border: 1px solid rgba(85, 122, 118, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.af-view-btn {
+  background: transparent;
+  border: none;
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.af-view-btn:hover {
+  background: rgba(85, 122, 118, 0.08);
+  color: var(--accent);
+}
+
+.af-view-btn.af-view-active {
+  background: rgba(74, 110, 106, 0.12);
+  color: var(--accent);
+}
+
+/* -- Container -- */
+.af-container {
+  min-height: 80px;
+}
+
+/* -- Grid view -- */
+.af-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.9rem;
+}
+
+/* -- List view -- */
+.af-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* -- Grid card -- */
+.af-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(85, 122, 118, 0.14);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.af-card:hover {
+  box-shadow: 0 4px 16px rgba(74, 110, 106, 0.12);
+  border-color: rgba(85, 122, 118, 0.28);
+}
+
+.af-card.af-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(74, 110, 106, 0.2);
+}
+
+.af-cb-label {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 2;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.af-cb-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.af-card-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: rgba(240, 237, 230, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.af-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.af-card-body {
+  padding: 0.5rem 0.6rem 0.3rem;
+  flex: 1;
+}
+
+.af-card-name {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.25rem;
+}
+
+.af-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.af-size {
+  font-size: 0.7rem;
+  color: var(--text-light);
+  opacity: 0.75;
+}
+
+.af-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  padding: 0.3rem 0.45rem 0.45rem;
+  border-top: 1px solid rgba(85, 122, 118, 0.07);
+}
+
+/* -- List row -- */
+.af-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.6rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(85, 122, 118, 0.1);
+  border-radius: 8px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.af-row:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(85, 122, 118, 0.2);
+}
+
+.af-row.af-selected {
+  border-color: var(--accent);
+  background: rgba(74, 110, 106, 0.04);
+}
+
+.af-row-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(240, 237, 230, 0.7);
+}
+
+.af-row-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.af-row-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.af-row-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.af-row-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.af-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+/* -- Icon buttons -- */
+.af-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-light);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  padding: 0;
+}
+
+.af-icon-btn:hover {
+  background: rgba(85, 122, 118, 0.1);
+  color: var(--accent);
+  border-color: rgba(85, 122, 118, 0.2);
+}
+
+.af-icon-btn--delete:hover {
+  background: rgba(220, 80, 60, 0.08);
+  color: #c0392b;
+  border-color: rgba(220, 80, 60, 0.2);
+}
+
+.af-icon-btn--lock {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.af-icon-btn--lock:hover {
+  background: transparent;
+  color: var(--text-light);
+  border-color: transparent;
+}
+
+.af-icon-btn svg {
+  pointer-events: none;
+}
