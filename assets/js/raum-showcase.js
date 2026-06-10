@@ -68,7 +68,7 @@
     function afterClipInset(pct) {
       if (pct <= 0) return 100;
       if (pct >= 100) return 0;
-      return pct;
+      return 100 - pct;
     }
 
     function applyCompare(pct, syncInput = true) {
