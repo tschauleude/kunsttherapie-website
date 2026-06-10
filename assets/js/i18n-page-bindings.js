@@ -48,6 +48,7 @@ window.I18N_PAGE_BINDINGS = {
     { sel: '.kt-schedule li:nth-child(2)', key: 'kt.praxis.schedule2', attr: 'html' },
     { sel: '.kt-praxis-copy .actions .btn.primary', key: 'kt.praxis.book', attr: 'text' },
     { sel: '.kt-praxis-copy .actions .btn.outline', key: 'kt.praxis.news', attr: 'text' },
+    { sel: '.kt-audience-growing', key: 'kt.audience.growing', attr: 'text' },
     { sel: '.kt-praxis-highlight:nth-child(1) h3', key: 'kt.highlight1.title', attr: 'text' },
     { sel: '.kt-praxis-highlight:nth-child(1) p', key: 'kt.highlight1.text', attr: 'text' },
     { sel: '.kt-praxis-highlight:nth-child(2) h3', key: 'kt.highlight2.title', attr: 'text' },

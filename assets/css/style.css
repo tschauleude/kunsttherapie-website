@@ -2236,18 +2236,20 @@ body.consent-banner-visible {
 
 .quote-nav {
   position: relative;
-  z-index: 3;
+  z-index: 12;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.75rem;
   margin-top: 1.35rem;
   pointer-events: auto;
+  isolation: isolate;
 }
 
 .quote-arrow {
   position: relative;
-  z-index: 4;
+  z-index: 13;
+  pointer-events: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2282,7 +2284,8 @@ body.consent-banner-visible {
 
 .quote-dot {
   position: relative;
-  z-index: 2;
+  z-index: 11;
+  pointer-events: auto;
   width: 0.45rem;
   height: 0.45rem;
   padding: 0;
@@ -2639,9 +2642,17 @@ body.consent-banner-visible {
 }
 
 .kt-audience-line {
-  margin: 0.5rem 0 1rem;
+  margin: 0.5rem 0 0.35rem;
   font-weight: 600;
   color: var(--color-teal-dark);
+}
+
+.kt-audience-growing {
+  margin: 0 0 1rem;
+  max-width: 36rem;
+  margin-inline: auto;
+  font-size: 0.95rem;
+  color: var(--text-light);
 }
 
 .kt-offers--four,
@@ -3781,7 +3792,12 @@ html.reveal-active .reveal-item.reveal-visible {
 }
 
 html.reveal-active .gallery-item,
-html.reveal-active [data-gallery-open] {
+html.reveal-active [data-gallery-open],
+html.reveal-active .quote-nav,
+html.reveal-active .quote-arrow,
+html.reveal-active .quote-dot,
+html.reveal-active [data-quote-prev],
+html.reveal-active [data-quote-next] {
   pointer-events: auto;
 }
 

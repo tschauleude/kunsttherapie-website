@@ -278,6 +278,12 @@ Label: Zielgruppen-Zeile
 Für Unternehmen · für Kliniken & Einrichtungen · wachsend
 ---
 
+[kt.audience.growing]
+Label: Zielgruppen – Hinweis „wachsend“
+---
+Der Raum wird weiter ausgebaut und auf der Website präsentiert – auf dem Laufenden bleiben.
+---
+
 [kt.offers.title]
 Label: Angebote – Überschrift
 ---
