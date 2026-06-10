@@ -56,6 +56,63 @@
     ],
     "fallback": "galerie-schmerzstation.jpg"
   },
+  "galerie-material.jpg": {
+    "width": 3783,
+    "height": 3783,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "galerie-material-480w.webp"
+      },
+      {
+        "w": 768,
+        "webp": "galerie-material-768w.webp"
+      },
+      {
+        "w": 3783,
+        "webp": "galerie-material-3783w.webp"
+      }
+    ],
+    "fallback": "galerie-material.jpg"
+  },
+  "Potenziale-Kunsttherapie-Paderborn.jpg": {
+    "width": 1173,
+    "height": 801,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "Potenziale-Kunsttherapie-Paderborn-480w.webp"
+      },
+      {
+        "w": 768,
+        "webp": "Potenziale-Kunsttherapie-Paderborn-768w.webp"
+      },
+      {
+        "w": 1173,
+        "webp": "Potenziale-Kunsttherapie-Paderborn-1173w.webp"
+      }
+    ],
+    "fallback": "Potenziale-Kunsttherapie-Paderborn.jpg"
+  },
+  "Sonnige_Pinsel.jpg": {
+    "width": 3783,
+    "height": 3783,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "Sonnige_Pinsel-480w.webp"
+      },
+      {
+        "w": 768,
+        "webp": "Sonnige_Pinsel-768w.webp"
+      },
+      {
+        "w": 3783,
+        "webp": "Sonnige_Pinsel-3783w.webp"
+      }
+    ],
+    "fallback": "Sonnige_Pinsel.jpg"
+  },
   "atelier-eingang.jpg": {
     "width": 1536,
     "height": 1024,
