@@ -397,6 +397,13 @@ async function main() {
   console.log('Patching HTML…');
   patchHtml(coreBundle, cssFile);
 
+  // Keep public/admin.html in sync with root admin.html
+  const adminSrc = path.join(ROOT, 'admin.html');
+  const adminDst = path.join(ROOT, 'public', 'admin.html');
+  if (fs.existsSync(adminSrc)) {
+    fs.copyFileSync(adminSrc, adminDst);
+  }
+
   const manifest = {
     coreBundle,
     cssFile,
