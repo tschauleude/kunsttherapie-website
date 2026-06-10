@@ -268,6 +268,18 @@ function initializeDatabase() {
     `);
 
     db.run(`
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT,
+        message TEXT NOT NULL,
+        emailed INTEGER DEFAULT 0,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    db.run(`
       CREATE TABLE IF NOT EXISTS services (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
@@ -610,6 +622,22 @@ app.get('/api/admin/news', requireAuth, (req, res) => {
       res.json(rows);
     }
   );
+});
+
+// Kontaktnachrichten (Admin): gespeicherte Anfragen einsehen und löschen
+app.get('/api/admin/contact-messages', requireAuth, (req, res) => {
+  db.all(`SELECT * FROM contact_messages ORDER BY createdAt DESC`, (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    res.json(rows);
+  });
+});
+
+app.delete('/api/admin/contact-messages/:id', requireAuth, (req, res) => {
+  db.run(`DELETE FROM contact_messages WHERE id = ?`, [req.params.id], function onDelete(err) {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    if (!this.changes) return res.status(404).json({ error: 'Not found' });
+    res.json({ success: true });
+  });
 });
 
 // Get single news (admin, inkl. Entwürfe)
@@ -1016,29 +1044,52 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
     return res.status(400).json({ error: 'Ungültige E-Mail-Adresse' });
   }
 
+  const payload = {
+    name: name.trim(),
+    email: fromEmail.trim(),
+    phone: phone ? phone.trim() : '',
+    message: message.trim(),
+  };
+
+  // Nachricht immer zuerst persistent speichern, damit sie nie verloren geht –
+  // auch wenn der E-Mail-Versand (SMTP) nicht konfiguriert ist oder fehlschlägt.
+  let stored = false;
+  let messageId = null;
   try {
-    const result = await email.sendContactMessage({
-      name: name.trim(),
-      email: fromEmail.trim(),
-      phone: phone ? phone.trim() : '',
-      message: message.trim(),
-    });
+    const saved = await dbRun(
+      `INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)`,
+      [payload.name, payload.email, payload.phone, payload.message]
+    );
+    messageId = saved.lastID;
+    stored = true;
+  } catch (e) {
+    console.error('contact store error:', e);
+  }
 
-    if (!result.sent) {
-      return res.status(503).json({
-        error:
-          'Nachricht konnte nicht per E-Mail versendet werden. Bitte ruf uns an oder schreib direkt an info@kunsttherapie-pb.de.',
-      });
-    }
+  let emailed = false;
+  try {
+    const result = await email.sendContactMessage(payload);
+    emailed = Boolean(result.sent);
+  } catch (e) {
+    console.error('contact email error:', e);
+  }
 
-    res.json({
+  if (emailed && messageId != null) {
+    dbRun(`UPDATE contact_messages SET emailed = 1 WHERE id = ?`, [messageId]).catch(() => {});
+  }
+
+  // Erfolg, sobald die Nachricht entweder versendet ODER sicher gespeichert wurde.
+  if (emailed || stored) {
+    return res.json({
       success: true,
       message: 'Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.',
     });
-  } catch (e) {
-    console.error('contact error:', e);
-    res.status(500).json({ error: 'Nachricht konnte nicht gesendet werden' });
   }
+
+  return res.status(503).json({
+    error:
+      'Nachricht konnte gerade nicht entgegengenommen werden. Bitte ruf an (05251-690111) oder schreib an info@kunsttherapie-pb.de.',
+  });
 });
 
 app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
