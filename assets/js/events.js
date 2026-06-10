@@ -47,7 +47,7 @@ function renderEventCard(item) {
           ${meta.map((m) => `<span>${escapeHtml(m)}</span>`).join('')}
         </div>
         <p>${escapeHtml(item.description)}</p>
-        <a href="kontakt.html" class="event-cta">${window.ktI18n?.t('eventsPage.signUp') || 'Anmelden'}</a>
+        <a href="kontakt" class="event-cta">${window.ktI18n?.t('eventsPage.signUp') || 'Anmelden'}</a>
       </div>
     </div>
   `;

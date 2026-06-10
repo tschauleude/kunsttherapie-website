@@ -60,7 +60,7 @@
       'home.praxis.do':
         '<span class="pill">Do</span><br>18:00–19:30 · Auszeit, Workshops',
       'home.praxis.link':
-        'Raum, Fotos &amp; Details: <a href="kunsttherapie.html#atelier">Atelier entdecken</a>',
+        'Raum, Fotos &amp; Details: <a href="kunsttherapie#atelier">Atelier entdecken</a>',
       'home.praxis.more': 'Mehr zum Atelier',
       'home.hero.imgAlt': 'Atelier – gemeinsam malen und gestalten in Paderborn',
       'home.gallery.openPrefix': 'Bild vergrößern: ',
@@ -141,7 +141,7 @@
       'kt.cta.sub': 'Termin online buchen oder kurz anfragen – ich melde mich zeitnah.',
       'kt.cta.book': 'Zum Buchungskalender',
       'kt.cta.about': 'Über mich',
-      'kt.cta.news': 'Mehr Einblicke: <a href="neuigkeiten.html">Aktuelles &amp; Neuigkeiten</a>',
+      'kt.cta.news': 'Mehr Einblicke: <a href="neuigkeiten">Aktuelles &amp; Neuigkeiten</a>',
       'kt.praxis.imgAlt': 'Atelier – gemeinsam malen und gestalten',
       'kt.raum.tab.eingang': 'Eingang',
       'kt.raum.tab.innen': 'Atelier innen',
@@ -208,7 +208,7 @@
       'book.messagePlaceholder':
         'z.B. Erstgespräch, Gruppe Dienstag morgens, Auszeit Donnerstag abends …',
       'book.privacyNote':
-        'Mit der Buchung werden Name, E-Mail und Termindaten auf unserem Server gespeichert (siehe <a href="datenschutz.html">Datenschutz</a>). Kein Marketing-Tracking.',
+        'Mit der Buchung werden Name, E-Mail und Termindaten auf unserem Server gespeichert (siehe <a href="datenschutz">Datenschutz</a>). Kein Marketing-Tracking.',
       'book.submit': 'Termin anfragen',
       'book.noscript.title': 'Ohne JavaScript buchen',
       'book.noscript.text':
@@ -246,7 +246,7 @@
       'contact.kicker': 'Kontakt',
       'contact.title': 'Fragen, Anfragen & Termine',
       'contact.sub':
-        'Für einen festen Termin nutze die <a href="buchung.html">Online-Buchung</a>. Für alles andere: kurz schreiben oder anrufen.',
+        'Für einen festen Termin nutze die <a href="buchung">Online-Buchung</a>. Für alles andere: kurz schreiben oder anrufen.',
       'contact.reach.title': 'Erreichbarkeit',
       'contact.reach.list':
         '<li><strong>Adresse</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Telefon</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobil</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>E-Mail</strong><br><a href="#" class="js-email" data-u="info" data-d="kunsttherapie-pb.de">E-Mail schreiben</a></li>',
@@ -257,7 +257,7 @@
       'contact.form.messageLabel': 'Nachricht *',
       'contact.messagePlaceholder': 'Worum geht es? z. B. Gruppe, Auszeit, Teambuilding …',
       'contact.privacyNote':
-        'Angaben werden nur zur Bearbeitung der Anfrage genutzt (<a href="datenschutz.html">Datenschutz</a>).',
+        'Angaben werden nur zur Bearbeitung der Anfrage genutzt (<a href="datenschutz">Datenschutz</a>).',
       'contact.submit': 'Nachricht senden',
       'contact.map.title': 'Anfahrt',
       'contact.mapIframeTitle': 'Karte Atelier Otto-Stadler-Straße 23c Paderborn',
@@ -314,7 +314,7 @@
         'Termine konnten gerade nicht geladen werden. Bitte später erneut versuchen.',
 
       'map.consent':
-        'Die Karte wird nur mit Einwilligung geladen (Google Maps, siehe <a href="datenschutz.html">Datenschutz</a>).',
+        'Die Karte wird nur mit Einwilligung geladen (Google Maps, siehe <a href="datenschutz">Datenschutz</a>).',
       'map.show': 'Karte anzeigen',
       'map.open': 'In Google Maps öffnen',
       'map.route': 'Route in Google Maps öffnen',
@@ -358,7 +358,7 @@
   © 2026 Kunsttherapie Paderborn. Alle Inhalte, Texte und Bilder sind urheberrechtlich geschützt.
 </p>
 <div class="actions">
-  <a class="btn" href="index.html">Zurück zur Startseite</a>
+  <a class="btn" href="/">Zurück zur Startseite</a>
 </div>`,
 
       'legal.privacy.body': `<h1>Datenschutzerklärung</h1>
@@ -453,7 +453,7 @@
 </p>
 <div class="actions">
   <button type="button" class="btn outline" onclick="openCookieSettings()">Cookie-Einstellungen</button>
-  <a class="btn" href="index.html">Zur Startseite</a>
+  <a class="btn" href="/">Zur Startseite</a>
 </div>`,
 
       'consent.banner.title': 'Datenschutz & Cookies',
@@ -565,7 +565,7 @@
       'home.praxis.do':
         '<span class="pill">Thu</span><br>18:00–19:30 · Downtime, workshops',
       'home.praxis.link':
-        'Space, photos &amp; details: <a href="kunsttherapie.html#atelier">Explore the atelier</a>',
+        'Space, photos &amp; details: <a href="kunsttherapie#atelier">Explore the atelier</a>',
       'home.praxis.more': 'More about the atelier',
       'home.hero.imgAlt': 'Atelier – painting and creating together in Paderborn',
       'home.gallery.openPrefix': 'Enlarge image: ',
@@ -646,7 +646,7 @@
       'kt.cta.sub': 'Book online or send a quick enquiry – I\'ll get back to you soon.',
       'kt.cta.book': 'Go to booking calendar',
       'kt.cta.about': 'About me',
-      'kt.cta.news': 'More insights: <a href="neuigkeiten.html">News &amp; updates</a>',
+      'kt.cta.news': 'More insights: <a href="neuigkeiten">News &amp; updates</a>',
       'kt.praxis.imgAlt': 'Atelier – painting and creating together',
       'kt.raum.tab.eingang': 'Entrance',
       'kt.raum.tab.innen': 'Inside the atelier',
@@ -713,7 +713,7 @@
       'book.messagePlaceholder':
         'e.g. introductory call, Tuesday morning group, Thursday evening downtime …',
       'book.privacyNote':
-        'With your booking, name, email, and appointment data are stored on our server (see <a href="datenschutz.html">Privacy</a>). No marketing tracking.',
+        'With your booking, name, email, and appointment data are stored on our server (see <a href="datenschutz">Privacy</a>). No marketing tracking.',
       'book.submit': 'Request appointment',
       'book.noscript.title': 'Booking without JavaScript',
       'book.noscript.text':
@@ -751,7 +751,7 @@
       'contact.kicker': 'Contact',
       'contact.title': 'Questions, enquiries & appointments',
       'contact.sub':
-        'For a fixed appointment, use <a href="buchung.html">online booking</a>. For everything else: write briefly or call.',
+        'For a fixed appointment, use <a href="buchung">online booking</a>. For everything else: write briefly or call.',
       'contact.reach.title': 'How to reach me',
       'contact.reach.list':
         '<li><strong>Address</strong><br>Otto-Stadler-Straße 23c<br>33102 Paderborn</li><li><strong>Phone</strong><br><a href="tel:+495251690111">05251-690111</a></li><li><strong>Mobile</strong><br><a href="tel:+491704790790">0170-4790790</a></li><li><strong>Email</strong><br><a href="#" class="js-email" data-u="info" data-d="kunsttherapie-pb.de">Send e-mail</a></li>',
@@ -763,7 +763,7 @@
       'contact.messagePlaceholder':
         'What is it about? e.g. group, downtime, team building …',
       'contact.privacyNote':
-        'Details are used only to handle the enquiry (<a href="datenschutz.html">Privacy</a>).',
+        'Details are used only to handle the enquiry (<a href="datenschutz">Privacy</a>).',
       'contact.submit': 'Send message',
       'contact.map.title': 'Directions',
       'contact.mapIframeTitle': 'Map: atelier Otto-Stadler-Straße 23c Paderborn',
@@ -818,7 +818,7 @@
       'eventsPage.error': 'Events could not be loaded right now. Please try again later.',
 
       'map.consent':
-        'The map loads only with consent (Google Maps, see <a href="datenschutz.html">Privacy</a>).',
+        'The map loads only with consent (Google Maps, see <a href="datenschutz">Privacy</a>).',
       'map.show': 'Show map',
       'map.open': 'Open in Google Maps',
       'map.route': 'Open route in Google Maps',
@@ -862,7 +862,7 @@
   © 2026 Art Therapy Paderborn. All content, text, and images are protected by copyright.
 </p>
 <div class="actions">
-  <a class="btn" href="index.html">Back to home</a>
+  <a class="btn" href="/">Back to home</a>
 </div>`,
 
       'legal.privacy.body': `<h1>Privacy policy</h1>
@@ -955,7 +955,7 @@
 </p>
 <div class="actions">
   <button type="button" class="btn outline" onclick="openCookieSettings()">Cookie settings</button>
-  <a class="btn" href="index.html">Back to home</a>
+  <a class="btn" href="/">Back to home</a>
 </div>`,
 
       'consent.banner.title': 'Privacy & cookies',

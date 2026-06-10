@@ -1769,7 +1769,7 @@ app.get('/admin.html', (req, res) => res.redirect(301, '/admin'));
 SITE_PAGES.forEach((page) => {
   if (page === 'index') return;
   app.get(`/${page}`, (req, res) => sendPage(res, page));
-  app.get(`/${page}.html`, (req, res) => sendPage(res, page));
+  app.get(`/${page}.html`, (req, res) => res.redirect(301, `/${page}`));
 });
 
 app.get('/angebote', (req, res) => res.redirect(301, '/kunsttherapie'));
