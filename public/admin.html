@@ -65,6 +65,7 @@
     <div class="nav-item" onclick="switchSection('images', this)">Bilder</div>
     <div class="nav-item" onclick="switchSection('texts', this)">Website-Texte</div>
     <div class="nav-item" onclick="switchSection('bookings', this)">Buchungen</div>
+    <div class="nav-item" onclick="switchSection('messages', this)">Nachrichten</div>
     <div class="nav-item" onclick="switchSection('atelier', this)">Mini-Atelier</div>
     <div class="nav-item" onclick="switchSection('events', this)">Veranstaltungen</div>
     <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
@@ -90,6 +91,7 @@
             <li><strong>Bilder</strong> – Galerie, Hero, Portrait und Atelier-Fotos auf der Website</li>
             <li><strong>Website-Texte</strong> – Texte auf Startseite, Kunsttherapie, Über mich, Preise usw.</li>
             <li><strong>Buchungen</strong> – Online-Termine von Kunden, Zeiten blockieren, Google Kalender</li>
+            <li><strong>Nachrichten</strong> – Kontaktanfragen über das Formular der Website</li>
             <li><strong>Mini-Atelier</strong> – Werke von der Website (anonym oder mit Namen)</li>
             <li><strong>Veranstaltungen</strong> – Workshops &amp; Termine auf der Events-Seite</li>
           </ul>
@@ -98,6 +100,7 @@
           <h3>Zahlen</h3>
           <p>Neuigkeiten: <strong id="newsCount">0</strong></p>
           <p>Buchungen: <strong id="bookingsCount">0</strong></p>
+          <p>Nachrichten: <strong id="messagesCount">0</strong> neu</p>
           <p>Mini-Atelier: <strong id="atelierCount">0</strong> neu</p>
           <p>Veranstaltungen: <strong id="eventsCount">0</strong></p>
         </div>
@@ -214,6 +217,13 @@
 
       <h2 style="margin-top:2rem">Alle Buchungen</h2>
       <div id="bookingsList" class="items-list"></div>
+    </section>
+
+    <!-- CONTACT MESSAGES SECTION -->
+    <section class="admin-section" id="messages">
+      <h1>Nachrichten</h1>
+      <p class="sub section-desc">Kontaktanfragen über das Formular auf <a href="/kontakt" target="_blank" rel="noopener">der Kontakt-Seite</a>. Nachrichten werden hier gespeichert – auch wenn der E-Mail-Versand einmal nicht klappt.</p>
+      <div id="messagesList" class="items-list"></div>
     </section>
 
     <section class="admin-section" id="atelier">
@@ -522,6 +532,7 @@ function switchSection(sectionId, navEl) {
     loadBookingsList();
     loadGoogleStatus();
   }
+  if (sectionId === 'messages') loadMessagesList();
   if (sectionId === 'atelier') loadAtelierList();
   if (sectionId === 'events') loadEventsList();
   if (sectionId === 'images') loadSiteImagesList();
@@ -1102,20 +1113,23 @@ function toggleManualBlockFields() {
 
 async function loadDashboard() {
   try {
-    const [newsRes, bookingsRes, eventsRes, atelierRes] = await Promise.all([
+    const [newsRes, bookingsRes, eventsRes, atelierRes, messagesRes] = await Promise.all([
       fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/atelier`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' }),
     ]);
 
     const news = await newsRes.json();
     const bookings = await bookingsRes.json();
     const events = await eventsRes.json();
     const atelier = atelierRes.ok ? await atelierRes.json() : [];
+    const messages = messagesRes.ok ? await messagesRes.json() : [];
 
     document.getElementById('newsCount').textContent = news.length;
     document.getElementById('bookingsCount').textContent = bookings.filter((b) => b.status !== 'cancelled').length;
+    document.getElementById('messagesCount').textContent = messages.filter((m) => m.status === 'new').length;
     document.getElementById('atelierCount').textContent = atelier.filter((a) => a.status === 'new').length;
     document.getElementById('eventsCount').textContent = events.length;
   } catch (err) {
@@ -1684,7 +1698,85 @@ async function deleteBooking(id) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// ============================================================================
+// CONTACT MESSAGES
+// ============================================================================
+
+async function loadMessagesList() {
+  const list = document.getElementById('messagesList');
+  if (!list) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' });
+    if (!res.ok) throw new Error('Nachrichten konnten nicht geladen werden');
+    const items = await res.json();
+
+    if (!items.length) {
+      list.innerHTML = '<p>Noch keine Nachrichten über das Kontaktformular.</p>';
+      return;
+    }
+
+    list.innerHTML = items
+      .map((item) => {
+        const isNew = item.status === 'new';
+        const badge = isNew
+          ? '<span class="status-badge draft">Neu</span>'
+          : '<span class="status-badge published">Gelesen</span>';
+        const mailBadge = item.email_sent
+          ? ''
+          : ' <span class="status-badge draft" title="E-Mail-Versand war nicht möglich – Nachricht nur hier gespeichert">Nur hier gespeichert</span>';
+        const date = new Date(item.createdAt).toLocaleString('de-DE');
+        return `
+          <div class="item">
+            <div class="item-info">
+              <h3>${escapeHtml(item.name)} ${badge}${mailBadge}</h3>
+              <p><a href="mailto:${escapeHtml(item.email)}">${escapeHtml(item.email)}</a>${item.phone ? ' · ' + escapeHtml(item.phone) : ''}</p>
+              <p style="white-space:pre-wrap">${escapeHtml(item.message)}</p>
+              <p style="font-size: 0.85rem; color: #999;">${date}</p>
+            </div>
+            <div class="item-actions">
+              ${isNew ? `<button class="btn-small btn-edit" onclick="markMessageRead(${item.id})">Als gelesen markieren</button>` : ''}
+              <button class="btn-small btn-delete" onclick="deleteMessage(${item.id})">Löschen</button>
+            </div>
+          </div>`;
+      })
+      .join('');
+  } catch (err) {
+    list.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+async function markMessageRead(id) {
+  try {
+    const res = await fetch(`${API_URL}/admin/contact-messages/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ status: 'read' }),
+    });
+    if (!res.ok) throw new Error('Aktualisieren fehlgeschlagen');
+    loadMessagesList();
+    loadDashboard();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function deleteMessage(id) {
+  if (!confirm('Diese Nachricht wirklich löschen?')) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/contact-messages/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error('Löschen fehlgeschlagen');
+    showMessage('Gelöscht!', 'success');
+    loadMessagesList();
+    loadDashboard();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
 // ============================================================================
 // MINI-ATELIER
 // ============================================================================
@@ -1765,6 +1857,7 @@ async function deleteAtelierSubmission(id) {
   }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
   const adminNavToggle = document.getElementById('adminNavToggle');
   const adminSidebar = document.getElementById('sidebar');
   if (adminNavToggle && adminSidebar) {

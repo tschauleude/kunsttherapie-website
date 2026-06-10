@@ -73,12 +73,39 @@ const atelierUpload = multer({
 // MIDDLEWARE
 // ============================================================================
 
+// CSP-Hashes für Inline-Skripte (Admin-Panel) beim Start berechnen,
+// damit das Admin-Interface nicht durch script-src 'self' blockiert wird.
+function computeInlineScriptHashes(filePaths) {
+  const crypto = require('crypto');
+  const hashes = new Set();
+  const scriptRe = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+  for (const filePath of filePaths) {
+    if (!fs.existsSync(filePath)) continue;
+    const html = fs.readFileSync(filePath, 'utf8');
+    let match;
+    while ((match = scriptRe.exec(html))) {
+      const attrs = match[1] || '';
+      const body = match[2] || '';
+      if (/\bsrc\s*=/i.test(attrs)) continue;
+      if (/type\s*=\s*"application\/(ld\+)?json"/i.test(attrs)) continue;
+      if (!body.trim()) continue;
+      hashes.add(`'sha256-${crypto.createHash('sha256').update(body).digest('base64')}'`);
+    }
+  }
+  return [...hashes];
+}
+
+const INLINE_SCRIPT_HASHES = computeInlineScriptHashes([
+  path.join(PUBLIC_DIR, 'admin.html'),
+  path.join(ROOT, 'admin.html'),
+]);
+
 const CSP_DIRECTIVES = {
   defaultSrc: ["'self'"],
   imgSrc: ["'self'", 'data:'],
-  styleSrc: ["'self'", "'unsafe-inline'"],
-  fontSrc: ["'self'"],
-  scriptSrc: ["'self'"],
+  styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+  fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+  scriptSrc: ["'self'", ...INLINE_SCRIPT_HASHES],
   scriptSrcAttr: ["'unsafe-inline'"],
   connectSrc: ["'self'"],
   frameSrc: ["'self'", 'https://maps.google.com', 'https://www.google.com'],
@@ -242,6 +269,19 @@ function initializeDatabase() {
         message TEXT,
         status TEXT DEFAULT 'pending',
         google_event_id TEXT,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    db.run(`
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT,
+        message TEXT NOT NULL,
+        email_sent INTEGER DEFAULT 0,
+        status TEXT DEFAULT 'new',
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -1016,19 +1056,36 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
     return res.status(400).json({ error: 'Ungültige E-Mail-Adresse' });
   }
 
+  const payload = {
+    name: name.trim(),
+    email: fromEmail.trim(),
+    phone: phone ? phone.trim() : '',
+    message: message.trim(),
+  };
+
   try {
-    const result = await email.sendContactMessage({
-      name: name.trim(),
-      email: fromEmail.trim(),
-      phone: phone ? phone.trim() : '',
-      message: message.trim(),
+    // Nachricht zuerst speichern – sie darf nie verloren gehen, auch wenn E-Mail ausfällt.
+    const messageId = await new Promise((resolve, reject) => {
+      db.run(
+        'INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)',
+        [payload.name, payload.email, payload.phone, payload.message],
+        function (err) {
+          if (err) reject(err);
+          else resolve(this.lastID);
+        }
+      );
     });
 
-    if (!result.sent) {
-      return res.status(503).json({
-        error:
-          'Nachricht konnte nicht per E-Mail versendet werden. Bitte ruf uns an oder schreib direkt an info@kunsttherapie-pb.de.',
-      });
+    let emailSent = false;
+    try {
+      const result = await email.sendContactMessage(payload);
+      emailSent = Boolean(result.sent);
+    } catch (mailErr) {
+      console.error('contact email error (message stored):', mailErr);
+    }
+
+    if (emailSent) {
+      db.run('UPDATE contact_messages SET email_sent = 1 WHERE id = ?', [messageId]);
     }
 
     res.json({
@@ -1039,6 +1096,28 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
     console.error('contact error:', e);
     res.status(500).json({ error: 'Nachricht konnte nicht gesendet werden' });
   }
+});
+
+app.get('/api/admin/contact-messages', requireAuth, (req, res) => {
+  db.all('SELECT * FROM contact_messages ORDER BY createdAt DESC', (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows || []);
+  });
+});
+
+app.put('/api/admin/contact-messages/:id', requireAuth, (req, res) => {
+  const status = req.body.status === 'read' ? 'read' : 'new';
+  db.run('UPDATE contact_messages SET status = ? WHERE id = ?', [status, req.params.id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true, changed: this.changes });
+  });
+});
+
+app.delete('/api/admin/contact-messages/:id', requireAuth, (req, res) => {
+  db.run('DELETE FROM contact_messages WHERE id = ?', [req.params.id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true, deleted: this.changes });
+  });
 });
 
 app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
