@@ -76,8 +76,8 @@ const atelierUpload = multer({
 const CSP_DIRECTIVES = {
   defaultSrc: ["'self'"],
   imgSrc: ["'self'", 'data:'],
-  styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-  fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+  styleSrc: ["'self'", "'unsafe-inline'"],
+  fontSrc: ["'self'"],
   scriptSrc: ["'self'"],
   scriptSrcAttr: ["'unsafe-inline'"],
   connectSrc: ["'self'"],

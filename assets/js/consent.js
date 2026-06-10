@@ -1,13 +1,9 @@
 /**
- * DSGVO: Einwilligung für externe Dienste (Google Maps, Google Fonts).
+ * DSGVO: Einwilligung für externe Dienste (Google Maps).
  * Notwendig: Einstellungen + Neuigkeiten-Hinweis (localStorage, keine Tracking-Cookies).
  */
 (function () {
   const STORAGE_KEY = 'kunsttherapie_consent_v1';
-  const FONT_URL =
-    'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap';
-
-  let fontsLoaded = false;
 
   function getConsent() {
     try {
@@ -48,16 +44,6 @@
     showSettings();
   };
 
-  function loadFonts() {
-    if (fontsLoaded) return;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = FONT_URL;
-    document.head.appendChild(link);
-    document.documentElement.classList.add('fonts-loaded');
-    fontsLoaded = true;
-  }
-
   function applyMaps(enabled) {
     document.querySelectorAll('[data-google-maps-src]').forEach((iframe) => {
       const wrap = iframe.closest('.map-consent-wrap');
@@ -75,12 +61,7 @@
   }
 
   function applyConsent(consent) {
-    if (consent.external) {
-      loadFonts();
-      applyMaps(true);
-    } else {
-      applyMaps(false);
-    }
+    applyMaps(Boolean(consent.external));
     syncToggleInputs(consent);
   }
 
