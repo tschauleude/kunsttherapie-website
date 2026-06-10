@@ -26,8 +26,14 @@
     if (el.closest(SKIP_SELECTOR)) return true;
     if (el.closest('[data-reveal-skip]')) return true;
     /* Klickbare Karten/Buttons nicht blockieren (pointer-events während Reveal) */
-    if (el.matches('.card--clickable, .card-hit-area, button, a.btn, [data-gallery-open]')) return true;
-    if (el.closest('.card--clickable, .kt-offers, [data-quote-showcase], [data-raum-showcase], .booking-layout, .actions')) {
+    if (
+      el.matches(
+        '.card--clickable, .card-hit-area, button, a.btn, [data-gallery-open], [data-quote-prev], [data-quote-next], [data-quote-dot], .quote-arrow, .quote-nav'
+      )
+    ) {
+      return true;
+    }
+    if (el.closest('.card--clickable, .kt-offers, [data-quote-showcase], [data-raum-showcase], .booking-layout, .actions, .quote-nav')) {
       return true;
     }
     if (el.matches('.actions, .actions *')) return true;
@@ -59,8 +65,6 @@
       .forEach((el) => add(el));
 
     section.querySelectorAll(':scope > .center').forEach((el) => add(el));
-
-    section.querySelectorAll(':scope > .quote-showcase').forEach((el) => add(el));
 
     section.querySelectorAll(':scope > .card').forEach((el) => add(el));
   }
