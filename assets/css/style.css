@@ -884,6 +884,11 @@ span.price-hint-pill {
   gap: clamp(1.5rem, 3vw, 2.5rem);
 }
 
+/* Ganze Karte klickbar – Klick auf Titel/Text leitet zum .card-hit-area-Link (site.js) */
+.card--clickable {
+  cursor: pointer;
+}
+
 .feature p,
 .card p {
   color: var(--text-light);
@@ -2873,6 +2878,7 @@ nav[data-site-nav] {
   flex: 0 0 auto;
   gap: 0.65rem;
   min-height: 0;
+  cursor: pointer;
 }
 
 .kt-offer-head .kt-toggle {

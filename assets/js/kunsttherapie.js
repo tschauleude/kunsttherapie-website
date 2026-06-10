@@ -110,6 +110,18 @@
 
     let lastTouchToggleAt = 0;
 
+    function resolveToggleTarget(e) {
+      const toggle = e.target.closest('.kt-toggle');
+      if (toggle && offersWrap.contains(toggle)) return toggle;
+
+      const head = e.target.closest('.kt-offer-head');
+      if (!head || !offersWrap.contains(head)) return null;
+      if (e.target.closest('a, button:not(.kt-toggle)')) return null;
+
+      const card = head.closest('[data-offer]');
+      return card ? card.querySelector('.kt-toggle') : null;
+    }
+
     function handleToggleActivate(toggle) {
       const card = toggle.closest('[data-offer]');
       if (!card) return;
@@ -117,8 +129,8 @@
     }
 
     offersWrap.addEventListener('click', (e) => {
-      const toggle = e.target.closest('.kt-toggle');
-      if (!toggle || !offersWrap.contains(toggle)) return;
+      const toggle = resolveToggleTarget(e);
+      if (!toggle) return;
       if (Date.now() - lastTouchToggleAt < 450) return;
       e.preventDefault();
       handleToggleActivate(toggle);
@@ -127,8 +139,8 @@
     offersWrap.addEventListener(
       'touchend',
       (e) => {
-        const toggle = e.target.closest('.kt-toggle');
-        if (!toggle || !offersWrap.contains(toggle)) return;
+        const toggle = resolveToggleTarget(e);
+        if (!toggle) return;
         e.preventDefault();
         lastTouchToggleAt = Date.now();
         handleToggleActivate(toggle);
