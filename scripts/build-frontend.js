@@ -12,6 +12,8 @@ if (process.env.SKIP_FRONTEND_BUILD === '1') {
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { minify: minifyJs } = require('terser');
+const esbuild = require('esbuild');
 
 const ROOT = path.join(__dirname, '..');
 const ASSETS = path.join(ROOT, 'assets');
@@ -174,17 +176,22 @@ function splitI18n() {
   return files;
 }
 
-function buildCoreBundle() {
+async function buildCoreBundle() {
   const parts = CORE_BUNDLE_SOURCES.map((f) => {
     const p = path.join(JS_DIR, f);
     if (!fs.existsSync(p)) throw new Error(`Missing ${f}`);
     return fs.readFileSync(p, 'utf8');
   });
   const combined = parts.join('\n;\n');
-  const hash = hashContent(combined);
+  const { code } = await minifyJs(combined, {
+    compress: true,
+    mangle: true,
+    format: { comments: false },
+  });
+  const minified = code || combined;
+  const hash = hashContent(minified);
   const outName = `site-core.${hash}.js`;
-  fs.writeFileSync(path.join(JS_DIR, outName), combined);
-  // Remove old site-core.*.js
+  fs.writeFileSync(path.join(JS_DIR, outName), minified);
   fs.readdirSync(JS_DIR)
     .filter((f) => f.startsWith('site-core.') && f.endsWith('.js') && f !== outName)
     .forEach((f) => fs.unlinkSync(path.join(JS_DIR, f)));
@@ -193,10 +200,12 @@ function buildCoreBundle() {
 
 function hashCss() {
   const src = path.join(CSS_DIR, 'style.css');
-  const css = fs.readFileSync(src);
-  const hash = hashContent(css);
+  const css = fs.readFileSync(src, 'utf8');
+  const { code } = esbuild.transformSync(css, { loader: 'css', minify: true });
+  const minified = code || css;
+  const hash = hashContent(minified);
   const outName = `style.${hash}.css`;
-  fs.writeFileSync(path.join(CSS_DIR, outName), css);
+  fs.writeFileSync(path.join(CSS_DIR, outName), minified);
   fs.readdirSync(CSS_DIR)
     .filter((f) => f.startsWith('style.') && f.endsWith('.css') && f !== 'style.css' && f !== outName)
     .forEach((f) => fs.unlinkSync(path.join(CSS_DIR, f)));
@@ -216,6 +225,9 @@ async function optimizeImages() {
     'hero-atelier-aussen.jpg',
     'galerie-abstrakt.jpg',
     'galerie-schmerzstation.jpg',
+    'galerie-material.jpg',
+    'Potenziale-Kunsttherapie-Paderborn.jpg',
+    'Sonnige_Pinsel.jpg',
     'atelier-eingang.jpg',
     'martina-portrait.jpg',
   ];
@@ -347,15 +359,15 @@ function syncPricing() {
     if (next !== html) fs.writeFileSync(filePath, next);
   }
 
-  const i18nCore = fs.readFileSync(path.join(JS_DIR, 'i18n-messages.js'), 'utf8');
+  const i18nPages = fs.readFileSync(path.join(JS_DIR, 'i18n-messages-pages.js'), 'utf8');
   const checks = [
     ['home.services.priceHint', SITE_PRICING.priceHintDe],
     ['kt.facts.meta', SITE_PRICING.factsMetaDe],
     ['prices.tableBody', SITE_PRICING.groupPriceDe],
   ];
   for (const [key, needle] of checks) {
-    if (!i18nCore.includes(needle)) {
-      throw new Error(`Pricing mismatch: i18n-messages.js missing "${needle}" for ${key}`);
+    if (!i18nPages.includes(needle)) {
+      throw new Error(`Pricing mismatch: i18n-messages-pages.js missing "${needle}" for ${key}`);
     }
   }
   console.log('Pricing synced:', SITE_PRICING.priceRange);
@@ -369,7 +381,7 @@ async function main() {
   splitI18n();
 
   console.log('Building JS core bundle…');
-  const coreBundle = buildCoreBundle();
+  const coreBundle = await buildCoreBundle();
 
   console.log('Hashing CSS…');
   const cssFile = hashCss();
