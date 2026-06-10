@@ -1266,7 +1266,10 @@ function afUpdateSelectionState() {
     selectAll.indeterminate = checked.length > 0 && checked.length < all.length;
     selectAll.checked = all.length > 0 && checked.length === all.length;
   }
-  if (bulkBtn) bulkBtn.disabled = checked.length === 0;
+  if (bulkBtn) {
+    bulkBtn.disabled = checked.length === 0;
+    bulkBtn.style.display = 'inline-flex';
+  }
   if (label) label.textContent = checked.length > 0 ? `Löschen (${checked.length})` : 'Ausgewählte löschen';
 }
 
