@@ -11,8 +11,6 @@ const jsDir = path.join(root, 'assets/js');
 
 function loadMessages() {
   const ctx = { window: { I18N_MESSAGES: { de: {}, en: {} } } };
-  vm.runInNewContext(fs.readFileSync(path.join(jsDir, 'i18n-messages.js'), 'utf8'), ctx);
-
   const splitFiles = fs
     .readdirSync(jsDir)
     .filter((f) => f.startsWith('i18n-messages-') && f.endsWith('.js') && f !== 'i18n-messages-pages.js')
