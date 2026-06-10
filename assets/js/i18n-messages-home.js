@@ -5,7 +5,7 @@
   "home.hero.title": "Kunsttherapie – Dienstag morgens & Donnerstag abends",
   "home.hero.titleHtml": "Psychosoziale Kunsttherapie in <span class=\"text-accent\">Paderborn</span>",
   "home.hero.lead": "Wenn Worte nicht reichen, findet das Gestalten einen Weg.",
-  "home.hero.sub": "Dienstag vormittags und Donnerstag abends in Paderborn – für Privatpersonen, Teams und klinische Einrichtungen.",
+  "home.hero.sub": "Dienstag vormittags und Donnerstag abends in Paderborn – für Unternehmen, Kliniken und Einrichtungen.",
   "home.hero.note": "Neue Gruppen ab 1. Juli 2026 · Di 11:00–12:30 · Do 18:00–19:30 · Otto-Stadler-Straße 23c",
   "home.audience.title": "Für wen ist das Angebot?",
   "home.audience.privat": "Privat",
@@ -56,9 +56,9 @@
   "home.hero.imgAlt": "Atelier – gemeinsam malen und gestalten in Paderborn",
   "home.gallery.openPrefix": "Bild vergrößern:",
   "home.gallery.img1.alt": "Materialien im Atelier – Farben, Kreiden, Pinsel",
-  "home.gallery.img2.alt": "Kunsttherapeutisches Bild – Natur und Kreativität",
-  "home.gallery.img3.alt": "Abstraktes Aquarell – Farben und Formen",
-  "home.gallery.img4.alt": "Kunsttherapie in sensiblen Settings – behutsame Begleitung",
+  "home.gallery.img2.alt": "Malstudie im Atelier – Farben und Formen aus der Natur",
+  "home.gallery.img3.alt": "Vision Board – Träume und Ziele gestalten",
+  "home.gallery.img4.alt": "Pastellarbeit – Gemeinschaft und innere Stärke",
   "home.gallery.img5.alt": "Atelier von außen – Otto-Stadler-Straße in Paderborn",
   "home.gallery.img6.alt": "Malen mit Pinseln – Kreativität im Sonnenlicht"
 }, en: {
@@ -66,7 +66,7 @@
   "home.hero.title": "Art therapy – Tuesday mornings & Thursday evenings",
   "home.hero.titleHtml": "Art therapy in <span class=\"text-accent\">Paderborn</span>",
   "home.hero.lead": "When words fall short, creating finds a way.",
-  "home.hero.sub": "Tuesday mornings and Thursday evenings in Paderborn – for individuals, teams, and clinical settings.",
+  "home.hero.sub": "Tuesday mornings and Thursday evenings in Paderborn – for companies, clinics, and institutions.",
   "home.hero.note": "New groups from 1 July 2026 · Tue 11:00–12:30 · Thu 18:00–19:30 · Otto-Stadler-Straße 23c",
   "home.audience.title": "Who is this for?",
   "home.audience.privat": "Individuals",
@@ -117,9 +117,9 @@
   "home.hero.imgAlt": "Atelier – painting and creating together in Paderborn",
   "home.gallery.openPrefix": "Enlarge image:",
   "home.gallery.img1.alt": "Studio materials – paints, chalks, brushes",
-  "home.gallery.img2.alt": "Art therapy image – nature and creativity",
-  "home.gallery.img3.alt": "Abstract watercolour – colours and shapes",
-  "home.gallery.img4.alt": "Art therapy in sensitive settings – gentle support",
+  "home.gallery.img2.alt": "Painting study in the studio – colours and forms from nature",
+  "home.gallery.img3.alt": "Vision board – shaping dreams and goals",
+  "home.gallery.img4.alt": "Pastel artwork – community and inner strength",
   "home.gallery.img5.alt": "Atelier exterior – Otto-Stadler-Straße in Paderborn",
   "home.gallery.img6.alt": "Painting with brushes – creativity in sunlight"
 } };

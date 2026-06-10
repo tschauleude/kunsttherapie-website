@@ -27,9 +27,10 @@
     if (el.closest('[data-reveal-skip]')) return true;
     /* Klickbare Karten/Buttons nicht blockieren (pointer-events während Reveal) */
     if (el.matches('.card--clickable, .card-hit-area, button, a.btn, [data-gallery-open]')) return true;
-    if (el.closest('.card--clickable, .kt-offers, [data-quote-showcase], [data-raum-showcase], .booking-layout')) {
+    if (el.closest('.card--clickable, .kt-offers, [data-quote-showcase], [data-raum-showcase], .booking-layout, .actions')) {
       return true;
     }
+    if (el.matches('.actions, .actions *')) return true;
     if (el.offsetParent === null) return true;
     return false;
   }

@@ -231,6 +231,10 @@ async function optimizeImages() {
     'Sonnige_Pinsel.jpg',
     'atelier-eingang.jpg',
     'martina-portrait.jpg',
+    'martina-malstudie.jpg',
+    'martina-vision-board.jpg',
+    'martina-pastell-gruppe.jpg',
+    'martina-atelier-arbeit.jpg',
   ];
   const manifest = {};
 
