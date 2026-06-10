@@ -3451,6 +3451,72 @@ nav[data-site-nav] {
   align-items: stretch;
 }
 
+/* ── Methoden in Bildern ── */
+.kt-methoden-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+}
+
+@media (min-width: 640px) {
+  .kt-methoden-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .kt-methoden-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.kt-methode {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.kt-methode-media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--particle-sand, #efe8da);
+}
+
+.kt-methode-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--duration-flow, 0.5s) var(--ease-flow, ease);
+}
+
+.kt-methode:hover .kt-methode-media img,
+.kt-methode:focus-within .kt-methode-media img {
+  transform: scale(1.04);
+}
+
+.kt-methode figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.15rem 1.25rem;
+  flex: 1;
+}
+
+.kt-methode figcaption strong {
+  font-size: 1rem;
+  color: var(--color-teal-dark);
+}
+
+.kt-methode figcaption span {
+  font-size: 0.92rem;
+  color: var(--text-light);
+  line-height: 1.55;
+}
+
 @keyframes ktReveal {
   from {
     opacity: 0;
