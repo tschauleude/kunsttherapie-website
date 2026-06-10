@@ -102,6 +102,16 @@
           <p>Veranstaltungen: <strong id="eventsCount">0</strong></p>
         </div>
         <hr class="sep" style="margin:1.5rem 0"/>
+        <h3>Versionen &amp; Wiederherstellen</h3>
+        <p class="note">Bei jedem Speichern von Texten oder Bildern wird automatisch ein Sicherungspunkt angelegt. Du kannst einen früheren Stand wiederherstellen, falls etwas nicht passt.</p>
+        <div class="form-row" style="margin-bottom:1rem">
+          <button type="button" class="btn outline btn-sm" onclick="createContentSnapshot()">Jetzt Sicherungspunkt erstellen</button>
+          <button type="button" class="btn-cancel btn-sm" onclick="loadContentVersions()">Liste aktualisieren</button>
+        </div>
+        <div id="contentVersionsList" class="items-list content-versions-list">
+          <p class="note">Versionen werden geladen …</p>
+        </div>
+        <hr class="sep" style="margin:1.5rem 0"/>
         <h3>Passwort ändern</h3>
         <form onsubmit="changePassword(event)" style="max-width:400px">
           <div class="form-group">
@@ -550,14 +560,27 @@ function i18nFieldRows(field) {
 let i18nCatalog = [];
 let i18nCurrentLang = 'de';
 
+async function fetchI18nCatalog() {
+  const res = await fetch(`${API_URL}/admin/i18n/catalog`, { credentials: 'include' });
+  const data = await res.json();
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Sitzung abgelaufen – bitte erneut anmelden.');
+    throw new Error(data.error || `Serverfehler (${res.status})`);
+  }
+  const catalog = Array.isArray(data) ? data : data?.groups;
+  if (!Array.isArray(catalog)) {
+    throw new Error('Ungültige Katalog-Antwort vom Server');
+  }
+  return catalog;
+}
+
 async function initTextsSection() {
   try {
-    if (!i18nCatalog.length) {
-      const res = await fetch(`${API_URL}/admin/i18n/catalog`, { credentials: 'include' });
-      i18nCatalog = await res.json();
+    if (!Array.isArray(i18nCatalog) || !i18nCatalog.length) {
+      i18nCatalog = await fetchI18nCatalog();
       const sel = document.getElementById('i18nGroupSelect');
       sel.innerHTML = i18nCatalog
-        .map((g) => `<option value="${g.id}">${g.title}</option>`)
+        .map((g) => `<option value="${g.id}">${escapeHtml(g.title)}</option>`)
         .join('');
     }
     await loadI18nGroup();
@@ -1118,8 +1141,97 @@ async function loadDashboard() {
     document.getElementById('bookingsCount').textContent = bookings.filter((b) => b.status !== 'cancelled').length;
     document.getElementById('atelierCount').textContent = atelier.filter((a) => a.status === 'new').length;
     document.getElementById('eventsCount').textContent = events.length;
+    await loadContentVersions();
   } catch (err) {
     console.error('Dashboard load error:', err);
+  }
+}
+
+const CONTENT_VERSION_KIND_LABELS = {
+  i18n: 'Texte',
+  site_images: 'Bilder',
+  content_bundle: 'Komplett',
+};
+
+function formatVersionDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleString('de-DE');
+  } catch {
+    return iso;
+  }
+}
+
+async function loadContentVersions() {
+  const list = document.getElementById('contentVersionsList');
+  if (!list) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/content-versions?limit=30`, { credentials: 'include' });
+    if (!res.ok) throw new Error('Versionen nicht geladen');
+    const data = await res.json();
+    const versions = Array.isArray(data.versions) ? data.versions : [];
+    if (!versions.length) {
+      list.innerHTML = '<p class="note">Noch keine Sicherungspunkte – beim nächsten Speichern von Texten oder Bildern wird automatisch eine Version angelegt.</p>';
+      return;
+    }
+    list.innerHTML = versions
+      .map((v) => {
+        const kind = CONTENT_VERSION_KIND_LABELS[v.kind] || v.kind;
+        const who = v.createdBy ? ` · ${escapeHtml(v.createdBy)}` : '';
+        return `
+          <div class="item-card content-version-card">
+            <div class="item-content">
+              <h3>#${v.id} · ${escapeHtml(kind)}</h3>
+              <p><strong>${escapeHtml(v.label || '')}</strong></p>
+              <p class="note">${formatVersionDate(v.createdAt)}${who}</p>
+              <div class="item-actions">
+                <button type="button" class="btn-small btn-edit" onclick="restoreContentVersion(${v.id})">Wiederherstellen</button>
+              </div>
+            </div>
+          </div>`;
+      })
+      .join('');
+  } catch (err) {
+    list.innerHTML = `<p class="note">Versionen konnten nicht geladen werden: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+async function createContentSnapshot() {
+  const label = window.prompt('Name für den Sicherungspunkt (optional):', 'Manueller Sicherungspunkt');
+  if (label === null) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/content-versions/snapshot`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ label: label.trim() || 'Manueller Sicherungspunkt' }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Sicherung fehlgeschlagen');
+    showMessage(`Sicherungspunkt #${data.id} erstellt`, 'success');
+    loadContentVersions();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function restoreContentVersion(id) {
+  if (!confirm('Diesen Stand wirklich wiederherstellen? Der aktuelle Inhalt wird vorher automatisch gesichert.')) {
+    return;
+  }
+  try {
+    const res = await fetch(`${API_URL}/admin/content-versions/${id}/restore`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Wiederherstellung fehlgeschlagen');
+    showMessage('Stand wiederhergestellt – Website ggf. neu laden.', 'success');
+    loadContentVersions();
+    if (document.getElementById('siteImagesList')) loadSiteImagesList();
+    if (document.getElementById('i18nGroupSelect')?.value) loadI18nGroup();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
   }
 }
 

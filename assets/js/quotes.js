@@ -5,96 +5,113 @@
   if (document.body.classList.contains('admin-app')) return;
 
   const INTERVAL_MS = 9000;
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  document.querySelectorAll('[data-quote-showcase]').forEach((root) => {
-    const slides = [...root.querySelectorAll('[data-quote-slide]')];
-    const dots = [...root.querySelectorAll('[data-quote-dot]')];
-    const prevBtn = root.querySelector('[data-quote-prev]');
-    const nextBtn = root.querySelector('[data-quote-next]');
-    if (slides.length < 2) return;
+  function initQuoteShowcases() {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    let index = slides.findIndex((s) => s.classList.contains('is-active'));
-    if (index < 0) index = 0;
+    document.querySelectorAll('[data-quote-showcase]').forEach((root) => {
+      const slides = [...root.querySelectorAll('[data-quote-slide]')];
+      const dots = [...root.querySelectorAll('[data-quote-dot]')];
+      const prevBtn = root.querySelector('[data-quote-prev]');
+      const nextBtn = root.querySelector('[data-quote-next]');
+      if (slides.length < 2) return;
 
-    let timer = null;
-    let paused = false;
+      let index = slides.findIndex((s) => s.classList.contains('is-active'));
+      if (index < 0) index = 0;
 
-    function show(next) {
-      if (next === index) return;
-      slides[index].classList.remove('is-active');
-      dots[index]?.classList.remove('is-active');
-      dots[index]?.setAttribute('aria-selected', 'false');
+      let timer = null;
+      let paused = false;
 
-      index = (next + slides.length) % slides.length;
+      function show(next) {
+        const target = ((next % slides.length) + slides.length) % slides.length;
+        if (target === index) return;
 
-      slides[index].classList.add('is-active');
-      dots[index]?.classList.add('is-active');
-      dots[index]?.setAttribute('aria-selected', 'true');
-    }
+        slides[index].classList.remove('is-active');
+        dots[index]?.classList.remove('is-active');
+        dots[index]?.setAttribute('aria-selected', 'false');
 
-    function next() {
-      show(index + 1);
-    }
+        index = target;
 
-    function prev() {
-      show(index - 1);
-    }
-
-    function start() {
-      if (reducedMotion || paused) return;
-      stop();
-      timer = window.setInterval(next, INTERVAL_MS);
-    }
-
-    function stop() {
-      if (timer) {
-        window.clearInterval(timer);
-        timer = null;
+        slides[index].classList.add('is-active');
+        dots[index]?.classList.add('is-active');
+        dots[index]?.setAttribute('aria-selected', 'true');
       }
-    }
 
-    dots.forEach((dot) => {
-      dot.addEventListener('click', (e) => {
-        e.preventDefault();
-        const i = Number(dot.dataset.quoteDot);
-        if (!Number.isFinite(i)) return;
-        show(i);
-        start();
+      function next() {
+        show(index + 1);
+      }
+
+      function prev() {
+        show(index - 1);
+      }
+
+      function start() {
+        if (reducedMotion || paused) return;
+        stop();
+        timer = window.setInterval(next, INTERVAL_MS);
+      }
+
+      function stop() {
+        if (timer) {
+          window.clearInterval(timer);
+          timer = null;
+        }
+      }
+
+      function bindNavButton(btn, action) {
+        if (!btn || btn.dataset.quoteBound === '1') return;
+        btn.dataset.quoteBound = '1';
+
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          action();
+          start();
+        });
+      }
+
+      dots.forEach((dot) => {
+        if (dot.dataset.quoteBound === '1') return;
+        dot.dataset.quoteBound = '1';
+        dot.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const i = Number(dot.dataset.quoteDot);
+          if (!Number.isFinite(i)) return;
+          show(i);
+          start();
+        });
       });
-    });
 
-    prevBtn?.addEventListener('click', (e) => {
-      e.preventDefault();
-      prev();
-      start();
-    });
+      bindNavButton(prevBtn, prev);
+      bindNavButton(nextBtn, next);
 
-    nextBtn?.addEventListener('click', (e) => {
-      e.preventDefault();
-      next();
-      start();
-    });
-
-    root.addEventListener('mouseenter', () => {
-      paused = true;
-      stop();
-    });
-    root.addEventListener('mouseleave', () => {
-      paused = false;
-      start();
-    });
-    root.addEventListener('focusin', () => {
-      paused = true;
-      stop();
-    });
-    root.addEventListener('focusout', (e) => {
-      if (!root.contains(e.relatedTarget)) {
+      root.addEventListener('mouseenter', () => {
+        paused = true;
+        stop();
+      });
+      root.addEventListener('mouseleave', () => {
         paused = false;
         start();
-      }
-    });
+      });
+      root.addEventListener('focusin', () => {
+        paused = true;
+        stop();
+      });
+      root.addEventListener('focusout', (e) => {
+        if (!root.contains(e.relatedTarget)) {
+          paused = false;
+          start();
+        }
+      });
 
-    start();
-  });
+      start();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initQuoteShowcases);
+  } else {
+    initQuoteShowcases();
+  }
 })();
