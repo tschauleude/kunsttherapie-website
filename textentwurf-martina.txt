@@ -275,7 +275,7 @@ Dienstag 11:00–12:30 Uhr und Donnerstag 18:00–19:30 Uhr – feste Atelierzei
 [kt.audience]
 Label: Zielgruppen-Zeile
 ---
-Für Unternehmen · für Kliniken & Einrichtungen · für Experten & Interessierte
+Für Unternehmen · für Kliniken & Einrichtungen · wachsend
 ---
 
 [kt.offers.title]
