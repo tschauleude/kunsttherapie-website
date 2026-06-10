@@ -22,10 +22,8 @@ const PUBLIC_DIR = path.join(ROOT, 'public');
 const DB_PATH = process.env.DATABASE_PATH || path.join(ROOT, 'database.sqlite');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
-// Hostinger / reverse proxy: HTTPS erkennen, damit Session-Cookies gesetzt werden
-if (IS_PRODUCTION) {
-  app.set('trust proxy', 1);
-}
+// Hostinger / Passenger: echte Client-IP für Rate-Limits und Session-Cookies
+app.set('trust proxy', 1);
 
 // Ensure upload directory exists (Hostinger redeploy may wipe empty dirs)
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(PUBLIC_DIR, 'uploads');
@@ -109,12 +107,33 @@ if (corsOrigins.length) {
   app.use(cors({ origin: corsOrigins, credentials: true }));
 }
 
-const bookingRateLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000,
-  max: parseInt(process.env.BOOKING_RATE_LIMIT || '5', 10),
+const rateLimitJson = (message) => ({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: 'Zu viele Buchungsanfragen – bitte in einigen Minuten erneut versuchen.' },
+  handler: (req, res) => {
+    res.status(429).json({ error: message });
+  },
+});
+
+const loginRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  handler: (req, res) => {
+    res.status(429).json({ error: 'Zu viele Login-Versuche – bitte in 15 Minuten erneut versuchen.' });
+  },
+});
+
+const bookingRateLimiter = rateLimit({
+  ...rateLimitJson('Zu viele Buchungsanfragen – bitte in einer Stunde erneut versuchen.'),
+});
+
+const contactRateLimiter = rateLimit({
+  ...rateLimitJson('Zu viele Nachrichten – bitte in einer Stunde erneut versuchen.'),
 });
 
 app.use(compression());
@@ -434,7 +453,7 @@ function busyForDate(dateStr, localBusy, googleBusy) {
 // ============================================================================
 
 // Login
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', loginRateLimiter, (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -975,7 +994,7 @@ app.get('/api/bookings/:id/calendar.ics', async (req, res) => {
   }
 });
 
-app.post('/api/contact', async (req, res) => {
+app.post('/api/contact', contactRateLimiter, async (req, res) => {
   const honeypot = String(req.body.website ?? req.body._hp ?? '').trim();
   if (honeypot) {
     return res.json({
