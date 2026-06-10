@@ -330,7 +330,10 @@
         const img = pickLightboxImage(btn);
         if (!img) return;
         lastFocus = e.target.closest('[data-raum-hotspot]') || btn;
-        openLb(img.currentSrc || img.src, img.alt, btn.dataset.raumCaption || img.alt);
+        const capKey = btn.getAttribute('data-i18n-caption');
+        const caption =
+          (capKey && window.ktI18n && window.ktI18n.t(capKey)) || btn.dataset.raumCaption || img.alt;
+        openLb(img.currentSrc || img.src, img.alt, caption);
       });
     });
 

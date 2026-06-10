@@ -55,12 +55,12 @@
   "home.praxis.more": "Mehr zum Atelier",
   "home.hero.imgAlt": "Atelier – gemeinsam malen und gestalten in Paderborn",
   "home.gallery.openPrefix": "Bild vergrößern:",
-  "home.gallery.img1.alt": "Materialien im Atelier – Farben, Kreiden, Pinsel",
+  "home.gallery.img1.alt": "Farbenfrohes Aquarell aus der Kunsttherapie – Pferde in Bewegung",
   "home.gallery.img2.alt": "Kunsttherapeutisches Bild – Natur und Kreativität",
   "home.gallery.img3.alt": "Abstraktes Aquarell – Farben und Formen",
-  "home.gallery.img4.alt": "Kunsttherapie in sensiblen Settings – behutsame Begleitung",
-  "home.gallery.img5.alt": "Atelier von außen – Otto-Stadler-Straße in Paderborn",
-  "home.gallery.img6.alt": "Malen mit Pinseln – Kreativität im Sonnenlicht"
+  "home.gallery.img4.alt": "Pastellbild aus der Kunsttherapie – Menschen im Kreis, dem Licht zugewandt",
+  "home.gallery.img5.alt": "Atelier-Eingang – Otto-Stadler-Straße 23c in Paderborn",
+  "home.gallery.img6.alt": "Vision Board – Collage „Wie wir unsere Träume verwirklichen“"
 }, en: {
   "home.hero.kicker": "Art Therapy · Paderborn",
   "home.hero.title": "Art therapy – Tuesday mornings & Thursday evenings",
@@ -116,12 +116,12 @@
   "home.praxis.more": "More about the atelier",
   "home.hero.imgAlt": "Atelier – painting and creating together in Paderborn",
   "home.gallery.openPrefix": "Enlarge image:",
-  "home.gallery.img1.alt": "Studio materials – paints, chalks, brushes",
+  "home.gallery.img1.alt": "Colourful watercolour from art therapy – horses in motion",
   "home.gallery.img2.alt": "Art therapy image – nature and creativity",
   "home.gallery.img3.alt": "Abstract watercolour – colours and shapes",
-  "home.gallery.img4.alt": "Art therapy in sensitive settings – gentle support",
-  "home.gallery.img5.alt": "Atelier exterior – Otto-Stadler-Straße in Paderborn",
-  "home.gallery.img6.alt": "Painting with brushes – creativity in sunlight"
+  "home.gallery.img4.alt": "Soft pastel from art therapy – people gathered in a circle, turned toward the light",
+  "home.gallery.img5.alt": "Atelier entrance – Otto-Stadler-Straße 23c, Paderborn",
+  "home.gallery.img6.alt": "Vision board – collage “Making our dreams come true”"
 } };
   Object.assign(window.I18N_MESSAGES.de, extra.de);
   Object.assign(window.I18N_MESSAGES.en, extra.en);

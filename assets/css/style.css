@@ -3191,6 +3191,77 @@ nav[data-site-nav] {
   object-position: center;
 }
 
+.kt-raum-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+}
+
+.kt-raum-art {
+  position: relative;
+  display: block;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: calc(var(--radius-card) - 6px);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: #e8e4dc;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 1px 3px rgba(40, 50, 48, 0.12);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.kt-raum-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.45s ease;
+}
+
+.kt-raum-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+
+.kt-raum-art:hover,
+.kt-raum-art:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(40, 50, 48, 0.18);
+  outline: none;
+}
+
+.kt-raum-art:focus-visible {
+  box-shadow: 0 0 0 3px var(--color-accent, #557a76), 0 8px 22px rgba(40, 50, 48, 0.18);
+}
+
+.kt-raum-art:hover img,
+.kt-raum-art:focus-visible img {
+  transform: scale(1.05);
+}
+
+.kt-raum-art:active {
+  transform: translateY(0) scale(0.99);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kt-raum-art,
+  .kt-raum-art img {
+    transition: none;
+  }
+  .kt-raum-art:hover img,
+  .kt-raum-art:focus-visible img {
+    transform: none;
+  }
+}
+
 .kt-raum-compare-before {
   position: absolute;
   inset: 0;
