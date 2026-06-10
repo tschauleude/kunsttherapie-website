@@ -4213,3 +4213,50 @@ html.a11y-reduce-motion *::after {
     width: auto;
   }
 }
+
+/* === Haptik & Touch-Targets ===
+   Konsistentes Tap-Feedback und größere Trefferflächen auf Touch-Geräten. */
+.footer-link-btn,
+.a11y-footer-link {
+  border-radius: 6px;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--duration-tap) var(--ease-flow),
+    opacity var(--duration-tap) var(--ease-flow);
+}
+
+.footer-link-btn:focus-visible,
+.a11y-footer-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.footer-link-btn:active,
+.a11y-footer-link:active {
+  opacity: 0.6;
+}
+
+/* Auf Touch-Geräten: komfortable Trefferflächen (≈44px) ohne das Desktop-Layout
+   zu verändern. Inhalt bleibt optisch gleich, der antippbare Bereich wächst. */
+@media (pointer: coarse) {
+  .lang-switch-btn {
+    min-height: 44px;
+    padding-block: 0.55rem;
+  }
+
+  .quote-arrow {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .footer-link-btn,
+  .a11y-footer-link {
+    display: inline-block;
+    padding-block: 0.45rem;
+  }
+
+  .kt-raum-tab {
+    min-height: 46px;
+  }
+}
