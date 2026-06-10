@@ -887,6 +887,12 @@ span.price-hint-pill {
 /* Ganze Karte klickbar – Klick auf Titel/Text leitet zum .card-hit-area-Link (site.js) */
 .card--clickable {
   cursor: pointer;
+  touch-action: manipulation;
+}
+
+.card--clickable:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 3px;
 }
 
 .feature p,

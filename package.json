@@ -38,6 +38,7 @@
   "devDependencies": {
     "esbuild": "^0.28.0",
     "nodemon": "^2.0.20",
+    "playwright": "^1.60.0",
     "terser": "^5.48.0"
   }
 }

@@ -305,7 +305,7 @@ Begleitetes Malen in der Gruppe – dienstags vormittags.
 [offer.1.body]
 Label: Angebot 1 – Details (HTML erlaubt)
 ---
-<p><strong>Primär dienstags 11:00–12:30 Uhr</strong> – die Gruppenzeiten rotieren und werden im Wechsel auch donnerstags abends angeboten. Viele Menschen kennen bereits kunsttherapeutisches Gestalten in Gruppen, haben die Kunsttherapie schätzen gelernt, Wissen um die Wirksamkeit – und suchen einen freien Platz. Selbstverständlich auch für alle, die durch ressourcenorientierte, visuelle Methoden ganz individuelle Themen gestalten möchten – mit professioneller Begleitung.</p><p><strong>Gruppentherapie, freies und thematisches Gestalten:</strong> Kunst als Weg zurück zum Inneren – um Gesundheit zu erhalten und zu fördern, im Sinne von Resilienz, Krankheitsakzeptanz und psychischer Widerstandsfähigkeit.</p><p>„Bilder sagen mehr als tausend Worte“, sowie „die Heilkraft der Farben“ sind Erfahrungswerte in der Kunsttherapie.</p><p class="note">4–12 Personen · 90 Minuten · im Wechsel auch donnerstags abends</p>
+<p><strong>Primär dienstags 11:00–12:30 Uhr</strong> – die Gruppenzeiten rotieren und werden im Wechsel auch donnerstags abends angeboten. Viele Menschen kennen bereits kunsttherapeutisches Gestalten in Gruppen, haben die Kunsttherapie schätzen gelernt, Wissen um die Wirksamkeit – und suchen einen freien Platz. Selbstverständlich auch für alle, die durch ressourcenorientierte, visuelle Methoden ihre ganz individuellen Themen gestalten wollen – ich begleite Sie darin.</p><p><strong>Gruppentherapie, freies und thematisches Gestalten:</strong> „Kunst als Weg zurück zu deinem Inneren“ – um Gesundheit zu erhalten und zu fördern, im Sinne unserer Resilienz und psychischer Widerstandsfähigkeit. In der Gruppe entsteht ein geschützter Rahmen für Entlastung und neue Perspektiven.</p><p>„Bilder sagen mehr als tausend Worte“, sowie „die Heilkraft der Farben“ sind Erfahrungswerte in der Kunsttherapie.</p><p class="note">4–12 Personen · 90 Minuten · im Wechsel auch donnerstags abends</p>
 ---
 
 [offer.2.title]
@@ -413,7 +413,7 @@ Ankommen und gestalten in Paderborn
 [kt.praxis.p1]
 Label: Atelier – Absatz 1 (HTML erlaubt)
 ---
-Der Raum hat eine schöne Atmosphäre, etwas im Grünen mit Terrasse, und hält alles bereit, um sich schnell geborgen und wohl zu fühlen. Platz zum Malen, für Gespräche dazwischen – <strong>Dienstag 11:00–12:30</strong> für Gruppen, <strong>Donnerstag 18:00–19:30</strong> für Auszeit und Workshops. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.
+Ab <strong>1. Juli 2026</strong> in Paderborn – ein Ort zum Ankommen, Malen und Gestalten, mit Raum für Gespräche dazwischen. <strong>Dienstag 11:00–12:30</strong> für Gruppen, <strong>Donnerstag 18:00–19:30</strong> für Auszeit und Workshops. Die Gruppenzeiten rotieren: im Wechsel auch donnerstags abends.
 ---
 
 [kt.praxis.p2]
@@ -525,7 +525,7 @@ Label: FAQ 2 – Antwort (HTML erlaubt)
 [kt.faq3.q]
 Label: FAQ 3 – Frage
 ---
-Welche Materialien und Methoden gibt es?
+Materialien & Methoden
 ---
 
 [kt.faq3.a]
@@ -543,7 +543,7 @@ Mit welchen Themen kann ich kommen?
 [kt.faq4.a]
 Label: FAQ 4 – Antwort (HTML erlaubt)
 ---
-<ul><li>Raum für Trauer, die noch keinen Ausdruck gefunden hat</li><li>Hilfe bei chronischen Schmerzen</li><li>Vision Board: Vorstellungskraft, Klarheit und Struktur finden</li><li>Achtsamkeit malend – die Umwelt bewusst wahrnehmen; Meditationstechniken für innere Ruhe</li><li>Positiver Flow und Techniken erleben</li></ul>
+<ul><li>Raum für nicht gelebte Trauer – z.&nbsp;B. um ein Enkelkind</li><li>Hilfe bei chronischen Schmerzen</li><li>Vision Board: Förderung von Vorstellungskraft, Klarheit und Struktur</li><li>Achtsamkeit malend – die Umwelt bewusst wahrnehmen; Meditationstechniken für innere Ruhe und einen neuen Blick auf das, was uns umgibt</li><li>Positiver Flow und Techniken erleben</li></ul>
 ---
 
 [kt.faq5.q]

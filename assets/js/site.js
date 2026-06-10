@@ -413,8 +413,24 @@
       if (!link) return;
       card.dataset.cardClickBound = '1';
 
+      if (!card.hasAttribute('tabindex')) {
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'link');
+        const label = card.querySelector('h3')?.textContent?.trim();
+        if (label && !card.getAttribute('aria-label')) {
+          card.setAttribute('aria-label', label);
+        }
+      }
+
       card.addEventListener('click', (e) => {
         if (e.target.closest('a, button')) return;
+        link.click();
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        if (e.target.closest('a, button')) return;
+        e.preventDefault();
         link.click();
       });
     });

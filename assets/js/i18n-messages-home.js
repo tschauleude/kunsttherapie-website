@@ -56,9 +56,9 @@
   "home.hero.imgAlt": "Atelier – gemeinsam malen und gestalten in Paderborn",
   "home.gallery.openPrefix": "Bild vergrößern:",
   "home.gallery.img1.alt": "Materialien im Atelier – Farben, Kreiden, Pinsel",
-  "home.gallery.img2.alt": "Kunsttherapeutisches Bild – Natur und Kreativität",
-  "home.gallery.img3.alt": "Abstraktes Aquarell – Farben und Formen",
-  "home.gallery.img4.alt": "Kunsttherapie in sensiblen Settings – behutsame Begleitung",
+  "home.gallery.img2.alt": "Kunsttherapeutisches Gruppenbild – Pastell auf Papier",
+  "home.gallery.img3.alt": "Vision Board – Träume, Natur und persönliche Ziele",
+  "home.gallery.img4.alt": "Malen nach Vorlage – kreativer Prozess im Atelier",
   "home.gallery.img5.alt": "Atelier von außen – Otto-Stadler-Straße in Paderborn",
   "home.gallery.img6.alt": "Malen mit Pinseln – Kreativität im Sonnenlicht"
 }, en: {
