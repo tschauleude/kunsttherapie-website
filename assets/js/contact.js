@@ -12,15 +12,17 @@
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = form.querySelector('button[type="submit"]');
+    if (!btn) return;
     btn.disabled = true;
     if (msg) msg.hidden = true;
+    const fd = new FormData(form);
 
     const body = {
-      name: form.name.value.trim(),
-      email: form.email.value.trim(),
-      phone: form.phone.value.trim(),
-      message: form.message.value.trim(),
-      website: document.getElementById('contactWebsite')?.value || '',
+      name: String(fd.get('name') || '').trim(),
+      email: String(fd.get('email') || '').trim(),
+      phone: String(fd.get('phone') || '').trim(),
+      message: String(fd.get('message') || '').trim(),
+      website: String(fd.get('website') || ''),
     };
 
     try {

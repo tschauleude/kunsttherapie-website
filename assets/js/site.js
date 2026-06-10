@@ -412,9 +412,18 @@
       const link = card.querySelector('a.card-hit-area[href]');
       if (!link) return;
       card.dataset.cardClickBound = '1';
+      if (!card.hasAttribute('tabindex')) card.tabIndex = 0;
+      if (!card.hasAttribute('role')) card.setAttribute('role', 'link');
 
       card.addEventListener('click', (e) => {
         if (e.target.closest('a, button')) return;
+        link.click();
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.target.closest('a, button, input, textarea, select, summary')) return;
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
         link.click();
       });
     });
