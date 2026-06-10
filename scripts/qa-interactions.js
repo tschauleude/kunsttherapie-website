@@ -123,13 +123,13 @@ async function testKunsttherapie(browser) {
   await acceptConsent(page);
 
   await page.locator('#angebote').scrollIntoViewIfNeeded();
-  await page.locator('#angebote .kt-offer-head').first().click();
+  await page.locator('#angebote .kt-offer-toggle').first().click();
   await page.waitForTimeout(400);
   const offer = await page.evaluate(() => {
     const d = document.querySelector('details[data-offer]');
     return {
       open: d?.open,
-      label: d?.querySelector('.kt-toggle-label')?.textContent?.trim(),
+      label: d?.querySelector('.kt-offer-toggle')?.textContent?.trim(),
       h: d?.querySelector('.kt-offer-body')?.getBoundingClientRect().height || 0,
     };
   });

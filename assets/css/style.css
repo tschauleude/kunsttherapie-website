@@ -907,8 +907,9 @@ hr.sep {
   margin: 1.75rem 0;
 }
 
-/* Details */
-details {
+/* Details (FAQ, Atelier – nicht Angebots-Karten) */
+details.kt-details,
+details.atelier-submit-panel {
   border: 1px dashed rgba(85, 122, 118, 0.25);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.5);
@@ -2845,7 +2846,7 @@ nav[data-site-nav] {
 }
 
 @media (min-width: 1024px) {
-  .kt-offers--five .kt-offer--accent .kt-offer-head {
+  .kt-offers--five .kt-offer--accent:not([open]) .kt-offer-head {
     display: grid;
     grid-template-columns: minmax(12rem, auto) 1fr auto;
     align-items: center;
@@ -2867,10 +2868,9 @@ nav[data-site-nav] {
     min-width: 0;
   }
 
-  .kt-offers--five .kt-offer--accent .kt-toggle-label {
+  .kt-offers--five .kt-offer--accent:not([open]) .kt-offer-toggle {
     grid-column: 3;
     justify-self: end;
-    flex-shrink: 0;
   }
 }
 
@@ -2883,6 +2883,7 @@ nav[data-site-nav] {
   width: 100%;
   height: auto;
   min-height: 0;
+  overflow: visible;
   transition: border-color 0.35s, box-shadow 0.35s;
   border: 2px solid transparent;
 }
@@ -2918,23 +2919,15 @@ nav[data-site-nav] {
   display: none;
 }
 
-.kt-offer-head .kt-toggle-label {
+.kt-offer-head .kt-offer-toggle {
   margin-top: auto;
   align-self: flex-start;
   min-width: 10.5rem;
   min-height: 2.75rem;
-  padding: 0.45rem 0.85rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   white-space: nowrap;
-  pointer-events: none;
   line-height: 1.25;
-  color: var(--color-teal);
   font-size: 0.88rem;
-  font-weight: 600;
   flex-shrink: 0;
-  overflow: visible;
 }
 
 .kt-offer[open] {
