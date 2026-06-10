@@ -2200,8 +2200,40 @@ body.consent-banner-visible {
 .quote-nav {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 0.45rem;
   margin-top: 1.35rem;
+}
+
+.quote-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 2px solid rgba(85, 122, 118, 0.28);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-teal-dark);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background var(--duration-flow) var(--ease-flow),
+    border-color var(--duration-flow) var(--ease-flow),
+    transform var(--duration-tap) var(--ease-flow);
+}
+
+.quote-arrow:hover,
+.quote-arrow:focus-visible {
+  background: rgba(85, 122, 118, 0.1);
+  border-color: var(--color-teal);
+  outline: none;
+}
+
+.quote-arrow:active {
+  transform: scale(0.94);
 }
 
 .quote-dot {
@@ -2891,12 +2923,18 @@ nav[data-site-nav] {
   align-self: flex-start;
   min-width: 10.5rem;
   min-height: 2.75rem;
+  padding: 0.45rem 0.85rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   white-space: nowrap;
   pointer-events: none;
   line-height: 1.25;
+  color: var(--color-teal);
+  font-size: 0.88rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  overflow: visible;
 }
 
 .kt-offer[open] {
@@ -3145,15 +3183,19 @@ nav[data-site-nav] {
 
 .kt-raum-compare-range {
   position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
+  inset: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  margin: 0;
   padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  border: none;
   opacity: 0;
+  cursor: ew-resize;
+  touch-action: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
 }
 
 .kt-raum-compare-labels {

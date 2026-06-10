@@ -28,7 +28,9 @@
     function updateLabel(details) {
       const label = details.querySelector('.kt-toggle-label');
       if (!label) return;
-      label.textContent = details.open ? labelLess() : labelLearn();
+      const text = details.open ? labelLess() : labelLearn();
+      label.textContent = text || (details.open ? 'Weniger' : 'Mehr erfahren');
+      label.setAttribute('aria-hidden', details.open ? 'false' : 'true');
     }
 
     function scrollOfferIntoView(card) {

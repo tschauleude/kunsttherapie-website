@@ -10,6 +10,8 @@
   document.querySelectorAll('[data-quote-showcase]').forEach((root) => {
     const slides = [...root.querySelectorAll('[data-quote-slide]')];
     const dots = [...root.querySelectorAll('[data-quote-dot]')];
+    const prevBtn = root.querySelector('[data-quote-prev]');
+    const nextBtn = root.querySelector('[data-quote-next]');
     if (slides.length < 2) return;
 
     let index = slides.findIndex((s) => s.classList.contains('is-active'));
@@ -35,6 +37,10 @@
       show(index + 1);
     }
 
+    function prev() {
+      show(index - 1);
+    }
+
     function start() {
       if (reducedMotion || paused) return;
       stop();
@@ -56,6 +62,18 @@
         show(i);
         start();
       });
+    });
+
+    prevBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      prev();
+      start();
+    });
+
+    nextBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      next();
+      start();
     });
 
     root.addEventListener('mouseenter', () => {

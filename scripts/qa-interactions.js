@@ -133,8 +133,17 @@ async function testKunsttherapie(browser) {
       h: d?.querySelector('.kt-offer-body')?.getBoundingClientRect().height || 0,
     };
   });
-  if (offer.open && offer.h > 50 && offer.label) pass('Offer card toggle');
-  else fail('Offer card toggle', JSON.stringify(offer));
+  if (offer.open && offer.h > 50 && offer.label && /weniger|less/i.test(offer.label)) {
+    pass('Offer card toggle');
+  } else fail('Offer card toggle', JSON.stringify(offer));
+
+  await page.locator('[data-quote-next]').first().click();
+  await page.waitForTimeout(400);
+  const quoteNext = await page.evaluate(
+    () => document.querySelectorAll('[data-quote-slide]')[1]?.classList.contains('is-active')
+  );
+  if (quoteNext) pass('Quote next arrow');
+  else fail('Quote next arrow');
 
   await page.locator('#faq .kt-details summary').first().click();
   await page.waitForTimeout(200);

@@ -109,7 +109,15 @@
     }
 
     if (range) {
-      range.addEventListener('input', () => setCompareImmediate(Number(range.value)));
+      const onRangeInput = () => setCompareImmediate(Number(range.value));
+      range.addEventListener('input', onRangeInput);
+      range.addEventListener('change', onRangeInput);
+      range.addEventListener('touchstart', () => {
+        compare.classList.add('is-scrubbing');
+      }, { passive: true });
+      range.addEventListener('touchend', () => {
+        compare.classList.remove('is-scrubbing', 'is-dragging');
+      }, { passive: true });
     }
 
     let dragging = false;
@@ -119,7 +127,7 @@
     const DRAG_THRESHOLD = 3;
 
     function shouldIgnoreDragTarget(target) {
-      return target?.closest?.('[data-raum-hotspot]');
+      return target?.closest?.('[data-raum-hotspot], [data-raum-compare-range]');
     }
 
     function beginDrag(e) {
