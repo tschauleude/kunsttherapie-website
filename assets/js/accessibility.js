@@ -168,13 +168,27 @@
     panel.hidden = false;
     toggle.setAttribute('aria-expanded', 'true');
     syncForm();
-    panel.querySelector('[data-a11y-close]')?.focus();
+    const focusClose = () => panel.querySelector('[data-a11y-close]')?.focus();
+    if (window.flowMotion) {
+      window.flowMotion.open(panel, 'a11y-panel-visible').then(focusClose);
+      return;
+    }
+    panel.classList.add('a11y-panel-visible');
+    focusClose();
   }
 
   function closePanel() {
+    const finish = () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.focus();
+    };
+    if (window.flowMotion) {
+      window.flowMotion.close(panel, 'a11y-panel-visible').then(finish);
+      return;
+    }
+    panel.classList.remove('a11y-panel-visible');
     panel.hidden = true;
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.focus();
+    finish();
   }
 
   function refreshPanelI18n() {
@@ -184,6 +198,7 @@
     live = panel.querySelector('#a11yLive');
     applyToggleLabel();
     syncForm();
+    panel.classList.toggle('a11y-panel-visible', wasOpen);
     panel.hidden = !wasOpen;
     document.querySelectorAll('[data-a11y-open]').forEach((el) => {
       el.textContent = tr('a11y.footerBtn') || 'Barrierefreiheit';

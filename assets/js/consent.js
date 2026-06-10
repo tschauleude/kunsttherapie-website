@@ -155,19 +155,36 @@
 
   function hideSettings() {
     const s = document.getElementById('consentSettings');
-    if (s) s.hidden = true;
-    document.body.classList.remove('consent-settings-open');
-    emitConsentSettled();
+    if (!s) {
+      emitConsentSettled();
+      return;
+    }
+    const finish = () => {
+      document.body.classList.remove('consent-settings-open');
+      emitConsentSettled();
+    };
+    if (window.flowMotion) {
+      window.flowMotion.close(s, 'consent-settings-visible').then(finish);
+      return;
+    }
+    s.classList.remove('consent-settings-visible');
+    s.hidden = true;
+    finish();
   }
 
   function showSettings() {
     const s = document.getElementById('consentSettings');
-    if (s) {
-      syncToggleInputs(getConsent() || { external: false });
-      s.hidden = false;
-      document.body.classList.add('consent-settings-open');
-      s.querySelector('.consent-settings-panel')?.focus?.();
+    if (!s) return;
+    syncToggleInputs(getConsent() || { external: false });
+    s.hidden = false;
+    document.body.classList.add('consent-settings-open');
+    const focusPanel = () => s.querySelector('.consent-settings-panel')?.focus?.();
+    if (window.flowMotion) {
+      window.flowMotion.open(s, 'consent-settings-visible').then(focusPanel);
+      return;
     }
+    s.classList.add('consent-settings-visible');
+    focusPanel();
   }
 
   function tr(key) {

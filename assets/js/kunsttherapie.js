@@ -49,11 +49,10 @@
       offersWrap.classList.toggle('kt-offers--has-open', !!anyOpen);
     }
 
-    function resetToggles() {
-      root.querySelectorAll('[data-offer] .kt-toggle').forEach((t) => {
-        t.setAttribute('aria-expanded', 'false');
-        t.textContent = labelLearn();
-      });
+    async function closeBody(body) {
+      if (!body || body.hidden) return;
+      if (window.flowMotion) await window.flowMotion.collapse(body);
+      else body.hidden = true;
     }
 
     window.ktUpdateToggleLabels = function () {
@@ -63,26 +62,40 @@
       });
     };
 
-    function toggleOffer(card, toggle) {
+    async function toggleOffer(card, toggle) {
       const body = card.querySelector('.kt-offer-body');
       if (!body) return;
 
-      const open = toggle.getAttribute('aria-expanded') === 'true';
-      resetToggles();
-      root.querySelectorAll('[data-offer] .kt-offer-body').forEach((b) => {
-        b.hidden = true;
-      });
-      root.querySelectorAll('[data-offer]').forEach((c) => c.classList.remove('is-open'));
+      const willOpen = toggle.getAttribute('aria-expanded') !== 'true';
+      const closeJobs = [];
 
-      if (!open) {
+      root.querySelectorAll('[data-offer]').forEach((c) => {
+        const otherBody = c.querySelector('.kt-offer-body');
+        const otherToggle = c.querySelector('.kt-toggle');
+        if (c !== card && otherBody && !otherBody.hidden) {
+          closeJobs.push(closeBody(otherBody));
+        }
+        c.classList.remove('is-open');
+        if (otherToggle) {
+          otherToggle.setAttribute('aria-expanded', 'false');
+          otherToggle.textContent = labelLearn();
+        }
+      });
+
+      await Promise.all(closeJobs);
+
+      if (willOpen) {
         toggle.setAttribute('aria-expanded', 'true');
         toggle.textContent = labelLess();
-        body.hidden = false;
         card.classList.add('is-open');
-        requestAnimationFrame(() => {
-          scrollOfferIntoView(card);
-          body.scrollIntoView({ block: 'nearest', behavior: 'auto' });
-        });
+        if (window.flowMotion) await window.flowMotion.expand(body);
+        else body.hidden = false;
+        requestAnimationFrame(() => scrollOfferIntoView(card));
+      } else {
+        await closeBody(body);
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.textContent = labelLearn();
+        card.classList.remove('is-open');
       }
       syncOffersLayout();
     }

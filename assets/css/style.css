@@ -66,6 +66,8 @@
   --particle-sand: rgba(240, 215, 164, 0.4);
   --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-accent: var(--font-body);
+  --ease-flow: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-flow: 0.62s;
   --radius-organic: 14px;
   --radius-card: 14px;
   --radius-pill: 50px;
@@ -1117,10 +1119,34 @@ body.lightbox-open {
   padding: clamp(1rem, 3vw, 2.5rem);
   background: rgba(24, 22, 20, 0.92);
   backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity var(--duration-flow) var(--ease-flow);
 }
 
 .lightbox[hidden] {
   display: none;
+}
+
+.lightbox.lightbox-visible {
+  opacity: 1;
+}
+
+.lightbox-dialog {
+  transition:
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
+}
+
+.lightbox:not(.lightbox-visible) .lightbox-dialog,
+.lightbox:not(.lightbox-visible) .lightbox-stage {
+  opacity: 0;
+  transform: translateY(1rem) scale(0.97);
+}
+
+.lightbox.lightbox-visible .lightbox-dialog,
+.lightbox.lightbox-visible .lightbox-stage {
+  opacity: 1;
+  transform: none;
 }
 
 .lightbox-stage {
@@ -1141,6 +1167,12 @@ body.lightbox-open {
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
+}
+
+.lightbox-stage {
+  transition:
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
 }
 
 .lightbox-img {
@@ -1839,6 +1871,28 @@ body.consent-banner-visible {
   padding: 1rem;
 }
 
+.consent-settings-backdrop {
+  opacity: 0;
+  transition: opacity var(--duration-flow) var(--ease-flow);
+}
+
+.consent-settings.consent-settings-visible .consent-settings-backdrop {
+  opacity: 1;
+}
+
+.consent-settings-panel {
+  opacity: 0;
+  transform: translateY(1.1rem) scale(0.97);
+  transition:
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
+}
+
+.consent-settings.consent-settings-visible .consent-settings-panel {
+  opacity: 1;
+  transform: none;
+}
+
 @media (max-width: 640px) {
   .consent-settings {
     align-items: flex-end;
@@ -2130,7 +2184,7 @@ body.consent-banner-visible {
   background: rgba(24, 22, 20, 0.55);
   backdrop-filter: blur(4px);
   opacity: 0;
-  transition: opacity 0.45s ease;
+  transition: opacity var(--duration-flow) var(--ease-flow);
 }
 
 .news-popup.news-popup-visible .news-popup-backdrop {
@@ -2146,10 +2200,10 @@ body.consent-banner-visible {
   padding: clamp(1.5rem, 4vw, 2rem);
   margin: 0;
   opacity: 0;
-  transform: translateY(1.25rem) scale(0.97);
+  transform: translateY(1.1rem) scale(0.97);
   transition:
-    opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
 }
 
 .news-popup.news-popup-visible .news-popup-panel {
@@ -2756,17 +2810,16 @@ nav[data-site-nav] {
   font-size: 0.95rem;
   line-height: 1.65;
   text-align: left;
-  animation: ktReveal 0.35s ease;
+  overflow: hidden;
 }
 
 .kt-offer-body[hidden] {
-  display: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .kt-offer-body {
-    animation: none;
-  }
+  display: block;
+  height: 0;
+  padding-top: 0;
+  margin-top: 0;
+  border-top-width: 0;
+  visibility: hidden;
 }
 
 .kt-praxis-grid {
@@ -3382,6 +3435,22 @@ nav a[aria-current='page'] {
 
 .booking-form-panel {
   margin-top: 1.5rem;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(0.85rem);
+  pointer-events: none;
+  transition:
+    max-height var(--duration-flow) var(--ease-flow),
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
+}
+
+.booking-form-panel.is-visible {
+  max-height: 2400px;
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
 }
 
 .booking-form-panel label {
@@ -3423,19 +3492,16 @@ nav a[aria-current='page'] {
 /* === Sequenzielles Einblenden (reveal.js) === */
 html.reveal-active .reveal-item {
   opacity: 0;
-  transform: translateY(0.75rem) scale(0.985);
-  filter: blur(2px);
+  transform: translateY(0.85rem);
   transition:
-    opacity 0.48s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform, filter;
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
+  will-change: opacity, transform;
 }
 
 html.reveal-active .reveal-item.reveal-visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
-  filter: none;
+  transform: translateY(0);
 }
 
 /* === Nach-oben-Button (scroll-top.js) === */
@@ -3488,10 +3554,26 @@ html.reveal-active .reveal-item.reveal-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html.reveal-active .reveal-item,
+  .lightbox,
+  .lightbox-dialog,
+  .lightbox-stage,
+  .consent-settings-backdrop,
+  .consent-settings-panel,
+  .news-popup-backdrop,
+  .news-popup-panel,
+  .a11y-panel,
+  nav[data-site-nav],
+  .booking-form-panel {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
   html.reveal-active .reveal-item {
     opacity: 1;
     transform: none;
-    filter: none;
     transition: none;
   }
 
@@ -3530,12 +3612,21 @@ html.reveal-active .reveal-item.reveal-visible {
   }
 
   nav[data-site-nav] {
-    display: none;
+    display: block;
     width: 100%;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition:
+      max-height var(--duration-flow) var(--ease-flow),
+      opacity calc(var(--duration-flow) * 0.9) var(--ease-flow);
   }
 
   body.nav-open nav[data-site-nav] {
-    display: block;
+    max-height: 24rem;
+    opacity: 1;
+    pointer-events: auto;
   }
 
   body.nav-open nav[data-site-nav] ul {
@@ -3663,6 +3754,16 @@ html.a11y-reduce-motion *::after {
   background: var(--bg-card);
   border: 2px solid rgba(85, 122, 118, 0.35);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transform: translateY(0.75rem) scale(0.98);
+  transition:
+    opacity var(--duration-flow) var(--ease-flow),
+    transform var(--duration-flow) var(--ease-flow);
+}
+
+.a11y-panel.a11y-panel-visible {
+  opacity: 1;
+  transform: none;
 }
 
 .a11y-panel-head {

@@ -4,10 +4,10 @@
 (function () {
   if (document.body.classList.contains('admin-app')) return;
 
-  const STEP_MS = 68;
-  const HEADER_STEP_MS = 36;
-  const SECTION_GAP_MS = 110;
-  const INITIAL_DELAY_MS = 70;
+  const STEP_MS = 100;
+  const HEADER_STEP_MS = 52;
+  const SECTION_GAP_MS = 165;
+  const INITIAL_DELAY_MS = 90;
   const SKIP_SELECTOR =
     '.consent-banner, .consent-settings, #newsPopup, .lightbox, [hidden], script, style, noscript';
 
@@ -133,7 +133,7 @@
         delay += el.closest('header') ? HEADER_STEP_MS : STEP_MS;
       });
 
-      window.setTimeout(resolve, delay + 120);
+      window.setTimeout(resolve, delay + 180);
     });
   }
 

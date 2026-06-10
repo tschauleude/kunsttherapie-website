@@ -158,10 +158,22 @@ function renderCalendar() {
   });
 }
 
+function hideBookingForm() {
+  const panel = document.getElementById('bookingFormPanel');
+  if (panel) panel.classList.remove('is-visible');
+}
+
+function showBookingForm() {
+  const panel = document.getElementById('bookingFormPanel');
+  if (!panel) return;
+  panel.classList.add('is-visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
 async function selectDay(dateStr) {
   selectedDate = dateStr;
   selectedStart = null;
-  document.getElementById('bookingFormPanel').style.display = 'none';
+  hideBookingForm();
   document.getElementById('selectedDayLabel').textContent = formatDateLabel(dateStr);
   renderCalendar();
 
@@ -216,9 +228,8 @@ function selectSlot(dateStr, startTime) {
   if (formAt) formAt.value = String(formLoadedAt);
   const timeSuffix = tr('book.timeUnit');
   document.getElementById('bookingSummary').textContent = `${formatDateLabel(dateStr)}, ${startTime}${timeSuffix}`;
-  document.getElementById('bookingFormPanel').style.display = 'block';
   document.getElementById('bookingMessage').hidden = true;
-  document.getElementById('bookingFormPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  showBookingForm();
 }
 
 function showCalendarLinks(links, emailSent) {

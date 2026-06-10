@@ -126,17 +126,31 @@
     thumbsWrap.hidden = slides.length < 2;
     updateThumbs();
     preloadAdjacent(slides);
-    btnClose.focus();
+    const focusClose = () => btnClose.focus();
+    if (window.flowMotion) {
+      window.flowMotion.open(overlay, 'lightbox-visible').then(focusClose);
+    } else {
+      overlay.classList.add('lightbox-visible');
+      focusClose();
+    }
   }
 
   function close() {
-    overlay.hidden = true;
-    document.body.classList.remove('lightbox-open');
-    lightboxImg.removeAttribute('src');
-    if (lastFocus && typeof lastFocus.focus === 'function') {
-      lastFocus.focus();
+    const after = () => {
+      document.body.classList.remove('lightbox-open');
+      lightboxImg.removeAttribute('src');
+      if (lastFocus && typeof lastFocus.focus === 'function') {
+        lastFocus.focus();
+      }
+      lastFocus = null;
+    };
+    if (window.flowMotion) {
+      window.flowMotion.close(overlay, 'lightbox-visible').then(after);
+      return;
     }
-    lastFocus = null;
+    overlay.classList.remove('lightbox-visible');
+    overlay.hidden = true;
+    after();
   }
 
   function onKeydown(e) {

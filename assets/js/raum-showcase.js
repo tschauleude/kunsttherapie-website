@@ -278,15 +278,29 @@
       lbCaption.textContent = caption || '';
       overlay.hidden = false;
       document.body.classList.add('lightbox-open');
-      lbClose.focus();
+      const focusClose = () => lbClose.focus();
+      if (window.flowMotion) {
+        window.flowMotion.open(overlay, 'lightbox-visible').then(focusClose);
+      } else {
+        overlay.classList.add('lightbox-visible');
+        focusClose();
+      }
     }
 
     function closeLb() {
+      const after = () => {
+        document.body.classList.remove('lightbox-open');
+        lbImg.removeAttribute('src');
+        if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+        lastFocus = null;
+      };
+      if (window.flowMotion) {
+        window.flowMotion.close(overlay, 'lightbox-visible').then(after);
+        return;
+      }
+      overlay.classList.remove('lightbox-visible');
       overlay.hidden = true;
-      document.body.classList.remove('lightbox-open');
-      lbImg.removeAttribute('src');
-      if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-      lastFocus = null;
+      after();
     }
 
     lightboxTriggers.forEach((btn) => {

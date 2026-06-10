@@ -70,6 +70,7 @@ const CORE_BUNDLE_SOURCES = [
   'i18n-page-bindings.js',
   'i18n.js',
   'seo.js',
+  'flow-motion.js',
   'consent.js',
   'accessibility.js',
   'site.js',

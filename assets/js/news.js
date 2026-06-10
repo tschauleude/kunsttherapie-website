@@ -75,11 +75,16 @@ async function fetchPublishedNews() {
 function closeNewsPopup() {
   const popup = document.getElementById('newsPopup');
   if (!popup) return;
-  popup.classList.remove('news-popup-visible');
-  window.setTimeout(() => {
+  const finish = () => {
     popup.hidden = true;
     document.body.classList.remove('news-popup-open');
-  }, 280);
+  };
+  if (window.flowMotion) {
+    window.flowMotion.close(popup, 'news-popup-visible').then(finish);
+    return;
+  }
+  popup.classList.remove('news-popup-visible');
+  window.setTimeout(finish, 620);
 }
 
 function openNewsPopup(items) {
