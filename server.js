@@ -1438,6 +1438,9 @@ app.get('/api/admin/i18n/catalog', requireAuth, (req, res) => {
 app.get('/api/admin/i18n/:groupId', requireAuth, async (req, res) => {
   const lang = req.query.lang === 'en' ? 'en' : 'de';
   const groupId = req.params.groupId;
+  if (groupId === 'catalog') {
+    return res.json(i18nContent.CATALOG);
+  }
   if (!i18nContent.CATALOG.some((g) => g.id === groupId)) {
     return res.status(404).json({ error: 'Gruppe nicht gefunden' });
   }

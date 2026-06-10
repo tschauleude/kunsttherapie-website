@@ -550,14 +550,27 @@ function i18nFieldRows(field) {
 let i18nCatalog = [];
 let i18nCurrentLang = 'de';
 
+async function fetchI18nCatalog() {
+  const res = await fetch(`${API_URL}/admin/i18n/catalog`, { credentials: 'include' });
+  const data = await res.json();
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Sitzung abgelaufen – bitte erneut anmelden.');
+    throw new Error(data.error || `Serverfehler (${res.status})`);
+  }
+  const catalog = Array.isArray(data) ? data : data?.groups;
+  if (!Array.isArray(catalog)) {
+    throw new Error('Ungültige Katalog-Antwort vom Server');
+  }
+  return catalog;
+}
+
 async function initTextsSection() {
   try {
-    if (!i18nCatalog.length) {
-      const res = await fetch(`${API_URL}/admin/i18n/catalog`, { credentials: 'include' });
-      i18nCatalog = await res.json();
+    if (!Array.isArray(i18nCatalog) || !i18nCatalog.length) {
+      i18nCatalog = await fetchI18nCatalog();
       const sel = document.getElementById('i18nGroupSelect');
       sel.innerHTML = i18nCatalog
-        .map((g) => `<option value="${g.id}">${g.title}</option>`)
+        .map((g) => `<option value="${g.id}">${escapeHtml(g.title)}</option>`)
         .join('');
     }
     await loadI18nGroup();
