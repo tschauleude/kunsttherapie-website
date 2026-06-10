@@ -1780,7 +1780,7 @@ app.get('/angebote', (req, res) => res.redirect(301, '/kunsttherapie'));
 app.get('/angebote.html', (req, res) => res.redirect(301, '/kunsttherapie'));
 
 // PDFs and images in project root (Lebenslauf, etc.)
-app.get(/\.(pdf|jpg|jpeg|png|gif|webp|svg)$/i, (req, res, next) => {
+app.get(/\.(pdf|jpg|jpeg|png|gif|webp|svg|ico)$/i, (req, res, next) => {
   const file = path.join(ROOT, path.basename(req.path));
   if (fs.existsSync(file)) {
     res.setHeader('Cache-Control', `public, max-age=${365 * 24 * 60 * 60}, immutable`);
