@@ -130,17 +130,18 @@ async function testKunsttherapie(browser) {
   if (offerBodyBeforeI18n) pass('Offer body has fallback text');
   else fail('Offer body has fallback text', 'empty before toggle');
 
-  await page.locator('#angebote .kt-offer-toggle').first().click();
+  await page.locator('#angebote details[data-offer]').first().click();
   await page.waitForTimeout(400);
   const offer = await page.evaluate(() => {
     const d = document.querySelector('details[data-offer]');
     return {
       open: d?.open,
-      label: d?.querySelector('.kt-offer-toggle')?.textContent?.trim(),
+      hint: d?.querySelector('.kt-offer-hint')?.textContent?.trim(),
       h: d?.querySelector('.kt-offer-body')?.getBoundingClientRect().height || 0,
+      hasChevron: !!d?.querySelector('.kt-offer-chevron'),
     };
   });
-  if (offer.open && offer.h > 50 && offer.label && /weniger|less/i.test(offer.label)) {
+  if (offer.open && offer.h > 50 && offer.hasChevron && /weniger|less/i.test(offer.hint || '')) {
     pass('Offer card toggle');
   } else fail('Offer card toggle', JSON.stringify(offer));
 
