@@ -107,21 +107,19 @@
 <main id="main">
   <section class="hero container">
     <div class="card hero-left">
-      <div class="kicker">Updates & News</div>
-      <h1>Was ist neu?</h1>
-      <p class="sub">
-        Aktuelle Neuigkeiten, Termine und Ankündigungen. Verpasse keine wichtigen Updates!
-      </p>
+      <div class="kicker" data-i18n="newsPage.kicker">Updates & News</div>
+      <h1 data-i18n="newsPage.title">Was ist neu?</h1>
+      <p class="sub" data-i18n="newsPage.sub">Aktuelle Neuigkeiten, Termine und Ankündigungen. Verpasse keine wichtigen Updates!</p>
     </div>
   </section>
 
   <section class="section container">
     <div id="newsLoading" style="text-align: center; padding: 40px;">
-      <p style="color: var(--text-light); font-size: 1.1rem;">Neuigkeiten werden geladen…</p>
+      <p style="color: var(--text-light); font-size: 1.1rem;" data-i18n="newsPage.loading">Neuigkeiten werden geladen…</p>
     </div>
     <div id="newsList" class="news-grid"></div>
     <div id="newsEmpty" style="display: none; text-align: center; padding: 40px;">
-      <p style="color: var(--text-light);">Noch keine Neuigkeiten vorhanden.</p>
+      <p style="color: var(--text-light);" data-i18n="newsPage.empty">Noch keine Neuigkeiten vorhanden.</p>
     </div>
   </section>
 </main>
