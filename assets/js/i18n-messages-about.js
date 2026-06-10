@@ -16,7 +16,7 @@
   "about.qual.title": "Qualifikationen & Erfahrung",
   "about.qual.list": "<li>Psychosoziale Kunsttherapeutin (2006–2009, anerkanntes Institut)</li><li>Klinische Kunsttherapeutin (2010)</li><li>Heilpraktikerin für Psychotherapie (2011)</li><li>Über 16 Jahre Erfahrung in Palliativversorgung, Psychoonkologie und klinischen Gruppen</li><li>Langjährige Tätigkeit u. a. am MZG und Brüderkrankenhaus Paderborn</li><li>Regelmäßige Supervision und Weiterbildung</li>",
   "about.offers": "Kunsttherapie & Angebote",
-  "about.imgAlt": "Martina Schwierzke – psychosoziale Kunsttherapeutin in Paderborn"
+  "about.imgAlt": "Symbolbild aus Martinas PDF – Margerite als ruhiger Moment"
 }, en: {
   "meta.about.title": "About me – Art Therapist Paderborn",
   "meta.about.description": "I am a psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, and my own atelier in Paderborn.",
@@ -33,7 +33,7 @@
   "about.qual.title": "Qualifications & experience",
   "about.qual.list": "<li>Psychosocial art therapist (2006–2009, accredited institute)</li><li>Clinical art therapist (2010)</li><li>Practitioner for psychotherapy (2011)</li><li>Over 16 years in palliative care, psycho-oncology, and clinical groups</li><li>Long-standing work including at MZG and Brüderkrankenhaus Paderborn</li><li>Regular supervision and continuing education</li>",
   "about.offers": "Art therapy & services",
-  "about.imgAlt": "Martina Schwierzke – psychosocial art therapist in Paderborn"
+  "about.imgAlt": "Symbolic image from Martina's PDF – daisy as a quiet moment"
 } };
   Object.assign(window.I18N_MESSAGES.de, extra.de);
   Object.assign(window.I18N_MESSAGES.en, extra.en);

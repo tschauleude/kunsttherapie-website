@@ -1,54 +1,5 @@
 /* === FARBPARTIKEL DESIGN-SYSTEM === */
 
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('../fonts/dm-sans-400-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('../fonts/dm-sans-400-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('../fonts/dm-sans-500-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('../fonts/dm-sans-500-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('../fonts/dm-sans-700-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('../fonts/dm-sans-700-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 :root {
   color-scheme: light;
   --bg-main: #f4f1ea;
@@ -64,7 +15,7 @@
   --particle-rose: rgba(235, 171, 169, 0.4);
   --particle-mint: rgba(162, 212, 196, 0.4);
   --particle-sand: rgba(240, 215, 164, 0.4);
-  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-accent: var(--font-body);
   --ease-flow: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
@@ -729,8 +680,12 @@ span.price-hint-pill {
 
 /* === BUTTONS === */
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
   padding: 0.85rem 2rem;
+  min-height: 2.75rem;
   background-color: var(--color-teal);
   color: #fff;
   border: none;
@@ -738,6 +693,8 @@ span.price-hint-pill {
   font-weight: 600;
   font-size: 1rem;
   font-family: var(--font-body);
+  line-height: 1.25;
+  text-align: center;
   cursor: pointer;
   transition:
     transform var(--duration-tap) var(--ease-flow),
@@ -746,6 +703,7 @@ span.price-hint-pill {
     border-color var(--duration-flow) var(--ease-flow);
   box-shadow: 0 10px 20px rgba(85, 122, 118, 0.18);
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .btn:hover {
@@ -757,6 +715,14 @@ span.price-hint-pill {
 .btn:active {
   transform: translateY(0) scale(0.98);
   transition-duration: 0.08s;
+}
+
+.btn:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(209, 141, 137, 0.62);
+  outline-offset: 4px;
 }
 
 .btn.primary {
@@ -887,6 +853,21 @@ span.price-hint-pill {
 /* Ganze Karte klickbar – Klick auf Titel/Text leitet zum .card-hit-area-Link (site.js) */
 .card--clickable {
   cursor: pointer;
+  position: relative;
+  transition:
+    border-color var(--duration-flow) var(--ease-flow),
+    box-shadow var(--duration-flow) var(--ease-flow);
+}
+
+.card--clickable:hover,
+.card--clickable:focus-within {
+  border-color: rgba(74, 110, 106, 0.28);
+  box-shadow: 0 16px 42px rgba(74, 110, 106, 0.12);
+}
+
+.card--clickable .card-hit-area {
+  position: relative;
+  z-index: 2;
 }
 
 .feature p,

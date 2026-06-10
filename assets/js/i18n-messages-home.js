@@ -60,7 +60,7 @@
   "home.gallery.img3.alt": "Abstraktes Aquarell – Farben und Formen",
   "home.gallery.img4.alt": "Kunsttherapie in sensiblen Settings – behutsame Begleitung",
   "home.gallery.img5.alt": "Atelier von außen – Otto-Stadler-Straße in Paderborn",
-  "home.gallery.img6.alt": "Malen mit Pinseln – Kreativität im Sonnenlicht"
+  "home.gallery.img6.alt": "Margerite auf Holz – ruhiger Moment als Sinnbild für Entlastung"
 }, en: {
   "home.hero.kicker": "Art Therapy · Paderborn",
   "home.hero.title": "Art therapy – Tuesday mornings & Thursday evenings",
@@ -121,7 +121,7 @@
   "home.gallery.img3.alt": "Abstract watercolour – colours and shapes",
   "home.gallery.img4.alt": "Art therapy in sensitive settings – gentle support",
   "home.gallery.img5.alt": "Atelier exterior – Otto-Stadler-Straße in Paderborn",
-  "home.gallery.img6.alt": "Painting with brushes – creativity in sunlight"
+  "home.gallery.img6.alt": "Daisy on wood – a quiet moment symbolising relief"
 } };
   Object.assign(window.I18N_MESSAGES.de, extra.de);
   Object.assign(window.I18N_MESSAGES.en, extra.en);

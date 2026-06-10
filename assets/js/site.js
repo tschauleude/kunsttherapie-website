@@ -415,7 +415,7 @@
 
       card.addEventListener('click', (e) => {
         if (e.target.closest('a, button')) return;
-        link.click();
+        window.location.assign(link.href);
       });
     });
   }
