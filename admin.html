@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
   <link rel="stylesheet" href="assets/css/admin.css"/>
+  <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
 </head>
 <body class="admin-app"><!-- LOGIN SCREEN -->
 <div class="login-container active" id="loginScreen">
@@ -146,7 +147,8 @@
           </div>
           <div class="form-group full">
             <label>Text</label>
-            <textarea id="newsContent" required rows="6" placeholder="Was möchtest du mitteilen?"></textarea>
+            <div id="newsEditor" class="news-quill-editor"></div>
+            <textarea id="newsContent" style="display:none"></textarea>
           </div>
           <div class="form-group full">
             <label>Bild</label>
@@ -509,6 +511,7 @@
   </div>
 </div>
 
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
 const API_URL = window.location.origin + '/api';
 
@@ -1671,15 +1674,69 @@ async function restoreContentVersion(id) {
 // NEWS MANAGEMENT
 // ============================================================================
 
+let newsQuill = null;
+
+function imageUploadHandler() {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'image/*');
+  input.click();
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch(`${API_URL}/admin/upload`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const range = newsQuill.getSelection(true);
+        newsQuill.insertEmbed(range.index, 'image', data.url);
+        newsQuill.setSelection(range.index + 1);
+      } else {
+        showMessage('Bild konnte nicht hochgeladen werden', 'error');
+      }
+    } catch (err) {
+      showMessage('Upload-Fehler: ' + err.message, 'error');
+    }
+  };
+}
+
+function initNewsQuill() {
+  if (newsQuill || typeof Quill === 'undefined') return;
+  newsQuill = new Quill('#newsEditor', {
+    theme: 'snow',
+    placeholder: 'Was möchtest du mitteilen?',
+    modules: {
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['blockquote', 'link', 'image'],
+          [{ align: [] }],
+          ['clean']
+        ],
+        handlers: { image: imageUploadHandler }
+      }
+    }
+  });
+}
+
 function openNewsForm() {
   document.getElementById('newsForm').style.display = 'block';
   document.getElementById('newsId').value = '';
   document.getElementById('newsTitle').value = '';
-  document.getElementById('newsContent').value = '';
   document.getElementById('newsImage').value = '';
   document.getElementById('newsImageFile').value = '';
   document.getElementById('newsImagePreview').hidden = true;
   document.getElementById('newsPublished').checked = true;
+  initNewsQuill();
+  if (newsQuill) newsQuill.setContents([]);
   document.getElementById('newsTitle').focus();
 }
 
@@ -1694,8 +1751,11 @@ async function saveNews(e) {
   if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
 
   const id = document.getElementById('newsId').value;
-  const title = document.getElementById('newsTitle').value;
-  const content = document.getElementById('newsContent').value;
+  const title = document.getElementById('newsTitle').value.trim();
+  const content = newsQuill ? newsQuill.root.innerHTML : document.getElementById('newsContent').value;
+  const isEmpty = !content || content === '<p><br></p>' || (newsQuill && newsQuill.getText().trim() === '');
+  if (!title) { showMessage('Bitte einen Titel eingeben.', 'error'); return; }
+  if (isEmpty) { showMessage('Bitte einen Text eingeben.', 'error'); return; }
   let image = document.getElementById('newsImage').value;
   const published = document.getElementById('newsPublished').checked;
 
@@ -1739,21 +1799,33 @@ async function saveNews(e) {
 async function editNews(id) {
   try {
     const response = await fetch(`${API_URL}/admin/news/${id}`, { credentials: 'include' });
-    const news = await response.json();
     if (!response.ok) throw new Error('Nicht gefunden');
+    const news = await response.json();
+
+    openNewsForm(); // resets all fields first
 
     document.getElementById('newsId').value = news.id;
     document.getElementById('newsTitle').value = news.title;
-    document.getElementById('newsContent').value = news.content;
+
+    if (newsQuill) {
+      const c = news.content || '';
+      if (/<[a-zA-Z]/.test(c)) {
+        newsQuill.clipboard.dangerouslyPasteHTML(c);
+      } else {
+        newsQuill.setText(c);
+      }
+    }
+
     document.getElementById('newsImage').value = news.image || '';
     document.getElementById('newsImageFile').value = '';
     const prev = document.getElementById('newsImagePreview');
     if (news.image) {
       prev.src = news.image;
       prev.hidden = false;
-    } else prev.hidden = true;
+    } else {
+      prev.hidden = true;
+    }
     document.getElementById('newsPublished').checked = !!news.published;
-    openNewsForm();
     document.getElementById('newsTitle').focus();
   } catch (err) {
     showMessage('Fehler beim Laden', 'error');
@@ -1792,7 +1864,7 @@ async function loadNewsList() {
         <div class="item">
           <div class="item-info">
             <h3>${item.title} ${badge}</h3>
-            <p>${item.content.substring(0, 100)}...</p>
+            <p>${(item.content || '').replace(/<[^>]*>/g, '').substring(0, 100)}…</p>
             <p style="font-size: 0.85rem; color: #999;">${date}</p>
           </div>
           <div class="item-actions">

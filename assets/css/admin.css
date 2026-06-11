@@ -1472,6 +1472,61 @@ hr.sep {
   font-size: 0.82rem;
 }
 
+/* ---------- QUILL RICH TEXT EDITOR ---------- */
+.admin-app .ql-toolbar.ql-snow {
+  border: 1.5px solid rgba(85, 122, 118, 0.2);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  background: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-body);
+}
+
+.admin-app .ql-container.ql-snow {
+  border: 1.5px solid rgba(85, 122, 118, 0.2);
+  border-radius: 0 0 12px 12px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.admin-app .ql-container.ql-snow:focus-within {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 3px rgba(74, 110, 106, 0.12);
+}
+
+.admin-app .ql-toolbar.ql-snow:has(+ .ql-container.ql-snow:focus-within) {
+  border-color: var(--color-teal);
+}
+
+.admin-app .ql-editor {
+  min-height: 220px;
+  padding: 0.75rem 1rem;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+.admin-app .ql-editor.ql-blank::before {
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.admin-app .ql-snow .ql-picker {
+  color: var(--text-main);
+}
+
+.admin-app .ql-snow .ql-stroke {
+  stroke: var(--text-main);
+}
+
+.admin-app .ql-snow .ql-fill {
+  fill: var(--text-main);
+}
+
+.admin-app .ql-editor img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
 /* ---------- UTILITY ---------- */
 .btn-sm {
   padding: 0.45rem 0.9rem;
