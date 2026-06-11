@@ -372,10 +372,30 @@
       </div>
 
       <div id="allFilesPanel" class="images-tab-panel" data-images-panel="allfiles" hidden>
-        <div class="media-library-toolbar">
-          <p class="note" style="margin:0">Alle Bilder auf dem Server – hochgeladene Dateien und statische Website-Bilder. <strong>Systemdateien</strong> (Favicon, Logo) sind gesperrt und können nicht gelöscht werden.</p>
+        <div class="af-toolbar">
+          <div class="af-toolbar-left">
+            <label class="af-select-all-label">
+              <input type="checkbox" id="afSelectAll"/>
+              <span>Alle</span>
+            </label>
+            <button type="button" class="btn-cancel af-bulk-delete" id="afBulkDelete" disabled>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              <span id="afBulkDeleteLabel">Ausgewählte löschen</span>
+            </button>
+            <span class="note" id="afCount" style="margin-left:.5rem"></span>
+          </div>
+          <div class="af-toolbar-right">
+            <div class="af-view-toggle" role="group" aria-label="Ansicht wählen">
+              <button type="button" class="af-view-btn is-active" data-afview="grid" title="Kachelansicht">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+              </button>
+              <button type="button" class="af-view-btn" data-afview="list" title="Listenansicht">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
-        <div id="allFilesGrid" class="media-library-grid">
+        <div id="allFilesContainer" class="af-container af-grid">
           <p class="note">Dateien werden geladen …</p>
         </div>
       </div>
@@ -836,11 +856,37 @@ function showMessage(text, type, elementId) {
   }
 }
 
+async function compressImageFile(file, maxPx = 1600, quality = 0.82) {
+  if (!file.type.startsWith('image/') || file.type === 'image/gif') return file;
+  if (file.size < 300 * 1024) return file;
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const { width, height } = img;
+      const scale = Math.min(1, maxPx / Math.max(width, height));
+      if (scale === 1 && file.size < 800 * 1024) { resolve(file); return; }
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(width * scale);
+      canvas.height = Math.round(height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        (blob) => resolve(blob ? new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg', lastModified: Date.now() }) : file),
+        'image/jpeg', quality
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+
 async function uploadImageFile(fileInput) {
   const file = fileInput?.files?.[0];
   if (!file) return null;
+  const compressed = await compressImageFile(file);
   const fd = new FormData();
-  fd.append('image', file);
+  fd.append('image', compressed);
   const res = await fetch(`${API_URL}/admin/upload`, {
     method: 'POST',
     credentials: 'include',
@@ -1181,9 +1227,106 @@ async function deleteMediaFiles(filenames) {
   }
 }
 
+let allFilesData = [];
+let afCurrentView = 'grid';
+
+const AF_ICONS = {
+  delete: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>`,
+  copy: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
+  lock: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+};
+
+function afRenderItem(f, view) {
+  const sizeKb = (f.size / 1024).toFixed(1);
+  const sourceLabel = f.source === 'static' ? 'Asset' : 'Upload';
+  const sourceCls = f.source === 'static' ? 'badge--static' : 'badge--upload';
+  const cbDisabled = f.protected ? ' disabled' : '';
+  const cb = `<label class="af-cb-label" title="${f.protected ? 'Systemdatei – gesperrt' : 'Auswählen'}">
+    <input type="checkbox" class="af-cb"${cbDisabled} data-filename="${escapeHtml(f.filename)}" data-source="${escapeHtml(f.source)}" data-protected="${f.protected ? '1' : ''}"/>
+  </label>`;
+
+  const actDelete = f.protected
+    ? `<button class="af-icon-btn af-icon-btn--lock" disabled title="Systemdatei – gesperrt">${AF_ICONS.lock}</button>`
+    : `<button class="af-icon-btn af-icon-btn--delete af-delete" data-filename="${escapeHtml(f.filename)}" data-source="${escapeHtml(f.source)}" title="Löschen">${AF_ICONS.delete}</button>`;
+  const actCopy = `<button class="af-icon-btn af-icon-btn--copy af-copy" data-url="${escapeHtml(f.url)}" title="URL kopieren">${AF_ICONS.copy}</button>`;
+
+  if (view === 'grid') {
+    return `<div class="af-card" data-protected="${f.protected ? '1' : ''}">
+      ${cb}
+      <div class="af-card-thumb">
+        <div class="af-card-thumb-bg" aria-hidden="true" style="background-image:url('${escapeHtml(f.url)}')"></div>
+      </div>
+      <div class="af-card-body">
+        <span class="af-card-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
+        <div class="af-card-meta">
+          <span class="badge ${sourceCls}">${sourceLabel}</span>
+          <span class="af-size">${sizeKb}&thinsp;KB</span>
+        </div>
+      </div>
+      <div class="af-card-actions">${actCopy}${actDelete}</div>
+    </div>`;
+  }
+
+  // list
+  return `<div class="af-row" data-protected="${f.protected ? '1' : ''}">
+    ${cb}
+    <div class="af-row-thumb">
+      <img src="${escapeHtml(f.url)}" alt="" loading="lazy"/>
+    </div>
+    <div class="af-row-info">
+      <span class="af-row-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
+      <span class="badge ${sourceCls}">${sourceLabel}</span>
+    </div>
+    <span class="af-size">${sizeKb} KB</span>
+    <div class="af-row-actions">${actCopy}${actDelete}</div>
+  </div>`;
+}
+
+function afUpdateSelectionState() {
+  const all = [...document.querySelectorAll('.af-cb:not([disabled])')];
+  const checked = all.filter((c) => c.checked);
+  const selectAll = document.getElementById('afSelectAll');
+  const bulkBtn = document.getElementById('afBulkDelete');
+  const label = document.getElementById('afBulkDeleteLabel');
+  if (selectAll) {
+    selectAll.indeterminate = checked.length > 0 && checked.length < all.length;
+    selectAll.checked = all.length > 0 && checked.length === all.length;
+  }
+  if (bulkBtn) {
+    bulkBtn.disabled = checked.length === 0;
+    bulkBtn.style.display = 'inline-flex';
+  }
+  if (label) label.textContent = checked.length > 0 ? `Löschen (${checked.length})` : 'Ausgewählte löschen';
+}
+
+function afRenderContainer() {
+  const container = document.getElementById('allFilesContainer');
+  if (!container) return;
+  container.className = `af-container af-${afCurrentView}`;
+  container.innerHTML = allFilesData.map((f) => afRenderItem(f, afCurrentView)).join('');
+
+  container.querySelectorAll('.af-delete').forEach((btn) => {
+    btn.addEventListener('click', () => deleteAnyImage(btn.dataset.source, btn.dataset.filename));
+  });
+  container.querySelectorAll('.af-copy').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.origin + btn.dataset.url);
+        showMessage('URL kopiert.', 'success');
+      } catch {
+        showMessage('Kopieren fehlgeschlagen – URL: ' + btn.dataset.url, 'error');
+      }
+    });
+  });
+  container.querySelectorAll('.af-cb').forEach((cb) => {
+    cb.addEventListener('change', afUpdateSelectionState);
+  });
+  afUpdateSelectionState();
+}
+
 async function loadAllFiles() {
-  const grid = document.getElementById('allFilesGrid');
-  if (grid) grid.innerHTML = '<p class="note">Dateien werden geladen …</p>';
+  const container = document.getElementById('allFilesContainer');
+  if (container) container.innerHTML = '<p class="note">Dateien werden geladen …</p>';
   try {
     const [staticRes, uploadRes] = await Promise.all([
       fetch(`${API_URL}/admin/static-images`, { credentials: 'include' }),
@@ -1192,42 +1335,23 @@ async function loadAllFiles() {
     const staticData = await staticRes.json();
     const uploadData = await uploadRes.json();
     if (!staticRes.ok) throw new Error(staticData.error || 'Statische Bilder konnten nicht geladen werden');
-    if (!uploadRes.ok) throw new Error(uploadData.error || 'Mediathek konnten nicht geladen werden');
+    if (!uploadRes.ok) throw new Error(uploadData.error || 'Mediathek konnte nicht geladen werden');
 
     const staticFiles = (staticData.files || []).map((f) => ({ ...f, source: 'static' }));
     const uploadFiles = (uploadData.files || []).map((f) => ({ ...f, source: 'upload', protected: false }));
-    const all = [...staticFiles, ...uploadFiles].sort((a, b) => a.filename.localeCompare(b.filename));
+    allFilesData = [...staticFiles, ...uploadFiles].sort((a, b) => a.filename.localeCompare(b.filename));
 
-    if (!grid) return;
-    if (!all.length) {
-      grid.innerHTML = '<p class="note">Keine Dateien gefunden.</p>';
+    const countEl = document.getElementById('afCount');
+    if (countEl) countEl.textContent = `${allFilesData.length} Dateien`;
+
+    if (!container) return;
+    if (!allFilesData.length) {
+      container.innerHTML = '<p class="note">Keine Dateien gefunden.</p>';
       return;
     }
-    grid.innerHTML = all.map((f) => {
-      const sizeKb = (f.size / 1024).toFixed(1);
-      const sourceLabel = f.source === 'static' ? 'Website-Asset' : 'Hochgeladen';
-      const sourceCls = f.source === 'static' ? 'badge--static' : 'badge--upload';
-      const deleteBtn = f.protected
-        ? `<button class="btn-cancel all-files-delete" disabled title="Systemdatei – gesperrt">🔒 Gesperrt</button>`
-        : `<button class="btn-cancel all-files-delete" data-source="${f.source}" data-filename="${escapeHtml(f.filename)}" title="Bild löschen">Löschen</button>`;
-      return `<div class="media-card all-files-card">
-        <div class="media-thumb-wrap">
-          <img src="${escapeHtml(f.url)}" alt="${escapeHtml(f.filename)}" class="media-thumb" loading="lazy"/>
-        </div>
-        <div class="media-info">
-          <span class="media-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
-          <span class="media-meta">${sizeKb} KB</span>
-          <span class="badge ${sourceCls}">${sourceLabel}</span>
-        </div>
-        <div class="media-actions">${deleteBtn}</div>
-      </div>`;
-    }).join('');
-
-    grid.querySelectorAll('.all-files-delete:not([disabled])').forEach((btn) => {
-      btn.addEventListener('click', () => deleteAnyImage(btn.dataset.source, btn.dataset.filename));
-    });
+    afRenderContainer();
   } catch (err) {
-    if (grid) grid.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
+    if (container) container.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
     showMessage('Fehler: ' + err.message, 'error');
   }
 }
@@ -1241,7 +1365,7 @@ async function deleteAnyImage(source, filename) {
     const res = await fetch(endpoint, { method: 'DELETE', credentials: 'include' });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Löschen fehlgeschlagen');
-    showMessage(`„${filename}" gelöscht.`, 'success');
+    showMessage(`✓ „${filename}" gelöscht.`, 'success');
     loadAllFiles();
     loadSiteImagesList();
   } catch (err) {
@@ -1249,10 +1373,54 @@ async function deleteAnyImage(source, filename) {
   }
 }
 
+async function afBulkDelete() {
+  const checked = [...document.querySelectorAll('.af-cb:checked:not([disabled])')];
+  if (!checked.length) return;
+  if (!confirm(`Wirklich ${checked.length} Bild(er) dauerhaft löschen?`)) return;
+  let deleted = 0;
+  for (const cb of checked) {
+    const { source, filename } = cb.dataset;
+    const endpoint = source === 'static'
+      ? `${API_URL}/admin/static-images/${encodeURIComponent(filename)}`
+      : `${API_URL}/admin/media/${encodeURIComponent(filename)}`;
+    const res = await fetch(endpoint, { method: 'DELETE', credentials: 'include' });
+    const data = await res.json();
+    if (!res.ok) { showMessage(`„${filename}": ${data.error}`, 'error'); continue; }
+    deleted++;
+  }
+  if (deleted) {
+    showMessage(`✓ ${deleted} Bild(er) gelöscht.`, 'success');
+    loadAllFiles();
+    loadSiteImagesList();
+  }
+}
+
+function initAllFilesPanel() {
+  const panel = document.getElementById('allFilesPanel');
+  if (!panel || panel.dataset.afBound) return;
+  panel.dataset.afBound = '1';
+
+  panel.querySelectorAll('.af-view-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      panel.querySelectorAll('.af-view-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+      afCurrentView = btn.dataset.afview;
+      afRenderContainer();
+    });
+  });
+
+  document.getElementById('afSelectAll')?.addEventListener('change', (e) => {
+    document.querySelectorAll('.af-cb:not([disabled])').forEach((cb) => { cb.checked = e.target.checked; });
+    afUpdateSelectionState();
+  });
+
+  document.getElementById('afBulkDelete')?.addEventListener('click', afBulkDelete);
+}
+
 function initImagesAdmin() {
   const section = document.getElementById('images');
   if (!section || section.dataset.bound) return;
   section.dataset.bound = '1';
+  initAllFilesPanel();
 
   section.querySelectorAll('.images-tab').forEach((tab) => {
     tab.addEventListener('click', () => {
@@ -1488,6 +1656,10 @@ function closeNewsForm() {
 
 async function saveNews(e) {
   e.preventDefault();
+  const btn = e.currentTarget.querySelector('[type="submit"]');
+  const origText = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
+
   const id = document.getElementById('newsId').value;
   const title = document.getElementById('newsTitle').value;
   const content = document.getElementById('newsContent').value;
@@ -1498,11 +1670,16 @@ async function saveNews(e) {
   const method = id ? 'PUT' : 'POST';
 
   try {
-    const uploaded = await uploadImageFile(document.getElementById('newsImageFile'));
+    const fileInput = document.getElementById('newsImageFile');
+    if (fileInput?.files?.[0]) {
+      if (btn) btn.textContent = 'Bild wird hochgeladen …';
+    }
+    const uploaded = await uploadImageFile(fileInput);
     if (uploaded) {
       image = uploaded;
       document.getElementById('newsImage').value = image;
     }
+    if (btn) btn.textContent = 'Wird gespeichert …';
     const response = await fetch(url, {
       method,
       credentials: 'include',
@@ -1521,6 +1698,8 @@ async function saveNews(e) {
     }
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
   }
 }
 
@@ -1623,6 +1802,10 @@ function closeEventForm() {
 
 async function saveEvent(e) {
   e.preventDefault();
+  const btn = e.currentTarget.querySelector('[type="submit"]');
+  const origText = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
+
   const id = document.getElementById('eventId').value;
   const title = document.getElementById('eventTitle').value;
   const description = document.getElementById('eventDescription').value;
@@ -1637,11 +1820,16 @@ async function saveEvent(e) {
   const method = id ? 'PUT' : 'POST';
 
   try {
-    const uploaded = await uploadImageFile(document.getElementById('eventImageFile'));
+    const fileInput = document.getElementById('eventImageFile');
+    if (fileInput?.files?.[0]) {
+      if (btn) btn.textContent = 'Bild wird hochgeladen …';
+    }
+    const uploaded = await uploadImageFile(fileInput);
     if (uploaded) {
       image = uploaded;
       document.getElementById('eventImage').value = image;
     }
+    if (btn) btn.textContent = 'Wird gespeichert …';
     const response = await fetch(url, {
       method,
       credentials: 'include',
@@ -1660,6 +1848,8 @@ async function saveEvent(e) {
     }
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
   }
 }
 

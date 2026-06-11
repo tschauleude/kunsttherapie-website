@@ -255,6 +255,7 @@
     btn.className = 'a11y-footer-link';
     btn.setAttribute('data-a11y-open', '');
     btn.textContent = tr('a11y.footerBtn') || 'Barrierefreiheit';
+    btn.addEventListener('click', (e) => { e.preventDefault(); openPanel(); });
     legalFooter.appendChild(sep);
     legalFooter.appendChild(btn);
   }

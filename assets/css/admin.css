@@ -1188,11 +1188,11 @@ hr.sep {
 
 .badge {
   display: inline-block;
-  padding: 0.15rem 0.55rem;
+  padding: 0.1rem 0.4rem;
   border-radius: 20px;
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 
 .badge--static {
@@ -1283,4 +1283,337 @@ hr.sep {
 .btn-sm {
   padding: 0.45rem 0.9rem;
   font-size: 0.85rem;
+}
+
+/* ---------- ALL FILES PANEL ---------- */
+.af-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.6rem 0 0.9rem;
+}
+
+.af-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.af-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.af-select-all-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  cursor: pointer;
+  user-select: none;
+}
+
+.af-select-all-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--color-teal);
+  cursor: pointer;
+}
+
+#afCount {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+#afBulkDelete {
+  flex: unset;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.82rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+
+#afBulkDelete:not([disabled]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.af-view-toggle {
+  display: flex;
+  border: 1px solid rgba(85, 122, 118, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.af-view-btn {
+  background: transparent;
+  border: none;
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.af-view-btn:hover {
+  background: rgba(85, 122, 118, 0.08);
+  color: var(--color-teal-dark);
+}
+
+.af-view-btn.is-active {
+  background: rgba(74, 110, 106, 0.12);
+  color: var(--color-teal-dark);
+}
+
+/* ---- Container ---- */
+.af-container {
+  min-height: 80px;
+}
+
+/* ---- Grid view ---- */
+.af-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 108px);
+  gap: 6px;
+}
+
+/* ---- Grid card ---- */
+.af-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid rgba(85, 122, 118, 0.13);
+  border-radius: 7px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 108px;      /* explicit width — belt-and-suspenders */
+  box-sizing: border-box;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.af-card:hover {
+  box-shadow: 0 3px 12px rgba(74, 110, 106, 0.15);
+  border-color: rgba(74, 110, 106, 0.3);
+}
+
+.af-card.af-selected {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 2px rgba(74, 110, 106, 0.2);
+}
+
+/* checkbox: absolute top-left of card */
+.af-cb-label {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  z-index: 2;
+  line-height: 0;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 4px;
+  padding: 1px;
+}
+
+.af-cb-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--color-teal);
+  cursor: pointer;
+  display: block;
+}
+
+/*
+ * Thumbnail: padding-top percentage trick gives a reliable aspect-ratio box.
+ * The background-image set inline on .af-card-thumb-bg is completely immune to
+ * img intrinsic-size problems.
+ */
+.af-card-thumb {
+  position: relative;
+  width: 106px;      /* card width minus 2×1px border */
+  padding-top: 70%;  /* ≈ 74px tall for 106px wide = compact landscape */
+  overflow: hidden;
+  background: #ede9e3;
+  flex-shrink: 0;
+}
+
+.af-card-thumb-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* card body: filename + meta */
+.af-card-body {
+  padding: 4px 6px 3px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.af-card-name {
+  display: block;
+  font-size: 0.64rem;
+  font-weight: 600;
+  color: #3d3d3d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.af-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 2px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.af-size {
+  font-size: 0.58rem;
+  color: #888;
+  white-space: nowrap;
+}
+
+/* action buttons row below card body */
+.af-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 2px 4px 4px;
+  border-top: 1px solid rgba(85, 122, 118, 0.07);
+  flex-shrink: 0;
+}
+
+/* ---- List view ---- */
+.af-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 800px;
+}
+
+.af-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.65rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(85, 122, 118, 0.1);
+  border-radius: 7px;
+  min-width: 0;
+  transition: background 0.13s, border-color 0.13s;
+}
+
+.af-row:hover {
+  background: #fff;
+  border-color: rgba(85, 122, 118, 0.22);
+}
+
+.af-row.af-selected {
+  border-color: var(--color-teal);
+  background: rgba(74, 110, 106, 0.04);
+}
+
+.af-row > .af-cb-label {
+  position: static;
+  background: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.af-row-thumb {
+  width: 42px;
+  height: 42px;
+  border-radius: 5px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #ede9e3;
+}
+
+.af-row-thumb img {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.af-row-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.af-row-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #3d3d3d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.af-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+/* ---- Icon buttons ---- */
+.af-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  color: #888;
+  transition: background 0.13s, color 0.13s, border-color 0.13s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.af-icon-btn:hover {
+  background: rgba(85, 122, 118, 0.1);
+  color: var(--color-teal-dark);
+  border-color: rgba(85, 122, 118, 0.2);
+}
+
+.af-icon-btn--delete:hover {
+  background: rgba(220, 60, 40, 0.08);
+  color: #c0392b;
+  border-color: rgba(220, 60, 40, 0.18);
+}
+
+.af-icon-btn--lock {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.af-icon-btn--lock:hover {
+  background: transparent;
+  color: #888;
+  border-color: transparent;
+}
+
+.af-icon-btn svg {
+  pointer-events: none;
 }
