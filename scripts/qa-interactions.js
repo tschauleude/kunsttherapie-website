@@ -166,6 +166,26 @@ async function testKunsttherapie(browser) {
   if (tab) pass('Raum tab switches');
   else fail('Raum tab switches');
 
+  await page.locator('[data-raum-tab="eingang"]').click();
+  await page.waitForTimeout(300);
+  const compare = page.locator('[data-raum-compare]');
+  await compare.scrollIntoViewIfNeeded();
+  await compare.locator('[data-raum-compare-range]').evaluate((el) => {
+    el.value = '75';
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  await page.waitForTimeout(200);
+  const slider = await page.evaluate(() => {
+    const root = document.querySelector('[data-raum-compare]');
+    const after = root?.querySelector('[data-raum-compare-after]');
+    const pct = Number.parseFloat(root?.style.getPropertyValue('--compare-pct') || '50');
+    const clip = after?.style.clipPath || '';
+    return { pct, clip };
+  });
+  if (slider.pct >= 74 && slider.pct <= 76 && /inset\(0(?:px)?\s+0(?:px)?\s+0(?:px)?\s+25%/.test(slider.clip)) {
+    pass('Raum compare slider direction');
+  } else fail('Raum compare slider direction', JSON.stringify(slider));
+
   await page.close();
 }
 

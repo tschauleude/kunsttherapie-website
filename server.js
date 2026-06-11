@@ -1443,8 +1443,18 @@ app.delete('/api/admin/media/:filename', requireAuth, async (req, res) => {
       });
     }
 
-    for (const u of usedBy.filter((item) => item.type === 'site')) {
-      await siteImages.resetSlot(dbGet, dbRun, u.ref, UPLOAD_DIR);
+    const siteUsages = usedBy.filter((item) => item.type === 'site');
+    if (siteUsages.length) {
+      await contentVersions.snapshotBeforeChange(dbRun, dbGet, dbAll, {
+        kind: 'site_images',
+        label: `Vor Medien-Löschung (${filename})`,
+        createdBy: req.user?.username || 'admin',
+        meta: { action: 'media_delete', filename, url },
+      });
+      for (const u of siteUsages) {
+        await siteImages.resetSlot(dbGet, dbRun, u.ref, UPLOAD_DIR);
+      }
+      await contentPersist.persistAll(dbGet, dbAll);
     }
 
     const filePath = path.join(UPLOAD_DIR, filename);
@@ -1978,6 +1988,8 @@ app.listen(PORT, async () => {
     if (cleaned) console.log('i18n: veraltete CMS-Texte (Miet-/Über-mich-Doppelüberschrift) bereinigt');
     const seeded = await i18nContent.seedOverridesFromFile(dbGet, dbRun);
     if (seeded) console.log('i18n: Texte aus data/i18n-overrides.json in die Datenbank übernommen');
+    const syncedToFile = await i18nContent.syncOverridesToFile(dbGet);
+    if (syncedToFile) console.log('i18n: Texte aus Datenbank nach data/i18n-overrides.json exportiert');
     await i18nContent.syncI18nFromSource(dbGet);
     console.log('i18n: Übersetzungsdateien aus Quelltexten neu aufgebaut');
     await contentPersist.bootstrap(dbGet, dbRun, dbAll, UPLOAD_DIR, contentVersions);
