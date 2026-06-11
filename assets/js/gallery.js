@@ -133,13 +133,11 @@
     thumbsWrap.hidden = slides.length < 2;
     updateThumbs();
     preloadAdjacent(slides);
-    const focusClose = () => btnClose.focus();
-    if (window.flowMotion) {
-      window.flowMotion.open(overlay, 'lightbox-visible').then(focusClose);
-    } else {
+    // Single rAF ensures display:flex is painted before opacity transition fires
+    requestAnimationFrame(() => {
       overlay.classList.add('lightbox-visible');
-      focusClose();
-    }
+      btnClose.focus();
+    });
   }
 
   function close() {
@@ -196,10 +194,7 @@
     buildThumbs();
     const slides = getSlides();
     const slideIndex = slides.findIndex((s) => s.btn === btn);
-    if (slideIndex >= 0) {
-      // Gleicher Klick soll die Lightbox nicht sofort wieder schließen.
-      requestAnimationFrame(() => show(slideIndex));
-    }
+    if (slideIndex >= 0) show(slideIndex);
   }
 
   gallery.addEventListener('click', (e) => {
