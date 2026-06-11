@@ -80,7 +80,8 @@
       thumb.className = 'lightbox-thumb';
       thumb.setAttribute('role', 'tab');
       thumb.setAttribute('aria-selected', i === index ? 'true' : 'false');
-      thumb.setAttribute('aria-label', img.alt || `Bild ${i + 1}`);
+      const imgLabel = window.ktI18n?.t('ui.imageN')?.replace('{n}', String(i + 1)) || `Bild ${i + 1}`;
+      thumb.setAttribute('aria-label', img.alt || imgLabel);
       const thumbImg = document.createElement('img');
       thumbImg.src = slideSrc(img);
       thumbImg.alt = '';

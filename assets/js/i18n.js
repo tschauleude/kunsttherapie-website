@@ -183,8 +183,10 @@
         if (el.hasAttribute('data-i18n') || el.hasAttribute('data-i18n-html')) return;
         if (attr === 'html') el.innerHTML = val;
         else if (attr === 'placeholder') el.placeholder = val;
+        else if (attr === 'title') el.title = val;
         else if (attr === 'aria-label') el.setAttribute('aria-label', val);
         else if (attr === 'alt') el.setAttribute('alt', val);
+        else if (attr.startsWith('data-')) el.setAttribute(attr, val);
         else el.textContent = val;
       });
     });

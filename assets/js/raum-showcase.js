@@ -58,11 +58,16 @@
     let pendingPct = null;
     let dragRect = null;
 
+    function percentLabel(n) {
+      const tpl = tr('ui.percent', '{n} Prozent');
+      return String(tpl).replace('{n}', String(n));
+    }
+
     function syncRange(pct) {
       if (!range) return;
       const rounded = Math.round(pct);
       range.value = String(rounded);
-      range.setAttribute('aria-valuetext', `${rounded} Prozent`);
+      range.setAttribute('aria-valuetext', percentLabel(rounded));
     }
 
     function afterClipInset(pct) {
@@ -212,6 +217,13 @@
     );
 
     setCompareImmediate(50);
+
+    document.addEventListener('kt-lang-change', () => {
+      if (range) {
+        const rounded = Number.parseInt(range.value, 10) || 50;
+        syncRange(rounded);
+      }
+    });
   }
 
   /* ── Hotspots ── */
