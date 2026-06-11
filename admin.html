@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
   <link rel="stylesheet" href="assets/css/admin.css"/>
+  <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
 </head>
 <body class="admin-app"><!-- LOGIN SCREEN -->
 <div class="login-container active" id="loginScreen">
@@ -146,7 +147,8 @@
           </div>
           <div class="form-group full">
             <label>Text</label>
-            <textarea id="newsContent" required rows="6" placeholder="Was möchtest du mitteilen?"></textarea>
+            <div id="newsEditor" class="news-quill-editor"></div>
+            <textarea id="newsContent" style="display:none"></textarea>
           </div>
           <div class="form-group full">
             <label>Bild</label>
@@ -372,31 +374,38 @@
       </div>
 
       <div id="allFilesPanel" class="images-tab-panel" data-images-panel="allfiles" hidden>
-        <div class="af-toolbar">
-          <div class="af-toolbar-left">
-            <label class="af-select-all-label">
-              <input type="checkbox" id="afSelectAll"/>
-              <span>Alle</span>
-            </label>
-            <button type="button" class="btn-cancel af-bulk-delete" id="afBulkDelete" disabled>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-              <span id="afBulkDeleteLabel">Ausgewählte löschen</span>
-            </button>
-            <span class="note" id="afCount" style="margin-left:.5rem"></span>
-          </div>
-          <div class="af-toolbar-right">
-            <div class="af-view-toggle" role="group" aria-label="Ansicht wählen">
-              <button type="button" class="af-view-btn is-active" data-afview="grid" title="Kachelansicht">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
-              </button>
-              <button type="button" class="af-view-btn" data-afview="list" title="Listenansicht">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
-              </button>
+        <div class="all-files-toolbar">
+          <div class="all-files-toolbar-left">
+            <span class="all-files-count" id="allFilesCount"></span>
+            <div class="all-files-filters" role="group" aria-label="Filtern">
+              <button type="button" class="all-files-filter-btn is-active" data-filter="all">Alle</button>
+              <button type="button" class="all-files-filter-btn" data-filter="upload">Hochgeladen</button>
+              <button type="button" class="all-files-filter-btn" data-filter="static">Website-Assets</button>
             </div>
           </div>
+          <div class="all-files-toolbar-right">
+            <label class="all-files-sort-label">Sortieren:
+              <select class="all-files-sort" id="allFilesSort">
+                <option value="name">Name</option>
+                <option value="size-desc">Größe (groß zuerst)</option>
+                <option value="size-asc">Größe (klein zuerst)</option>
+              </select>
+            </label>
+          </div>
         </div>
-        <div id="allFilesContainer" class="af-container af-grid">
+        <div id="allFilesGrid" class="all-files-grid">
           <p class="note">Dateien werden geladen …</p>
+        </div>
+        <!-- Inline preview overlay -->
+        <div id="allFilesPreview" class="all-files-preview" hidden aria-modal="true" role="dialog" aria-label="Bildvorschau">
+          <button type="button" class="all-files-preview-close" id="allFilesPreviewClose" aria-label="Schließen">&times;</button>
+          <div class="all-files-preview-inner">
+            <img id="allFilesPreviewImg" src="" alt="" class="all-files-preview-img"/>
+            <div class="all-files-preview-info">
+              <p class="all-files-preview-name" id="allFilesPreviewName"></p>
+              <p class="all-files-preview-meta" id="allFilesPreviewMeta"></p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -502,6 +511,7 @@
   </div>
 </div>
 
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
 const API_URL = window.location.origin + '/api';
 
@@ -1228,105 +1238,133 @@ async function deleteMediaFiles(filenames) {
 }
 
 let allFilesData = [];
-let afCurrentView = 'grid';
+let allFilesFilter = 'all';
+let allFilesSort = 'name';
 
-const AF_ICONS = {
-  delete: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>`,
-  copy: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
-  lock: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
-};
+function renderAllFiles() {
+  const grid = document.getElementById('allFilesGrid');
+  const countEl = document.getElementById('allFilesCount');
+  if (!grid) return;
 
-function afRenderItem(f, view) {
-  const sizeKb = (f.size / 1024).toFixed(1);
-  const sourceLabel = f.source === 'static' ? 'Asset' : 'Upload';
-  const sourceCls = f.source === 'static' ? 'badge--static' : 'badge--upload';
-  const cbDisabled = f.protected ? ' disabled' : '';
-  const cb = `<label class="af-cb-label" title="${f.protected ? 'Systemdatei – gesperrt' : 'Auswählen'}">
-    <input type="checkbox" class="af-cb"${cbDisabled} data-filename="${escapeHtml(f.filename)}" data-source="${escapeHtml(f.source)}" data-protected="${f.protected ? '1' : ''}"/>
-  </label>`;
+  let files = allFilesFilter === 'all'
+    ? allFilesData
+    : allFilesData.filter((f) => f.source === allFilesFilter);
 
-  const actDelete = f.protected
-    ? `<button class="af-icon-btn af-icon-btn--lock" disabled title="Systemdatei – gesperrt">${AF_ICONS.lock}</button>`
-    : `<button class="af-icon-btn af-icon-btn--delete af-delete" data-filename="${escapeHtml(f.filename)}" data-source="${escapeHtml(f.source)}" title="Löschen">${AF_ICONS.delete}</button>`;
-  const actCopy = `<button class="af-icon-btn af-icon-btn--copy af-copy" data-url="${escapeHtml(f.url)}" title="URL kopieren">${AF_ICONS.copy}</button>`;
+  if (allFilesSort === 'name') {
+    files = [...files].sort((a, b) => a.filename.localeCompare(b.filename, 'de'));
+  } else if (allFilesSort === 'size-desc') {
+    files = [...files].sort((a, b) => (b.size || 0) - (a.size || 0));
+  } else if (allFilesSort === 'size-asc') {
+    files = [...files].sort((a, b) => (a.size || 0) - (b.size || 0));
+  }
 
-  if (view === 'grid') {
-    return `<div class="af-card" data-protected="${f.protected ? '1' : ''}">
-      ${cb}
-      <div class="af-card-thumb">
-        <div class="af-card-thumb-bg" aria-hidden="true" style="background-image:url('${escapeHtml(f.url)}')"></div>
-      </div>
-      <div class="af-card-body">
-        <span class="af-card-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
-        <div class="af-card-meta">
-          <span class="badge ${sourceCls}">${sourceLabel}</span>
-          <span class="af-size">${sizeKb}&thinsp;KB</span>
+  if (countEl) countEl.textContent = `${files.length} Datei${files.length !== 1 ? 'en' : ''}`;
+
+  if (!files.length) {
+    grid.innerHTML = '<p class="note">Keine Dateien für diesen Filter.</p>';
+    return;
+  }
+
+  grid.innerHTML = files.map((f) => {
+    const sizeKb = f.size ? (f.size / 1024).toFixed(1) + ' KB' : '';
+    const sourceCls = f.source === 'static' ? 'badge--static' : 'badge--upload';
+    const sourceLabel = f.source === 'static' ? 'Asset' : 'Upload';
+    const deletable = !f.protected;
+    return `<div class="all-files-card" data-source="${f.source}" data-filename="${escapeHtml(f.filename)}">
+      <button type="button" class="all-files-thumb-btn" data-preview-url="${escapeHtml(f.url)}" data-preview-name="${escapeHtml(f.filename)}" data-preview-meta="${escapeHtml(sizeKb)}" title="Vorschau: ${escapeHtml(f.filename)}" aria-label="Vorschau ${escapeHtml(f.filename)}">
+        <div class="media-thumb-wrap">
+          <img src="${escapeHtml(f.url)}" alt="" class="media-thumb" loading="lazy"/>
         </div>
+        <span class="all-files-zoom" aria-hidden="true">&#128269;</span>
+      </button>
+      <div class="all-files-info">
+        <span class="media-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
+        <span class="media-meta">${sizeKb} <span class="badge ${sourceCls}">${sourceLabel}</span></span>
       </div>
-      <div class="af-card-actions">${actCopy}${actDelete}</div>
+      <div class="media-actions">
+        ${deletable
+          ? `<button type="button" class="btn-cancel all-files-delete" data-source="${f.source}" data-filename="${escapeHtml(f.filename)}" title="Löschen">Löschen</button>`
+          : `<button type="button" class="btn-cancel" disabled title="Systemdatei – gesperrt">Gesperrt</button>`}
+      </div>
     </div>`;
-  }
+  }).join('');
 
-  // list
-  return `<div class="af-row" data-protected="${f.protected ? '1' : ''}">
-    ${cb}
-    <div class="af-row-thumb">
-      <img src="${escapeHtml(f.url)}" alt="" loading="lazy"/>
-    </div>
-    <div class="af-row-info">
-      <span class="af-row-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
-      <span class="badge ${sourceCls}">${sourceLabel}</span>
-    </div>
-    <span class="af-size">${sizeKb} KB</span>
-    <div class="af-row-actions">${actCopy}${actDelete}</div>
-  </div>`;
-}
-
-function afUpdateSelectionState() {
-  const all = [...document.querySelectorAll('.af-cb:not([disabled])')];
-  const checked = all.filter((c) => c.checked);
-  const selectAll = document.getElementById('afSelectAll');
-  const bulkBtn = document.getElementById('afBulkDelete');
-  const label = document.getElementById('afBulkDeleteLabel');
-  if (selectAll) {
-    selectAll.indeterminate = checked.length > 0 && checked.length < all.length;
-    selectAll.checked = all.length > 0 && checked.length === all.length;
-  }
-  if (bulkBtn) {
-    bulkBtn.disabled = checked.length === 0;
-    bulkBtn.style.display = 'inline-flex';
-  }
-  if (label) label.textContent = checked.length > 0 ? `Löschen (${checked.length})` : 'Ausgewählte löschen';
-}
-
-function afRenderContainer() {
-  const container = document.getElementById('allFilesContainer');
-  if (!container) return;
-  container.className = `af-container af-${afCurrentView}`;
-  container.innerHTML = allFilesData.map((f) => afRenderItem(f, afCurrentView)).join('');
-
-  container.querySelectorAll('.af-delete').forEach((btn) => {
-    btn.addEventListener('click', () => deleteAnyImage(btn.dataset.source, btn.dataset.filename));
-  });
-  container.querySelectorAll('.af-copy').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(window.location.origin + btn.dataset.url);
-        showMessage('URL kopiert.', 'success');
-      } catch {
-        showMessage('Kopieren fehlgeschlagen – URL: ' + btn.dataset.url, 'error');
-      }
+  grid.querySelectorAll('.all-files-delete').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteAnyImage(btn.dataset.source, btn.dataset.filename);
     });
   });
-  container.querySelectorAll('.af-cb').forEach((cb) => {
-    cb.addEventListener('change', afUpdateSelectionState);
+
+  grid.querySelectorAll('.all-files-thumb-btn').forEach((btn) => {
+    btn.addEventListener('click', () => openAllFilesPreview(btn.dataset.previewUrl, btn.dataset.previewName, btn.dataset.previewMeta));
   });
-  afUpdateSelectionState();
+}
+
+function openAllFilesPreview(url, name, meta) {
+  const overlay = document.getElementById('allFilesPreview');
+  const img = document.getElementById('allFilesPreviewImg');
+  const nameEl = document.getElementById('allFilesPreviewName');
+  const metaEl = document.getElementById('allFilesPreviewMeta');
+  if (!overlay || !img) return;
+  img.src = url;
+  img.alt = name;
+  if (nameEl) nameEl.textContent = name;
+  if (metaEl) metaEl.textContent = meta;
+  overlay.hidden = false;
+  requestAnimationFrame(() => {
+    overlay.classList.add('is-visible');
+    document.getElementById('allFilesPreviewClose')?.focus();
+  });
+}
+
+function closeAllFilesPreview() {
+  const overlay = document.getElementById('allFilesPreview');
+  if (!overlay) return;
+  overlay.classList.remove('is-visible');
+  setTimeout(() => { overlay.hidden = true; }, 220);
+}
+
+function initAllFilesPreview() {
+  const overlay = document.getElementById('allFilesPreview');
+  if (!overlay || overlay.dataset.previewBound) return;
+  overlay.dataset.previewBound = '1';
+  document.getElementById('allFilesPreviewClose')?.addEventListener('click', closeAllFilesPreview);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeAllFilesPreview(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !overlay.hidden) closeAllFilesPreview();
+  });
+}
+
+function initAllFilesControls() {
+  const panel = document.getElementById('allFilesPanel');
+  if (!panel || panel.dataset.controlsBound) return;
+  panel.dataset.controlsBound = '1';
+
+  panel.querySelectorAll('.all-files-filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      panel.querySelectorAll('.all-files-filter-btn').forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      allFilesFilter = btn.dataset.filter;
+      renderAllFiles();
+    });
+  });
+
+  const sortSel = document.getElementById('allFilesSort');
+  if (sortSel) {
+    sortSel.addEventListener('change', () => {
+      allFilesSort = sortSel.value;
+      renderAllFiles();
+    });
+  }
+
+  initAllFilesPreview();
 }
 
 async function loadAllFiles() {
-  const container = document.getElementById('allFilesContainer');
-  if (container) container.innerHTML = '<p class="note">Dateien werden geladen …</p>';
+  const grid = document.getElementById('allFilesGrid');
+  if (grid) grid.innerHTML = '<p class="note">Dateien werden geladen …</p>';
+  initAllFilesControls();
   try {
     const [staticRes, uploadRes] = await Promise.all([
       fetch(`${API_URL}/admin/static-images`, { credentials: 'include' }),
@@ -1339,19 +1377,17 @@ async function loadAllFiles() {
 
     const staticFiles = (staticData.files || []).map((f) => ({ ...f, source: 'static' }));
     const uploadFiles = (uploadData.files || []).map((f) => ({ ...f, source: 'upload', protected: false }));
-    allFilesData = [...staticFiles, ...uploadFiles].sort((a, b) => a.filename.localeCompare(b.filename));
+    allFilesData = [...staticFiles, ...uploadFiles];
+    allFilesFilter = 'all';
+    allFilesSort = document.getElementById('allFilesSort')?.value || 'name';
 
-    const countEl = document.getElementById('afCount');
-    if (countEl) countEl.textContent = `${allFilesData.length} Dateien`;
+    document.querySelectorAll('.all-files-filter-btn').forEach((b) => {
+      b.classList.toggle('is-active', b.dataset.filter === 'all');
+    });
 
-    if (!container) return;
-    if (!allFilesData.length) {
-      container.innerHTML = '<p class="note">Keine Dateien gefunden.</p>';
-      return;
-    }
-    afRenderContainer();
+    renderAllFiles();
   } catch (err) {
-    if (container) container.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
+    if (grid) grid.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
     showMessage('Fehler: ' + err.message, 'error');
   }
 }
@@ -1638,15 +1674,69 @@ async function restoreContentVersion(id) {
 // NEWS MANAGEMENT
 // ============================================================================
 
+let newsQuill = null;
+
+function imageUploadHandler() {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'image/*');
+  input.click();
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch(`${API_URL}/admin/upload`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const range = newsQuill.getSelection(true);
+        newsQuill.insertEmbed(range.index, 'image', data.url);
+        newsQuill.setSelection(range.index + 1);
+      } else {
+        showMessage('Bild konnte nicht hochgeladen werden', 'error');
+      }
+    } catch (err) {
+      showMessage('Upload-Fehler: ' + err.message, 'error');
+    }
+  };
+}
+
+function initNewsQuill() {
+  if (newsQuill || typeof Quill === 'undefined') return;
+  newsQuill = new Quill('#newsEditor', {
+    theme: 'snow',
+    placeholder: 'Was möchtest du mitteilen?',
+    modules: {
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['blockquote', 'link', 'image'],
+          [{ align: [] }],
+          ['clean']
+        ],
+        handlers: { image: imageUploadHandler }
+      }
+    }
+  });
+}
+
 function openNewsForm() {
   document.getElementById('newsForm').style.display = 'block';
   document.getElementById('newsId').value = '';
   document.getElementById('newsTitle').value = '';
-  document.getElementById('newsContent').value = '';
   document.getElementById('newsImage').value = '';
   document.getElementById('newsImageFile').value = '';
   document.getElementById('newsImagePreview').hidden = true;
-  document.getElementById('newsPublished').checked = false;
+  document.getElementById('newsPublished').checked = true;
+  initNewsQuill();
+  if (newsQuill) newsQuill.setContents([]);
   document.getElementById('newsTitle').focus();
 }
 
@@ -1661,8 +1751,11 @@ async function saveNews(e) {
   if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
 
   const id = document.getElementById('newsId').value;
-  const title = document.getElementById('newsTitle').value;
-  const content = document.getElementById('newsContent').value;
+  const title = document.getElementById('newsTitle').value.trim();
+  const content = newsQuill ? newsQuill.root.innerHTML : document.getElementById('newsContent').value;
+  const isEmpty = !content || content === '<p><br></p>' || (newsQuill && newsQuill.getText().trim() === '');
+  if (!title) { showMessage('Bitte einen Titel eingeben.', 'error'); return; }
+  if (isEmpty) { showMessage('Bitte einen Text eingeben.', 'error'); return; }
   let image = document.getElementById('newsImage').value;
   const published = document.getElementById('newsPublished').checked;
 
@@ -1706,21 +1799,33 @@ async function saveNews(e) {
 async function editNews(id) {
   try {
     const response = await fetch(`${API_URL}/admin/news/${id}`, { credentials: 'include' });
-    const news = await response.json();
     if (!response.ok) throw new Error('Nicht gefunden');
+    const news = await response.json();
+
+    openNewsForm(); // resets all fields first
 
     document.getElementById('newsId').value = news.id;
     document.getElementById('newsTitle').value = news.title;
-    document.getElementById('newsContent').value = news.content;
+
+    if (newsQuill) {
+      const c = news.content || '';
+      if (/<[a-zA-Z]/.test(c)) {
+        newsQuill.clipboard.dangerouslyPasteHTML(c);
+      } else {
+        newsQuill.setText(c);
+      }
+    }
+
     document.getElementById('newsImage').value = news.image || '';
     document.getElementById('newsImageFile').value = '';
     const prev = document.getElementById('newsImagePreview');
     if (news.image) {
       prev.src = news.image;
       prev.hidden = false;
-    } else prev.hidden = true;
+    } else {
+      prev.hidden = true;
+    }
     document.getElementById('newsPublished').checked = !!news.published;
-    openNewsForm();
     document.getElementById('newsTitle').focus();
   } catch (err) {
     showMessage('Fehler beim Laden', 'error');
@@ -1759,7 +1864,7 @@ async function loadNewsList() {
         <div class="item">
           <div class="item-info">
             <h3>${item.title} ${badge}</h3>
-            <p>${item.content.substring(0, 100)}...</p>
+            <p>${(item.content || '').replace(/<[^>]*>/g, '').substring(0, 100)}…</p>
             <p style="font-size: 0.85rem; color: #999;">${date}</p>
           </div>
           <div class="item-actions">

@@ -127,38 +127,25 @@
     caption.textContent = img.alt;
     counter.textContent = `${index + 1} / ${slides.length}`;
     overlay.hidden = false;
+    overlay.classList.add('lightbox-visible');
     document.body.classList.add('lightbox-open');
     btnPrev.hidden = slides.length < 2;
     btnNext.hidden = slides.length < 2;
     thumbsWrap.hidden = slides.length < 2;
     updateThumbs();
     preloadAdjacent(slides);
-    const focusClose = () => btnClose.focus();
-    if (window.flowMotion) {
-      window.flowMotion.open(overlay, 'lightbox-visible').then(focusClose);
-    } else {
-      overlay.classList.add('lightbox-visible');
-      focusClose();
-    }
+    btnClose.focus();
   }
 
   function close() {
-    const after = () => {
-      document.body.classList.remove('lightbox-open');
-      lightboxImg.src = LIGHTBOX_BLANK;
-      lightboxImg.alt = '';
-      if (lastFocus && typeof lastFocus.focus === 'function') {
-        lastFocus.focus();
-      }
-      lastFocus = null;
-    };
-    if (window.flowMotion) {
-      window.flowMotion.close(overlay, 'lightbox-visible').then(after);
-      return;
-    }
     overlay.classList.remove('lightbox-visible');
     overlay.hidden = true;
-    after();
+    document.body.classList.remove('lightbox-open');
+    lightboxImg.removeAttribute('src');
+    if (lastFocus && typeof lastFocus.focus === 'function') {
+      lastFocus.focus();
+    }
+    lastFocus = null;
   }
 
   function onKeydown(e) {
@@ -196,10 +183,7 @@
     buildThumbs();
     const slides = getSlides();
     const slideIndex = slides.findIndex((s) => s.btn === btn);
-    if (slideIndex >= 0) {
-      // Gleicher Klick soll die Lightbox nicht sofort wieder schließen.
-      requestAnimationFrame(() => show(slideIndex));
-    }
+    if (slideIndex >= 0) show(slideIndex);
   }
 
   gallery.addEventListener('click', (e) => {

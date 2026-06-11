@@ -300,31 +300,18 @@
       lbImg.alt = alt;
       lbCaption.textContent = caption || '';
       overlay.hidden = false;
+      overlay.classList.add('lightbox-visible');
       document.body.classList.add('lightbox-open');
-      const focusClose = () => lbClose.focus();
-      if (window.flowMotion) {
-        window.flowMotion.open(overlay, 'lightbox-visible').then(focusClose);
-      } else {
-        overlay.classList.add('lightbox-visible');
-        focusClose();
-      }
+      lbClose.focus();
     }
 
     function closeLb() {
-      const after = () => {
-        document.body.classList.remove('lightbox-open');
-        lbImg.src = LIGHTBOX_BLANK;
-        lbImg.alt = '';
-        if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-        lastFocus = null;
-      };
-      if (window.flowMotion) {
-        window.flowMotion.close(overlay, 'lightbox-visible').then(after);
-        return;
-      }
       overlay.classList.remove('lightbox-visible');
       overlay.hidden = true;
-      after();
+      document.body.classList.remove('lightbox-open');
+      lbImg.removeAttribute('src');
+      if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+      lastFocus = null;
     }
 
     lightboxTriggers.forEach((btn) => {

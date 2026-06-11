@@ -9,6 +9,18 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+function stripHtml(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || '';
+}
+
+function renderContentHtml(content) {
+  if (!content) return '';
+  if (/<[a-zA-Z]/.test(content)) return content;
+  return content.split(/\n+/).filter(Boolean).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+}
+
 function newsLocale() {
   return window.ktI18n?.getLocale?.() || 'de-DE';
 }
@@ -23,13 +35,20 @@ function formatNewsDate(createdAt) {
 
 function renderNewsCard(item, excerptLen = 200) {
   const date = formatNewsDate(item.createdAt);
-  const plain = item.content || '';
-  const excerpt =
-    plain.length > excerptLen ? `${plain.substring(0, excerptLen)}…` : plain;
+  const raw = item.content || '';
+  const plain = stripHtml(raw);
+  const isLong = plain.length > excerptLen;
+  const excerpt = isLong ? plain.substring(0, excerptLen) + '…' : plain;
 
   const imageHtml = item.image
     ? `<img src="${escapeHtml(item.image)}" alt="" class="news-image"/>`
     : `<div class="news-image news-image-placeholder" aria-hidden="true"></div>`;
+
+  const bodyHtml = isLong
+    ? `<p class="news-excerpt">${escapeHtml(excerpt)}</p>
+       <div class="news-full-content" hidden>${renderContentHtml(raw)}</div>
+       <button type="button" class="news-readmore">${window.ktI18n?.t('news.readMore') || 'Weiterlesen'}</button>`
+    : `<p>${escapeHtml(excerpt)}</p>`;
 
   return `
     <article class="news-card">
@@ -37,7 +56,7 @@ function renderNewsCard(item, excerptLen = 200) {
       <div class="news-content">
         <div class="news-date">${date}</div>
         <h2>${escapeHtml(item.title)}</h2>
-        <p>${escapeHtml(excerpt)}</p>
+        ${bodyHtml}
       </div>
     </article>
   `;
@@ -48,20 +67,17 @@ function renderNewsPopupBlock(item, isFirst) {
   const imageHtml = item.image
     ? `<img src="${escapeHtml(item.image)}" alt="" class="news-popup-image"/>`
     : '';
-  const paragraphs = (item.content || '')
-    .split(/\n+/)
-    .filter(Boolean)
-    .map((p) => `<p>${escapeHtml(p)}</p>`)
-    .join('');
-
-  const titleTag = isFirst ? 'h3' : 'h3';
+  const raw = item.content || '';
+  const contentHtml = /<[a-zA-Z]/.test(raw)
+    ? raw
+    : raw.split(/\n+/).filter(Boolean).map(p => `<p>${escapeHtml(p)}</p>`).join('');
 
   return `
     <article class="news-popup-item${isFirst ? '' : ' news-popup-item-more'}">
       ${imageHtml}
       <div class="news-date">${date}</div>
-      <${titleTag}>${escapeHtml(item.title)}</${titleTag}>
-      <div class="news-popup-text">${paragraphs}</div>
+      <h3>${escapeHtml(item.title)}</h3>
+      <div class="news-popup-text">${contentHtml}</div>
     </article>
   `;
 }
@@ -277,4 +293,20 @@ document.addEventListener('kt-lang-change', () => {
   if (document.getElementById('newsList') || document.getElementById('homeNewsList')) {
     rerenderNewsFromCache();
   }
+});
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.news-readmore');
+  if (!btn) return;
+  const article = btn.closest('.news-card');
+  if (!article) return;
+  const full = article.querySelector('.news-full-content');
+  const excerpt = article.querySelector('.news-excerpt');
+  if (!full) return;
+  const isExpanded = !full.hidden;
+  full.hidden = isExpanded;
+  if (excerpt) excerpt.hidden = !isExpanded;
+  btn.textContent = isExpanded
+    ? (window.ktI18n?.t('news.readMore') || 'Weiterlesen')
+    : (window.ktI18n?.t('news.readLess') || 'Weniger anzeigen');
 });
