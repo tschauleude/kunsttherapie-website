@@ -200,7 +200,6 @@ async function loadHomeNews() {
 
     const popupLimit = parseInt(section.dataset.popupLimit || '2', 10);
     const popupItems = news.slice(0, popupLimit);
-    scheduleNewsPopup(popupItems);
 
     const reopenBtn = document.getElementById('openNewsPopupBtn');
     if (reopenBtn) {
