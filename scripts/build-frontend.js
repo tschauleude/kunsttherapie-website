@@ -317,12 +317,15 @@ function patchHtml(coreBundle, cssFile) {
       );
     }
 
-    // hreflang: only de + x-default (client-side i18n)
-    html = html.replace(/\s*<link rel="alternate" hreflang="en"[^>]*>\n?/g, '');
-    html = html.replace(
-      /(<link rel="alternate" hreflang="de"[^>]*\/>)\s*(<link rel="alternate" hreflang="x-default")/,
-      '$1\n  $2'
-    );
+    // hreflang: de + en + x-default (same URL — client-side i18n toggle)
+    const hreflangDe = html.match(/<link rel="alternate" hreflang="de" href="([^"]*)"\/>/);
+    if (hreflangDe && !html.includes('hreflang="en"')) {
+      const hreflangUrl = hreflangDe[1];
+      html = html.replace(
+        /(<link rel="alternate" hreflang="de" href="[^"]*"\/>)/,
+        `$1\n  <link rel="alternate" hreflang="en" href="${hreflangUrl}"/>`
+      );
+    }
 
     // theme-color aligned with WCAG-adjusted teal
     html = html.replace(/<meta name="theme-color" content="#557a76"\/>/g, '<meta name="theme-color" content="#4a6e6a"/>');
