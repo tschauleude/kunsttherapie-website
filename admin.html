@@ -1254,13 +1254,13 @@ function afRenderItem(f, view) {
     return `<div class="af-card" data-protected="${f.protected ? '1' : ''}">
       ${cb}
       <div class="af-card-thumb">
-        <img src="${escapeHtml(f.url)}" alt="" loading="lazy"/>
+        <div class="af-card-thumb-bg" aria-hidden="true" style="background-image:url('${escapeHtml(f.url)}')"></div>
       </div>
       <div class="af-card-body">
         <span class="af-card-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
         <div class="af-card-meta">
           <span class="badge ${sourceCls}">${sourceLabel}</span>
-          <span class="af-size">${sizeKb} KB</span>
+          <span class="af-size">${sizeKb}&thinsp;KB</span>
         </div>
       </div>
       <div class="af-card-actions">${actCopy}${actDelete}</div>

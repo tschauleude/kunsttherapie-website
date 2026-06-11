@@ -1279,7 +1279,6 @@ hr.sep {
   color: var(--text-light);
 }
 
-/* Bulk delete: always in flow, hidden via opacity+pointer-events when nothing selected */
 #afBulkDelete {
   flex: unset;
   padding: 0.4rem 0.85rem;
@@ -1317,146 +1316,157 @@ hr.sep {
   color: var(--color-teal-dark);
 }
 
-/* JS toggles .is-active */
 .af-view-btn.is-active {
   background: rgba(74, 110, 106, 0.12);
   color: var(--color-teal-dark);
 }
 
-/* -- Container -- */
+/* ---- Container ---- */
 .af-container {
   min-height: 80px;
 }
 
-/* -- Grid view: tight uniform tiles -- */
+/* ---- Grid view ---- */
 .af-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 120px);
-  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fill, 108px);
+  gap: 6px;
 }
 
-/* -- List view -- */
-.af-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  max-width: 780px;
-}
-
-/* -- Grid card -- */
+/* ---- Grid card ---- */
 .af-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.82);
-  border: 1.5px solid rgba(85, 122, 118, 0.12);
-  border-radius: 10px;
+  background: #fff;
+  border: 1px solid rgba(85, 122, 118, 0.13);
+  border-radius: 7px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  transition: box-shadow 0.18s, border-color 0.18s;
+  width: 108px;      /* explicit width — belt-and-suspenders */
+  box-sizing: border-box;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  flex-shrink: 0;
 }
 
 .af-card:hover {
-  box-shadow: 0 4px 14px rgba(74, 110, 106, 0.13);
-  border-color: rgba(85, 122, 118, 0.28);
+  box-shadow: 0 3px 12px rgba(74, 110, 106, 0.15);
+  border-color: rgba(74, 110, 106, 0.3);
 }
 
 .af-card.af-selected {
   border-color: var(--color-teal);
-  box-shadow: 0 0 0 2px rgba(74, 110, 106, 0.18);
+  box-shadow: 0 0 0 2px rgba(74, 110, 106, 0.2);
 }
 
-/* checkbox overlay top-left of card */
+/* checkbox: absolute top-left of card */
 .af-cb-label {
   position: absolute;
-  top: 5px;
-  left: 5px;
+  top: 4px;
+  left: 4px;
   z-index: 2;
   line-height: 0;
   cursor: pointer;
-  background: rgba(255,255,255,0.75);
+  background: rgba(255, 255, 255, 0.82);
   border-radius: 4px;
   padding: 1px;
 }
 
 .af-cb-label input[type="checkbox"] {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   accent-color: var(--color-teal);
   cursor: pointer;
   display: block;
 }
 
-/* fixed-height thumbnail – most reliable cross-browser */
+/*
+ * Thumbnail: padding-top percentage trick gives a reliable aspect-ratio box.
+ * The background-image set inline on .af-card-thumb-bg is completely immune to
+ * img intrinsic-size problems.
+ */
 .af-card-thumb {
-  width: 100%;
-  height: 85px;
+  position: relative;
+  width: 106px;      /* card width minus 2×1px border */
+  padding-top: 70%;  /* ≈ 74px tall for 106px wide = compact landscape */
   overflow: hidden;
-  background: rgba(240, 237, 230, 0.7);
+  background: #ede9e3;
   flex-shrink: 0;
 }
 
-.af-card-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
+.af-card-thumb-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
+/* card body: filename + meta */
 .af-card-body {
-  padding: 0.3rem 0.4rem 0.2rem;
+  padding: 4px 6px 3px;
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 
 .af-card-name {
   display: block;
-  font-size: 0.68rem;
+  font-size: 0.64rem;
   font-weight: 600;
-  color: var(--text-main);
+  color: #3d3d3d;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 0.15rem;
+  line-height: 1.3;
 }
 
 .af-card-meta {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 2px;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 
 .af-size {
-  font-size: 0.62rem;
-  color: var(--text-light);
+  font-size: 0.58rem;
+  color: #888;
+  white-space: nowrap;
 }
 
+/* action buttons row below card body */
 .af-card-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.2rem;
-  padding: 0.2rem 0.3rem 0.3rem;
+  gap: 2px;
+  padding: 2px 4px 4px;
   border-top: 1px solid rgba(85, 122, 118, 0.07);
   flex-shrink: 0;
 }
 
-/* -- List row -- */
+/* ---- List view ---- */
+.af-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 800px;
+}
+
 .af-row {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  padding: 0.4rem 0.7rem;
-  background: rgba(255, 255, 255, 0.7);
+  gap: 0.6rem;
+  padding: 0.35rem 0.65rem;
+  background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(85, 122, 118, 0.1);
-  border-radius: 8px;
+  border-radius: 7px;
   min-width: 0;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.13s, border-color 0.13s;
 }
 
 .af-row:hover {
-  background: rgba(255, 255, 255, 0.92);
+  background: #fff;
   border-color: rgba(85, 122, 118, 0.22);
 }
 
@@ -1465,7 +1475,6 @@ hr.sep {
   background: rgba(74, 110, 106, 0.04);
 }
 
-/* inline checkbox for list rows */
 .af-row > .af-cb-label {
   position: static;
   background: none;
@@ -1474,17 +1483,17 @@ hr.sep {
 }
 
 .af-row-thumb {
-  width: 46px;
-  height: 46px;
-  border-radius: 6px;
+  width: 42px;
+  height: 42px;
+  border-radius: 5px;
   overflow: hidden;
   flex-shrink: 0;
-  background: rgba(240, 237, 230, 0.7);
+  background: #ede9e3;
 }
 
 .af-row-thumb img {
-  width: 100%;
-  height: 100%;
+  width: 42px;
+  height: 42px;
   object-fit: cover;
   object-position: center;
   display: block;
@@ -1495,13 +1504,13 @@ hr.sep {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 2px;
 }
 
 .af-row-name {
-  font-size: 0.83rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: var(--text-main);
+  color: #3d3d3d;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1510,23 +1519,23 @@ hr.sep {
 .af-row-actions {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 3px;
   flex-shrink: 0;
 }
 
-/* -- Icon buttons -- */
+/* ---- Icon buttons ---- */
 .af-icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 5px;
   border: 1px solid transparent;
   background: transparent;
   cursor: pointer;
-  color: var(--text-light);
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  color: #888;
+  transition: background 0.13s, color 0.13s, border-color 0.13s;
   padding: 0;
   flex-shrink: 0;
 }
@@ -1544,13 +1553,13 @@ hr.sep {
 }
 
 .af-icon-btn--lock {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
 .af-icon-btn--lock:hover {
   background: transparent;
-  color: var(--text-light);
+  color: #888;
   border-color: transparent;
 }
 
