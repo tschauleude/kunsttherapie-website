@@ -5,6 +5,9 @@
   if (window.__ktGalleryInit) return;
   window.__ktGalleryInit = true;
 
+  const LIGHTBOX_BLANK =
+    'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
   const gallery = document.querySelector('[data-gallery]');
   if (!gallery) return;
 
@@ -47,7 +50,7 @@
     <button type="button" class="lightbox-nav lightbox-next" data-lightbox-next aria-label="${tr('ui.lightbox.next', 'Nächstes Bild')}">&#8250;</button>
     <div class="lightbox-stage">
       <figure class="lightbox-dialog">
-        <img class="lightbox-img" src="" alt=""/>
+        <img class="lightbox-img" src="${LIGHTBOX_BLANK}" alt="" decoding="async"/>
         <figcaption class="lightbox-caption"></figcaption>
       </figure>
       <div class="lightbox-meta">
@@ -141,7 +144,8 @@
   function close() {
     const after = () => {
       document.body.classList.remove('lightbox-open');
-      lightboxImg.removeAttribute('src');
+      lightboxImg.src = LIGHTBOX_BLANK;
+      lightboxImg.alt = '';
       if (lastFocus && typeof lastFocus.focus === 'function') {
         lastFocus.focus();
       }

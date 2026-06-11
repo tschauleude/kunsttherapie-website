@@ -71,11 +71,19 @@ PAGES.forEach((page) => {
     changed = true;
   }
 
-  if (!html.includes('hreflang="x-default"') && html.includes('hreflang="de"')) {
+  if (!html.includes('hreflang="en"') && html.includes('hreflang="de"')) {
     html = html.replace(
-      /(<link rel="alternate" hreflang="en" href="[^"]*"\/>)/,
-      `$1\n  <link rel="alternate" hreflang="x-default" href="${url}"/>`
+      /(<link rel="alternate" hreflang="de" href="[^"]*"\/>)/,
+      `$1\n  <link rel="alternate" hreflang="en" href="${url}"/>`
     );
+    changed = true;
+  }
+
+  if (!html.includes('hreflang="x-default"') && html.includes('hreflang="de"')) {
+    const afterEn = html.includes('hreflang="en"')
+      ? /(<link rel="alternate" hreflang="en" href="[^"]*"\/>)/
+      : /(<link rel="alternate" hreflang="de" href="[^"]*"\/>)/;
+    html = html.replace(afterEn, `$1\n  <link rel="alternate" hreflang="x-default" href="${url}"/>`);
     changed = true;
   }
 

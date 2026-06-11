@@ -240,6 +240,9 @@
     }
   });
 
+  const LIGHTBOX_BLANK =
+    'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
   /* ── Lightbox für Showcase-Bilder ── */
   const lightboxTriggers = [...root.querySelectorAll('[data-raum-lightbox]')];
   if (lightboxTriggers.length) {
@@ -255,7 +258,7 @@
       overlay.innerHTML = `
         <button type="button" class="lightbox-close" aria-label="${tr('btn.close', 'Schließen')}">&times;</button>
         <figure class="lightbox-dialog">
-          <img class="lightbox-img" src="" alt=""/>
+          <img class="lightbox-img" src="${LIGHTBOX_BLANK}" alt="" decoding="async"/>
           <figcaption class="lightbox-caption"></figcaption>
         </figure>`;
       document.body.appendChild(overlay);
@@ -298,7 +301,8 @@
     function closeLb() {
       const after = () => {
         document.body.classList.remove('lightbox-open');
-        lbImg.removeAttribute('src');
+        lbImg.src = LIGHTBOX_BLANK;
+        lbImg.alt = '';
         if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
         lastFocus = null;
       };
