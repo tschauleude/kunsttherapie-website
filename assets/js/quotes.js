@@ -6,8 +6,21 @@
 
   const INTERVAL_MS = 9000;
 
+  function quoteDotLabel(i) {
+    const key = i === 0 ? 'quotes.dot1' : 'quotes.dot2';
+    return window.ktI18n?.t(key) || (i === 0 ? 'Zitat 1' : 'Zitat 2');
+  }
+
+  function updateQuoteDotLabels() {
+    document.querySelectorAll('[data-quote-dot]').forEach((dot) => {
+      const i = Number(dot.dataset.quoteDot);
+      if (Number.isFinite(i)) dot.setAttribute('aria-label', quoteDotLabel(i));
+    });
+  }
+
   function initQuoteShowcases() {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    updateQuoteDotLabels();
 
     document.querySelectorAll('[data-quote-showcase]').forEach((root) => {
       const slides = [...root.querySelectorAll('[data-quote-slide]')];
@@ -114,4 +127,6 @@
   } else {
     initQuoteShowcases();
   }
+
+  document.addEventListener('kt-lang-change', updateQuoteDotLabels);
 })();

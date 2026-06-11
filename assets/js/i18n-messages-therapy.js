@@ -97,7 +97,17 @@
   "kt.raum.hotspot3.title": "Gruppenraum",
   "kt.raum.hotspot3.text": "4–12 Personen, Materialien vor Ort, geschützter Rahmen.",
   "kt.raum.hotspot4.title": "Materialien",
-  "kt.raum.hotspot4.text": "Acryl, Gouache, Kreide, Collage – alles bereitgestellt."
+  "kt.raum.hotspot4.text": "Acryl, Gouache, Kreide, Collage – alles bereitgestellt.",
+  "kt.raum.tabs": "Raumansichten",
+  "kt.raum.compare.label": "Vorher-Nachher-Vergleich",
+  "kt.raum.caption.eingang": "Eingang Otto-Stadler-Straße 23c",
+  "kt.raum.caption.innen": "Atelier innen – gemeinsam gestalten",
+  "kt.raum.caption.gestalten": "Kunst aus dem Atelier",
+  "kt.raum.img.eingang": "Eingang zum Atelier – Otto-Stadler-Straße 23c",
+  "kt.raum.img.vision": "Atmosphäre am Eingang – warm, einladend, modern",
+  "kt.raum.img.gestalten": "Atelier-Arbeit – Materialien und Malen von oben",
+  "kt.praxis.highlights": "Ausstattung und Raum",
+  "kt.mapIframeTitle": "Karte: Kunsttherapie Paderborn, Otto-Stadler-Straße 23c"
 }, en: {
   "kt.hero.kicker": "From 1 July 2026 in Paderborn",
   "kt.hero.title": "Art that <span class=\"text-accent\">supports</span> – not just decorates",
@@ -195,7 +205,17 @@
   "kt.raum.hotspot3.title": "Group room",
   "kt.raum.hotspot3.text": "4–12 people, materials on site, safe setting.",
   "kt.raum.hotspot4.title": "Materials",
-  "kt.raum.hotspot4.text": "Acrylic, gouache, chalk, collage – all provided."
+  "kt.raum.hotspot4.text": "Acrylic, gouache, chalk, collage – all provided.",
+  "kt.raum.tabs": "Room views",
+  "kt.raum.compare.label": "Before-and-after comparison",
+  "kt.raum.caption.eingang": "Entrance Otto-Stadler-Straße 23c",
+  "kt.raum.caption.innen": "Inside the atelier – creating together",
+  "kt.raum.caption.gestalten": "Art from the atelier",
+  "kt.raum.img.eingang": "Entrance to the atelier – Otto-Stadler-Straße 23c",
+  "kt.raum.img.vision": "Entrance atmosphere – warm, inviting, modern",
+  "kt.raum.img.gestalten": "Studio work – materials and painting from above",
+  "kt.praxis.highlights": "Facilities and space",
+  "kt.mapIframeTitle": "Map: Art Therapy Paderborn, Otto-Stadler-Straße 23c"
 } };
   Object.assign(window.I18N_MESSAGES.de, extra.de);
   Object.assign(window.I18N_MESSAGES.en, extra.en);

@@ -13,6 +13,7 @@ const { v4: uuidv4 } = require('uuid');
 const siteImages = require('./lib/site-images');
 const media = require('./lib/media');
 const contentVersions = require('./lib/content-versions');
+const { apiLang, apiMsg } = require('./lib/api-messages');
 require('dotenv').config();
 
 const app = express();
@@ -1012,21 +1013,22 @@ app.get('/api/bookings/:id/calendar.ics', async (req, res) => {
 });
 
 app.post('/api/contact', contactRateLimiter, async (req, res) => {
+  const lang = apiLang(req);
   const honeypot = String(req.body.website ?? req.body._hp ?? '').trim();
   if (honeypot) {
     return res.json({
       success: true,
-      message: 'Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.',
+      message: apiMsg('contact.success', lang),
     });
   }
 
   const { name, email: fromEmail, phone, message } = req.body;
 
   if (!name || !fromEmail || !message) {
-    return res.status(400).json({ error: 'Name, E-Mail und Nachricht sind erforderlich' });
+    return res.status(400).json({ error: apiMsg('contact.required', lang) });
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail)) {
-    return res.status(400).json({ error: 'Ungültige E-Mail-Adresse' });
+    return res.status(400).json({ error: apiMsg('contact.invalidEmail', lang) });
   }
 
   try {
@@ -1039,27 +1041,27 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
 
     if (!result.sent) {
       return res.status(503).json({
-        error:
-          'Nachricht konnte nicht per E-Mail versendet werden. Bitte ruf uns an oder schreib direkt an info@kunsttherapie-pb.de.',
+        error: apiMsg('contact.mailFailed', lang),
       });
     }
 
     res.json({
       success: true,
-      message: 'Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.',
+      message: apiMsg('contact.success', lang),
     });
   } catch (e) {
     console.error('contact error:', e);
-    res.status(500).json({ error: 'Nachricht konnte nicht gesendet werden' });
+    res.status(500).json({ error: apiMsg('contact.sendFailed', lang) });
   }
 });
 
 app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
+  const lang = apiLang(req);
   const honeypot = String(req.body.website ?? req.body._hp ?? '').trim();
   if (honeypot) {
     return res.json({
       success: true,
-      message: 'Anfrage eingegangen! Die Bestätigung folgt per E-Mail.',
+      message: apiMsg('booking.success', lang),
     });
   }
 
@@ -1067,32 +1069,32 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
   if (formAt && Date.now() - formAt < 2000) {
     return res.json({
       success: true,
-      message: 'Anfrage eingegangen! Die Bestätigung folgt per E-Mail.',
+      message: apiMsg('booking.success', lang),
     });
   }
 
   const { name, email, phone, date, startTime, message } = booking.normalizeBookingPayload(req.body);
 
   if (!name || !email || !date || !startTime) {
-    return res.status(400).json({ error: 'Name, E-Mail, Datum und Uhrzeit sind erforderlich' });
+    return res.status(400).json({ error: apiMsg('booking.required', lang) });
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return res.status(400).json({ error: 'Ungültige E-Mail-Adresse' });
+    return res.status(400).json({ error: apiMsg('contact.invalidEmail', lang) });
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(startTime)) {
-    return res.status(400).json({ error: 'Ungültiges Datum oder Uhrzeit' });
+    return res.status(400).json({ error: apiMsg('booking.invalidDateTime', lang) });
   }
   if (!booking.isWorkingDay(date)) {
-    return res.status(400).json({ error: 'An diesem Tag sind keine Termine möglich' });
+    return res.status(400).json({ error: apiMsg('booking.noWorkingDay', lang) });
   }
   if (booking.isSlotInPast(date, startTime)) {
-    return res.status(400).json({ error: 'Dieser Termin liegt zu nah in der Vergangenheit' });
+    return res.status(400).json({ error: apiMsg('booking.tooSoon', lang) });
   }
 
   const daySlots = booking.generateSlotsForDay(date);
   const slot = daySlots.find((s) => s.start === startTime);
   if (!slot) {
-    return res.status(400).json({ error: 'Ungültiger Termin-Slot' });
+    return res.status(400).json({ error: apiMsg('booking.invalidSlot', lang) });
   }
 
   try {
@@ -1101,7 +1103,7 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
     const available = booking.slotsWithAvailability(date, intervals);
     const chosen = available.find((s) => s.start === startTime);
     if (!chosen || !chosen.available) {
-      return res.status(409).json({ error: 'Dieser Termin ist leider nicht mehr verfügbar' });
+      return res.status(409).json({ error: apiMsg('booking.unavailable', lang) });
     }
 
     const result = await dbRun(
@@ -1129,12 +1131,12 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
       endTime: row.end_time,
       emailSent,
       message: emailSent
-        ? 'Anfrage eingegangen! Die Bestätigung folgt per E-Mail – danach lässt sich der Termin im Kalender speichern.'
-        : 'Anfrage gespeichert! Die Bestätigung folgt zeitnah per E-Mail.',
+        ? apiMsg('booking.successEmail', lang)
+        : apiMsg('booking.successSaved', lang),
     });
   } catch (e) {
     console.error('booking create error:', e);
-    res.status(500).json({ error: 'Buchung fehlgeschlagen' });
+    res.status(500).json({ error: apiMsg('booking.failed', lang) });
   }
 });
 
@@ -1153,15 +1155,16 @@ function atelierRateLimit(req) {
 
 app.post('/api/atelier/submit', (req, res) => {
   if (!atelierRateLimit(req)) {
-    return res.status(429).json({ error: 'Zu viele Einsendungen – bitte später erneut versuchen.' });
+    return res.status(429).json({ error: apiMsg('atelier.rateLimit', apiLang(req)) });
   }
 
   atelierUpload.single('image')(req, res, async (err) => {
+    const lang = apiLang(req);
     if (err) {
-      return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
+      return res.status(400).json({ error: err.message || apiMsg('atelier.uploadFailed', lang) });
     }
     if (!req.file) {
-      return res.status(400).json({ error: 'Bitte ein fertiges Werk (Bild) mitsenden' });
+      return res.status(400).json({ error: apiMsg('atelier.imageRequired', lang) });
     }
 
     const anonymous = req.body.anonymous === '1' || req.body.anonymous === 'true';
@@ -1176,7 +1179,7 @@ app.post('/api/atelier/submit', (req, res) => {
         /* ignore */
       }
       return res.status(400).json({
-        error: 'Bitte Name oder E-Mail angeben – oder anonym senden.',
+        error: apiMsg('atelier.identityRequired', lang),
       });
     }
 
@@ -1186,7 +1189,7 @@ app.post('/api/atelier/submit', (req, res) => {
       } catch {
         /* ignore */
       }
-      return res.status(400).json({ error: 'Ungültige E-Mail-Adresse' });
+      return res.status(400).json({ error: apiMsg('contact.invalidEmail', lang) });
     }
 
     const relPath = path.join('atelier', req.file.filename).replace(/\\/g, '/');
@@ -1215,8 +1218,7 @@ app.post('/api/atelier/submit', (req, res) => {
       res.json({
         success: true,
         id: row.id,
-        message:
-          'Vielen Dank! Das Werk ist im Atelier eingegangen und kann vertraulich als Impuls genutzt werden.',
+        message: apiMsg('atelier.success', lang),
       });
     } catch (e) {
       console.error('atelier submit:', e);
@@ -1225,7 +1227,7 @@ app.post('/api/atelier/submit', (req, res) => {
       } catch {
         /* ignore */
       }
-      res.status(500).json({ error: 'Einsendung konnte nicht gespeichert werden' });
+      res.status(500).json({ error: apiMsg('atelier.saveFailed', lang) });
     }
   });
 });

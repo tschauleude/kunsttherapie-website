@@ -89,6 +89,7 @@ async function fetchMonth(monthStr) {
 async function loadMonth(monthStr, prefetched) {
   const status = document.getElementById('calendarStatus');
   if (!status) return;
+  status.dataset.loading = '1';
   status.textContent = tr('book.loading') || 'Kalender wird geladen …';
 
   try {
@@ -97,8 +98,10 @@ async function loadMonth(monthStr, prefetched) {
     document.getElementById('monthLabel').textContent = monthLabel(monthStr);
     renderCalendar();
     const bookable = monthHasBookableDays(monthData);
+    delete status.dataset.loading;
     status.textContent = bookable ? tr('book.hintFree') : tr('book.hintNone');
   } catch (e) {
+    delete status.dataset.loading;
     status.textContent = tr('book.statusError');
     console.error(e);
   }
@@ -294,6 +297,7 @@ async function submitBooking(e) {
     startTime: document.getElementById('bookStart').value,
     website: document.getElementById('bookWebsite')?.value || '',
     _formAt: Number(document.getElementById('bookFormAt')?.value) || formLoadedAt || 0,
+    lang: window.ktI18n?.getLang?.() || 'de',
   };
 
   try {
@@ -434,12 +438,14 @@ document.addEventListener('kt-lang-change', () => {
     if (wdVal) weekdays.innerHTML = wdVal;
   }
 
-  if (monthData) {
-    renderCalendar();
-    const status = document.getElementById('calendarStatus');
-    if (status) {
+  const status = document.getElementById('calendarStatus');
+  if (status) {
+    if (monthData) {
+      renderCalendar();
       const bookable = monthHasBookableDays(monthData);
       status.textContent = bookable ? tr('book.hintFree') : tr('book.hintNone');
+    } else if (status.dataset.loading === '1') {
+      status.textContent = tr('book.loading') || status.textContent;
     }
   }
 });

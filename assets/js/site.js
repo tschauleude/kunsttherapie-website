@@ -179,6 +179,15 @@
       if (v) el.textContent = v;
     });
 
+    document.querySelectorAll('.site-footer .footer-col:nth-child(2) p:nth-of-type(1)').forEach((el) => {
+      const v = t('footer.telLine');
+      if (v) el.innerHTML = v;
+    });
+    document.querySelectorAll('.site-footer .footer-col:nth-child(2) p:nth-of-type(2)').forEach((el) => {
+      const v = t('footer.mobileLine');
+      if (v) el.innerHTML = v;
+    });
+
     document.querySelectorAll('.legal-footer').forEach((el) => {
       const tag = t('footer.tagline');
       if (!tag) return;

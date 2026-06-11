@@ -5,6 +5,9 @@
   if (window.__ktGalleryInit) return;
   window.__ktGalleryInit = true;
 
+  const LIGHTBOX_BLANK =
+    'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
   const gallery = document.querySelector('[data-gallery]');
   if (!gallery) return;
 
@@ -47,7 +50,7 @@
     <button type="button" class="lightbox-nav lightbox-next" data-lightbox-next aria-label="${tr('ui.lightbox.next', 'Nächstes Bild')}">&#8250;</button>
     <div class="lightbox-stage">
       <figure class="lightbox-dialog">
-        <img class="lightbox-img" src="" alt=""/>
+        <img class="lightbox-img" src="${LIGHTBOX_BLANK}" alt="" decoding="async"/>
         <figcaption class="lightbox-caption"></figcaption>
       </figure>
       <div class="lightbox-meta">
@@ -80,7 +83,8 @@
       thumb.className = 'lightbox-thumb';
       thumb.setAttribute('role', 'tab');
       thumb.setAttribute('aria-selected', i === index ? 'true' : 'false');
-      thumb.setAttribute('aria-label', img.alt || `Bild ${i + 1}`);
+      const imgLabel = window.ktI18n?.t('ui.imageN')?.replace('{n}', String(i + 1)) || `Bild ${i + 1}`;
+      thumb.setAttribute('aria-label', img.alt || imgLabel);
       const thumbImg = document.createElement('img');
       thumbImg.src = slideSrc(img);
       thumbImg.alt = '';
@@ -141,7 +145,8 @@
   function close() {
     const after = () => {
       document.body.classList.remove('lightbox-open');
-      lightboxImg.removeAttribute('src');
+      lightboxImg.src = LIGHTBOX_BLANK;
+      lightboxImg.alt = '';
       if (lastFocus && typeof lastFocus.focus === 'function') {
         lastFocus.focus();
       }

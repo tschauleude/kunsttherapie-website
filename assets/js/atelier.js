@@ -34,6 +34,15 @@
 
   const collageImages = new Map();
 
+  function tr(key, fallback) {
+    const v = window.ktI18n?.t(key);
+    return v != null ? v : fallback;
+  }
+
+  function trN(key, n, fallback) {
+    return String(tr(key, fallback)).replace('{n}', String(n));
+  }
+
   function markStarted() {
     canvasWrap?.classList.add('has-started');
   }
@@ -97,14 +106,14 @@
     if (historyIndex <= 0) return;
     historyIndex -= 1;
     restoreHistory(historyIndex);
-    setStatus('Rückgängig', 'info');
+    setStatus(tr('atelier.msg.undo', 'Rückgängig'), 'info');
   }
 
   function redo() {
     if (historyIndex >= history.length - 1) return;
     historyIndex += 1;
     restoreHistory(historyIndex);
-    setStatus('Wiederhergestellt', 'info');
+    setStatus(tr('atelier.msg.redo', 'Wiederhergestellt'), 'info');
   }
 
   function updateUndoRedoButtons() {
@@ -221,7 +230,7 @@
 
   function addCollageFromDataUrl(src) {
     if (collageItems.length >= MAX_COLLAGE) {
-      setStatus(`Maximal ${MAX_COLLAGE} Bilder in der Kollage.`, 'error');
+      setStatus(trN('atelier.msg.collageMax', MAX_COLLAGE, `Maximal ${MAX_COLLAGE} Bilder in der Kollage.`), 'error');
       return;
     }
     const id = `c-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -244,7 +253,7 @@
       pushHistory();
       syncCollageBar();
       render();
-      setStatus('Bild zur Kollage hinzugefügt – ziehen zum Verschieben.', 'success');
+      setStatus(tr('atelier.msg.collageAdded', 'Bild zur Kollage hinzugefügt – ziehen zum Verschieben.'), 'success');
       markStarted();
     };
     img.src = src;
@@ -269,7 +278,7 @@
       };
       img.onerror = () => {
         URL.revokeObjectURL(url);
-        reject(new Error('Bild konnte nicht geladen werden'));
+        reject(new Error(tr('atelier.msg.imageLoadFailed', 'Bild konnte nicht geladen werden')));
       };
       img.src = url;
     });
@@ -287,7 +296,7 @@
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'atelier-collage-thumb' + (item.id === selectedCollageId ? ' active' : '');
-      btn.title = 'Kollage-Bild auswählen';
+      btn.title = tr('atelier.msg.collageSelect', 'Kollage-Bild auswählen');
       const thumb = document.createElement('img');
       thumb.src = item.src;
       thumb.alt = '';
@@ -467,7 +476,7 @@
   }
 
   function clearCanvas() {
-    if (!window.confirm('Alles löschen – Zeichnung und Kollage?')) return;
+    if (!window.confirm(tr('atelier.msg.clearConfirm', 'Alles löschen – Zeichnung und Kollage?'))) return;
     strokes.length = 0;
     collageItems.length = 0;
     collageImages.clear();
@@ -475,7 +484,7 @@
     syncCollageBar();
     pushHistory();
     render();
-    setStatus('Leinwand geleert.', 'info');
+    setStatus(tr('atelier.msg.cleared', 'Leinwand geleert.'), 'info');
   }
 
   function saveDraft() {
@@ -488,9 +497,9 @@
         size,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-      setStatus('Entwurf auf diesem Gerät gespeichert.', 'success');
+      setStatus(tr('atelier.msg.saved', 'Entwurf auf diesem Gerät gespeichert.'), 'success');
     } catch (err) {
-      setStatus('Speichern fehlgeschlagen – eventuell zu groß (weniger Bilder).', 'error');
+      setStatus(tr('atelier.msg.saveFailed', 'Speichern fehlgeschlagen – eventuell zu groß (weniger Bilder).'), 'error');
     }
   }
 
@@ -498,7 +507,7 @@
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) {
-        setStatus('Kein gespeicherter Entwurf gefunden.', 'info');
+        setStatus(tr('atelier.msg.noDraft', 'Kein gespeicherter Entwurf gefunden.'), 'info');
         return;
       }
       const data = JSON.parse(raw);
@@ -523,9 +532,9 @@
       pushHistory();
       syncCollageBar();
       render();
-      setStatus('Entwurf geladen.', 'success');
+      setStatus(tr('atelier.msg.loaded', 'Entwurf geladen.'), 'success');
     } catch {
-      setStatus('Entwurf konnte nicht geladen werden.', 'error');
+      setStatus(tr('atelier.msg.loadFailed', 'Entwurf konnte nicht geladen werden.'), 'error');
     }
   }
 
@@ -554,23 +563,27 @@
     const note = form.querySelector('[name="note"]').value.trim();
 
     if (!anonymous && !name && !email) {
-      setStatus('Bitte Name oder E-Mail angeben – oder „Anonym senden“ wählen.', 'error');
+      setStatus(tr('atelier.msg.identityRequired', 'Bitte Name oder E-Mail angeben – oder „Anonym senden“ wählen.'), 'error');
       return;
     }
 
     if (!strokes.length && !collageItems.length) {
-      setStatus('Bitte erst etwas gestalten, bevor gesendet wird.', 'error');
+      setStatus(tr('atelier.msg.emptySubmit', 'Bitte erst etwas gestalten, bevor gesendet wird.'), 'error');
       return;
     }
 
     const btn = form.querySelector('[type="submit"]');
     btn.disabled = true;
-    setStatus('Wird gesendet …', 'info');
+    setStatus(tr('atelier.msg.sending', 'Wird gesendet …'), 'info');
 
     try {
       const off = exportFlattenedCanvas();
       const blob = await new Promise((res, rej) => {
-        off.toBlob((b) => (b ? res(b) : rej(new Error('Export fehlgeschlagen'))), 'image/png', 0.92);
+        off.toBlob(
+          (b) => (b ? res(b) : rej(new Error(tr('atelier.msg.exportFailed', 'Export fehlgeschlagen')))),
+          'image/png',
+          0.92
+        );
       });
 
       const fd = new FormData();
@@ -580,11 +593,13 @@
       fd.append('email', email);
       fd.append('note', note);
 
+      fd.append('lang', window.ktI18n?.getLang?.() || 'de');
+
       const res = await fetch('/api/atelier/submit', { method: 'POST', body: fd });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Senden fehlgeschlagen');
+      if (!res.ok) throw new Error(data.error || tr('atelier.msg.sendFailed', 'Senden fehlgeschlagen'));
 
-      setStatus(data.message || 'Vielen Dank – das Werk wurde übermittelt.', 'success');
+      setStatus(data.message || tr('atelier.msg.sendSuccess', 'Vielen Dank – das Werk wurde übermittelt.'), 'success');
       form.reset();
       form.querySelector('[name="anonymous"]').checked = true;
       toggleIdentityFields();
