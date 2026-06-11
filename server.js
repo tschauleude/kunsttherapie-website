@@ -696,6 +696,23 @@ app.put('/api/admin/news/:id', requireAuth, (req, res) => {
   );
 });
 
+// Toggle published (admin) – quick publish/unpublish without full update
+app.patch('/api/admin/news/:id/published', requireAuth, (req, res) => {
+  const { published } = req.body;
+  if (typeof published === 'undefined') {
+    return res.status(400).json({ error: 'published field required' });
+  }
+  db.run(
+    `UPDATE news SET published = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
+    [published ? 1 : 0, req.params.id],
+    function(err) {
+      if (err) return res.status(500).json({ error: 'Database error' });
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
+      res.json({ success: true, published: published ? 1 : 0 });
+    }
+  );
+});
+
 // Delete news (admin)
 app.delete('/api/admin/news/:id', requireAuth, (req, res) => {
   db.run(

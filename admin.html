@@ -1860,6 +1860,9 @@ async function loadNewsList() {
     news.forEach(item => {
       const badge = item.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>';
       const date = new Date(item.createdAt).toLocaleDateString('de-DE');
+      const publishBtn = item.published
+        ? `<button class="btn-small btn-publish" onclick="toggleNewsPublished(${item.id}, false)">Verbergen</button>`
+        : `<button class="btn-small btn-publish" onclick="toggleNewsPublished(${item.id}, true)">Veröffentlichen</button>`;
       html += `
         <div class="item">
           <div class="item-info">
@@ -1868,6 +1871,7 @@ async function loadNewsList() {
             <p style="font-size: 0.85rem; color: #999;">${date}</p>
           </div>
           <div class="item-actions">
+            ${publishBtn}
             <button class="btn-small btn-edit" onclick="editNews(${item.id})">Bearbeiten</button>
             <button class="btn-small btn-delete" onclick="deleteNews(${item.id})">Löschen</button>
           </div>
@@ -1878,6 +1882,27 @@ async function loadNewsList() {
     document.getElementById('newsList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">Keine News vorhanden</div>';
   } catch (err) {
     console.error('Error loading news:', err);
+  }
+}
+
+async function toggleNewsPublished(id, publish) {
+  try {
+    const res = await fetch(`${API_URL}/admin/news/${id}/published`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ published: publish })
+    });
+    if (res.ok) {
+      showMessage(publish ? 'Neuigkeit veröffentlicht!' : 'Als Entwurf gespeichert.', 'success');
+      loadNewsList();
+      loadDashboard();
+    } else {
+      const err = await res.json();
+      showMessage(err.error || 'Fehler', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
   }
 }
 
