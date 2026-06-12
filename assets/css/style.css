@@ -290,6 +290,13 @@ header.header-scrolled .header-inner {
   display: none;
 }
 
+.brand-logo {
+  display: block;
+  height: 56px;
+  width: auto;
+  object-fit: contain;
+}
+
 nav ul {
   list-style: none;
   display: flex;
@@ -1304,8 +1311,6 @@ body.lightbox-open {
   padding: clamp(1rem, 3vw, 2.5rem);
   background: rgba(24, 22, 20, 0.92);
   backdrop-filter: blur(6px);
-  opacity: 0;
-  transition: opacity var(--duration-flow) var(--ease-flow);
 }
 
 .lightbox[hidden] {
@@ -1317,7 +1322,6 @@ body.lightbox-open {
 }
 
 .lightbox.lightbox-visible {
-  opacity: 1;
   pointer-events: auto;
 }
 
