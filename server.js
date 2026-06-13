@@ -177,6 +177,9 @@ app.use(session({
 // DATENBANK SETUP
 // ============================================================================
 
+let markDbReady;
+const dbReady = new Promise((resolve) => { markDbReady = resolve; });
+
 const db = new sqlite3.Database(DB_PATH, (err) => {
   if (err) {
     console.error('Database error:', err);
@@ -301,6 +304,7 @@ function initializeDatabase() {
       }
       ensureAdminAccounts();
       console.log(' Database initialized');
+      if (markDbReady) markDbReady();
     });
   });
 }
@@ -1997,6 +2001,7 @@ app.listen(PORT, async () => {
   console.log(`║  Admin Panel: http://localhost:${PORT}/admin  ║`);
   console.log(`╚════════════════════════════════════════╝\n`);
   try {
+    await dbReady;
     const cleaned = await i18nContent.migrateRentedOverrides(dbGet, dbRun);
     if (cleaned) console.log('i18n: veraltete CMS-Texte (Miet-/Über-mich-Doppelüberschrift) bereinigt');
     const seeded = await i18nContent.seedOverridesFromFile(dbGet, dbRun);
