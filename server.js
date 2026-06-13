@@ -300,6 +300,18 @@ function initializeDatabase() {
     `);
 
     db.run(`
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT,
+        message TEXT NOT NULL,
+        email_sent INTEGER DEFAULT 0,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    db.run(`
       CREATE TABLE IF NOT EXISTS site_images (
         slot TEXT PRIMARY KEY,
         url TEXT NOT NULL,
@@ -444,6 +456,46 @@ function saveGoogleRefreshToken(token, callback) {
   );
 }
 
+// Promise-Variante: löst mit Token (oder null bei Fehler/keinem Token) auf,
+// damit Routen sie sauber per await im eigenen try/catch nutzen können –
+// statt loser async-Callbacks, deren Fehler unbemerkt blieben.
+function getGoogleRefreshTokenAsync() {
+  return new Promise((resolve) => {
+    getGoogleRefreshToken((err, token) => {
+      if (err) {
+        console.error('Google token lookup:', err.message);
+        return resolve(null);
+      }
+      resolve(token || null);
+    });
+  });
+}
+
+// Google-Kalender-Sync als awaitbare Helfer (Fehler werden geloggt, brechen die
+// Buchung aber nicht ab). Ersetzt die früheren losen async-Callbacks.
+async function syncGoogleCreate(row) {
+  try {
+    const token = await getGoogleRefreshTokenAsync();
+    if (!token) return;
+    const googleEventId = await googleCalendar.createCalendarEvent(token, row);
+    if (googleEventId) {
+      await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [googleEventId, row.id]);
+    }
+  } catch (e) {
+    console.error('Google event create failed:', e.message);
+  }
+}
+
+async function syncGoogleDelete(googleEventId) {
+  try {
+    const token = await getGoogleRefreshTokenAsync();
+    if (!token) return;
+    await googleCalendar.deleteCalendarEvent(token, googleEventId);
+  } catch (e) {
+    console.error('Google delete failed:', e.message);
+  }
+}
+
 function dbAll(sql, params = []) {
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => (err ? reject(err) : resolve(rows || [])));
@@ -543,13 +595,23 @@ app.post('/api/auth/login', loginRateLimiter, (req, res) => {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
-      req.session.userId = admin.id;
-      req.session.username = admin.username;
-
-      res.json({
-        success: true,
-        message: 'Logged in successfully',
-        username: admin.username
+      // Session-ID nach erfolgreichem Login erneuern (Schutz vor Session-Fixation).
+      req.session.regenerate((regenErr) => {
+        if (regenErr) {
+          return res.status(500).json({ error: 'Session error' });
+        }
+        req.session.userId = admin.id;
+        req.session.username = admin.username;
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            return res.status(500).json({ error: 'Session error' });
+          }
+          res.json({
+            success: true,
+            message: 'Logged in successfully',
+            username: admin.username,
+          });
+        });
       });
     }
   );
@@ -608,12 +670,20 @@ app.post('/api/auth/setup', (req, res) => {
         if (insertErr) {
           return res.status(500).json({ error: 'Admin konnte nicht angelegt werden' });
         }
-        req.session.userId = this.lastID;
-        req.session.username = username;
-        res.json({
-          success: true,
-          message: 'Admin-Konto erstellt. Du bist jetzt angemeldet.',
-          username,
+        const newId = this.lastID;
+        // Session-ID erneuern (Schutz vor Session-Fixation).
+        req.session.regenerate((regenErr) => {
+          if (regenErr) return res.status(500).json({ error: 'Session error' });
+          req.session.userId = newId;
+          req.session.username = username;
+          req.session.save((saveErr) => {
+            if (saveErr) return res.status(500).json({ error: 'Session error' });
+            res.json({
+              success: true,
+              message: 'Admin-Konto erstellt. Du bist jetzt angemeldet.',
+              username,
+            });
+          });
         });
       }
     );
@@ -734,10 +804,11 @@ app.put('/api/admin/news/:id', requireAuth, (req, res) => {
   db.run(
     `UPDATE news SET title = ?, content = ?, image = ?, published = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
     [title, content, image || null, published ? 1 : 0, req.params.id],
-    (err) => {
+    function onUpdate(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'News updated successfully' });
     }
   );
@@ -765,10 +836,11 @@ app.delete('/api/admin/news/:id', requireAuth, (req, res) => {
   db.run(
     `DELETE FROM news WHERE id = ?`,
     [req.params.id],
-    (err) => {
+    function onDelete(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'News deleted successfully' });
     }
   );
@@ -848,10 +920,11 @@ app.put('/api/admin/events/:id', requireAuth, (req, res) => {
   db.run(
     `UPDATE events SET title = ?, description = ?, date = ?, time = ?, location = ?, capacity = ?, image = ?, published = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
     [title, description, date, time || null, location || null, capacity || null, image || null, published ? 1 : 0, req.params.id],
-    (err) => {
+    function onUpdate(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'Event updated successfully' });
     }
   );
@@ -862,10 +935,11 @@ app.delete('/api/admin/events/:id', requireAuth, (req, res) => {
   db.run(
     `DELETE FROM events WHERE id = ?`,
     [req.params.id],
-    (err) => {
+    function onDelete(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'Event deleted successfully' });
     }
   );
@@ -945,10 +1019,11 @@ app.put('/api/admin/services/:id', requireAuth, (req, res) => {
   db.run(
     `UPDATE services SET title = ?, description = ?, price = ?, duration = ?, image = ?, active = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
     [title, description, price || null, duration || null, image || null, active ? 1 : 0, req.params.id],
-    (err) => {
+    function onUpdate(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'Service updated successfully' });
     }
   );
@@ -959,10 +1034,11 @@ app.delete('/api/admin/services/:id', requireAuth, (req, res) => {
   db.run(
     `DELETE FROM services WHERE id = ?`,
     [req.params.id],
-    (err) => {
+    function onDelete(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'Service deleted successfully' });
     }
   );
@@ -1095,28 +1171,61 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
     return res.status(400).json({ error: apiMsg('contact.invalidEmail', lang) });
   }
 
+  const payload = {
+    name: name.trim(),
+    email: fromEmail.trim(),
+    phone: phone ? phone.trim() : '',
+    message: message.trim(),
+  };
+
+  // Nachricht IMMER zuerst in der DB sichern – so geht sie auch dann nicht
+  // verloren, wenn der E-Mail-Versand scheitert (z. B. SMTP nicht erreichbar).
+  let saved = false;
+  let savedId = null;
   try {
-    const result = await email.sendContactMessage({
-      name: name.trim(),
-      email: fromEmail.trim(),
-      phone: phone ? phone.trim() : '',
-      message: message.trim(),
-    });
-
-    if (!result.sent) {
-      return res.status(503).json({
-        error: apiMsg('contact.mailFailed', lang),
-      });
-    }
-
-    res.json({
-      success: true,
-      message: apiMsg('contact.success', lang),
-    });
-  } catch (e) {
-    console.error('contact error:', e);
-    res.status(500).json({ error: apiMsg('contact.sendFailed', lang) });
+    const ins = await dbRun(
+      `INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)`,
+      [payload.name, payload.email, payload.phone || null, payload.message]
+    );
+    savedId = ins.lastID;
+    saved = true;
+  } catch (dbErr) {
+    console.error('contact persist error:', dbErr.message);
   }
+
+  let sent = false;
+  try {
+    const result = await email.sendContactMessage(payload);
+    sent = Boolean(result.sent);
+  } catch (e) {
+    console.error('contact email error:', e.message);
+  }
+
+  if (sent && savedId) {
+    dbRun(`UPDATE contact_messages SET email_sent = 1 WHERE id = ?`, [savedId]).catch(() => {});
+  }
+
+  if (sent) {
+    return res.json({ success: true, message: apiMsg('contact.success', lang) });
+  }
+  if (saved) {
+    // E-Mail fehlgeschlagen, aber Nachricht ist gespeichert → Besucher nicht abweisen.
+    return res.json({ success: true, message: apiMsg('contact.success', lang) });
+  }
+  // Weder Mail noch Speicherung möglich – ehrliche Fehlermeldung.
+  res.status(503).json({ error: apiMsg('contact.mailFailed', lang) });
+});
+
+// Gespeicherte Kontaktnachrichten (Fallback-Einsicht, falls E-Mail mal ausfällt)
+app.get('/api/admin/contact-messages', requireAuth, (req, res) => {
+  db.all(
+    `SELECT id, name, email, phone, message, email_sent, createdAt
+     FROM contact_messages ORDER BY createdAt DESC LIMIT 200`,
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Database error' });
+      res.json(rows || []);
+    }
+  );
 });
 
 app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
@@ -1129,8 +1238,12 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
     });
   }
 
+  // Zeit-Falle gegen Bots: nur greifen, wenn das Formular plausibel in unter
+  // ~1,2 s abgeschickt wurde. elapsed >= 0 schließt Uhr-Vorlauf des Clients aus,
+  // damit legitime (nur leicht abweichende) Uhren nicht fälschlich blockiert werden.
   const formAt = Number(req.body._formAt);
-  if (formAt && Date.now() - formAt < 2000) {
+  const elapsed = Number.isFinite(formAt) && formAt > 0 ? Date.now() - formAt : null;
+  if (elapsed !== null && elapsed >= 0 && elapsed < 1200) {
     return res.json({
       success: true,
       message: apiMsg('booking.success', lang),
@@ -1774,18 +1887,7 @@ app.post('/api/admin/bookings', requireAuth, async (req, res) => {
     const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
 
     if (!isBlock) {
-      getGoogleRefreshToken(async (err, token) => {
-        if (!err && token) {
-          try {
-            const googleEventId = await googleCalendar.createCalendarEvent(token, row);
-            if (googleEventId) {
-              await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [googleEventId, row.id]);
-            }
-          } catch (e) {
-            console.error('Google event create failed:', e.message);
-          }
-        }
-      });
+      await syncGoogleCreate(row);
     }
 
     res.json({
@@ -1822,34 +1924,12 @@ app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {
       }
 
       if (!updated.google_event_id) {
-        getGoogleRefreshToken(async (err, token) => {
-          if (!err && token) {
-            try {
-              const googleEventId = await googleCalendar.createCalendarEvent(token, updated);
-              if (googleEventId) {
-                await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [
-                  googleEventId,
-                  updated.id,
-                ]);
-              }
-            } catch (e) {
-              console.error('Google event create failed:', e.message);
-            }
-          }
-        });
+        await syncGoogleCreate(updated);
       }
     }
 
     if (status === 'cancelled' && row.google_event_id) {
-      getGoogleRefreshToken(async (err, token) => {
-        if (!err && token) {
-          try {
-            await googleCalendar.deleteCalendarEvent(token, row.google_event_id);
-          } catch (e) {
-            console.error('Google delete failed:', e.message);
-          }
-        }
-      });
+      await syncGoogleDelete(row.google_event_id);
     }
 
     res.json({
@@ -1870,15 +1950,7 @@ app.delete('/api/admin/bookings/:id', requireAuth, async (req, res) => {
     if (!row) return res.status(404).json({ error: 'Nicht gefunden' });
 
     if (row.google_event_id) {
-      getGoogleRefreshToken(async (err, token) => {
-        if (!err && token) {
-          try {
-            await googleCalendar.deleteCalendarEvent(token, row.google_event_id);
-          } catch (e) {
-            console.error('Google delete failed:', e.message);
-          }
-        }
-      });
+      await syncGoogleDelete(row.google_event_id);
     }
 
     await dbRun(`DELETE FROM bookings WHERE id = ?`, [req.params.id]);
