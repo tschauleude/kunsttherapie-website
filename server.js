@@ -38,17 +38,27 @@ fs.mkdirSync(ATELIER_DIR, { recursive: true });
 
 const atelierSubmitCounts = new Map();
 
+// Dateiendung NUR aus dem validierten MIME-Type ableiten – niemals aus dem
+// (fälschbaren) Client-Dateinamen. Sonst könnte z. B. eine als image/jpeg
+// deklarierte "shell.html" als .html im web-erreichbaren Upload-Ordner landen.
+const IMAGE_MIME_EXT = {
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
+  'image/gif': '.gif',
+  'image/webp': '.webp',
+};
+
 const imageUpload = multer({
   storage: multer.diskStorage({
     destination: UPLOAD_DIR,
     filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
+      const ext = IMAGE_MIME_EXT[file.mimetype] || '.jpg';
       cb(null, `${Date.now()}-${uuidv4().slice(0, 8)}${ext}`);
     },
   }),
   limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE || '5242880', 10) },
   fileFilter: (req, file, cb) => {
-    if (/^image\/(jpeg|png|gif|webp)$/.test(file.mimetype)) {
+    if (IMAGE_MIME_EXT[file.mimetype]) {
       cb(null, true);
     } else {
       cb(new Error('Nur Bilder (JPG, PNG, GIF, WebP)'));
@@ -60,13 +70,13 @@ const atelierUpload = multer({
   storage: multer.diskStorage({
     destination: ATELIER_DIR,
     filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname).toLowerCase() || '.png';
+      const ext = IMAGE_MIME_EXT[file.mimetype] || '.png';
       cb(null, `atelier-${Date.now()}-${uuidv4().slice(0, 8)}${ext}`);
     },
   }),
   limits: { fileSize: parseInt(process.env.ATELIER_MAX_FILE_SIZE || '8388608', 10) },
   fileFilter: (req, file, cb) => {
-    if (/^image\/(jpeg|png|gif|webp)$/.test(file.mimetype)) {
+    if (IMAGE_MIME_EXT[file.mimetype]) {
       cb(null, true);
     } else {
       cb(new Error('Nur Bilddateien erlaubt'));
@@ -266,6 +276,16 @@ function initializeDatabase() {
       )
     `);
 
+    // DB-seitige Sperre gegen Doppelbuchungen (schließt die Race-Condition
+    // zwischen Verfügbarkeitsprüfung und INSERT). Stornierte Termine zählen nicht.
+    db.run(
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_slot
+       ON bookings(date, start_time) WHERE status != 'cancelled'`,
+      (idxErr) => {
+        if (idxErr) console.error('Buchungs-Index konnte nicht erstellt werden:', idxErr.message);
+      }
+    );
+
     db.run(`
       CREATE TABLE IF NOT EXISTS atelier_submissions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -359,7 +379,11 @@ function ensureAdminAccounts() {
     }
     if (row && row.count > 0) return;
 
-    const hashedPassword = bcryptjs.hashSync('admin123', 10);
+    // Kein bekanntes Default-Passwort mehr: ein zufälliges erzeugen und einmalig
+    // ins Server-Log schreiben. Wer ADMIN_USERNAME/ADMIN_PASSWORD setzt, landet
+    // hier gar nicht erst.
+    const generatedPassword = require('crypto').randomBytes(9).toString('base64url');
+    const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
     db.run(
       `INSERT INTO admins (username, password, email) VALUES (?, ?, ?)`,
       ['admin', hashedPassword, envEmail],
@@ -367,8 +391,12 @@ function ensureAdminAccounts() {
         if (insertErr) {
           console.error('Error creating default admin:', insertErr);
         } else {
-          console.log(' Standard-Admin angelegt: Benutzername admin, Passwort admin123');
-          console.log('  Bitte ADMIN_USERNAME und ADMIN_PASSWORD in .env setzen!');
+          console.log('====================================================');
+          console.log(' Erst-Admin angelegt – Benutzername: admin');
+          console.log(`   Passwort (NUR jetzt sichtbar): ${generatedPassword}`);
+          console.log('   Bitte nach dem Login ändern oder ADMIN_USERNAME/');
+          console.log('   ADMIN_PASSWORD in der .env setzen.');
+          console.log('====================================================');
         }
       }
     );
@@ -1171,6 +1199,10 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
         : apiMsg('booking.successSaved', lang),
     });
   } catch (e) {
+    if (e && (e.code === 'SQLITE_CONSTRAINT' || /UNIQUE constraint/i.test(e.message || ''))) {
+      // Paralleler Buchungsversuch hat den Slot gerade belegt.
+      return res.status(409).json({ error: apiMsg('booking.unavailable', lang) });
+    }
     console.error('booking create error:', e);
     res.status(500).json({ error: apiMsg('booking.failed', lang) });
   }
