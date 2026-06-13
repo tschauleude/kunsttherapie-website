@@ -1083,18 +1083,14 @@ app.get('/api/bookings/availability', async (req, res) => {
       };
     }
 
-    getGoogleRefreshToken((err, token) => {
-      if (err) {
-        console.error('Google token lookup:', err.message);
-      }
-      res.json({
-        month,
-        from,
-        to,
-        days,
-        googleCalendarConnected: Boolean(!err && token),
-        emailConfigured: email.isEmailConfigured(),
-      });
+    const token = await getGoogleRefreshTokenAsync();
+    res.json({
+      month,
+      from,
+      to,
+      days,
+      googleCalendarConnected: Boolean(token),
+      emailConfigured: email.isEmailConfigured(),
     });
   } catch (e) {
     console.error('availability error:', e);
@@ -1113,16 +1109,12 @@ app.get('/api/bookings/slots', async (req, res) => {
     const intervals = busyForDate(dateStr, localBusy, googleBusy);
     const slots = booking.slotsWithAvailability(dateStr, intervals);
 
-    getGoogleRefreshToken((err, token) => {
-      if (err) {
-        console.error('Google token lookup:', err.message);
-      }
-      res.json({
-        date: dateStr,
-        workingDay: booking.isWorkingDay(dateStr),
-        slots,
-        googleCalendarConnected: Boolean(!err && token),
-      });
+    const token = await getGoogleRefreshTokenAsync();
+    res.json({
+      date: dateStr,
+      workingDay: booking.isWorkingDay(dateStr),
+      slots,
+      googleCalendarConnected: Boolean(token),
     });
   } catch (e) {
     console.error('slots error:', e);
