@@ -151,7 +151,17 @@ const assetStatic = express.static(path.join(ROOT, 'assets'), {
   immutable: true,
   etag: true,
   setHeaders(res, filePath) {
-    if (/\.(html?)$/i.test(filePath)) {
+    const base = path.basename(filePath);
+    if (/\.html?$/i.test(base)) {
+      res.setHeader('Cache-Control', 'no-cache');
+      return;
+    }
+    // Nur Dateien mit Content-Hash im Namen (z. B. style.beb06571.css) dürfen
+    // dauerhaft "immutable" gecacht werden. Unversionierte CSS/JS – etwa das
+    // Admin-Stylesheet oder Vendor-Dateien – müssen revalidieren, sonst erreichen
+    // Änderungen den Browser ein Jahr lang nicht (immutable = keine Revalidierung).
+    const isHashed = /\.[0-9a-f]{8,}\.[a-z0-9]+$/i.test(base);
+    if (/\.(css|js)$/i.test(base) && !isHashed) {
       res.setHeader('Cache-Control', 'no-cache');
     }
   },

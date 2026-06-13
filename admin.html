@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css"/>
-  <link rel="stylesheet" href="assets/css/admin.css"/>
+  <link rel="stylesheet" href="assets/css/style.css?v=20260613"/>
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260613"/>
   <link rel="stylesheet" href="assets/vendor/quill.snow.css">
 </head>
 <body class="admin-app"><!-- LOGIN SCREEN -->
@@ -1417,24 +1417,30 @@ function fmGridTile(f) {
   </div>`;
 }
 
+function fmTypeIcon(f) {
+  const t = (f.type || '').toLowerCase();
+  if (t === 'svg') return '&#127912;';                       // 🎨 Vektorgrafik
+  if (['mp4', 'webm', 'mov'].includes(t)) return '&#127909;'; // 🎬 Video
+  if (t === 'pdf') return '&#128196;';                        // 📄 Dokument
+  return '&#128247;';                                         // 📷 Rasterbild
+}
+
 function fmListRow(f) {
   const selCls = fmSelected.has(fmKey(f)) ? ' is-selected' : '';
-  return `<tr class="fm-row${selCls}" data-key="${escapeHtml(fmKey(f))}">
-    <td class="fm-col-check">${fmCheckbox(f)}</td>
-    <td class="fm-col-thumb"><button type="button" class="fm-row-thumb" data-action="preview" data-key="${escapeHtml(fmKey(f))}" title="Vorschau"><img src="${escapeHtml(f.url)}" alt="" loading="lazy"/></button></td>
-    <td class="fm-col-name"><span class="fm-row-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span><span class="fm-row-badges">${fmBadges(f)}</span></td>
-    <td class="fm-col-type">${escapeHtml((f.type || '').toUpperCase())}</td>
-    <td class="fm-col-dim">${escapeHtml(fmDims(f) || '–')}</td>
-    <td class="fm-col-size">${escapeHtml(fmFmtSize(f.size))}</td>
-    <td class="fm-col-date">${escapeHtml(fmFmtDate(f.updatedAt))}</td>
-    <td class="fm-col-actions">
+  const meta = [fmFmtSize(f.size), fmFmtDate(f.updatedAt)].filter(Boolean).join('  ·  ');
+  return `<li class="fm-li${selCls}" data-key="${escapeHtml(fmKey(f))}">
+    <label class="fm-li-check">${fmCheckbox(f)}</label>
+    <span class="fm-li-icon" aria-hidden="true">${fmTypeIcon(f)}</span>
+    <button type="button" class="fm-li-name" data-action="preview" data-key="${escapeHtml(fmKey(f))}" title="Vorschau: ${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</button>
+    <span class="fm-li-badges">${fmBadges(f)}</span>
+    <span class="fm-li-meta">${escapeHtml(meta)}</span>
+    <span class="fm-li-actions">
       <button type="button" class="fm-iconbtn" data-action="copy" data-key="${escapeHtml(fmKey(f))}" title="Link kopieren" aria-label="Link kopieren">&#128279;</button>
-      <button type="button" class="fm-iconbtn" data-action="preview" data-key="${escapeHtml(fmKey(f))}" title="Vorschau" aria-label="Vorschau">&#128065;</button>
       ${f.protected
         ? `<button type="button" class="fm-iconbtn" disabled title="Gesperrt" aria-label="Gesperrt">&#128274;</button>`
         : `<button type="button" class="fm-iconbtn fm-iconbtn--danger" data-action="delete" data-key="${escapeHtml(fmKey(f))}" title="Löschen" aria-label="Löschen">&#128465;</button>`}
-    </td>
-  </tr>`;
+    </span>
+  </li>`;
 }
 
 function fmRender() {
@@ -1457,19 +1463,7 @@ function fmRender() {
   }
 
   if (fmView === 'list') {
-    container.innerHTML = `<table class="fm-list">
-      <thead><tr>
-        <th class="fm-col-check"></th>
-        <th class="fm-col-thumb"></th>
-        <th class="fm-col-name">Name</th>
-        <th class="fm-col-type">Typ</th>
-        <th class="fm-col-dim">Maße</th>
-        <th class="fm-col-size">Größe</th>
-        <th class="fm-col-date">Geändert</th>
-        <th class="fm-col-actions"></th>
-      </tr></thead>
-      <tbody>${files.map(fmListRow).join('')}</tbody>
-    </table>`;
+    container.innerHTML = `<ul class="fm-list">${files.map(fmListRow).join('')}</ul>`;
   } else {
     container.innerHTML = files.map(fmGridTile).join('');
   }
@@ -1577,7 +1571,11 @@ async function fmDeleteOne(f, { silent = false } = {}) {
 
 async function deleteAnyImage(source, filename) {
   const f = fmFileByKey(`${source}::${filename}`) || { source, filename };
-  if (!confirm(`Bild „${filename}" dauerhaft löschen?`)) return;
+  const isStatic = (f.source || source) === 'static';
+  const note = isStatic
+    ? '\n\nHinweis: Dies ist ein Website-Asset (Teil des Seiten-Codes). Es wird sofort vom Server entfernt, kann bei einem erneuten Deployment aber zurückkehren, sofern es nicht auch aus dem Code entfernt wird.'
+    : '';
+  if (!confirm(`„${filename}" dauerhaft löschen?${note}`)) return;
   const ok = await fmDeleteOne(f);
   if (ok) {
     showMessage(`✓ „${filename}" gelöscht.`, 'success');
@@ -1590,7 +1588,11 @@ async function deleteAnyImage(source, filename) {
 async function fmBulkDelete() {
   const files = [...fmSelected].map(fmFileByKey).filter(Boolean).filter((f) => !f.protected);
   if (!files.length) return;
-  if (!confirm(`Wirklich ${files.length} Datei(en) dauerhaft löschen?`)) return;
+  const staticCount = files.filter((f) => f.source === 'static').length;
+  const note = staticCount
+    ? `\n\nDarunter ${staticCount} Website-Asset(s): werden vom Server entfernt, können bei einem Deployment aber zurückkehren.`
+    : '';
+  if (!confirm(`Wirklich ${files.length} Datei(en) dauerhaft löschen?${note}`)) return;
   let deleted = 0;
   for (const f of files) {
     const ok = await fmDeleteOne(f, { silent: false });
@@ -1689,7 +1691,7 @@ function initAllFilesPanel() {
     if (!cb) return;
     const key = cb.dataset.key;
     if (cb.checked) fmSelected.add(key); else fmSelected.delete(key);
-    const row = cb.closest('.fm-tile, .fm-row');
+    const row = cb.closest('.fm-tile, .fm-li');
     if (row) row.classList.toggle('is-selected', cb.checked);
     fmUpdateSelectionUI();
   });
