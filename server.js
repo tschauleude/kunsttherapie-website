@@ -8,7 +8,6 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
-const crypto = require('crypto');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const siteImages = require('./lib/site-images');
@@ -16,6 +15,7 @@ const media = require('./lib/media');
 const contentVersions = require('./lib/content-versions');
 const imageMeta = require('./lib/image-meta');
 const backup = require('./lib/backup');
+const { resolveAppSecret } = require('./lib/secret');
 const { apiLang, apiMsg } = require('./lib/api-messages');
 require('dotenv').config();
 
@@ -171,31 +171,11 @@ const assetStatic = express.static(path.join(ROOT, 'assets'), {
 app.use('/assets', assetStatic);
 app.use(express.static(PUBLIC_DIR, { maxAge: '1h', etag: true }));
 
-// Session-Secret: ENV bevorzugt, sonst zufälliges, dauerhaft gespeichertes
-// Secret (kein bekanntes Default-Secret mehr → Sessions nicht fälschbar).
-function resolveSessionSecret() {
-  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
-  const dataDir = path.join(ROOT, 'data');
-  const secretFile = path.join(dataDir, '.session-secret');
-  try {
-    if (fs.existsSync(secretFile)) {
-      const existing = fs.readFileSync(secretFile, 'utf8').trim();
-      if (existing) return existing;
-    }
-    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-    const generated = crypto.randomBytes(48).toString('hex');
-    fs.writeFileSync(secretFile, generated, { mode: 0o600 });
-    console.log('Session-Secret generiert und in data/.session-secret gespeichert.');
-    return generated;
-  } catch (e) {
-    console.error('Session-Secret konnte nicht persistiert werden, nutze Zufallswert für diese Laufzeit:', e.message);
-    return crypto.randomBytes(48).toString('hex');
-  }
-}
-
+// Session-Secret: zentral über lib/secret (ENV bevorzugt, sonst persistiertes
+// Zufalls-Secret) – dasselbe Secret signiert auch die Kalender-Token.
 // Session Configuration
 app.use(session({
-  secret: resolveSessionSecret(),
+  secret: resolveAppSecret(),
   resave: false,
   saveUninitialized: false,
   proxy: IS_PRODUCTION,
