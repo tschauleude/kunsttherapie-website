@@ -596,7 +596,9 @@
       fd.append('lang', window.ktI18n?.getLang?.() || 'de');
 
       const res = await fetch('/api/atelier/submit', { method: 'POST', body: fd });
-      const data = await res.json();
+      // Antwort tolerant parsen: bei Nicht-JSON (z. B. Proxy-Fehler 413/502)
+      // keine harte JSON-Parse-Exception, sondern saubere Fehlermeldung.
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || tr('atelier.msg.sendFailed', 'Senden fehlgeschlagen'));
 
       setStatus(data.message || tr('atelier.msg.sendSuccess', 'Vielen Dank – das Werk wurde übermittelt.'), 'success');

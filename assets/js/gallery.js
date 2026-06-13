@@ -187,15 +187,9 @@
     if (slideIndex >= 0) show(slideIndex);
   }
 
+  // Trigger sind native <button> – Enter/Leertaste lösen bereits ein click aus.
+  // Ein zusätzlicher keydown-Handler würde den Lightbox-Aufbau doppelt starten.
   gallery.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-gallery-open]');
-    if (!btn || !gallery.contains(btn)) return;
-    e.preventDefault();
-    openFromButton(btn);
-  });
-
-  gallery.addEventListener('keydown', (e) => {
-    if (e.key !== 'Enter' && e.key !== ' ') return;
     const btn = e.target.closest('[data-gallery-open]');
     if (!btn || !gallery.contains(btn)) return;
     e.preventDefault();

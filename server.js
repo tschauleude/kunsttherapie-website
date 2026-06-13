@@ -1325,6 +1325,10 @@ function atelierRateLimit(req) {
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
   const now = Date.now();
   const hour = 60 * 60 * 1000;
+  // Abgelaufene Einträge entfernen, damit die Map nicht unbegrenzt wächst.
+  for (const [key, e] of atelierSubmitCounts) {
+    if (now - e.start > hour) atelierSubmitCounts.delete(key);
+  }
   let entry = atelierSubmitCounts.get(ip);
   if (!entry || now - entry.start > hour) {
     entry = { start: now, count: 0 };
@@ -2060,7 +2064,7 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'kunsttherapie-cms' });
+  res.json({ status: 'ok', service: 'kunsttherapie-cms', lastBackup: backup.getLastBackup() });
 });
 
 app.get('/', (req, res) => sendPage(res, 'index'));
