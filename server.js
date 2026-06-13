@@ -8,12 +8,14 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const siteImages = require('./lib/site-images');
 const media = require('./lib/media');
 const contentVersions = require('./lib/content-versions');
 const imageMeta = require('./lib/image-meta');
+const backup = require('./lib/backup');
 const { apiLang, apiMsg } = require('./lib/api-messages');
 require('dotenv').config();
 
@@ -159,9 +161,31 @@ const assetStatic = express.static(path.join(ROOT, 'assets'), {
 app.use('/assets', assetStatic);
 app.use(express.static(PUBLIC_DIR, { maxAge: '1h', etag: true }));
 
+// Session-Secret: ENV bevorzugt, sonst zufälliges, dauerhaft gespeichertes
+// Secret (kein bekanntes Default-Secret mehr → Sessions nicht fälschbar).
+function resolveSessionSecret() {
+  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
+  const dataDir = path.join(ROOT, 'data');
+  const secretFile = path.join(dataDir, '.session-secret');
+  try {
+    if (fs.existsSync(secretFile)) {
+      const existing = fs.readFileSync(secretFile, 'utf8').trim();
+      if (existing) return existing;
+    }
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    const generated = crypto.randomBytes(48).toString('hex');
+    fs.writeFileSync(secretFile, generated, { mode: 0o600 });
+    console.log('Session-Secret generiert und in data/.session-secret gespeichert.');
+    return generated;
+  } catch (e) {
+    console.error('Session-Secret konnte nicht persistiert werden, nutze Zufallswert für diese Laufzeit:', e.message);
+    return crypto.randomBytes(48).toString('hex');
+  }
+}
+
 // Session Configuration
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'kunsttherapie-secret-key-change-in-production',
+  secret: resolveSessionSecret(),
   resave: false,
   saveUninitialized: false,
   proxy: IS_PRODUCTION,
@@ -1989,11 +2013,31 @@ app.use((req, res) => {
   );
 });
 
+// Globaler Fehler-Handler: saubere Antwort, keine Stacktraces nach außen
+app.use((err, req, res, next) => {
+  console.error('Unbehandelter Request-Fehler:', err && err.stack ? err.stack : err);
+  if (res.headersSent) return next(err);
+  if (req.path && req.path.startsWith('/api/')) {
+    return res.status(500).json({ error: 'Interner Serverfehler' });
+  }
+  res.status(500).type('text/html; charset=utf-8').send(
+    '<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Fehler</title></head><body><p>Es ist ein Fehler aufgetreten.</p><p><a href="/">Zur Startseite</a></p></body></html>'
+  );
+});
+
 // ============================================================================
 // SERVER START
 // ============================================================================
 
 if (require.main === module) {
+// Prozess-Stabilität: einzelne Fehler dürfen den Server nicht lautlos beenden
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection:', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err && err.stack ? err.stack : err);
+});
+
 app.listen(PORT, async () => {
   console.log(`\n╔════════════════════════════════════════╗`);
   console.log(`║   Kunsttherapie CMS Backend       ║`);
@@ -2010,6 +2054,12 @@ app.listen(PORT, async () => {
     console.log('i18n: Übersetzungsdateien aus Quelltexten neu aufgebaut');
   } catch (e) {
     console.error('i18n migrate:', e.message);
+  }
+  try {
+    await dbReady;
+    backup.scheduleBackups(db, DB_PATH, { keep: 7 });
+  } catch (e) {
+    console.error('Backup-Scheduling fehlgeschlagen:', e.message);
   }
 });
 }
