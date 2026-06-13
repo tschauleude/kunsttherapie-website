@@ -97,13 +97,47 @@
             <li><strong>Angebote &amp; Preise</strong> – Deine Therapieangebote mit Preis und Dauer verwalten</li>
           </ul>
         </div>
-        <div class="stats-box">
-          <h3>Zahlen</h3>
-          <p>Neuigkeiten: <strong id="newsCount">0</strong></p>
-          <p>Buchungen: <strong id="bookingsCount">0</strong></p>
-          <p>Mini-Atelier: <strong id="atelierCount">0</strong> neu</p>
-          <p>Veranstaltungen: <strong id="eventsCount">0</strong></p>
-          <p>Angebote: <strong id="servicesCount">0</strong></p>
+        <div class="dash-stats">
+          <button type="button" class="dash-card" onclick="goToSection('news')">
+            <span class="dash-card-icon" aria-hidden="true">📰</span>
+            <span class="dash-card-num" id="newsCount">0</span>
+            <span class="dash-card-label">Neuigkeiten</span>
+            <span class="dash-card-sub" id="newsSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('bookings')">
+            <span class="dash-card-icon" aria-hidden="true">📅</span>
+            <span class="dash-card-num" id="bookingsCount">0</span>
+            <span class="dash-card-label">Buchungen</span>
+            <span class="dash-card-sub" id="bookingsSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('events')">
+            <span class="dash-card-icon" aria-hidden="true">🎟️</span>
+            <span class="dash-card-num" id="eventsCount">0</span>
+            <span class="dash-card-label">Veranstaltungen</span>
+            <span class="dash-card-sub" id="eventsSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('atelier')">
+            <span class="dash-card-icon" aria-hidden="true">🎨</span>
+            <span class="dash-card-num" id="atelierCount">0</span>
+            <span class="dash-card-label">Mini-Atelier</span>
+            <span class="dash-card-sub" id="atelierSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('services')">
+            <span class="dash-card-icon" aria-hidden="true">💚</span>
+            <span class="dash-card-num" id="servicesCount">0</span>
+            <span class="dash-card-label">Angebote</span>
+            <span class="dash-card-sub" id="servicesSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('images')">
+            <span class="dash-card-icon" aria-hidden="true">🖼️</span>
+            <span class="dash-card-num" id="storageCount">0</span>
+            <span class="dash-card-label">Hochgeladene Bilder</span>
+            <span class="dash-card-sub" id="storageSub">–</span>
+          </button>
+        </div>
+        <div class="dash-upcoming">
+          <h3>Nächste Termine</h3>
+          <div id="dashUpcoming"><p class="note">Wird geladen …</p></div>
         </div>
         <hr class="sep" style="margin:1.5rem 0"/>
         <h3>Versionen &amp; Wiederherstellen</h3>
@@ -1747,27 +1781,87 @@ function toggleManualBlockFields() {
 // DASHBOARD
 // ============================================================================
 
+function dashSetText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function goToSection(id) {
+  const nav = document.querySelector(`.nav-item[onclick*="'${id}'"]`);
+  switchSection(id, nav);
+}
+
+function renderDashUpcoming(bookings, today) {
+  const el = document.getElementById('dashUpcoming');
+  if (!el) return;
+  const upcoming = bookings
+    .filter((b) => (b.date || '') >= today)
+    .sort((a, b) => `${a.date}${a.start_time || ''}`.localeCompare(`${b.date}${b.start_time || ''}`))
+    .slice(0, 5);
+  if (!upcoming.length) {
+    el.innerHTML = '<p class="note">Keine bevorstehenden Termine.</p>';
+    return;
+  }
+  el.innerHTML = upcoming.map((b) => {
+    let ds = b.date;
+    try {
+      ds = new Date(`${b.date}T${b.start_time || '00:00'}`).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
+    } catch (_) { /* keep raw */ }
+    const confirmed = b.status === 'confirmed';
+    return `<div class="dash-booking">
+      <span class="dash-booking-date">${escapeHtml(ds)} · ${escapeHtml(b.start_time || '')}</span>
+      <span class="dash-booking-name">${escapeHtml(b.name || '')}</span>
+      <span class="dash-booking-status ${confirmed ? 'is-confirmed' : 'is-pending'}">${confirmed ? 'bestätigt' : 'offen'}</span>
+    </div>`;
+  }).join('');
+}
+
 async function loadDashboard() {
   try {
-    const [newsRes, bookingsRes, eventsRes, atelierRes, servicesRes] = await Promise.all([
+    const [newsRes, bookingsRes, eventsRes, atelierRes, servicesRes, mediaRes] = await Promise.all([
       fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/atelier`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/services`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
     ]);
 
-    const news = await newsRes.json();
-    const bookings = await bookingsRes.json();
-    const events = await eventsRes.json();
+    const news = newsRes.ok ? await newsRes.json() : [];
+    const bookings = bookingsRes.ok ? await bookingsRes.json() : [];
+    const events = eventsRes.ok ? await eventsRes.json() : [];
     const atelier = atelierRes.ok ? await atelierRes.json() : [];
     const services = servicesRes.ok ? await servicesRes.json() : [];
+    const media = mediaRes.ok ? ((await mediaRes.json()).files || []) : [];
 
-    document.getElementById('newsCount').textContent = news.length;
-    document.getElementById('bookingsCount').textContent = bookings.filter((b) => b.status !== 'cancelled').length;
-    document.getElementById('atelierCount').textContent = atelier.filter((a) => a.status === 'new').length;
-    document.getElementById('eventsCount').textContent = events.length;
-    document.getElementById('servicesCount').textContent = services.filter((s) => s.active).length;
+    const today = new Date().toISOString().slice(0, 10);
+
+    const newsPublished = news.filter((n) => n.published).length;
+    dashSetText('newsCount', news.length);
+    dashSetText('newsSub', `${newsPublished} online · ${news.length - newsPublished} Entwürfe`);
+
+    const activeBookings = bookings.filter((b) => b.status !== 'cancelled');
+    const pending = bookings.filter((b) => b.status === 'pending').length;
+    dashSetText('bookingsCount', activeBookings.length);
+    dashSetText('bookingsSub', pending ? `${pending} offen` : 'keine offenen');
+
+    const upcomingEvents = events.filter((e) => (e.date || '') >= today).length;
+    dashSetText('eventsCount', events.length);
+    dashSetText('eventsSub', `${upcomingEvents} bevorstehend`);
+
+    const atelierNew = atelier.filter((a) => a.status === 'new').length;
+    dashSetText('atelierCount', atelierNew);
+    dashSetText('atelierSub', `${atelier.length} gesamt`);
+
+    const activeServices = services.filter((s) => s.active).length;
+    dashSetText('servicesCount', activeServices);
+    dashSetText('servicesSub', `${services.length} gesamt`);
+
+    const totalBytes = media.reduce((sum, f) => sum + (f.size || 0), 0);
+    dashSetText('storageCount', media.length);
+    dashSetText('storageSub', fmFmtSize(totalBytes) || '0 B');
+
+    renderDashUpcoming(activeBookings, today);
     await loadContentVersions();
   } catch (err) {
     console.error('Dashboard load error:', err);
