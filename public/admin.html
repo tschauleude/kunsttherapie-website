@@ -203,6 +203,18 @@
           </div>
         </form>
       </div>
+      <div class="list-toolbar" id="newsToolbar">
+        <div class="list-search">
+          <span class="list-search-icon" aria-hidden="true">🔍</span>
+          <input type="search" id="newsSearch" class="list-search-input" placeholder="Neuigkeiten durchsuchen …" aria-label="Neuigkeiten durchsuchen" autocomplete="off"/>
+        </div>
+        <div class="list-filters" role="group" aria-label="Filtern">
+          <button type="button" class="list-filter-btn is-active" data-newsfilter="all">Alle</button>
+          <button type="button" class="list-filter-btn" data-newsfilter="published">Veröffentlicht</button>
+          <button type="button" class="list-filter-btn" data-newsfilter="draft">Entwürfe</button>
+        </div>
+        <span class="list-count" id="newsListCount"></span>
+      </div>
       <div id="newsList" class="items-list"></div>
     </section>
 
@@ -325,6 +337,18 @@
             <button type="button" class="btn-cancel" onclick="closeEventForm()">Abbrechen</button>
           </div>
         </form>
+      </div>
+      <div class="list-toolbar" id="eventsToolbar">
+        <div class="list-search">
+          <span class="list-search-icon" aria-hidden="true">🔍</span>
+          <input type="search" id="eventsSearch" class="list-search-input" placeholder="Veranstaltungen durchsuchen …" aria-label="Veranstaltungen durchsuchen" autocomplete="off"/>
+        </div>
+        <div class="list-filters" role="group" aria-label="Filtern">
+          <button type="button" class="list-filter-btn is-active" data-eventsfilter="all">Alle</button>
+          <button type="button" class="list-filter-btn" data-eventsfilter="upcoming">Bevorstehend</button>
+          <button type="button" class="list-filter-btn" data-eventsfilter="past">Vergangen</button>
+        </div>
+        <span class="list-count" id="eventsListCount"></span>
       </div>
       <div id="eventsList" class="items-list"></div>
     </section>
@@ -2137,35 +2161,85 @@ async function deleteNews(id) {
   }
 }
 
+let newsListData = [];
+let newsListFilter = 'all';
+let newsListSearch = '';
+
+function renderNewsListItems() {
+  const listEl = document.getElementById('newsList');
+  const countEl = document.getElementById('newsListCount');
+  if (!listEl) return;
+
+  let items = newsListData.slice();
+  if (newsListFilter === 'published') items = items.filter((n) => n.published);
+  else if (newsListFilter === 'draft') items = items.filter((n) => !n.published);
+  if (newsListSearch) {
+    const q = newsListSearch.toLowerCase();
+    items = items.filter((n) =>
+      (n.title || '').toLowerCase().includes(q) ||
+      (n.content || '').replace(/<[^>]*>/g, '').toLowerCase().includes(q));
+  }
+
+  if (countEl) countEl.textContent = newsListData.length ? `${items.length} von ${newsListData.length}` : '';
+
+  if (!items.length) {
+    listEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Keine Neuigkeiten gefunden.</div>';
+    return;
+  }
+
+  listEl.innerHTML = items.map((item) => {
+    const badge = item.published
+      ? '<span class="status-badge published">Veröffentlicht</span>'
+      : '<span class="status-badge draft">Entwurf</span>';
+    const date = item.createdAt ? new Date(item.createdAt).toLocaleDateString('de-DE') : '';
+    const snippet = (item.content || '').replace(/<[^>]*>/g, '').trim().substring(0, 120);
+    const thumb = item.image ? `<img class="item-thumb" src="${escapeHtml(item.image)}" alt="" loading="lazy"/>` : '';
+    const publishBtn = item.published
+      ? `<button class="btn-small btn-publish" onclick="toggleNewsPublished(${item.id}, false)">Verbergen</button>`
+      : `<button class="btn-small btn-publish" onclick="toggleNewsPublished(${item.id}, true)">Veröffentlichen</button>`;
+    return `
+      <div class="item">
+        ${thumb}
+        <div class="item-info">
+          <h3>${escapeHtml(item.title || '')} ${badge}</h3>
+          <p>${escapeHtml(snippet)}${snippet ? '…' : ''}</p>
+          <p style="font-size: 0.85rem; color: #999;">${date}</p>
+        </div>
+        <div class="item-actions">
+          ${publishBtn}
+          <button class="btn-small btn-edit" onclick="editNews(${item.id})">Bearbeiten</button>
+          <button class="btn-small btn-delete" onclick="deleteNews(${item.id})">Löschen</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function initNewsListControls() {
+  const toolbar = document.getElementById('newsToolbar');
+  if (!toolbar || toolbar.dataset.bound) return;
+  toolbar.dataset.bound = '1';
+  const search = document.getElementById('newsSearch');
+  let t = null;
+  search?.addEventListener('input', () => {
+    clearTimeout(t);
+    t = setTimeout(() => { newsListSearch = search.value.trim(); renderNewsListItems(); }, 150);
+  });
+  toolbar.querySelectorAll('.list-filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      toolbar.querySelectorAll('.list-filter-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+      newsListFilter = btn.dataset.newsfilter;
+      renderNewsListItems();
+    });
+  });
+}
+
 async function loadNewsList() {
+  initNewsListControls();
   try {
     const response = await fetch(`${API_URL}/admin/news`, { credentials: 'include' });
-    const news = await response.json();
-
-    let html = '';
-    news.forEach(item => {
-      const badge = item.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>';
-      const date = new Date(item.createdAt).toLocaleDateString('de-DE');
-      const publishBtn = item.published
-        ? `<button class="btn-small btn-publish" onclick="toggleNewsPublished(${item.id}, false)">Verbergen</button>`
-        : `<button class="btn-small btn-publish" onclick="toggleNewsPublished(${item.id}, true)">Veröffentlichen</button>`;
-      html += `
-        <div class="item">
-          <div class="item-info">
-            <h3>${item.title} ${badge}</h3>
-            <p>${(item.content || '').replace(/<[^>]*>/g, '').substring(0, 100)}…</p>
-            <p style="font-size: 0.85rem; color: #999;">${date}</p>
-          </div>
-          <div class="item-actions">
-            ${publishBtn}
-            <button class="btn-small btn-edit" onclick="editNews(${item.id})">Bearbeiten</button>
-            <button class="btn-small btn-delete" onclick="deleteNews(${item.id})">Löschen</button>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById('newsList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">Keine News vorhanden</div>';
+    const data = await response.json();
+    newsListData = Array.isArray(data) ? data : [];
+    renderNewsListItems();
   } catch (err) {
     console.error('Error loading news:', err);
   }
@@ -2314,31 +2388,88 @@ async function deleteEvent(id) {
   }
 }
 
+let eventsListData = [];
+let eventsListFilter = 'all';
+let eventsListSearch = '';
+
+function renderEventsListItems() {
+  const listEl = document.getElementById('eventsList');
+  const countEl = document.getElementById('eventsListCount');
+  if (!listEl) return;
+  const today = new Date().toISOString().slice(0, 10);
+
+  let items = eventsListData.slice();
+  if (eventsListFilter === 'upcoming') items = items.filter((e) => (e.date || '') >= today);
+  else if (eventsListFilter === 'past') items = items.filter((e) => (e.date || '') < today);
+  if (eventsListSearch) {
+    const q = eventsListSearch.toLowerCase();
+    items = items.filter((e) =>
+      (e.title || '').toLowerCase().includes(q) ||
+      (e.description || '').toLowerCase().includes(q) ||
+      (e.location || '').toLowerCase().includes(q));
+  }
+  if (eventsListFilter === 'upcoming') items.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  else items.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  if (countEl) countEl.textContent = eventsListData.length ? `${items.length} von ${eventsListData.length}` : '';
+
+  if (!items.length) {
+    listEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Keine Veranstaltungen gefunden.</div>';
+    return;
+  }
+
+  listEl.innerHTML = items.map((item) => {
+    const badge = item.published
+      ? '<span class="status-badge published">Veröffentlicht</span>'
+      : '<span class="status-badge draft">Entwurf</span>';
+    let date = item.date || '';
+    try { date = new Date(item.date).toLocaleDateString('de-DE'); } catch (_) { /* keep raw */ }
+    const isPast = (item.date || '') < today;
+    const pastBadge = isPast ? ' <span class="status-badge draft">Vergangen</span>' : '';
+    const desc = (item.description || '').substring(0, 100);
+    const thumb = item.image ? `<img class="item-thumb" src="${escapeHtml(item.image)}" alt="" loading="lazy"/>` : '';
+    return `
+      <div class="item">
+        ${thumb}
+        <div class="item-info">
+          <h3>${escapeHtml(item.title || '')} ${badge}${pastBadge}</h3>
+          <p>${escapeHtml(date)}${item.time ? ' um ' + escapeHtml(item.time) : ''}${item.location ? ' | ' + escapeHtml(item.location) : ''}</p>
+          <p>${escapeHtml(desc)}${desc ? '…' : ''}</p>
+        </div>
+        <div class="item-actions">
+          <button class="btn-small btn-edit" onclick="editEvent(${item.id})">Bearbeiten</button>
+          <button class="btn-small btn-delete" onclick="deleteEvent(${item.id})">Löschen</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function initEventsListControls() {
+  const toolbar = document.getElementById('eventsToolbar');
+  if (!toolbar || toolbar.dataset.bound) return;
+  toolbar.dataset.bound = '1';
+  const search = document.getElementById('eventsSearch');
+  let t = null;
+  search?.addEventListener('input', () => {
+    clearTimeout(t);
+    t = setTimeout(() => { eventsListSearch = search.value.trim(); renderEventsListItems(); }, 150);
+  });
+  toolbar.querySelectorAll('.list-filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      toolbar.querySelectorAll('.list-filter-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+      eventsListFilter = btn.dataset.eventsfilter;
+      renderEventsListItems();
+    });
+  });
+}
+
 async function loadEventsList() {
+  initEventsListControls();
   try {
     const response = await fetch(`${API_URL}/admin/events`, { credentials: 'include' });
-    const events = await response.json();
-
-    let html = '';
-    events.forEach(item => {
-      const badge = item.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>';
-      const date = new Date(item.date).toLocaleDateString('de-DE');
-      html += `
-        <div class="item">
-          <div class="item-info">
-            <h3>${item.title} ${badge}</h3>
-            <p>${date}${item.time ? ' um ' + item.time : ''} ${item.location ? '| ' + item.location : ''}</p>
-            <p>${item.description.substring(0, 100)}...</p>
-          </div>
-          <div class="item-actions">
-            <button class="btn-small btn-edit" onclick="editEvent(${item.id})">Bearbeiten</button>
-            <button class="btn-small btn-delete" onclick="deleteEvent(${item.id})">Löschen</button>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById('eventsList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">Keine Events vorhanden</div>';
+    const data = await response.json();
+    eventsListData = Array.isArray(data) ? data : [];
+    renderEventsListItems();
   } catch (err) {
     console.error('Error loading events:', err);
   }

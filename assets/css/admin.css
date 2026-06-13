@@ -307,11 +307,106 @@
   margin-bottom: 0.2rem;
 }
 
+.admin-app .item-info {
+  flex: 1;
+  min-width: 0;
+}
+
 .admin-app .item-info p {
   font-size: 0.88rem;
   color: var(--text-light);
   margin: 0 0 0.15rem;
   line-height: 1.5;
+}
+
+.admin-app .item-thumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex: 0 0 auto;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* ---------- LISTEN-TOOLBAR (News/Events) ---------- */
+.admin-app .list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.admin-app .list-search {
+  position: relative;
+  flex: 1 1 220px;
+  min-width: 170px;
+}
+
+.admin-app .list-search-icon {
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.admin-app .list-search-input {
+  width: 100%;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.7rem 0.45rem 2rem;
+  border: 1px solid rgba(85, 122, 118, 0.25);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-main);
+}
+
+.admin-app .list-search-input:focus {
+  outline: none;
+  border-color: var(--color-teal-dark);
+  box-shadow: 0 0 0 3px rgba(74, 110, 106, 0.12);
+}
+
+.admin-app .list-filters {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.admin-app .list-filter-btn {
+  appearance: none;
+  border: 1px solid rgba(85, 122, 118, 0.25);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--text-light);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.28rem 0.7rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.admin-app .list-filter-btn:hover {
+  border-color: var(--color-teal-dark);
+  color: var(--color-teal-dark);
+}
+
+.admin-app .list-filter-btn.is-active {
+  background: var(--color-teal-dark);
+  border-color: var(--color-teal-dark);
+  color: #fff;
+}
+
+.admin-app .list-count {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: auto;
 }
 
 /* ---------- BUTTONS ---------- */
