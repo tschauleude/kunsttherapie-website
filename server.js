@@ -13,6 +13,7 @@ const { v4: uuidv4 } = require('uuid');
 const siteImages = require('./lib/site-images');
 const media = require('./lib/media');
 const contentVersions = require('./lib/content-versions');
+const imageMeta = require('./lib/image-meta');
 const { apiLang, apiMsg } = require('./lib/api-messages');
 require('dotenv').config();
 
@@ -1483,22 +1484,24 @@ const PROTECTED_STATIC = new Set([
 ]);
 const STATIC_IMG_EXT = /\.(jpe?g|png|gif|webp|svg)$/i;
 
-app.get('/api/admin/static-images', requireAuth, (req, res) => {
+app.get('/api/admin/static-images', requireAuth, async (req, res) => {
   try {
-    const files = fs.readdirSync(STATIC_IMG_DIR, { withFileTypes: true })
-      .filter((d) => d.isFile() && STATIC_IMG_EXT.test(d.name))
-      .map((d) => {
-        const filePath = path.join(STATIC_IMG_DIR, d.name);
-        const stat = fs.statSync(filePath);
-        return {
-          filename: d.name,
-          url: `/assets/img/${d.name}`,
-          size: stat.size,
-          updatedAt: stat.mtime.toISOString(),
-          protected: PROTECTED_STATIC.has(d.name),
-        };
-      })
-      .sort((a, b) => a.filename.localeCompare(b.filename));
+    const entries = fs.readdirSync(STATIC_IMG_DIR, { withFileTypes: true })
+      .filter((d) => d.isFile() && STATIC_IMG_EXT.test(d.name));
+    const files = await Promise.all(entries.map(async (d) => {
+      const filePath = path.join(STATIC_IMG_DIR, d.name);
+      const stat = fs.statSync(filePath);
+      return {
+        filename: d.name,
+        url: `/assets/img/${d.name}`,
+        size: stat.size,
+        updatedAt: stat.mtime.toISOString(),
+        type: imageMeta.fileType(d.name),
+        dimensions: await imageMeta.getDimensions(filePath),
+        protected: PROTECTED_STATIC.has(d.name),
+      };
+    }));
+    files.sort((a, b) => a.filename.localeCompare(b.filename));
     res.json({ files });
   } catch (e) {
     res.status(500).json({ error: 'Statische Bilder konnten nicht geladen werden' });
