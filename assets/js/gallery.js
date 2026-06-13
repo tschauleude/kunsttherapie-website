@@ -127,6 +127,7 @@
     caption.textContent = img.alt;
     counter.textContent = `${index + 1} / ${slides.length}`;
     overlay.hidden = false;
+    void overlay.offsetWidth; // force reflow so dialog CSS transition fires from opacity:0
     overlay.classList.add('lightbox-visible');
     document.body.classList.add('lightbox-open');
     btnPrev.hidden = slides.length < 2;

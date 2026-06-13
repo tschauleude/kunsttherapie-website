@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css"/>
   <link rel="stylesheet" href="assets/css/admin.css"/>
-  <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
+  <link rel="stylesheet" href="assets/vendor/quill.snow.css">
 </head>
 <body class="admin-app"><!-- LOGIN SCREEN -->
 <div class="login-container active" id="loginScreen">
@@ -97,13 +97,47 @@
             <li><strong>Angebote &amp; Preise</strong> – Deine Therapieangebote mit Preis und Dauer verwalten</li>
           </ul>
         </div>
-        <div class="stats-box">
-          <h3>Zahlen</h3>
-          <p>Neuigkeiten: <strong id="newsCount">0</strong></p>
-          <p>Buchungen: <strong id="bookingsCount">0</strong></p>
-          <p>Mini-Atelier: <strong id="atelierCount">0</strong> neu</p>
-          <p>Veranstaltungen: <strong id="eventsCount">0</strong></p>
-          <p>Angebote: <strong id="servicesCount">0</strong></p>
+        <div class="dash-stats">
+          <button type="button" class="dash-card" onclick="goToSection('news')">
+            <span class="dash-card-icon" aria-hidden="true">📰</span>
+            <span class="dash-card-num" id="newsCount">0</span>
+            <span class="dash-card-label">Neuigkeiten</span>
+            <span class="dash-card-sub" id="newsSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('bookings')">
+            <span class="dash-card-icon" aria-hidden="true">📅</span>
+            <span class="dash-card-num" id="bookingsCount">0</span>
+            <span class="dash-card-label">Buchungen</span>
+            <span class="dash-card-sub" id="bookingsSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('events')">
+            <span class="dash-card-icon" aria-hidden="true">🎟️</span>
+            <span class="dash-card-num" id="eventsCount">0</span>
+            <span class="dash-card-label">Veranstaltungen</span>
+            <span class="dash-card-sub" id="eventsSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('atelier')">
+            <span class="dash-card-icon" aria-hidden="true">🎨</span>
+            <span class="dash-card-num" id="atelierCount">0</span>
+            <span class="dash-card-label">Mini-Atelier</span>
+            <span class="dash-card-sub" id="atelierSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('services')">
+            <span class="dash-card-icon" aria-hidden="true">💚</span>
+            <span class="dash-card-num" id="servicesCount">0</span>
+            <span class="dash-card-label">Angebote</span>
+            <span class="dash-card-sub" id="servicesSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('images')">
+            <span class="dash-card-icon" aria-hidden="true">🖼️</span>
+            <span class="dash-card-num" id="storageCount">0</span>
+            <span class="dash-card-label">Hochgeladene Bilder</span>
+            <span class="dash-card-sub" id="storageSub">–</span>
+          </button>
+        </div>
+        <div class="dash-upcoming">
+          <h3>Nächste Termine</h3>
+          <div id="dashUpcoming"><p class="note">Wird geladen …</p></div>
         </div>
         <hr class="sep" style="margin:1.5rem 0"/>
         <h3>Versionen &amp; Wiederherstellen</h3>
@@ -168,6 +202,18 @@
             <button type="button" class="btn-cancel" onclick="closeNewsForm()">Abbrechen</button>
           </div>
         </form>
+      </div>
+      <div class="list-toolbar" id="newsToolbar">
+        <div class="list-search">
+          <span class="list-search-icon" aria-hidden="true">🔍</span>
+          <input type="search" id="newsSearch" class="list-search-input" placeholder="Neuigkeiten durchsuchen …" aria-label="Neuigkeiten durchsuchen" autocomplete="off"/>
+        </div>
+        <div class="list-filters" role="group" aria-label="Filtern">
+          <button type="button" class="list-filter-btn is-active" data-newsfilter="all">Alle</button>
+          <button type="button" class="list-filter-btn" data-newsfilter="published">Veröffentlicht</button>
+          <button type="button" class="list-filter-btn" data-newsfilter="draft">Entwürfe</button>
+        </div>
+        <span class="list-count" id="newsListCount"></span>
       </div>
       <div id="newsList" class="items-list"></div>
     </section>
@@ -292,6 +338,18 @@
           </div>
         </form>
       </div>
+      <div class="list-toolbar" id="eventsToolbar">
+        <div class="list-search">
+          <span class="list-search-icon" aria-hidden="true">🔍</span>
+          <input type="search" id="eventsSearch" class="list-search-input" placeholder="Veranstaltungen durchsuchen …" aria-label="Veranstaltungen durchsuchen" autocomplete="off"/>
+        </div>
+        <div class="list-filters" role="group" aria-label="Filtern">
+          <button type="button" class="list-filter-btn is-active" data-eventsfilter="all">Alle</button>
+          <button type="button" class="list-filter-btn" data-eventsfilter="upcoming">Bevorstehend</button>
+          <button type="button" class="list-filter-btn" data-eventsfilter="past">Vergangen</button>
+        </div>
+        <span class="list-count" id="eventsListCount"></span>
+      </div>
       <div id="eventsList" class="items-list"></div>
     </section>
 
@@ -374,36 +432,61 @@
       </div>
 
       <div id="allFilesPanel" class="images-tab-panel" data-images-panel="allfiles" hidden>
-        <div class="all-files-toolbar">
-          <div class="all-files-toolbar-left">
-            <span class="all-files-count" id="allFilesCount"></span>
-            <div class="all-files-filters" role="group" aria-label="Filtern">
-              <button type="button" class="all-files-filter-btn is-active" data-filter="all">Alle</button>
-              <button type="button" class="all-files-filter-btn" data-filter="upload">Hochgeladen</button>
-              <button type="button" class="all-files-filter-btn" data-filter="static">Website-Assets</button>
+        <div class="fm-toolbar">
+          <div class="fm-toolbar-row">
+            <div class="fm-search">
+              <span class="fm-search-icon" aria-hidden="true">&#128269;</span>
+              <input type="search" id="fmSearch" class="fm-search-input" placeholder="Dateien durchsuchen …" aria-label="Dateien durchsuchen" autocomplete="off"/>
+            </div>
+            <label class="fm-upload-btn btn outline">
+              Bild hochladen
+              <input type="file" id="fmUpload" accept="image/jpeg,image/png,image/gif,image/webp" hidden/>
+            </label>
+            <div class="fm-view-toggle" role="group" aria-label="Ansicht wählen">
+              <button type="button" class="fm-view-btn is-active" data-view="grid" aria-pressed="true" title="Galerie-Ansicht" aria-label="Galerie-Ansicht">&#9638;</button>
+              <button type="button" class="fm-view-btn" data-view="list" aria-pressed="false" title="Listen-Ansicht" aria-label="Listen-Ansicht">&#9776;</button>
             </div>
           </div>
-          <div class="all-files-toolbar-right">
-            <label class="all-files-sort-label">Sortieren:
-              <select class="all-files-sort" id="allFilesSort">
-                <option value="name">Name</option>
+          <div class="fm-toolbar-row">
+            <div class="fm-filters" role="group" aria-label="Nach Quelle filtern">
+              <button type="button" class="fm-filter-btn is-active" data-filter="all">Alle</button>
+              <button type="button" class="fm-filter-btn" data-filter="upload">Hochgeladen</button>
+              <button type="button" class="fm-filter-btn" data-filter="static">Website-Assets</button>
+            </div>
+            <label class="fm-sort-label">Sortieren
+              <select class="fm-sort" id="fmSort">
+                <option value="name">Name (A–Z)</option>
+                <option value="name-desc">Name (Z–A)</option>
+                <option value="date-desc">Neueste zuerst</option>
+                <option value="date-asc">Älteste zuerst</option>
                 <option value="size-desc">Größe (groß zuerst)</option>
                 <option value="size-asc">Größe (klein zuerst)</option>
+                <option value="type">Dateityp</option>
               </select>
             </label>
           </div>
+          <div class="fm-bulkbar" id="fmBulkbar" hidden>
+            <label class="fm-selectall"><input type="checkbox" id="fmSelectAll"/> <span>Alle</span></label>
+            <span class="fm-selcount" id="fmSelCount">0 ausgewählt</span>
+            <button type="button" class="btn-cancel fm-bulk-delete" id="fmBulkDelete" disabled>Auswahl löschen</button>
+          </div>
+          <p class="fm-count note" id="fmCount"></p>
         </div>
-        <div id="allFilesGrid" class="all-files-grid">
+        <div id="fmContainer" class="fm-grid">
           <p class="note">Dateien werden geladen …</p>
         </div>
         <!-- Inline preview overlay -->
-        <div id="allFilesPreview" class="all-files-preview" hidden aria-modal="true" role="dialog" aria-label="Bildvorschau">
-          <button type="button" class="all-files-preview-close" id="allFilesPreviewClose" aria-label="Schließen">&times;</button>
-          <div class="all-files-preview-inner">
-            <img id="allFilesPreviewImg" src="" alt="" class="all-files-preview-img"/>
-            <div class="all-files-preview-info">
-              <p class="all-files-preview-name" id="allFilesPreviewName"></p>
-              <p class="all-files-preview-meta" id="allFilesPreviewMeta"></p>
+        <div id="fmPreview" class="fm-preview" hidden aria-modal="true" role="dialog" aria-label="Bildvorschau">
+          <button type="button" class="fm-preview-close" id="fmPreviewClose" aria-label="Schließen">&times;</button>
+          <div class="fm-preview-inner">
+            <img id="fmPreviewImg" src="" alt="" class="fm-preview-img"/>
+            <div class="fm-preview-info">
+              <p class="fm-preview-name" id="fmPreviewName"></p>
+              <p class="fm-preview-meta" id="fmPreviewMeta"></p>
+              <div class="fm-preview-actions">
+                <button type="button" class="btn-small fm-preview-copy" id="fmPreviewCopy">Link kopieren</button>
+                <a class="btn-small fm-preview-open" id="fmPreviewOpen" href="#" target="_blank" rel="noopener">In neuem Tab öffnen</a>
+              </div>
             </div>
           </div>
         </div>
@@ -511,7 +594,7 @@
   </div>
 </div>
 
-<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script src="assets/vendor/quill.min.js"></script>
 <script>
 const API_URL = window.location.origin + '/api';
 
@@ -1237,134 +1320,226 @@ async function deleteMediaFiles(filenames) {
   }
 }
 
-let allFilesData = [];
-let allFilesFilter = 'all';
-let allFilesSort = 'name';
+// ============ FILE MANAGER (Alle Dateien) ============
+let fmData = [];
+let fmFilter = 'all';
+let fmSort = 'name';
+let fmView = 'grid';
+let fmSearch = '';
+const fmSelected = new Set();
 
-function renderAllFiles() {
-  const grid = document.getElementById('allFilesGrid');
-  const countEl = document.getElementById('allFilesCount');
-  if (!grid) return;
+function fmKey(f) { return `${f.source}::${f.filename}`; }
 
-  let files = allFilesFilter === 'all'
-    ? allFilesData
-    : allFilesData.filter((f) => f.source === allFilesFilter);
+function fmFmtSize(bytes) {
+  if (bytes == null) return '';
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+}
 
-  if (allFilesSort === 'name') {
-    files = [...files].sort((a, b) => a.filename.localeCompare(b.filename, 'de'));
-  } else if (allFilesSort === 'size-desc') {
-    files = [...files].sort((a, b) => (b.size || 0) - (a.size || 0));
-  } else if (allFilesSort === 'size-asc') {
-    files = [...files].sort((a, b) => (a.size || 0) - (b.size || 0));
+function fmFmtDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  } catch (_) { return ''; }
+}
+
+function fmDims(f) {
+  return f.dimensions ? `${f.dimensions.width}×${f.dimensions.height}` : '';
+}
+
+function fmUsageText(f) {
+  if (f.source !== 'upload' || !f.inUse) return '';
+  return (f.usedBy || []).map((u) => {
+    if (u.type === 'site') return 'Website-Bild';
+    if (u.type === 'news') return 'Neuigkeit';
+    if (u.type === 'events') return 'Veranstaltung';
+    return u.type;
+  }).join(', ');
+}
+
+function fmFiltered() {
+  let files = fmData.slice();
+  if (fmFilter !== 'all') files = files.filter((f) => f.source === fmFilter);
+  if (fmSearch) {
+    const q = fmSearch.toLowerCase();
+    files = files.filter((f) => f.filename.toLowerCase().includes(q));
+  }
+  const byName = (a, b) => a.filename.localeCompare(b.filename, 'de');
+  switch (fmSort) {
+    case 'name': files.sort(byName); break;
+    case 'name-desc': files.sort((a, b) => byName(b, a)); break;
+    case 'date-desc': files.sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0)); break;
+    case 'date-asc': files.sort((a, b) => new Date(a.updatedAt || 0) - new Date(b.updatedAt || 0)); break;
+    case 'size-desc': files.sort((a, b) => (b.size || 0) - (a.size || 0)); break;
+    case 'size-asc': files.sort((a, b) => (a.size || 0) - (b.size || 0)); break;
+    case 'type': files.sort((a, b) => (a.type || '').localeCompare(b.type || '') || byName(a, b)); break;
+  }
+  return files;
+}
+
+function fmBadges(f) {
+  const sourceCls = f.source === 'static' ? 'badge--static' : 'badge--upload';
+  const sourceLabel = f.source === 'static' ? 'Asset' : 'Upload';
+  let html = `<span class="badge ${sourceCls}">${sourceLabel}</span>`;
+  if (f.protected) html += ` <span class="badge badge--locked">Geschützt</span>`;
+  const usage = fmUsageText(f);
+  if (usage) html += ` <span class="badge badge--inuse" title="Verwendet in: ${escapeHtml(usage)}">In Verwendung</span>`;
+  return html;
+}
+
+function fmCheckbox(f) {
+  const checked = fmSelected.has(fmKey(f)) ? 'checked' : '';
+  const dis = f.protected ? 'disabled' : '';
+  return `<input type="checkbox" class="fm-cb" data-key="${escapeHtml(fmKey(f))}" ${checked} ${dis}/>`;
+}
+
+function fmGridTile(f) {
+  const selCls = fmSelected.has(fmKey(f)) ? ' is-selected' : '';
+  const metaBits = [fmFmtSize(f.size), fmDims(f)].filter(Boolean).join(' · ');
+  return `<div class="fm-tile${selCls}" data-key="${escapeHtml(fmKey(f))}">
+    <label class="fm-tile-check">${fmCheckbox(f)}</label>
+    <button type="button" class="fm-tile-thumb" data-action="preview" data-key="${escapeHtml(fmKey(f))}" title="Vorschau: ${escapeHtml(f.filename)}">
+      <img src="${escapeHtml(f.url)}" alt="" loading="lazy"/>
+      <span class="fm-tile-zoom" aria-hidden="true">&#128269;</span>
+    </button>
+    <div class="fm-tile-body">
+      <span class="fm-tile-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
+      <span class="fm-tile-meta">${escapeHtml(metaBits)}</span>
+      <span class="fm-tile-badges">${fmBadges(f)}</span>
+    </div>
+    <div class="fm-tile-actions">
+      <button type="button" class="fm-iconbtn" data-action="copy" data-key="${escapeHtml(fmKey(f))}" title="Link kopieren" aria-label="Link kopieren">&#128279;</button>
+      ${f.protected
+        ? `<button type="button" class="fm-iconbtn" disabled title="Systemdatei – gesperrt" aria-label="Gesperrt">&#128274;</button>`
+        : `<button type="button" class="fm-iconbtn fm-iconbtn--danger" data-action="delete" data-key="${escapeHtml(fmKey(f))}" title="Löschen" aria-label="Löschen">&#128465;</button>`}
+    </div>
+  </div>`;
+}
+
+function fmListRow(f) {
+  const selCls = fmSelected.has(fmKey(f)) ? ' is-selected' : '';
+  return `<tr class="fm-row${selCls}" data-key="${escapeHtml(fmKey(f))}">
+    <td class="fm-col-check">${fmCheckbox(f)}</td>
+    <td class="fm-col-thumb"><button type="button" class="fm-row-thumb" data-action="preview" data-key="${escapeHtml(fmKey(f))}" title="Vorschau"><img src="${escapeHtml(f.url)}" alt="" loading="lazy"/></button></td>
+    <td class="fm-col-name"><span class="fm-row-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span><span class="fm-row-badges">${fmBadges(f)}</span></td>
+    <td class="fm-col-type">${escapeHtml((f.type || '').toUpperCase())}</td>
+    <td class="fm-col-dim">${escapeHtml(fmDims(f) || '–')}</td>
+    <td class="fm-col-size">${escapeHtml(fmFmtSize(f.size))}</td>
+    <td class="fm-col-date">${escapeHtml(fmFmtDate(f.updatedAt))}</td>
+    <td class="fm-col-actions">
+      <button type="button" class="fm-iconbtn" data-action="copy" data-key="${escapeHtml(fmKey(f))}" title="Link kopieren" aria-label="Link kopieren">&#128279;</button>
+      <button type="button" class="fm-iconbtn" data-action="preview" data-key="${escapeHtml(fmKey(f))}" title="Vorschau" aria-label="Vorschau">&#128065;</button>
+      ${f.protected
+        ? `<button type="button" class="fm-iconbtn" disabled title="Gesperrt" aria-label="Gesperrt">&#128274;</button>`
+        : `<button type="button" class="fm-iconbtn fm-iconbtn--danger" data-action="delete" data-key="${escapeHtml(fmKey(f))}" title="Löschen" aria-label="Löschen">&#128465;</button>`}
+    </td>
+  </tr>`;
+}
+
+function fmRender() {
+  const container = document.getElementById('fmContainer');
+  const countEl = document.getElementById('fmCount');
+  if (!container) return;
+  const files = fmFiltered();
+
+  if (countEl) {
+    const total = fmData.length;
+    countEl.textContent = `${files.length} von ${total} Datei${total !== 1 ? 'en' : ''}`;
   }
 
-  if (countEl) countEl.textContent = `${files.length} Datei${files.length !== 1 ? 'en' : ''}`;
+  container.className = fmView === 'list' ? 'fm-list-wrap' : 'fm-grid';
 
   if (!files.length) {
-    grid.innerHTML = '<p class="note">Keine Dateien für diesen Filter.</p>';
+    container.innerHTML = '<p class="note fm-empty">Keine Dateien gefunden.</p>';
+    fmUpdateSelectionUI();
     return;
   }
 
-  grid.innerHTML = files.map((f) => {
-    const sizeKb = f.size ? (f.size / 1024).toFixed(1) + ' KB' : '';
-    const sourceCls = f.source === 'static' ? 'badge--static' : 'badge--upload';
-    const sourceLabel = f.source === 'static' ? 'Asset' : 'Upload';
-    const deletable = !f.protected;
-    return `<div class="all-files-card" data-source="${f.source}" data-filename="${escapeHtml(f.filename)}">
-      <button type="button" class="all-files-thumb-btn" data-preview-url="${escapeHtml(f.url)}" data-preview-name="${escapeHtml(f.filename)}" data-preview-meta="${escapeHtml(sizeKb)}" title="Vorschau: ${escapeHtml(f.filename)}" aria-label="Vorschau ${escapeHtml(f.filename)}">
-        <div class="media-thumb-wrap">
-          <img src="${escapeHtml(f.url)}" alt="" class="media-thumb" loading="lazy"/>
-        </div>
-        <span class="all-files-zoom" aria-hidden="true">&#128269;</span>
-      </button>
-      <div class="all-files-info">
-        <span class="media-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
-        <span class="media-meta">${sizeKb} <span class="badge ${sourceCls}">${sourceLabel}</span></span>
-      </div>
-      <div class="media-actions">
-        ${deletable
-          ? `<button type="button" class="btn-cancel all-files-delete" data-source="${f.source}" data-filename="${escapeHtml(f.filename)}" title="Löschen">Löschen</button>`
-          : `<button type="button" class="btn-cancel" disabled title="Systemdatei – gesperrt">Gesperrt</button>`}
-      </div>
-    </div>`;
-  }).join('');
-
-  grid.querySelectorAll('.all-files-delete').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      deleteAnyImage(btn.dataset.source, btn.dataset.filename);
-    });
-  });
-
-  grid.querySelectorAll('.all-files-thumb-btn').forEach((btn) => {
-    btn.addEventListener('click', () => openAllFilesPreview(btn.dataset.previewUrl, btn.dataset.previewName, btn.dataset.previewMeta));
-  });
+  if (fmView === 'list') {
+    container.innerHTML = `<table class="fm-list">
+      <thead><tr>
+        <th class="fm-col-check"></th>
+        <th class="fm-col-thumb"></th>
+        <th class="fm-col-name">Name</th>
+        <th class="fm-col-type">Typ</th>
+        <th class="fm-col-dim">Maße</th>
+        <th class="fm-col-size">Größe</th>
+        <th class="fm-col-date">Geändert</th>
+        <th class="fm-col-actions"></th>
+      </tr></thead>
+      <tbody>${files.map(fmListRow).join('')}</tbody>
+    </table>`;
+  } else {
+    container.innerHTML = files.map(fmGridTile).join('');
+  }
+  fmUpdateSelectionUI();
 }
 
-function openAllFilesPreview(url, name, meta) {
-  const overlay = document.getElementById('allFilesPreview');
-  const img = document.getElementById('allFilesPreviewImg');
-  const nameEl = document.getElementById('allFilesPreviewName');
-  const metaEl = document.getElementById('allFilesPreviewMeta');
+function fmFileByKey(key) {
+  return fmData.find((f) => fmKey(f) === key);
+}
+
+function fmUpdateSelectionUI() {
+  const bulkbar = document.getElementById('fmBulkbar');
+  const count = fmSelected.size;
+  const selCountEl = document.getElementById('fmSelCount');
+  const bulkBtn = document.getElementById('fmBulkDelete');
+  const selectAll = document.getElementById('fmSelectAll');
+  if (bulkbar) bulkbar.hidden = count === 0;
+  if (selCountEl) selCountEl.textContent = `${count} ausgewählt`;
+  if (bulkBtn) bulkBtn.disabled = count === 0;
+  if (selectAll) {
+    const selectable = fmFiltered().filter((f) => !f.protected);
+    selectAll.checked = selectable.length > 0 && selectable.every((f) => fmSelected.has(fmKey(f)));
+  }
+}
+
+async function fmCopyUrl(f) {
+  const absolute = location.origin + f.url;
+  try {
+    await navigator.clipboard.writeText(absolute);
+    showMessage('Link kopiert: ' + f.url, 'success');
+  } catch (_) {
+    window.prompt('Link kopieren:', absolute);
+  }
+}
+
+function fmOpenPreview(f) {
+  const overlay = document.getElementById('fmPreview');
+  const img = document.getElementById('fmPreviewImg');
+  const nameEl = document.getElementById('fmPreviewName');
+  const metaEl = document.getElementById('fmPreviewMeta');
+  const copyBtn = document.getElementById('fmPreviewCopy');
+  const openLink = document.getElementById('fmPreviewOpen');
   if (!overlay || !img) return;
-  img.src = url;
-  img.alt = name;
-  if (nameEl) nameEl.textContent = name;
-  if (metaEl) metaEl.textContent = meta;
+  img.src = f.url;
+  img.alt = f.filename;
+  if (nameEl) nameEl.textContent = f.filename;
+  if (metaEl) {
+    const bits = [fmDims(f), fmFmtSize(f.size), (f.type || '').toUpperCase(), fmFmtDate(f.updatedAt)].filter(Boolean);
+    metaEl.textContent = bits.join('  ·  ');
+  }
+  if (copyBtn) copyBtn.onclick = () => fmCopyUrl(f);
+  if (openLink) openLink.href = f.url;
   overlay.hidden = false;
   requestAnimationFrame(() => {
     overlay.classList.add('is-visible');
-    document.getElementById('allFilesPreviewClose')?.focus();
+    document.getElementById('fmPreviewClose')?.focus();
   });
 }
 
-function closeAllFilesPreview() {
-  const overlay = document.getElementById('allFilesPreview');
+function fmClosePreview() {
+  const overlay = document.getElementById('fmPreview');
   if (!overlay) return;
   overlay.classList.remove('is-visible');
-  setTimeout(() => { overlay.hidden = true; }, 220);
-}
-
-function initAllFilesPreview() {
-  const overlay = document.getElementById('allFilesPreview');
-  if (!overlay || overlay.dataset.previewBound) return;
-  overlay.dataset.previewBound = '1';
-  document.getElementById('allFilesPreviewClose')?.addEventListener('click', closeAllFilesPreview);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeAllFilesPreview(); });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !overlay.hidden) closeAllFilesPreview();
-  });
-}
-
-function initAllFilesControls() {
-  const panel = document.getElementById('allFilesPanel');
-  if (!panel || panel.dataset.controlsBound) return;
-  panel.dataset.controlsBound = '1';
-
-  panel.querySelectorAll('.all-files-filter-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      panel.querySelectorAll('.all-files-filter-btn').forEach((b) => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      allFilesFilter = btn.dataset.filter;
-      renderAllFiles();
-    });
-  });
-
-  const sortSel = document.getElementById('allFilesSort');
-  if (sortSel) {
-    sortSel.addEventListener('change', () => {
-      allFilesSort = sortSel.value;
-      renderAllFiles();
-    });
-  }
-
-  initAllFilesPreview();
+  setTimeout(() => { overlay.hidden = true; }, 200);
 }
 
 async function loadAllFiles() {
-  const grid = document.getElementById('allFilesGrid');
-  if (grid) grid.innerHTML = '<p class="note">Dateien werden geladen …</p>';
-  initAllFilesControls();
+  const container = document.getElementById('fmContainer');
+  if (container) container.innerHTML = '<p class="note">Dateien werden geladen …</p>';
+  initAllFilesPanel();
   try {
     const [staticRes, uploadRes] = await Promise.all([
       fetch(`${API_URL}/admin/static-images`, { credentials: 'include' }),
@@ -1377,79 +1552,154 @@ async function loadAllFiles() {
 
     const staticFiles = (staticData.files || []).map((f) => ({ ...f, source: 'static' }));
     const uploadFiles = (uploadData.files || []).map((f) => ({ ...f, source: 'upload', protected: false }));
-    allFilesData = [...staticFiles, ...uploadFiles];
-    allFilesFilter = 'all';
-    allFilesSort = document.getElementById('allFilesSort')?.value || 'name';
-
-    document.querySelectorAll('.all-files-filter-btn').forEach((b) => {
-      b.classList.toggle('is-active', b.dataset.filter === 'all');
-    });
-
-    renderAllFiles();
+    fmData = [...uploadFiles, ...staticFiles];
+    fmSelected.clear();
+    fmRender();
   } catch (err) {
-    if (grid) grid.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
+    if (container) container.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
     showMessage('Fehler: ' + err.message, 'error');
   }
+}
+
+async function fmDeleteOne(f, { silent = false } = {}) {
+  const endpoint = f.source === 'static'
+    ? `${API_URL}/admin/static-images/${encodeURIComponent(f.filename)}`
+    : `${API_URL}/admin/media/${encodeURIComponent(f.filename)}`;
+  const res = await fetch(endpoint, { method: 'DELETE', credentials: 'include' });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const extra = data.usedBy ? ' (' + data.usedBy.map((u) => u.type).join(', ') + ')' : '';
+    if (!silent) showMessage(`„${f.filename}": ${data.error || 'Löschen fehlgeschlagen'}${extra}`, 'error');
+    return false;
+  }
+  return true;
 }
 
 async function deleteAnyImage(source, filename) {
+  const f = fmFileByKey(`${source}::${filename}`) || { source, filename };
   if (!confirm(`Bild „${filename}" dauerhaft löschen?`)) return;
-  try {
-    const endpoint = source === 'static'
-      ? `${API_URL}/admin/static-images/${encodeURIComponent(filename)}`
-      : `${API_URL}/admin/media/${encodeURIComponent(filename)}`;
-    const res = await fetch(endpoint, { method: 'DELETE', credentials: 'include' });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Löschen fehlgeschlagen');
+  const ok = await fmDeleteOne(f);
+  if (ok) {
     showMessage(`✓ „${filename}" gelöscht.`, 'success');
+    fmSelected.delete(`${source}::${filename}`);
+    loadAllFiles();
+    loadSiteImagesList();
+  }
+}
+
+async function fmBulkDelete() {
+  const files = [...fmSelected].map(fmFileByKey).filter(Boolean).filter((f) => !f.protected);
+  if (!files.length) return;
+  if (!confirm(`Wirklich ${files.length} Datei(en) dauerhaft löschen?`)) return;
+  let deleted = 0;
+  for (const f of files) {
+    const ok = await fmDeleteOne(f, { silent: false });
+    if (ok) { deleted++; fmSelected.delete(fmKey(f)); }
+  }
+  if (deleted) {
+    showMessage(`✓ ${deleted} Datei(en) gelöscht.`, 'success');
+    loadAllFiles();
+    loadSiteImagesList();
+  } else {
+    fmUpdateSelectionUI();
+  }
+}
+
+async function fmUploadFile(file) {
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('image', file);
+  try {
+    const res = await fetch(`${API_URL}/admin/media/upload`, { method: 'POST', credentials: 'include', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload fehlgeschlagen');
+    showMessage('✓ Bild hochgeladen.', 'success');
     loadAllFiles();
     loadSiteImagesList();
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
-  }
-}
-
-async function afBulkDelete() {
-  const checked = [...document.querySelectorAll('.af-cb:checked:not([disabled])')];
-  if (!checked.length) return;
-  if (!confirm(`Wirklich ${checked.length} Bild(er) dauerhaft löschen?`)) return;
-  let deleted = 0;
-  for (const cb of checked) {
-    const { source, filename } = cb.dataset;
-    const endpoint = source === 'static'
-      ? `${API_URL}/admin/static-images/${encodeURIComponent(filename)}`
-      : `${API_URL}/admin/media/${encodeURIComponent(filename)}`;
-    const res = await fetch(endpoint, { method: 'DELETE', credentials: 'include' });
-    const data = await res.json();
-    if (!res.ok) { showMessage(`„${filename}": ${data.error}`, 'error'); continue; }
-    deleted++;
-  }
-  if (deleted) {
-    showMessage(`✓ ${deleted} Bild(er) gelöscht.`, 'success');
-    loadAllFiles();
-    loadSiteImagesList();
   }
 }
 
 function initAllFilesPanel() {
   const panel = document.getElementById('allFilesPanel');
-  if (!panel || panel.dataset.afBound) return;
-  panel.dataset.afBound = '1';
+  if (!panel || panel.dataset.fmBound) return;
+  panel.dataset.fmBound = '1';
 
-  panel.querySelectorAll('.af-view-btn').forEach((btn) => {
+  const searchInput = document.getElementById('fmSearch');
+  let searchTimer = null;
+  searchInput?.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => { fmSearch = searchInput.value.trim(); fmRender(); }, 160);
+  });
+
+  panel.querySelectorAll('.fm-view-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      panel.querySelectorAll('.af-view-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
-      afCurrentView = btn.dataset.afview;
-      afRenderContainer();
+      panel.querySelectorAll('.fm-view-btn').forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      fmView = btn.dataset.view;
+      fmRender();
     });
   });
 
-  document.getElementById('afSelectAll')?.addEventListener('change', (e) => {
-    document.querySelectorAll('.af-cb:not([disabled])').forEach((cb) => { cb.checked = e.target.checked; });
-    afUpdateSelectionState();
+  panel.querySelectorAll('.fm-filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      panel.querySelectorAll('.fm-filter-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+      fmFilter = btn.dataset.filter;
+      fmRender();
+    });
   });
 
-  document.getElementById('afBulkDelete')?.addEventListener('click', afBulkDelete);
+  document.getElementById('fmSort')?.addEventListener('change', (e) => {
+    fmSort = e.target.value;
+    fmRender();
+  });
+
+  document.getElementById('fmUpload')?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    fmUploadFile(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('fmSelectAll')?.addEventListener('change', (e) => {
+    const visible = fmFiltered().filter((f) => !f.protected);
+    if (e.target.checked) visible.forEach((f) => fmSelected.add(fmKey(f)));
+    else visible.forEach((f) => fmSelected.delete(fmKey(f)));
+    fmRender();
+  });
+
+  document.getElementById('fmBulkDelete')?.addEventListener('click', fmBulkDelete);
+
+  const container = document.getElementById('fmContainer');
+  container?.addEventListener('click', (e) => {
+    const actionBtn = e.target.closest('[data-action]');
+    if (!actionBtn) return;
+    const f = fmFileByKey(actionBtn.dataset.key);
+    if (!f) return;
+    const action = actionBtn.dataset.action;
+    if (action === 'preview') fmOpenPreview(f);
+    else if (action === 'copy') fmCopyUrl(f);
+    else if (action === 'delete') deleteAnyImage(f.source, f.filename);
+  });
+  container?.addEventListener('change', (e) => {
+    const cb = e.target.closest('.fm-cb');
+    if (!cb) return;
+    const key = cb.dataset.key;
+    if (cb.checked) fmSelected.add(key); else fmSelected.delete(key);
+    const row = cb.closest('.fm-tile, .fm-row');
+    if (row) row.classList.toggle('is-selected', cb.checked);
+    fmUpdateSelectionUI();
+  });
+
+  const overlay = document.getElementById('fmPreview');
+  document.getElementById('fmPreviewClose')?.addEventListener('click', fmClosePreview);
+  overlay?.addEventListener('click', (e) => { if (e.target === overlay) fmClosePreview(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay && !overlay.hidden) fmClosePreview();
+  });
 }
 
 function initImagesAdmin() {
@@ -1555,27 +1805,87 @@ function toggleManualBlockFields() {
 // DASHBOARD
 // ============================================================================
 
+function dashSetText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function goToSection(id) {
+  const nav = document.querySelector(`.nav-item[onclick*="'${id}'"]`);
+  switchSection(id, nav);
+}
+
+function renderDashUpcoming(bookings, today) {
+  const el = document.getElementById('dashUpcoming');
+  if (!el) return;
+  const upcoming = bookings
+    .filter((b) => (b.date || '') >= today)
+    .sort((a, b) => `${a.date}${a.start_time || ''}`.localeCompare(`${b.date}${b.start_time || ''}`))
+    .slice(0, 5);
+  if (!upcoming.length) {
+    el.innerHTML = '<p class="note">Keine bevorstehenden Termine.</p>';
+    return;
+  }
+  el.innerHTML = upcoming.map((b) => {
+    let ds = b.date;
+    try {
+      ds = new Date(`${b.date}T${b.start_time || '00:00'}`).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
+    } catch (_) { /* keep raw */ }
+    const confirmed = b.status === 'confirmed';
+    return `<div class="dash-booking">
+      <span class="dash-booking-date">${escapeHtml(ds)} · ${escapeHtml(b.start_time || '')}</span>
+      <span class="dash-booking-name">${escapeHtml(b.name || '')}</span>
+      <span class="dash-booking-status ${confirmed ? 'is-confirmed' : 'is-pending'}">${confirmed ? 'bestätigt' : 'offen'}</span>
+    </div>`;
+  }).join('');
+}
+
 async function loadDashboard() {
   try {
-    const [newsRes, bookingsRes, eventsRes, atelierRes, servicesRes] = await Promise.all([
+    const [newsRes, bookingsRes, eventsRes, atelierRes, servicesRes, mediaRes] = await Promise.all([
       fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/atelier`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/services`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
     ]);
 
-    const news = await newsRes.json();
-    const bookings = await bookingsRes.json();
-    const events = await eventsRes.json();
+    const news = newsRes.ok ? await newsRes.json() : [];
+    const bookings = bookingsRes.ok ? await bookingsRes.json() : [];
+    const events = eventsRes.ok ? await eventsRes.json() : [];
     const atelier = atelierRes.ok ? await atelierRes.json() : [];
     const services = servicesRes.ok ? await servicesRes.json() : [];
+    const media = mediaRes.ok ? ((await mediaRes.json()).files || []) : [];
 
-    document.getElementById('newsCount').textContent = news.length;
-    document.getElementById('bookingsCount').textContent = bookings.filter((b) => b.status !== 'cancelled').length;
-    document.getElementById('atelierCount').textContent = atelier.filter((a) => a.status === 'new').length;
-    document.getElementById('eventsCount').textContent = events.length;
-    document.getElementById('servicesCount').textContent = services.filter((s) => s.active).length;
+    const today = new Date().toISOString().slice(0, 10);
+
+    const newsPublished = news.filter((n) => n.published).length;
+    dashSetText('newsCount', news.length);
+    dashSetText('newsSub', `${newsPublished} online · ${news.length - newsPublished} Entwürfe`);
+
+    const activeBookings = bookings.filter((b) => b.status !== 'cancelled');
+    const pending = bookings.filter((b) => b.status === 'pending').length;
+    dashSetText('bookingsCount', activeBookings.length);
+    dashSetText('bookingsSub', pending ? `${pending} offen` : 'keine offenen');
+
+    const upcomingEvents = events.filter((e) => (e.date || '') >= today).length;
+    dashSetText('eventsCount', events.length);
+    dashSetText('eventsSub', `${upcomingEvents} bevorstehend`);
+
+    const atelierNew = atelier.filter((a) => a.status === 'new').length;
+    dashSetText('atelierCount', atelierNew);
+    dashSetText('atelierSub', `${atelier.length} gesamt`);
+
+    const activeServices = services.filter((s) => s.active).length;
+    dashSetText('servicesCount', activeServices);
+    dashSetText('servicesSub', `${services.length} gesamt`);
+
+    const totalBytes = media.reduce((sum, f) => sum + (f.size || 0), 0);
+    dashSetText('storageCount', media.length);
+    dashSetText('storageSub', fmFmtSize(totalBytes) || '0 B');
+
+    renderDashUpcoming(activeBookings, today);
     await loadContentVersions();
   } catch (err) {
     console.error('Dashboard load error:', err);
@@ -1851,33 +2161,108 @@ async function deleteNews(id) {
   }
 }
 
+let newsListData = [];
+let newsListFilter = 'all';
+let newsListSearch = '';
+
+function renderNewsListItems() {
+  const listEl = document.getElementById('newsList');
+  const countEl = document.getElementById('newsListCount');
+  if (!listEl) return;
+
+  let items = newsListData.slice();
+  if (newsListFilter === 'published') items = items.filter((n) => n.published);
+  else if (newsListFilter === 'draft') items = items.filter((n) => !n.published);
+  if (newsListSearch) {
+    const q = newsListSearch.toLowerCase();
+    items = items.filter((n) =>
+      (n.title || '').toLowerCase().includes(q) ||
+      (n.content || '').replace(/<[^>]*>/g, '').toLowerCase().includes(q));
+  }
+
+  if (countEl) countEl.textContent = newsListData.length ? `${items.length} von ${newsListData.length}` : '';
+
+  if (!items.length) {
+    listEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Keine Neuigkeiten gefunden.</div>';
+    return;
+  }
+
+  listEl.innerHTML = items.map((item) => {
+    const badge = item.published
+      ? '<span class="status-badge published">Veröffentlicht</span>'
+      : '<span class="status-badge draft">Entwurf</span>';
+    const date = item.createdAt ? new Date(item.createdAt).toLocaleDateString('de-DE') : '';
+    const snippet = (item.content || '').replace(/<[^>]*>/g, '').trim().substring(0, 120);
+    const thumb = item.image ? `<img class="item-thumb" src="${escapeHtml(item.image)}" alt="" loading="lazy"/>` : '';
+    const publishBtn = item.published
+      ? `<button class="btn-small btn-publish" onclick="toggleNewsPublished(${item.id}, false)">Verbergen</button>`
+      : `<button class="btn-small btn-publish" onclick="toggleNewsPublished(${item.id}, true)">Veröffentlichen</button>`;
+    return `
+      <div class="item">
+        ${thumb}
+        <div class="item-info">
+          <h3>${escapeHtml(item.title || '')} ${badge}</h3>
+          <p>${escapeHtml(snippet)}${snippet ? '…' : ''}</p>
+          <p style="font-size: 0.85rem; color: #999;">${date}</p>
+        </div>
+        <div class="item-actions">
+          ${publishBtn}
+          <button class="btn-small btn-edit" onclick="editNews(${item.id})">Bearbeiten</button>
+          <button class="btn-small btn-delete" onclick="deleteNews(${item.id})">Löschen</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function initNewsListControls() {
+  const toolbar = document.getElementById('newsToolbar');
+  if (!toolbar || toolbar.dataset.bound) return;
+  toolbar.dataset.bound = '1';
+  const search = document.getElementById('newsSearch');
+  let t = null;
+  search?.addEventListener('input', () => {
+    clearTimeout(t);
+    t = setTimeout(() => { newsListSearch = search.value.trim(); renderNewsListItems(); }, 150);
+  });
+  toolbar.querySelectorAll('.list-filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      toolbar.querySelectorAll('.list-filter-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+      newsListFilter = btn.dataset.newsfilter;
+      renderNewsListItems();
+    });
+  });
+}
+
 async function loadNewsList() {
+  initNewsListControls();
   try {
     const response = await fetch(`${API_URL}/admin/news`, { credentials: 'include' });
-    const news = await response.json();
-
-    let html = '';
-    news.forEach(item => {
-      const badge = item.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>';
-      const date = new Date(item.createdAt).toLocaleDateString('de-DE');
-      html += `
-        <div class="item">
-          <div class="item-info">
-            <h3>${item.title} ${badge}</h3>
-            <p>${(item.content || '').replace(/<[^>]*>/g, '').substring(0, 100)}…</p>
-            <p style="font-size: 0.85rem; color: #999;">${date}</p>
-          </div>
-          <div class="item-actions">
-            <button class="btn-small btn-edit" onclick="editNews(${item.id})">Bearbeiten</button>
-            <button class="btn-small btn-delete" onclick="deleteNews(${item.id})">Löschen</button>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById('newsList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">Keine News vorhanden</div>';
+    const data = await response.json();
+    newsListData = Array.isArray(data) ? data : [];
+    renderNewsListItems();
   } catch (err) {
     console.error('Error loading news:', err);
+  }
+}
+
+async function toggleNewsPublished(id, publish) {
+  try {
+    const res = await fetch(`${API_URL}/admin/news/${id}/published`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ published: publish })
+    });
+    if (res.ok) {
+      showMessage(publish ? 'Neuigkeit veröffentlicht!' : 'Als Entwurf gespeichert.', 'success');
+      loadNewsList();
+      loadDashboard();
+    } else {
+      const err = await res.json();
+      showMessage(err.error || 'Fehler', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
   }
 }
 
@@ -2003,31 +2388,88 @@ async function deleteEvent(id) {
   }
 }
 
+let eventsListData = [];
+let eventsListFilter = 'all';
+let eventsListSearch = '';
+
+function renderEventsListItems() {
+  const listEl = document.getElementById('eventsList');
+  const countEl = document.getElementById('eventsListCount');
+  if (!listEl) return;
+  const today = new Date().toISOString().slice(0, 10);
+
+  let items = eventsListData.slice();
+  if (eventsListFilter === 'upcoming') items = items.filter((e) => (e.date || '') >= today);
+  else if (eventsListFilter === 'past') items = items.filter((e) => (e.date || '') < today);
+  if (eventsListSearch) {
+    const q = eventsListSearch.toLowerCase();
+    items = items.filter((e) =>
+      (e.title || '').toLowerCase().includes(q) ||
+      (e.description || '').toLowerCase().includes(q) ||
+      (e.location || '').toLowerCase().includes(q));
+  }
+  if (eventsListFilter === 'upcoming') items.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  else items.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  if (countEl) countEl.textContent = eventsListData.length ? `${items.length} von ${eventsListData.length}` : '';
+
+  if (!items.length) {
+    listEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Keine Veranstaltungen gefunden.</div>';
+    return;
+  }
+
+  listEl.innerHTML = items.map((item) => {
+    const badge = item.published
+      ? '<span class="status-badge published">Veröffentlicht</span>'
+      : '<span class="status-badge draft">Entwurf</span>';
+    let date = item.date || '';
+    try { date = new Date(item.date).toLocaleDateString('de-DE'); } catch (_) { /* keep raw */ }
+    const isPast = (item.date || '') < today;
+    const pastBadge = isPast ? ' <span class="status-badge draft">Vergangen</span>' : '';
+    const desc = (item.description || '').substring(0, 100);
+    const thumb = item.image ? `<img class="item-thumb" src="${escapeHtml(item.image)}" alt="" loading="lazy"/>` : '';
+    return `
+      <div class="item">
+        ${thumb}
+        <div class="item-info">
+          <h3>${escapeHtml(item.title || '')} ${badge}${pastBadge}</h3>
+          <p>${escapeHtml(date)}${item.time ? ' um ' + escapeHtml(item.time) : ''}${item.location ? ' | ' + escapeHtml(item.location) : ''}</p>
+          <p>${escapeHtml(desc)}${desc ? '…' : ''}</p>
+        </div>
+        <div class="item-actions">
+          <button class="btn-small btn-edit" onclick="editEvent(${item.id})">Bearbeiten</button>
+          <button class="btn-small btn-delete" onclick="deleteEvent(${item.id})">Löschen</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function initEventsListControls() {
+  const toolbar = document.getElementById('eventsToolbar');
+  if (!toolbar || toolbar.dataset.bound) return;
+  toolbar.dataset.bound = '1';
+  const search = document.getElementById('eventsSearch');
+  let t = null;
+  search?.addEventListener('input', () => {
+    clearTimeout(t);
+    t = setTimeout(() => { eventsListSearch = search.value.trim(); renderEventsListItems(); }, 150);
+  });
+  toolbar.querySelectorAll('.list-filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      toolbar.querySelectorAll('.list-filter-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+      eventsListFilter = btn.dataset.eventsfilter;
+      renderEventsListItems();
+    });
+  });
+}
+
 async function loadEventsList() {
+  initEventsListControls();
   try {
     const response = await fetch(`${API_URL}/admin/events`, { credentials: 'include' });
-    const events = await response.json();
-
-    let html = '';
-    events.forEach(item => {
-      const badge = item.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>';
-      const date = new Date(item.date).toLocaleDateString('de-DE');
-      html += `
-        <div class="item">
-          <div class="item-info">
-            <h3>${item.title} ${badge}</h3>
-            <p>${date}${item.time ? ' um ' + item.time : ''} ${item.location ? '| ' + item.location : ''}</p>
-            <p>${item.description.substring(0, 100)}...</p>
-          </div>
-          <div class="item-actions">
-            <button class="btn-small btn-edit" onclick="editEvent(${item.id})">Bearbeiten</button>
-            <button class="btn-small btn-delete" onclick="deleteEvent(${item.id})">Löschen</button>
-          </div>
-        </div>
-      `;
-    });
-
-    document.getElementById('eventsList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">Keine Events vorhanden</div>';
+    const data = await response.json();
+    eventsListData = Array.isArray(data) ? data : [];
+    renderEventsListItems();
   } catch (err) {
     console.error('Error loading events:', err);
   }
@@ -2322,7 +2764,6 @@ async function deleteBooking(id) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
 // ============================================================================
 // MINI-ATELIER
 // ============================================================================
@@ -2403,6 +2844,7 @@ async function deleteAtelierSubmission(id) {
   }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
   const adminNavToggle = document.getElementById('adminNavToggle');
   const adminSidebar = document.getElementById('sidebar');
   if (adminNavToggle && adminSidebar) {

@@ -286,8 +286,20 @@ header.header-scrolled .header-inner {
   letter-spacing: -0.02em;
 }
 
-.brand img {
-  display: none;
+.brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+.brand-logo {
+  display: block;
+  height: clamp(42px, 4.6vw, 52px);
+  width: auto;
+  object-fit: contain;
+}
+
+header.header-scrolled .brand-logo {
+  height: clamp(38px, 4vw, 46px);
 }
 
 nav ul {
@@ -1304,8 +1316,6 @@ body.lightbox-open {
   padding: clamp(1rem, 3vw, 2.5rem);
   background: rgba(24, 22, 20, 0.92);
   backdrop-filter: blur(6px);
-  opacity: 0;
-  transition: opacity var(--duration-flow) var(--ease-flow);
 }
 
 .lightbox[hidden] {
@@ -1317,7 +1327,6 @@ body.lightbox-open {
 }
 
 .lightbox.lightbox-visible {
-  opacity: 1;
   pointer-events: auto;
 }
 
@@ -2888,7 +2897,7 @@ nav[data-site-nav] {
     gap: 0.85rem 1rem;
   }
 
-  .brand.logo-text {
+  .brand {
     grid-column: 1;
   }
 
@@ -4132,7 +4141,7 @@ body.nav-open .nav-backdrop {
     text-align: left;
   }
 
-  .brand.logo-text {
+  .brand {
     flex: 1;
   }
 

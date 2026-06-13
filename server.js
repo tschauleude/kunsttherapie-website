@@ -8,11 +8,14 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const siteImages = require('./lib/site-images');
 const media = require('./lib/media');
 const contentVersions = require('./lib/content-versions');
+const imageMeta = require('./lib/image-meta');
+const backup = require('./lib/backup');
 const { apiLang, apiMsg } = require('./lib/api-messages');
 require('dotenv').config();
 
@@ -158,9 +161,31 @@ const assetStatic = express.static(path.join(ROOT, 'assets'), {
 app.use('/assets', assetStatic);
 app.use(express.static(PUBLIC_DIR, { maxAge: '1h', etag: true }));
 
+// Session-Secret: ENV bevorzugt, sonst zufälliges, dauerhaft gespeichertes
+// Secret (kein bekanntes Default-Secret mehr → Sessions nicht fälschbar).
+function resolveSessionSecret() {
+  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
+  const dataDir = path.join(ROOT, 'data');
+  const secretFile = path.join(dataDir, '.session-secret');
+  try {
+    if (fs.existsSync(secretFile)) {
+      const existing = fs.readFileSync(secretFile, 'utf8').trim();
+      if (existing) return existing;
+    }
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    const generated = crypto.randomBytes(48).toString('hex');
+    fs.writeFileSync(secretFile, generated, { mode: 0o600 });
+    console.log('Session-Secret generiert und in data/.session-secret gespeichert.');
+    return generated;
+  } catch (e) {
+    console.error('Session-Secret konnte nicht persistiert werden, nutze Zufallswert für diese Laufzeit:', e.message);
+    return crypto.randomBytes(48).toString('hex');
+  }
+}
+
 // Session Configuration
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'kunsttherapie-secret-key-change-in-production',
+  secret: resolveSessionSecret(),
   resave: false,
   saveUninitialized: false,
   proxy: IS_PRODUCTION,
@@ -175,6 +200,9 @@ app.use(session({
 // ============================================================================
 // DATENBANK SETUP
 // ============================================================================
+
+let markDbReady;
+const dbReady = new Promise((resolve) => { markDbReady = resolve; });
 
 const db = new sqlite3.Database(DB_PATH, (err) => {
   if (err) {
@@ -300,6 +328,7 @@ function initializeDatabase() {
       }
       ensureAdminAccounts();
       console.log(' Database initialized');
+      if (markDbReady) markDbReady();
     });
   });
 }
@@ -692,6 +721,23 @@ app.put('/api/admin/news/:id', requireAuth, (req, res) => {
         return res.status(500).json({ error: 'Database error' });
       }
       res.json({ success: true, message: 'News updated successfully' });
+    }
+  );
+});
+
+// Toggle published (admin) – quick publish/unpublish without full update
+app.patch('/api/admin/news/:id/published', requireAuth, (req, res) => {
+  const { published } = req.body;
+  if (typeof published === 'undefined') {
+    return res.status(400).json({ error: 'published field required' });
+  }
+  db.run(
+    `UPDATE news SET published = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
+    [published ? 1 : 0, req.params.id],
+    function(err) {
+      if (err) return res.status(500).json({ error: 'Database error' });
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
+      res.json({ success: true, published: published ? 1 : 0 });
     }
   );
 });
@@ -1466,22 +1512,24 @@ const PROTECTED_STATIC = new Set([
 ]);
 const STATIC_IMG_EXT = /\.(jpe?g|png|gif|webp|svg)$/i;
 
-app.get('/api/admin/static-images', requireAuth, (req, res) => {
+app.get('/api/admin/static-images', requireAuth, async (req, res) => {
   try {
-    const files = fs.readdirSync(STATIC_IMG_DIR, { withFileTypes: true })
-      .filter((d) => d.isFile() && STATIC_IMG_EXT.test(d.name))
-      .map((d) => {
-        const filePath = path.join(STATIC_IMG_DIR, d.name);
-        const stat = fs.statSync(filePath);
-        return {
-          filename: d.name,
-          url: `/assets/img/${d.name}`,
-          size: stat.size,
-          updatedAt: stat.mtime.toISOString(),
-          protected: PROTECTED_STATIC.has(d.name),
-        };
-      })
-      .sort((a, b) => a.filename.localeCompare(b.filename));
+    const entries = fs.readdirSync(STATIC_IMG_DIR, { withFileTypes: true })
+      .filter((d) => d.isFile() && STATIC_IMG_EXT.test(d.name));
+    const files = await Promise.all(entries.map(async (d) => {
+      const filePath = path.join(STATIC_IMG_DIR, d.name);
+      const stat = fs.statSync(filePath);
+      return {
+        filename: d.name,
+        url: `/assets/img/${d.name}`,
+        size: stat.size,
+        updatedAt: stat.mtime.toISOString(),
+        type: imageMeta.fileType(d.name),
+        dimensions: await imageMeta.getDimensions(filePath),
+        protected: PROTECTED_STATIC.has(d.name),
+      };
+    }));
+    files.sort((a, b) => a.filename.localeCompare(b.filename));
     res.json({ files });
   } catch (e) {
     res.status(500).json({ error: 'Statische Bilder konnten nicht geladen werden' });
@@ -1965,11 +2013,31 @@ app.use((req, res) => {
   );
 });
 
+// Globaler Fehler-Handler: saubere Antwort, keine Stacktraces nach außen
+app.use((err, req, res, next) => {
+  console.error('Unbehandelter Request-Fehler:', err && err.stack ? err.stack : err);
+  if (res.headersSent) return next(err);
+  if (req.path && req.path.startsWith('/api/')) {
+    return res.status(500).json({ error: 'Interner Serverfehler' });
+  }
+  res.status(500).type('text/html; charset=utf-8').send(
+    '<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Fehler</title></head><body><p>Es ist ein Fehler aufgetreten.</p><p><a href="/">Zur Startseite</a></p></body></html>'
+  );
+});
+
 // ============================================================================
 // SERVER START
 // ============================================================================
 
 if (require.main === module) {
+// Prozess-Stabilität: einzelne Fehler dürfen den Server nicht lautlos beenden
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection:', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err && err.stack ? err.stack : err);
+});
+
 app.listen(PORT, async () => {
   console.log(`\n╔════════════════════════════════════════╗`);
   console.log(`║   Kunsttherapie CMS Backend       ║`);
@@ -1977,6 +2045,7 @@ app.listen(PORT, async () => {
   console.log(`║  Admin Panel: http://localhost:${PORT}/admin  ║`);
   console.log(`╚════════════════════════════════════════╝\n`);
   try {
+    await dbReady;
     const cleaned = await i18nContent.migrateRentedOverrides(dbGet, dbRun);
     if (cleaned) console.log('i18n: veraltete CMS-Texte (Miet-/Über-mich-Doppelüberschrift) bereinigt');
     const seeded = await i18nContent.seedOverridesFromFile(dbGet, dbRun);
@@ -1985,6 +2054,12 @@ app.listen(PORT, async () => {
     console.log('i18n: Übersetzungsdateien aus Quelltexten neu aufgebaut');
   } catch (e) {
     console.error('i18n migrate:', e.message);
+  }
+  try {
+    await dbReady;
+    backup.scheduleBackups(db, DB_PATH, { keep: 7 });
+  } catch (e) {
+    console.error('Backup-Scheduling fehlgeschlagen:', e.message);
   }
 });
 }

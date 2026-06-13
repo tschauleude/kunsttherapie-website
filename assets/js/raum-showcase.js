@@ -300,6 +300,7 @@
       lbImg.alt = alt;
       lbCaption.textContent = caption || '';
       overlay.hidden = false;
+      void overlay.offsetWidth; // force reflow so dialog CSS transition fires from opacity:0
       overlay.classList.add('lightbox-visible');
       document.body.classList.add('lightbox-open');
       lbClose.focus();
