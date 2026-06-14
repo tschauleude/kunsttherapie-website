@@ -8,7 +8,6 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
-const crypto = require('crypto');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const siteImages = require('./lib/site-images');
@@ -16,6 +15,7 @@ const media = require('./lib/media');
 const contentVersions = require('./lib/content-versions');
 const imageMeta = require('./lib/image-meta');
 const backup = require('./lib/backup');
+const { resolveAppSecret } = require('./lib/secret');
 const { apiLang, apiMsg } = require('./lib/api-messages');
 require('dotenv').config();
 
@@ -38,17 +38,27 @@ fs.mkdirSync(ATELIER_DIR, { recursive: true });
 
 const atelierSubmitCounts = new Map();
 
+// Dateiendung NUR aus dem validierten MIME-Type ableiten – niemals aus dem
+// (fälschbaren) Client-Dateinamen. Sonst könnte z. B. eine als image/jpeg
+// deklarierte "shell.html" als .html im web-erreichbaren Upload-Ordner landen.
+const IMAGE_MIME_EXT = {
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
+  'image/gif': '.gif',
+  'image/webp': '.webp',
+};
+
 const imageUpload = multer({
   storage: multer.diskStorage({
     destination: UPLOAD_DIR,
     filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
+      const ext = IMAGE_MIME_EXT[file.mimetype] || '.jpg';
       cb(null, `${Date.now()}-${uuidv4().slice(0, 8)}${ext}`);
     },
   }),
   limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE || '5242880', 10) },
   fileFilter: (req, file, cb) => {
-    if (/^image\/(jpeg|png|gif|webp)$/.test(file.mimetype)) {
+    if (IMAGE_MIME_EXT[file.mimetype]) {
       cb(null, true);
     } else {
       cb(new Error('Nur Bilder (JPG, PNG, GIF, WebP)'));
@@ -60,13 +70,13 @@ const atelierUpload = multer({
   storage: multer.diskStorage({
     destination: ATELIER_DIR,
     filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname).toLowerCase() || '.png';
+      const ext = IMAGE_MIME_EXT[file.mimetype] || '.png';
       cb(null, `atelier-${Date.now()}-${uuidv4().slice(0, 8)}${ext}`);
     },
   }),
   limits: { fileSize: parseInt(process.env.ATELIER_MAX_FILE_SIZE || '8388608', 10) },
   fileFilter: (req, file, cb) => {
-    if (/^image\/(jpeg|png|gif|webp)$/.test(file.mimetype)) {
+    if (IMAGE_MIME_EXT[file.mimetype]) {
       cb(null, true);
     } else {
       cb(new Error('Nur Bilddateien erlaubt'));
@@ -151,7 +161,17 @@ const assetStatic = express.static(path.join(ROOT, 'assets'), {
   immutable: true,
   etag: true,
   setHeaders(res, filePath) {
-    if (/\.(html?)$/i.test(filePath)) {
+    const base = path.basename(filePath);
+    if (/\.html?$/i.test(base)) {
+      res.setHeader('Cache-Control', 'no-cache');
+      return;
+    }
+    // Nur Dateien mit Content-Hash im Namen (z. B. style.beb06571.css) dürfen
+    // dauerhaft "immutable" gecacht werden. Unversionierte CSS/JS – etwa das
+    // Admin-Stylesheet oder Vendor-Dateien – müssen revalidieren, sonst erreichen
+    // Änderungen den Browser ein Jahr lang nicht (immutable = keine Revalidierung).
+    const isHashed = /\.[0-9a-f]{8,}\.[a-z0-9]+$/i.test(base);
+    if (/\.(css|js)$/i.test(base) && !isHashed) {
       res.setHeader('Cache-Control', 'no-cache');
     }
   },
@@ -161,31 +181,11 @@ const assetStatic = express.static(path.join(ROOT, 'assets'), {
 app.use('/assets', assetStatic);
 app.use(express.static(PUBLIC_DIR, { maxAge: '1h', etag: true }));
 
-// Session-Secret: ENV bevorzugt, sonst zufälliges, dauerhaft gespeichertes
-// Secret (kein bekanntes Default-Secret mehr → Sessions nicht fälschbar).
-function resolveSessionSecret() {
-  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
-  const dataDir = path.join(ROOT, 'data');
-  const secretFile = path.join(dataDir, '.session-secret');
-  try {
-    if (fs.existsSync(secretFile)) {
-      const existing = fs.readFileSync(secretFile, 'utf8').trim();
-      if (existing) return existing;
-    }
-    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-    const generated = crypto.randomBytes(48).toString('hex');
-    fs.writeFileSync(secretFile, generated, { mode: 0o600 });
-    console.log('Session-Secret generiert und in data/.session-secret gespeichert.');
-    return generated;
-  } catch (e) {
-    console.error('Session-Secret konnte nicht persistiert werden, nutze Zufallswert für diese Laufzeit:', e.message);
-    return crypto.randomBytes(48).toString('hex');
-  }
-}
-
+// Session-Secret: zentral über lib/secret (ENV bevorzugt, sonst persistiertes
+// Zufalls-Secret) – dasselbe Secret signiert auch die Kalender-Token.
 // Session Configuration
 app.use(session({
-  secret: resolveSessionSecret(),
+  secret: resolveAppSecret(),
   resave: false,
   saveUninitialized: false,
   proxy: IS_PRODUCTION,
@@ -276,6 +276,16 @@ function initializeDatabase() {
       )
     `);
 
+    // DB-seitige Sperre gegen Doppelbuchungen (schließt die Race-Condition
+    // zwischen Verfügbarkeitsprüfung und INSERT). Stornierte Termine zählen nicht.
+    db.run(
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_slot
+       ON bookings(date, start_time) WHERE status != 'cancelled'`,
+      (idxErr) => {
+        if (idxErr) console.error('Buchungs-Index konnte nicht erstellt werden:', idxErr.message);
+      }
+    );
+
     db.run(`
       CREATE TABLE IF NOT EXISTS atelier_submissions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -285,6 +295,18 @@ function initializeDatabase() {
         submitter_email TEXT,
         note TEXT,
         status TEXT DEFAULT 'new',
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    db.run(`
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT,
+        message TEXT NOT NULL,
+        email_sent INTEGER DEFAULT 0,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -369,7 +391,11 @@ function ensureAdminAccounts() {
     }
     if (row && row.count > 0) return;
 
-    const hashedPassword = bcryptjs.hashSync('admin123', 10);
+    // Kein bekanntes Default-Passwort mehr: ein zufälliges erzeugen und einmalig
+    // ins Server-Log schreiben. Wer ADMIN_USERNAME/ADMIN_PASSWORD setzt, landet
+    // hier gar nicht erst.
+    const generatedPassword = require('crypto').randomBytes(9).toString('base64url');
+    const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
     db.run(
       `INSERT INTO admins (username, password, email) VALUES (?, ?, ?)`,
       ['admin', hashedPassword, envEmail],
@@ -377,8 +403,12 @@ function ensureAdminAccounts() {
         if (insertErr) {
           console.error('Error creating default admin:', insertErr);
         } else {
-          console.log(' Standard-Admin angelegt: Benutzername admin, Passwort admin123');
-          console.log('  Bitte ADMIN_USERNAME und ADMIN_PASSWORD in .env setzen!');
+          console.log('====================================================');
+          console.log(' Erst-Admin angelegt – Benutzername: admin');
+          console.log(`   Passwort (NUR jetzt sichtbar): ${generatedPassword}`);
+          console.log('   Bitte nach dem Login ändern oder ADMIN_USERNAME/');
+          console.log('   ADMIN_PASSWORD in der .env setzen.');
+          console.log('====================================================');
         }
       }
     );
@@ -424,6 +454,46 @@ function saveGoogleRefreshToken(token, callback) {
     ['google_refresh_token', token],
     callback
   );
+}
+
+// Promise-Variante: löst mit Token (oder null bei Fehler/keinem Token) auf,
+// damit Routen sie sauber per await im eigenen try/catch nutzen können –
+// statt loser async-Callbacks, deren Fehler unbemerkt blieben.
+function getGoogleRefreshTokenAsync() {
+  return new Promise((resolve) => {
+    getGoogleRefreshToken((err, token) => {
+      if (err) {
+        console.error('Google token lookup:', err.message);
+        return resolve(null);
+      }
+      resolve(token || null);
+    });
+  });
+}
+
+// Google-Kalender-Sync als awaitbare Helfer (Fehler werden geloggt, brechen die
+// Buchung aber nicht ab). Ersetzt die früheren losen async-Callbacks.
+async function syncGoogleCreate(row) {
+  try {
+    const token = await getGoogleRefreshTokenAsync();
+    if (!token) return;
+    const googleEventId = await googleCalendar.createCalendarEvent(token, row);
+    if (googleEventId) {
+      await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [googleEventId, row.id]);
+    }
+  } catch (e) {
+    console.error('Google event create failed:', e.message);
+  }
+}
+
+async function syncGoogleDelete(googleEventId) {
+  try {
+    const token = await getGoogleRefreshTokenAsync();
+    if (!token) return;
+    await googleCalendar.deleteCalendarEvent(token, googleEventId);
+  } catch (e) {
+    console.error('Google delete failed:', e.message);
+  }
 }
 
 function dbAll(sql, params = []) {
@@ -525,13 +595,23 @@ app.post('/api/auth/login', loginRateLimiter, (req, res) => {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
-      req.session.userId = admin.id;
-      req.session.username = admin.username;
-
-      res.json({
-        success: true,
-        message: 'Logged in successfully',
-        username: admin.username
+      // Session-ID nach erfolgreichem Login erneuern (Schutz vor Session-Fixation).
+      req.session.regenerate((regenErr) => {
+        if (regenErr) {
+          return res.status(500).json({ error: 'Session error' });
+        }
+        req.session.userId = admin.id;
+        req.session.username = admin.username;
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            return res.status(500).json({ error: 'Session error' });
+          }
+          res.json({
+            success: true,
+            message: 'Logged in successfully',
+            username: admin.username,
+          });
+        });
       });
     }
   );
@@ -590,12 +670,20 @@ app.post('/api/auth/setup', (req, res) => {
         if (insertErr) {
           return res.status(500).json({ error: 'Admin konnte nicht angelegt werden' });
         }
-        req.session.userId = this.lastID;
-        req.session.username = username;
-        res.json({
-          success: true,
-          message: 'Admin-Konto erstellt. Du bist jetzt angemeldet.',
-          username,
+        const newId = this.lastID;
+        // Session-ID erneuern (Schutz vor Session-Fixation).
+        req.session.regenerate((regenErr) => {
+          if (regenErr) return res.status(500).json({ error: 'Session error' });
+          req.session.userId = newId;
+          req.session.username = username;
+          req.session.save((saveErr) => {
+            if (saveErr) return res.status(500).json({ error: 'Session error' });
+            res.json({
+              success: true,
+              message: 'Admin-Konto erstellt. Du bist jetzt angemeldet.',
+              username,
+            });
+          });
         });
       }
     );
@@ -716,10 +804,11 @@ app.put('/api/admin/news/:id', requireAuth, (req, res) => {
   db.run(
     `UPDATE news SET title = ?, content = ?, image = ?, published = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
     [title, content, image || null, published ? 1 : 0, req.params.id],
-    (err) => {
+    function onUpdate(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'News updated successfully' });
     }
   );
@@ -747,10 +836,11 @@ app.delete('/api/admin/news/:id', requireAuth, (req, res) => {
   db.run(
     `DELETE FROM news WHERE id = ?`,
     [req.params.id],
-    (err) => {
+    function onDelete(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'News deleted successfully' });
     }
   );
@@ -830,10 +920,11 @@ app.put('/api/admin/events/:id', requireAuth, (req, res) => {
   db.run(
     `UPDATE events SET title = ?, description = ?, date = ?, time = ?, location = ?, capacity = ?, image = ?, published = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
     [title, description, date, time || null, location || null, capacity || null, image || null, published ? 1 : 0, req.params.id],
-    (err) => {
+    function onUpdate(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'Event updated successfully' });
     }
   );
@@ -844,10 +935,11 @@ app.delete('/api/admin/events/:id', requireAuth, (req, res) => {
   db.run(
     `DELETE FROM events WHERE id = ?`,
     [req.params.id],
-    (err) => {
+    function onDelete(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'Event deleted successfully' });
     }
   );
@@ -927,10 +1019,11 @@ app.put('/api/admin/services/:id', requireAuth, (req, res) => {
   db.run(
     `UPDATE services SET title = ?, description = ?, price = ?, duration = ?, image = ?, active = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
     [title, description, price || null, duration || null, image || null, active ? 1 : 0, req.params.id],
-    (err) => {
+    function onUpdate(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'Service updated successfully' });
     }
   );
@@ -941,10 +1034,11 @@ app.delete('/api/admin/services/:id', requireAuth, (req, res) => {
   db.run(
     `DELETE FROM services WHERE id = ?`,
     [req.params.id],
-    (err) => {
+    function onDelete(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
       }
+      if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
       res.json({ success: true, message: 'Service deleted successfully' });
     }
   );
@@ -989,18 +1083,14 @@ app.get('/api/bookings/availability', async (req, res) => {
       };
     }
 
-    getGoogleRefreshToken((err, token) => {
-      if (err) {
-        console.error('Google token lookup:', err.message);
-      }
-      res.json({
-        month,
-        from,
-        to,
-        days,
-        googleCalendarConnected: Boolean(!err && token),
-        emailConfigured: email.isEmailConfigured(),
-      });
+    const token = await getGoogleRefreshTokenAsync();
+    res.json({
+      month,
+      from,
+      to,
+      days,
+      googleCalendarConnected: Boolean(token),
+      emailConfigured: email.isEmailConfigured(),
     });
   } catch (e) {
     console.error('availability error:', e);
@@ -1019,16 +1109,12 @@ app.get('/api/bookings/slots', async (req, res) => {
     const intervals = busyForDate(dateStr, localBusy, googleBusy);
     const slots = booking.slotsWithAvailability(dateStr, intervals);
 
-    getGoogleRefreshToken((err, token) => {
-      if (err) {
-        console.error('Google token lookup:', err.message);
-      }
-      res.json({
-        date: dateStr,
-        workingDay: booking.isWorkingDay(dateStr),
-        slots,
-        googleCalendarConnected: Boolean(!err && token),
-      });
+    const token = await getGoogleRefreshTokenAsync();
+    res.json({
+      date: dateStr,
+      workingDay: booking.isWorkingDay(dateStr),
+      slots,
+      googleCalendarConnected: Boolean(token),
     });
   } catch (e) {
     console.error('slots error:', e);
@@ -1077,28 +1163,71 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
     return res.status(400).json({ error: apiMsg('contact.invalidEmail', lang) });
   }
 
+  const payload = {
+    name: name.trim(),
+    email: fromEmail.trim(),
+    phone: phone ? phone.trim() : '',
+    message: message.trim(),
+  };
+
+  // Nachricht IMMER zuerst in der DB sichern – so geht sie auch dann nicht
+  // verloren, wenn der E-Mail-Versand scheitert (z. B. SMTP nicht erreichbar).
+  let saved = false;
+  let savedId = null;
   try {
-    const result = await email.sendContactMessage({
-      name: name.trim(),
-      email: fromEmail.trim(),
-      phone: phone ? phone.trim() : '',
-      message: message.trim(),
-    });
-
-    if (!result.sent) {
-      return res.status(503).json({
-        error: apiMsg('contact.mailFailed', lang),
-      });
-    }
-
-    res.json({
-      success: true,
-      message: apiMsg('contact.success', lang),
-    });
-  } catch (e) {
-    console.error('contact error:', e);
-    res.status(500).json({ error: apiMsg('contact.sendFailed', lang) });
+    const ins = await dbRun(
+      `INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)`,
+      [payload.name, payload.email, payload.phone || null, payload.message]
+    );
+    savedId = ins.lastID;
+    saved = true;
+  } catch (dbErr) {
+    console.error('contact persist error:', dbErr.message);
   }
+
+  let sent = false;
+  try {
+    const result = await email.sendContactMessage(payload);
+    sent = Boolean(result.sent);
+  } catch (e) {
+    console.error('contact email error:', e.message);
+  }
+
+  if (sent && savedId) {
+    dbRun(`UPDATE contact_messages SET email_sent = 1 WHERE id = ?`, [savedId]).catch(() => {});
+  }
+
+  if (sent) {
+    return res.json({ success: true, message: apiMsg('contact.success', lang) });
+  }
+  if (saved) {
+    // E-Mail fehlgeschlagen, aber Nachricht ist gespeichert → Besucher nicht abweisen.
+    return res.json({ success: true, message: apiMsg('contact.success', lang) });
+  }
+  // Weder Mail noch Speicherung möglich – ehrliche Fehlermeldung.
+  res.status(503).json({ error: apiMsg('contact.mailFailed', lang) });
+});
+
+// Gespeicherte Kontaktnachrichten (Fallback-Einsicht, falls E-Mail mal ausfällt)
+app.get('/api/admin/contact-messages', requireAuth, (req, res) => {
+  db.all(
+    `SELECT id, name, email, phone, message, email_sent, createdAt
+     FROM contact_messages ORDER BY createdAt DESC LIMIT 200`,
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Database error' });
+      res.json(rows || []);
+    }
+  );
+});
+
+app.delete('/api/admin/contact-messages/:id', requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
+  dbRun(`DELETE FROM contact_messages WHERE id = ?`, [id], function (err) {
+    if (err) return res.status(500).json({ error: 'Datenbankfehler' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Nicht gefunden' });
+    res.json({ ok: true });
+  });
 });
 
 app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
@@ -1111,8 +1240,12 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
     });
   }
 
+  // Zeit-Falle gegen Bots: nur greifen, wenn das Formular plausibel in unter
+  // ~1,2 s abgeschickt wurde. elapsed >= 0 schließt Uhr-Vorlauf des Clients aus,
+  // damit legitime (nur leicht abweichende) Uhren nicht fälschlich blockiert werden.
   const formAt = Number(req.body._formAt);
-  if (formAt && Date.now() - formAt < 2000) {
+  const elapsed = Number.isFinite(formAt) && formAt > 0 ? Date.now() - formAt : null;
+  if (elapsed !== null && elapsed >= 0 && elapsed < 1200) {
     return res.json({
       success: true,
       message: apiMsg('booking.success', lang),
@@ -1181,6 +1314,10 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
         : apiMsg('booking.successSaved', lang),
     });
   } catch (e) {
+    if (e && (e.code === 'SQLITE_CONSTRAINT' || /UNIQUE constraint/i.test(e.message || ''))) {
+      // Paralleler Buchungsversuch hat den Slot gerade belegt.
+      return res.status(409).json({ error: apiMsg('booking.unavailable', lang) });
+    }
     console.error('booking create error:', e);
     res.status(500).json({ error: apiMsg('booking.failed', lang) });
   }
@@ -1190,6 +1327,10 @@ function atelierRateLimit(req) {
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
   const now = Date.now();
   const hour = 60 * 60 * 1000;
+  // Abgelaufene Einträge entfernen, damit die Map nicht unbegrenzt wächst.
+  for (const [key, e] of atelierSubmitCounts) {
+    if (now - e.start > hour) atelierSubmitCounts.delete(key);
+  }
   let entry = atelierSubmitCounts.get(ip);
   if (!entry || now - entry.start > hour) {
     entry = { start: now, count: 0 };
@@ -1752,18 +1893,7 @@ app.post('/api/admin/bookings', requireAuth, async (req, res) => {
     const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
 
     if (!isBlock) {
-      getGoogleRefreshToken(async (err, token) => {
-        if (!err && token) {
-          try {
-            const googleEventId = await googleCalendar.createCalendarEvent(token, row);
-            if (googleEventId) {
-              await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [googleEventId, row.id]);
-            }
-          } catch (e) {
-            console.error('Google event create failed:', e.message);
-          }
-        }
-      });
+      await syncGoogleCreate(row);
     }
 
     res.json({
@@ -1800,34 +1930,12 @@ app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {
       }
 
       if (!updated.google_event_id) {
-        getGoogleRefreshToken(async (err, token) => {
-          if (!err && token) {
-            try {
-              const googleEventId = await googleCalendar.createCalendarEvent(token, updated);
-              if (googleEventId) {
-                await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [
-                  googleEventId,
-                  updated.id,
-                ]);
-              }
-            } catch (e) {
-              console.error('Google event create failed:', e.message);
-            }
-          }
-        });
+        await syncGoogleCreate(updated);
       }
     }
 
     if (status === 'cancelled' && row.google_event_id) {
-      getGoogleRefreshToken(async (err, token) => {
-        if (!err && token) {
-          try {
-            await googleCalendar.deleteCalendarEvent(token, row.google_event_id);
-          } catch (e) {
-            console.error('Google delete failed:', e.message);
-          }
-        }
-      });
+      await syncGoogleDelete(row.google_event_id);
     }
 
     res.json({
@@ -1848,15 +1956,7 @@ app.delete('/api/admin/bookings/:id', requireAuth, async (req, res) => {
     if (!row) return res.status(404).json({ error: 'Nicht gefunden' });
 
     if (row.google_event_id) {
-      getGoogleRefreshToken(async (err, token) => {
-        if (!err && token) {
-          try {
-            await googleCalendar.deleteCalendarEvent(token, row.google_event_id);
-          } catch (e) {
-            console.error('Google delete failed:', e.message);
-          }
-        }
-      });
+      await syncGoogleDelete(row.google_event_id);
     }
 
     await dbRun(`DELETE FROM bookings WHERE id = ?`, [req.params.id]);
@@ -1966,7 +2066,7 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'kunsttherapie-cms' });
+  res.json({ status: 'ok', service: 'kunsttherapie-cms', lastBackup: backup.getLastBackup() });
 });
 
 app.get('/', (req, res) => sendPage(res, 'index'));

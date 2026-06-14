@@ -1,0 +1,2365 @@
+/* Admin-Panel Logik – ausgelagert aus admin.html, damit sie unter der
+   Content-Security-Policy (script-src 'self') ausgeführt wird. */
+const API_URL = window.location.origin + '/api';
+
+// ============================================================================
+// AUTH FUNCTIONS
+// ============================================================================
+
+function showAdminApp(username) {
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('mainContainer').classList.add('active');
+  loadDashboard();
+  if (username) {
+    const welcome = document.getElementById('dashboardWelcome');
+    if (welcome) welcome.textContent = `Hallo ${username}! Hier pflegst du Neuigkeiten, Texte, Buchungen und Veranstaltungen.`;
+  }
+}
+
+async function checkAuthOnLoad() {
+  try {
+    const response = await fetch(`${API_URL}/auth/status`, { credentials: 'include' });
+    const data = await response.json();
+    if (data.authenticated) {
+      showAdminApp(data.username);
+      return;
+    }
+    document.getElementById('loginScreen').classList.add('active');
+    document.getElementById('mainContainer').classList.remove('active');
+    showLoginHelp();
+  } catch (err) {
+    document.getElementById('loginMessage').textContent =
+      'Backend nicht erreichbar. Server gestartet? „npm start” (server.js)';
+    document.getElementById('loginMessage').className = 'message error active';
+  }
+}
+
+function showLoginHelp() {
+  document.getElementById('firstSetupBox').style.display = 'block';
+  document.getElementById('loginHint').innerHTML =
+    'Erstlogin oft: <strong>admin</strong> / <strong>admin123</strong> (falls noch nicht in der .env geändert).<br>' +
+    'Dauerhaft: <strong>ADMIN_USERNAME</strong> und <strong>ADMIN_PASSWORD</strong> in der .env setzen, dann Server neu starten.';
+}
+
+async function runFirstSetup() {
+  const token = document.getElementById('setupToken').value;
+  const username = document.getElementById('setupUsername').value.trim();
+  const password = document.getElementById('setupPassword').value;
+  try {
+    const res = await fetch(`${API_URL}/auth/setup`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, username, password }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showMessage('Konto erstellt – du bist angemeldet.', 'success', 'loginMessage');
+      showAdminApp(data.username);
+    } else {
+      showMessage(data.error || 'Setup fehlgeschlagen', 'error', 'loginMessage');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error', 'loginMessage');
+  }
+}
+
+async function changePassword(e) {
+  e.preventDefault();
+  const msg = document.getElementById('passwordChangeMsg');
+  try {
+    const res = await fetch(`${API_URL}/admin/change-password`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        currentPassword: document.getElementById('currentPassword').value,
+        newPassword: document.getElementById('newPassword').value,
+      }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      msg.textContent = data.message || 'Passwort gespeichert';
+      msg.className = 'message success active';
+      e.target.reset();
+    } else {
+      msg.textContent = data.error || 'Fehler';
+      msg.className = 'message error active';
+    }
+  } catch (err) {
+    msg.textContent = 'Fehler: ' + err.message;
+    msg.className = 'message error active';
+  }
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      showMessage('Anmeldung erfolgreich!', 'success', 'loginMessage');
+      showAdminApp(data.username);
+      setTimeout(() => loadNewsList(), 500);
+    } else {
+      const hint = response.status === 401
+        ? 'Benutzername oder Passwort falsch – oder Session-Cookie blockiert? HTTPS und .env prüfen.'
+        : (data.error || 'Anmeldung fehlgeschlagen');
+      showMessage(hint, 'error', 'loginMessage');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error', 'loginMessage');
+  }
+}
+
+async function handleLogout() {
+  try {
+    await fetch(`${API_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+
+    document.getElementById('loginScreen').classList.add('active');
+    document.getElementById('mainContainer').classList.remove('active');
+    document.getElementById('loginForm').reset();
+  } catch (err) {
+    alert('Abmelden fehlgeschlagen: ' + err.message);
+  }
+}
+
+// ============================================================================
+// UI FUNCTIONS
+// ============================================================================
+
+function syncAdminNavToggle() {
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('adminNavToggle');
+  if (!sidebar || !toggle) return;
+  const collapsed = sidebar.classList.contains('is-collapsed');
+  toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  toggle.innerHTML = collapsed
+    ? 'Menü <span aria-hidden="true">▸</span>'
+    : 'Menü <span aria-hidden="true">▾</span>';
+}
+
+function collapseAdminNav() {
+  const sidebar = document.getElementById('sidebar');
+  if (!sidebar) return;
+  sidebar.classList.add('is-collapsed');
+  syncAdminNavToggle();
+}
+
+function switchSection(sectionId, navEl) {
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.getElementById(sectionId).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const activeNav = navEl || (typeof event !== 'undefined' ? event.target : null);
+  if (activeNav) activeNav.classList.add('active');
+
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    collapseAdminNav();
+  }
+
+  if (sectionId === 'news') loadNewsList();
+  if (sectionId === 'bookings') {
+    loadBookingsList();
+    loadGoogleStatus();
+  }
+  if (sectionId === 'atelier') loadAtelierList();
+  if (sectionId === 'events') loadEventsList();
+  if (sectionId === 'services') loadServicesList();
+  if (sectionId === 'images') loadSiteImagesList();
+  if (sectionId === 'texts') initTextsSection();
+  if (sectionId === 'contact') loadContactMessages();
+}
+
+const I18N_PREVIEW = {
+  home: '/',
+  therapy: '/kunsttherapie',
+  faq: '/kunsttherapie.html#faq',
+  about: '/ueber-mich',
+  prices: '/preise',
+  contact: '/kontakt',
+  booking: '/buchung',
+  seo: '/',
+};
+
+function i18nFieldRows(field) {
+  if (/^kt\.faq\d+\.a$/.test(field.key)) return 8;
+  if (/^kt\.faq\d+\.q$/.test(field.key)) return 2;
+  if (field.html) return 5;
+  if (field.key.includes('body') || field.key.includes('table')) return 8;
+  return 3;
+}
+
+let i18nCatalog = [];
+let i18nCurrentLang = 'de';
+
+async function fetchI18nCatalog() {
+  const res = await fetch(`${API_URL}/admin/i18n/catalog`, { credentials: 'include' });
+  const data = await res.json();
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Sitzung abgelaufen – bitte erneut anmelden.');
+    throw new Error(data.error || `Serverfehler (${res.status})`);
+  }
+  const catalog = Array.isArray(data) ? data : data?.groups;
+  if (!Array.isArray(catalog)) {
+    throw new Error('Ungültige Katalog-Antwort vom Server');
+  }
+  return catalog;
+}
+
+async function initTextsSection() {
+  try {
+    if (!Array.isArray(i18nCatalog) || !i18nCatalog.length) {
+      i18nCatalog = await fetchI18nCatalog();
+      const sel = document.getElementById('i18nGroupSelect');
+      sel.innerHTML = i18nCatalog
+        .map((g) => `<option value="${g.id}">${escapeHtml(g.title)}</option>`)
+        .join('');
+    }
+    await loadI18nGroup();
+  } catch (err) {
+    showMessage('Texte konnten nicht geladen werden: ' + err.message, 'error');
+  }
+}
+
+function setI18nLang(lang) {
+  i18nCurrentLang = lang;
+  document.querySelectorAll('.i18n-lang-btn').forEach((btn) => {
+    btn.classList.toggle('is-active', btn.dataset.i18nLang === lang);
+  });
+  loadI18nGroup();
+}
+
+async function loadI18nGroup() {
+  const groupId = document.getElementById('i18nGroupSelect')?.value;
+  if (!groupId) return;
+
+  const preview = document.getElementById('i18nPreviewLink');
+  if (preview) preview.href = I18N_PREVIEW[groupId] || '/';
+
+  try {
+    const res = await fetch(`${API_URL}/admin/i18n/${groupId}?lang=${i18nCurrentLang}`, {
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Laden fehlgeschlagen');
+
+    const desc = document.getElementById('i18nGroupDesc');
+    if (desc) desc.textContent = data.description || '';
+
+    const container = document.getElementById('i18nFields');
+    container.innerHTML = data.fields
+      .map((field) => {
+        const rows = i18nFieldRows(field);
+        const hint = field.hint ? `<p class="note">${field.hint}</p>` : '';
+        const badge = field.isOverride
+          ? '<span class="i18n-override-badge">Geändert</span>'
+          : '';
+        const fieldId = i18nFieldId(field.key);
+        const inputTag = `<textarea id="${fieldId}" name="${field.key}" rows="${rows}">${escapeHtml(field.value)}</textarea>`;
+        return `
+          <div class="form-group full i18n-field${field.isOverride ? ' is-override' : ''}">
+            <label for="${fieldId}">${field.label} ${badge}</label>
+            ${inputTag}
+            ${hint}
+          </div>`;
+      })
+      .join('');
+  } catch (err) {
+    showMessage('Fehler beim Laden: ' + err.message, 'error');
+  }
+}
+
+function i18nFieldId(key) {
+  return 'i18n-' + String(key).replace(/[^a-zA-Z0-9_-]/g, '--');
+}
+
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+async function saveI18nGroup(e) {
+  e.preventDefault();
+  const groupId = document.getElementById('i18nGroupSelect').value;
+  const form = document.getElementById('i18nForm');
+  const values = {};
+  form.querySelectorAll('[name]').forEach((el) => {
+    if (el.name) values[el.name] = el.value;
+  });
+
+  try {
+    const res = await fetch(`${API_URL}/admin/i18n/${groupId}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lang: i18nCurrentLang, values }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Speichern fehlgeschlagen');
+    showMessage(
+      'Texte gespeichert – dauerhaft in data/i18n-overrides.json und im Website-Code. Seite neu laden.',
+      'success'
+    );
+    loadI18nGroup();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function resetI18nGroup() {
+  const groupId = document.getElementById('i18nGroupSelect').value;
+  const langLabel = i18nCurrentLang === 'en' ? 'Englisch' : 'Deutsch';
+  if (!confirm(`Alle Texte in diesem Bereich (${langLabel}) auf Standard zurücksetzen?`)) return;
+
+  try {
+    const res = await fetch(`${API_URL}/admin/i18n/${groupId}?lang=${i18nCurrentLang}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Zurücksetzen fehlgeschlagen');
+    showMessage('Standardtexte wiederhergestellt.', 'success');
+    loadI18nGroup();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+function showMessage(text, type, elementId) {
+  const id = elementId || 'adminToast';
+  const msg = document.getElementById(id);
+  if (!msg) return;
+  msg.textContent = text;
+  msg.className = `message ${type} active`;
+  clearTimeout(msg._hideTimer);
+  if (type === 'success') {
+    msg._hideTimer = setTimeout(() => msg.classList.remove('active'), 4000);
+  }
+}
+
+async function compressImageFile(file, maxPx = 1600, quality = 0.82) {
+  if (!file.type.startsWith('image/') || file.type === 'image/gif') return file;
+  if (file.size < 300 * 1024) return file;
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const { width, height } = img;
+      const scale = Math.min(1, maxPx / Math.max(width, height));
+      if (scale === 1 && file.size < 800 * 1024) { resolve(file); return; }
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(width * scale);
+      canvas.height = Math.round(height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        (blob) => resolve(blob ? new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg', lastModified: Date.now() }) : file),
+        'image/jpeg', quality
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+
+async function uploadImageFile(fileInput) {
+  const file = fileInput?.files?.[0];
+  if (!file) return null;
+  const compressed = await compressImageFile(file);
+  const fd = new FormData();
+  fd.append('image', compressed);
+  const res = await fetch(`${API_URL}/admin/upload`, {
+    method: 'POST',
+    credentials: 'include',
+    body: fd,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Bild-Upload fehlgeschlagen');
+  return data.url;
+}
+
+let siteImageSlots = [];
+let mediaLibraryFiles = [];
+let galleryCount = 6;
+let galleryMax = 6;
+
+function findSiteImageCard(slot) {
+  return document.querySelector(`.site-image-card[data-slot="${CSS.escape(slot)}"]`);
+}
+
+async function uploadSiteImageSlot(slot, fileInput) {
+  const file = fileInput?.files?.[0];
+  if (!file) throw new Error('Bitte zuerst ein Bild auswählen');
+  const fd = new FormData();
+  fd.append('image', file);
+  const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}/upload`, {
+    method: 'POST',
+    credentials: 'include',
+    body: fd,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Bild konnte nicht gespeichert werden');
+  return data;
+}
+
+async function assignSiteImageUrl(slot, url) {
+  const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Zuweisung fehlgeschlagen');
+  return data;
+}
+
+function renderMediaLibraryOptions(selectedUrl) {
+  if (!mediaLibraryFiles.length) {
+    return '<option value="">— Noch keine Uploads in der Mediathek —</option>';
+  }
+  return (
+    '<option value="">— Bild aus Mediathek wählen —</option>' +
+    mediaLibraryFiles
+      .map(
+        (f) =>
+          `<option value="${escapeHtml(f.url)}"${f.url === selectedUrl ? ' selected' : ''}>${escapeHtml(f.filename)}${f.inUse ? ' (verwendet)' : ''}</option>`
+      )
+      .join('')
+  );
+}
+
+function renderGalleryCountSettings() {
+  const options = Array.from({ length: galleryMax }, (_, i) => {
+    const n = i + 1;
+    return `<option value="${n}"${n === galleryCount ? ' selected' : ''}>${n}</option>`;
+  }).join('');
+
+  return `
+    <div class="gallery-count-settings card">
+      <h3>Galerie auf der Startseite</h3>
+      <p class="note">Legt fest, wie viele Galerie-Bilder öffentlich sichtbar sind (Bild 1 bis N).</p>
+      <div class="form-row gallery-count-row">
+        <div class="form-group">
+          <label for="galleryCountInput">Anzahl sichtbarer Bilder</label>
+          <select id="galleryCountInput">${options}</select>
+        </div>
+        <button type="button" class="btn-save btn-sm" id="galleryCountSave">Anzahl speichern</button>
+      </div>
+    </div>`;
+}
+
+function renderSiteImageSlots() {
+  const container = document.getElementById('siteImagesList');
+  if (!container) return;
+
+  const groups = {};
+  siteImageSlots.forEach((slot) => {
+    if (!groups[slot.group]) groups[slot.group] = [];
+    groups[slot.group].push(slot);
+  });
+
+  let html = '';
+  for (const [group, slots] of Object.entries(groups)) {
+    html += `<div class="site-images-group"><h2>${escapeHtml(group)}</h2>`;
+    if (group === 'Startseite – Galerie') {
+      html += renderGalleryCountSettings();
+    }
+    html += '<div class="site-images-grid">';
+    for (const slot of slots) {
+      const status = slot.isCustom
+        ? '<span class="site-image-badge site-image-badge--custom">Eigenes Bild</span>'
+        : '<span class="site-image-badge">Standard</span>';
+      html += `
+        <article class="site-image-card card" data-slot="${escapeHtml(slot.slot)}">
+          <div class="site-image-card-head">
+            <h3>${escapeHtml(slot.label)}</h3>
+            ${status}
+          </div>
+          <img class="upload-preview site-image-preview" src="${escapeHtml(slot.url)}" alt="" loading="lazy"/>
+          <div class="form-group">
+            <label for="lib-${escapeHtml(slot.slot)}">Aus Mediathek</label>
+            <select id="lib-${escapeHtml(slot.slot)}" class="site-image-library-select">${renderMediaLibraryOptions(slot.customUrl)}</select>
+          </div>
+          <div class="form-group">
+            <label>Neu hochladen</label>
+            <input type="file" class="site-image-file" accept="image/jpeg,image/png,image/gif,image/webp"/>
+          </div>
+          <div class="form-actions site-image-actions">
+            <button type="button" class="btn outline btn-sm" data-action="assign-library">Aus Mediathek übernehmen</button>
+            <button type="button" class="btn-save btn-sm" data-action="upload-slot">Hochladen &amp; zuweisen</button>
+            <button type="button" class="btn-cancel btn-sm" data-action="reset-slot"${slot.isCustom ? '' : ' disabled'}>Eigenes Bild entfernen</button>
+          </div>
+        </article>`;
+    }
+    html += '</div></div>';
+  }
+
+  container.innerHTML = html || '<p class="note">Keine Bild-Slots konfiguriert.</p>';
+
+  const saveBtn = document.getElementById('galleryCountSave');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', saveGalleryCount);
+  }
+}
+
+async function saveGalleryCount() {
+  const select = document.getElementById('galleryCountInput');
+  if (!select) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/site-images/gallery-count`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ galleryCount: Number(select.value) }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Speichern fehlgeschlagen');
+    galleryCount = data.galleryCount;
+    showMessage(`Galerie zeigt jetzt ${galleryCount} Bild(er) auf der Startseite.`, 'success');
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+function renderMediaLibrary() {
+  const grid = document.getElementById('mediaLibraryGrid');
+  const hint = document.getElementById('mediaLibraryHint');
+  const deleteBtn = document.getElementById('mediaDeleteSelectedBtn');
+  if (!grid) return;
+
+  if (hint) {
+    hint.textContent = mediaLibraryFiles.length
+      ? `${mediaLibraryFiles.length} Datei(en) – nur unbenutzte Bilder können gelöscht werden`
+      : 'Noch keine hochgeladenen Bilder';
+  }
+
+  if (!mediaLibraryFiles.length) {
+    grid.innerHTML = '<p class="note">Lade ein Bild hoch, um es Website-Bereichen zuzuweisen.</p>';
+    if (deleteBtn) deleteBtn.disabled = true;
+    return;
+  }
+
+  grid.innerHTML = mediaLibraryFiles
+    .map((file) => {
+      const blockingUse = file.usedBy?.filter((u) => u.type === 'news' || u.type === 'events') ?? [];
+      const siteUse = file.usedBy?.filter((u) => u.type === 'site') ?? [];
+      const isBlocked = blockingUse.length > 0;
+      const isSiteOnly = siteUse.length > 0 && !isBlocked;
+
+      let usageLabel;
+      if (blockingUse.length) {
+        usageLabel = `<span class="media-usage media-usage--blocked">In Verwendung: ${blockingUse.map((u) => escapeHtml(`${u.type}:${u.ref}`)).join(', ')}</span>`;
+      } else if (siteUse.length) {
+        usageLabel = `<span class="media-usage media-usage--site">Website-Bereich zugewiesen (wird beim Löschen automatisch entfernt)</span>`;
+      } else {
+        usageLabel = '<span class="media-usage media-usage--free">Nicht zugewiesen</span>';
+      }
+
+      const deleteTitle = isBlocked
+        ? 'Bild wird in Neuigkeiten/Events verwendet – erst dort entfernen'
+        : isSiteOnly
+          ? 'Bild löschen (Zuweisung wird automatisch zurückgesetzt)'
+          : 'Bild löschen';
+
+      return `
+        <label class="media-library-item card${file.inUse ? ' is-used' : ''}">
+          <input type="checkbox" class="media-select" value="${escapeHtml(file.filename)}"${isBlocked ? ' data-in-use="1"' : ''}/>
+          <img src="${escapeHtml(file.url)}" alt="" loading="lazy"/>
+          <span class="media-filename">${escapeHtml(file.filename)}</span>
+          ${usageLabel}
+          <button type="button" class="btn-cancel btn-sm media-delete-one" data-filename="${escapeHtml(file.filename)}"${isBlocked ? ' disabled' : ''} title="${deleteTitle}">Löschen</button>
+        </label>`;
+    })
+    .join('');
+
+  grid.querySelectorAll('.media-select').forEach((cb) => {
+    cb.addEventListener('change', updateMediaDeleteButton);
+  });
+  grid.querySelectorAll('.media-delete-one').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      deleteMediaFiles([btn.dataset.filename]);
+    });
+  });
+  updateMediaDeleteButton();
+}
+
+function updateMediaDeleteButton() {
+  const deleteBtn = document.getElementById('mediaDeleteSelectedBtn');
+  if (!deleteBtn) return;
+  const selected = [...document.querySelectorAll('.media-select:checked')];
+  const deletable = selected.filter((cb) => !cb.dataset.inUse);
+  deleteBtn.disabled = deletable.length === 0;
+  deleteBtn.textContent =
+    deletable.length > 0
+      ? `Ausgewählte löschen (${deletable.length})`
+      : 'Ausgewählte löschen';
+}
+
+async function loadSiteImagesList() {
+  const container = document.getElementById('siteImagesList');
+  if (container) container.innerHTML = '<p class="note">Bilder werden geladen …</p>';
+
+  try {
+    const [slotsRes, mediaRes] = await Promise.all([
+      fetch(`${API_URL}/admin/site-images`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
+    ]);
+    const slotsData = await slotsRes.json();
+    const mediaData = await mediaRes.json();
+    if (!slotsRes.ok) throw new Error(slotsData.error || 'Website-Bilder konnten nicht geladen werden');
+    if (!mediaRes.ok) throw new Error(mediaData.error || 'Mediathek konnte nicht geladen werden');
+
+    siteImageSlots = slotsData.slots || [];
+    galleryCount = slotsData.galleryCount ?? 6;
+    galleryMax = slotsData.galleryMax ?? 6;
+    mediaLibraryFiles = mediaData.files || [];
+    renderSiteImageSlots();
+    renderMediaLibrary();
+  } catch (err) {
+    if (container) {
+      container.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
+    }
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function saveSiteImageSlot(slot) {
+  const card = findSiteImageCard(slot);
+  const fileInput = card?.querySelector('.site-image-file');
+  const btn = card?.querySelector('[data-action="upload-slot"]');
+  const origLabel = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird hochgeladen …'; }
+  try {
+    await uploadSiteImageSlot(slot, fileInput);
+    showMessage('✓ Bild hochgeladen und zugewiesen – auf der Website nach Laden sichtbar.', 'success');
+    loadSiteImagesList();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = origLabel; }
+  }
+}
+
+async function assignSiteImageFromLibrary(slot) {
+  const card = findSiteImageCard(slot);
+  const url = card?.querySelector('.site-image-library-select')?.value;
+  if (!url) {
+    showMessage('Bitte ein Bild aus der Mediathek wählen.', 'error');
+    return;
+  }
+  const btn = card?.querySelector('[data-action="assign-library"]');
+  const origLabel = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird zugewiesen …'; }
+  try {
+    await assignSiteImageUrl(slot, url);
+    showMessage('✓ Bild zugewiesen – auf der Website sofort sichtbar.', 'success');
+    loadSiteImagesList();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = origLabel; }
+  }
+}
+
+async function resetSiteImageSlot(slot) {
+  if (!confirm('Eigenes Bild entfernen und Website-Standard wiederherstellen?')) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Entfernen fehlgeschlagen');
+    showMessage('Standardbild wiederhergestellt.', 'success');
+    loadSiteImagesList();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function deleteMediaFiles(filenames) {
+  const unique = [...new Set(filenames.filter(Boolean))];
+  if (!unique.length) return;
+  const siteUsed = unique.filter((fn) => {
+    const f = mediaLibraryFiles.find((m) => m.filename === fn);
+    return f?.usedBy?.some((u) => u.type === 'site');
+  });
+  const msg = siteUsed.length
+    ? `Wirklich ${unique.length} Bild(er) löschen?\n\n${siteUsed.length} Bild(er) sind einem Website-Bereich zugewiesen – die Zuweisung wird automatisch zurückgesetzt.`
+    : `Wirklich ${unique.length} Bild(er) dauerhaft löschen?`;
+  if (!confirm(msg)) return;
+
+  let deleted = 0;
+  for (const filename of unique) {
+    const res = await fetch(`${API_URL}/admin/media/${encodeURIComponent(filename)}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showMessage(`„${filename}“: ${data.error || 'Löschen fehlgeschlagen'}`, 'error');
+      continue;
+    }
+    deleted += 1;
+  }
+  if (deleted) {
+    showMessage(`${deleted} Bild(er) gelöscht.`, 'success');
+    loadSiteImagesList();
+  }
+}
+
+// ============ FILE MANAGER (Alle Dateien) ============
+let fmData = [];
+let fmFilter = 'all';
+let fmSort = 'name';
+let fmView = 'grid';
+let fmSearch = '';
+const fmSelected = new Set();
+
+function fmKey(f) { return `${f.source}::${f.filename}`; }
+
+function fmFmtSize(bytes) {
+  if (bytes == null) return '';
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+}
+
+function fmFmtDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  } catch (_) { return ''; }
+}
+
+function fmDims(f) {
+  return f.dimensions ? `${f.dimensions.width}×${f.dimensions.height}` : '';
+}
+
+function fmUsageText(f) {
+  if (f.source !== 'upload' || !f.inUse) return '';
+  return (f.usedBy || []).map((u) => {
+    if (u.type === 'site') return 'Website-Bild';
+    if (u.type === 'news') return 'Neuigkeit';
+    if (u.type === 'events') return 'Veranstaltung';
+    return u.type;
+  }).join(', ');
+}
+
+function fmFiltered() {
+  let files = fmData.slice();
+  if (fmFilter !== 'all') files = files.filter((f) => f.source === fmFilter);
+  if (fmSearch) {
+    const q = fmSearch.toLowerCase();
+    files = files.filter((f) => f.filename.toLowerCase().includes(q));
+  }
+  const byName = (a, b) => a.filename.localeCompare(b.filename, 'de');
+  switch (fmSort) {
+    case 'name': files.sort(byName); break;
+    case 'name-desc': files.sort((a, b) => byName(b, a)); break;
+    case 'date-desc': files.sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0)); break;
+    case 'date-asc': files.sort((a, b) => new Date(a.updatedAt || 0) - new Date(b.updatedAt || 0)); break;
+    case 'size-desc': files.sort((a, b) => (b.size || 0) - (a.size || 0)); break;
+    case 'size-asc': files.sort((a, b) => (a.size || 0) - (b.size || 0)); break;
+    case 'type': files.sort((a, b) => (a.type || '').localeCompare(b.type || '') || byName(a, b)); break;
+  }
+  return files;
+}
+
+function fmBadges(f) {
+  const sourceCls = f.source === 'static' ? 'badge--static' : 'badge--upload';
+  const sourceLabel = f.source === 'static' ? 'Asset' : 'Upload';
+  let html = `<span class="badge ${sourceCls}">${sourceLabel}</span>`;
+  if (f.protected) html += ` <span class="badge badge--locked">Geschützt</span>`;
+  const usage = fmUsageText(f);
+  if (usage) html += ` <span class="badge badge--inuse" title="Verwendet in: ${escapeHtml(usage)}">In Verwendung</span>`;
+  return html;
+}
+
+function fmCheckbox(f) {
+  const checked = fmSelected.has(fmKey(f)) ? 'checked' : '';
+  const dis = f.protected ? 'disabled' : '';
+  return `<input type="checkbox" class="fm-cb" data-key="${escapeHtml(fmKey(f))}" ${checked} ${dis}/>`;
+}
+
+function fmGridTile(f) {
+  const selCls = fmSelected.has(fmKey(f)) ? ' is-selected' : '';
+  const metaBits = [fmFmtSize(f.size), fmDims(f)].filter(Boolean).join(' · ');
+  return `<div class="fm-tile${selCls}" data-key="${escapeHtml(fmKey(f))}">
+    <label class="fm-tile-check">${fmCheckbox(f)}</label>
+    <button type="button" class="fm-tile-thumb" data-action="preview" data-key="${escapeHtml(fmKey(f))}" title="Vorschau: ${escapeHtml(f.filename)}">
+      <img src="${escapeHtml(f.url)}" alt="" loading="lazy"/>
+      <span class="fm-tile-zoom" aria-hidden="true">&#128269;</span>
+    </button>
+    <div class="fm-tile-body">
+      <span class="fm-tile-name" title="${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</span>
+      <span class="fm-tile-meta">${escapeHtml(metaBits)}</span>
+      <span class="fm-tile-badges">${fmBadges(f)}</span>
+    </div>
+    <div class="fm-tile-actions">
+      <button type="button" class="fm-iconbtn" data-action="copy" data-key="${escapeHtml(fmKey(f))}" title="Link kopieren" aria-label="Link kopieren">&#128279;</button>
+      ${f.protected
+        ? `<button type="button" class="fm-iconbtn" disabled title="Systemdatei – gesperrt" aria-label="Gesperrt">&#128274;</button>`
+        : `<button type="button" class="fm-iconbtn fm-iconbtn--danger" data-action="delete" data-key="${escapeHtml(fmKey(f))}" title="Löschen" aria-label="Löschen">&#128465;</button>`}
+    </div>
+  </div>`;
+}
+
+function fmTypeIcon(f) {
+  const t = (f.type || '').toLowerCase();
+  if (t === 'svg') return '&#127912;';                       // 🎨 Vektorgrafik
+  if (['mp4', 'webm', 'mov'].includes(t)) return '&#127909;'; // 🎬 Video
+  if (t === 'pdf') return '&#128196;';                        // 📄 Dokument
+  return '&#128247;';                                         // 📷 Rasterbild
+}
+
+function fmListRow(f) {
+  const selCls = fmSelected.has(fmKey(f)) ? ' is-selected' : '';
+  const meta = [fmFmtSize(f.size), fmFmtDate(f.updatedAt)].filter(Boolean).join('  ·  ');
+  return `<li class="fm-li${selCls}" data-key="${escapeHtml(fmKey(f))}">
+    <label class="fm-li-check">${fmCheckbox(f)}</label>
+    <span class="fm-li-icon" aria-hidden="true">${fmTypeIcon(f)}</span>
+    <button type="button" class="fm-li-name" data-action="preview" data-key="${escapeHtml(fmKey(f))}" title="Vorschau: ${escapeHtml(f.filename)}">${escapeHtml(f.filename)}</button>
+    <span class="fm-li-badges">${fmBadges(f)}</span>
+    <span class="fm-li-meta">${escapeHtml(meta)}</span>
+    <span class="fm-li-actions">
+      <button type="button" class="fm-iconbtn" data-action="copy" data-key="${escapeHtml(fmKey(f))}" title="Link kopieren" aria-label="Link kopieren">&#128279;</button>
+      ${f.protected
+        ? `<button type="button" class="fm-iconbtn" disabled title="Gesperrt" aria-label="Gesperrt">&#128274;</button>`
+        : `<button type="button" class="fm-iconbtn fm-iconbtn--danger" data-action="delete" data-key="${escapeHtml(fmKey(f))}" title="Löschen" aria-label="Löschen">&#128465;</button>`}
+    </span>
+  </li>`;
+}
+
+function fmRender() {
+  const container = document.getElementById('fmContainer');
+  const countEl = document.getElementById('fmCount');
+  if (!container) return;
+  const files = fmFiltered();
+
+  if (countEl) {
+    const total = fmData.length;
+    countEl.textContent = `${files.length} von ${total} Datei${total !== 1 ? 'en' : ''}`;
+  }
+
+  container.className = fmView === 'list' ? 'fm-list-wrap' : 'fm-grid';
+
+  if (!files.length) {
+    container.innerHTML = '<p class="note fm-empty">Keine Dateien gefunden.</p>';
+    fmUpdateSelectionUI();
+    return;
+  }
+
+  if (fmView === 'list') {
+    container.innerHTML = `<ul class="fm-list">${files.map(fmListRow).join('')}</ul>`;
+  } else {
+    container.innerHTML = files.map(fmGridTile).join('');
+  }
+  fmUpdateSelectionUI();
+}
+
+function fmFileByKey(key) {
+  return fmData.find((f) => fmKey(f) === key);
+}
+
+function fmUpdateSelectionUI() {
+  const bulkbar = document.getElementById('fmBulkbar');
+  const count = fmSelected.size;
+  const selCountEl = document.getElementById('fmSelCount');
+  const bulkBtn = document.getElementById('fmBulkDelete');
+  const selectAll = document.getElementById('fmSelectAll');
+  if (bulkbar) bulkbar.hidden = count === 0;
+  if (selCountEl) selCountEl.textContent = `${count} ausgewählt`;
+  if (bulkBtn) bulkBtn.disabled = count === 0;
+  if (selectAll) {
+    const selectable = fmFiltered().filter((f) => !f.protected);
+    selectAll.checked = selectable.length > 0 && selectable.every((f) => fmSelected.has(fmKey(f)));
+  }
+}
+
+async function fmCopyUrl(f) {
+  const absolute = location.origin + f.url;
+  try {
+    await navigator.clipboard.writeText(absolute);
+    showMessage('Link kopiert: ' + f.url, 'success');
+  } catch (_) {
+    window.prompt('Link kopieren:', absolute);
+  }
+}
+
+function fmOpenPreview(f) {
+  const overlay = document.getElementById('fmPreview');
+  const img = document.getElementById('fmPreviewImg');
+  const nameEl = document.getElementById('fmPreviewName');
+  const metaEl = document.getElementById('fmPreviewMeta');
+  const copyBtn = document.getElementById('fmPreviewCopy');
+  const openLink = document.getElementById('fmPreviewOpen');
+  if (!overlay || !img) return;
+  img.src = f.url;
+  img.alt = f.filename;
+  if (nameEl) nameEl.textContent = f.filename;
+  if (metaEl) {
+    const bits = [fmDims(f), fmFmtSize(f.size), (f.type || '').toUpperCase(), fmFmtDate(f.updatedAt)].filter(Boolean);
+    metaEl.textContent = bits.join('  ·  ');
+  }
+  if (copyBtn) copyBtn.onclick = () => fmCopyUrl(f);
+  if (openLink) openLink.href = f.url;
+  overlay.hidden = false;
+  requestAnimationFrame(() => {
+    overlay.classList.add('is-visible');
+    document.getElementById('fmPreviewClose')?.focus();
+  });
+}
+
+function fmClosePreview() {
+  const overlay = document.getElementById('fmPreview');
+  if (!overlay) return;
+  overlay.classList.remove('is-visible');
+  setTimeout(() => { overlay.hidden = true; }, 200);
+}
+
+async function loadAllFiles() {
+  const container = document.getElementById('fmContainer');
+  if (container) container.innerHTML = '<p class="note">Dateien werden geladen …</p>';
+  initAllFilesPanel();
+  try {
+    const [staticRes, uploadRes] = await Promise.all([
+      fetch(`${API_URL}/admin/static-images`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
+    ]);
+    const staticData = await staticRes.json();
+    const uploadData = await uploadRes.json();
+    if (!staticRes.ok) throw new Error(staticData.error || 'Statische Bilder konnten nicht geladen werden');
+    if (!uploadRes.ok) throw new Error(uploadData.error || 'Mediathek konnte nicht geladen werden');
+
+    const staticFiles = (staticData.files || []).map((f) => ({ ...f, source: 'static' }));
+    const uploadFiles = (uploadData.files || []).map((f) => ({ ...f, source: 'upload', protected: false }));
+    fmData = [...uploadFiles, ...staticFiles];
+    fmSelected.clear();
+    fmRender();
+  } catch (err) {
+    if (container) container.innerHTML = `<p class="message error active">Fehler: ${escapeHtml(err.message)}</p>`;
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function fmDeleteOne(f, { silent = false } = {}) {
+  const endpoint = f.source === 'static'
+    ? `${API_URL}/admin/static-images/${encodeURIComponent(f.filename)}`
+    : `${API_URL}/admin/media/${encodeURIComponent(f.filename)}`;
+  const res = await fetch(endpoint, { method: 'DELETE', credentials: 'include' });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const extra = data.usedBy ? ' (' + data.usedBy.map((u) => u.type).join(', ') + ')' : '';
+    if (!silent) showMessage(`„${f.filename}": ${data.error || 'Löschen fehlgeschlagen'}${extra}`, 'error');
+    return false;
+  }
+  return true;
+}
+
+async function deleteAnyImage(source, filename) {
+  const f = fmFileByKey(`${source}::${filename}`) || { source, filename };
+  const isStatic = (f.source || source) === 'static';
+  const note = isStatic
+    ? '\n\nHinweis: Dies ist ein Website-Asset (Teil des Seiten-Codes). Es wird sofort vom Server entfernt, kann bei einem erneuten Deployment aber zurückkehren, sofern es nicht auch aus dem Code entfernt wird.'
+    : '';
+  if (!confirm(`„${filename}" dauerhaft löschen?${note}`)) return;
+  const ok = await fmDeleteOne(f);
+  if (ok) {
+    showMessage(`✓ „${filename}" gelöscht.`, 'success');
+    fmSelected.delete(`${source}::${filename}`);
+    loadAllFiles();
+    loadSiteImagesList();
+  }
+}
+
+async function fmBulkDelete() {
+  const files = [...fmSelected].map(fmFileByKey).filter(Boolean).filter((f) => !f.protected);
+  if (!files.length) return;
+  const staticCount = files.filter((f) => f.source === 'static').length;
+  const note = staticCount
+    ? `\n\nDarunter ${staticCount} Website-Asset(s): werden vom Server entfernt, können bei einem Deployment aber zurückkehren.`
+    : '';
+  if (!confirm(`Wirklich ${files.length} Datei(en) dauerhaft löschen?${note}`)) return;
+  let deleted = 0;
+  for (const f of files) {
+    const ok = await fmDeleteOne(f, { silent: false });
+    if (ok) { deleted++; fmSelected.delete(fmKey(f)); }
+  }
+  if (deleted) {
+    showMessage(`✓ ${deleted} Datei(en) gelöscht.`, 'success');
+    loadAllFiles();
+    loadSiteImagesList();
+  } else {
+    fmUpdateSelectionUI();
+  }
+}
+
+async function fmUploadFile(file) {
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('image', file);
+  try {
+    const res = await fetch(`${API_URL}/admin/media/upload`, { method: 'POST', credentials: 'include', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload fehlgeschlagen');
+    showMessage('✓ Bild hochgeladen.', 'success');
+    loadAllFiles();
+    loadSiteImagesList();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+function initAllFilesPanel() {
+  const panel = document.getElementById('allFilesPanel');
+  if (!panel || panel.dataset.fmBound) return;
+  panel.dataset.fmBound = '1';
+
+  const searchInput = document.getElementById('fmSearch');
+  let searchTimer = null;
+  searchInput?.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => { fmSearch = searchInput.value.trim(); fmRender(); }, 160);
+  });
+
+  panel.querySelectorAll('.fm-view-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      panel.querySelectorAll('.fm-view-btn').forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      fmView = btn.dataset.view;
+      fmRender();
+    });
+  });
+
+  panel.querySelectorAll('.fm-filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      panel.querySelectorAll('.fm-filter-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+      fmFilter = btn.dataset.filter;
+      fmRender();
+    });
+  });
+
+  document.getElementById('fmSort')?.addEventListener('change', (e) => {
+    fmSort = e.target.value;
+    fmRender();
+  });
+
+  document.getElementById('fmUpload')?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    fmUploadFile(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('fmSelectAll')?.addEventListener('change', (e) => {
+    const visible = fmFiltered().filter((f) => !f.protected);
+    if (e.target.checked) visible.forEach((f) => fmSelected.add(fmKey(f)));
+    else visible.forEach((f) => fmSelected.delete(fmKey(f)));
+    fmRender();
+  });
+
+  document.getElementById('fmBulkDelete')?.addEventListener('click', fmBulkDelete);
+
+  const container = document.getElementById('fmContainer');
+  container?.addEventListener('click', (e) => {
+    const actionBtn = e.target.closest('[data-action]');
+    if (!actionBtn) return;
+    const f = fmFileByKey(actionBtn.dataset.key);
+    if (!f) return;
+    const action = actionBtn.dataset.action;
+    if (action === 'preview') fmOpenPreview(f);
+    else if (action === 'copy') fmCopyUrl(f);
+    else if (action === 'delete') deleteAnyImage(f.source, f.filename);
+  });
+  container?.addEventListener('change', (e) => {
+    const cb = e.target.closest('.fm-cb');
+    if (!cb) return;
+    const key = cb.dataset.key;
+    if (cb.checked) fmSelected.add(key); else fmSelected.delete(key);
+    const row = cb.closest('.fm-tile, .fm-li');
+    if (row) row.classList.toggle('is-selected', cb.checked);
+    fmUpdateSelectionUI();
+  });
+
+  const overlay = document.getElementById('fmPreview');
+  document.getElementById('fmPreviewClose')?.addEventListener('click', fmClosePreview);
+  overlay?.addEventListener('click', (e) => { if (e.target === overlay) fmClosePreview(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay && !overlay.hidden) fmClosePreview();
+  });
+}
+
+function initImagesAdmin() {
+  const section = document.getElementById('images');
+  if (!section || section.dataset.bound) return;
+  section.dataset.bound = '1';
+  initAllFilesPanel();
+
+  section.querySelectorAll('.images-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      section.querySelectorAll('.images-tab').forEach((t) => {
+        t.classList.toggle('is-active', t === tab);
+        t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+      });
+      section.querySelectorAll('.images-tab-panel').forEach((panel) => {
+        const active = panel.dataset.imagesPanel === tab.dataset.imagesTab;
+        panel.classList.toggle('is-active', active);
+        panel.hidden = !active;
+      });
+      if (tab.dataset.imagesTab === 'allfiles') loadAllFiles();
+    });
+  });
+
+  document.getElementById('siteImagesList')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const slot = btn.closest('.site-image-card')?.dataset.slot;
+    if (!slot) return;
+    if (btn.dataset.action === 'upload-slot') saveSiteImageSlot(slot);
+    if (btn.dataset.action === 'assign-library') assignSiteImageFromLibrary(slot);
+    if (btn.dataset.action === 'reset-slot') resetSiteImageSlot(slot);
+  });
+
+  document.getElementById('siteImagesList')?.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('site-image-file')) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const preview = e.target.closest('.site-image-card')?.querySelector('.site-image-preview');
+    if (!preview) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      preview.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('mediaLibraryUpload')?.addEventListener('change', async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('image', file);
+    try {
+      const res = await fetch(`${API_URL}/admin/media/upload`, {
+        method: 'POST',
+        credentials: 'include',
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload fehlgeschlagen');
+      showMessage('Bild in Mediathek hochgeladen.', 'success');
+      e.target.value = '';
+      loadSiteImagesList();
+    } catch (err) {
+      showMessage('Fehler: ' + err.message, 'error');
+    }
+  });
+
+  document.getElementById('mediaDeleteSelectedBtn')?.addEventListener('click', () => {
+    const filenames = [...document.querySelectorAll('.media-select:checked')]
+      .filter((cb) => !cb.dataset.inUse)
+      .map((cb) => cb.value);
+    deleteMediaFiles(filenames);
+  });
+}
+
+function bindImagePreview(fileInputId, hiddenInputId, previewId) {
+  const fileInput = document.getElementById(fileInputId);
+  const hidden = document.getElementById(hiddenInputId);
+  const preview = document.getElementById(previewId);
+  if (!fileInput) return;
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.src = e.target.result;
+      preview.hidden = false;
+    };
+    reader.readAsDataURL(file);
+  });
+  if (hidden?.value) {
+    preview.src = hidden.value;
+    preview.hidden = false;
+  }
+}
+
+function toggleManualBlockFields() {
+  const block = document.getElementById('manualBlock').checked;
+  document.getElementById('manualClientFields').style.display = block ? 'none' : 'block';
+}
+
+// ============================================================================
+// DASHBOARD
+// ============================================================================
+
+function dashSetText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function goToSection(id) {
+  const nav = document.querySelector(`.nav-item[onclick*="'${id}'"]`);
+  switchSection(id, nav);
+}
+
+function renderDashUpcoming(bookings, today) {
+  const el = document.getElementById('dashUpcoming');
+  if (!el) return;
+  const upcoming = bookings
+    .filter((b) => (b.date || '') >= today)
+    .sort((a, b) => `${a.date}${a.start_time || ''}`.localeCompare(`${b.date}${b.start_time || ''}`))
+    .slice(0, 5);
+  if (!upcoming.length) {
+    el.innerHTML = '<p class="note">Keine bevorstehenden Termine.</p>';
+    return;
+  }
+  el.innerHTML = upcoming.map((b) => {
+    let ds = b.date;
+    try {
+      ds = new Date(`${b.date}T${b.start_time || '00:00'}`).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
+    } catch (_) { /* keep raw */ }
+    const confirmed = b.status === 'confirmed';
+    return `<div class="dash-booking">
+      <span class="dash-booking-date">${escapeHtml(ds)} · ${escapeHtml(b.start_time || '')}</span>
+      <span class="dash-booking-name">${escapeHtml(b.name || '')}</span>
+      <span class="dash-booking-status ${confirmed ? 'is-confirmed' : 'is-pending'}">${confirmed ? 'bestätigt' : 'offen'}</span>
+    </div>`;
+  }).join('');
+}
+
+async function loadDashboard() {
+  try {
+    const [newsRes, bookingsRes, eventsRes, atelierRes, servicesRes, mediaRes, contactRes] = await Promise.all([
+      fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/atelier`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/services`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' }),
+    ]);
+
+    const news = newsRes.ok ? await newsRes.json() : [];
+    const bookings = bookingsRes.ok ? await bookingsRes.json() : [];
+    const events = eventsRes.ok ? await eventsRes.json() : [];
+    const atelier = atelierRes.ok ? await atelierRes.json() : [];
+    const services = servicesRes.ok ? await servicesRes.json() : [];
+    const media = mediaRes.ok ? ((await mediaRes.json()).files || []) : [];
+    const contacts = contactRes.ok ? await contactRes.json() : [];
+
+    const today = new Date().toISOString().slice(0, 10);
+
+    const newsPublished = news.filter((n) => n.published).length;
+    dashSetText('newsCount', news.length);
+    dashSetText('newsSub', `${newsPublished} online · ${news.length - newsPublished} Entwürfe`);
+
+    const activeBookings = bookings.filter((b) => b.status !== 'cancelled');
+    const pending = bookings.filter((b) => b.status === 'pending').length;
+    dashSetText('bookingsCount', activeBookings.length);
+    dashSetText('bookingsSub', pending ? `${pending} offen` : 'keine offenen');
+
+    const upcomingEvents = events.filter((e) => (e.date || '') >= today).length;
+    dashSetText('eventsCount', events.length);
+    dashSetText('eventsSub', `${upcomingEvents} bevorstehend`);
+
+    const atelierNew = atelier.filter((a) => a.status === 'new').length;
+    dashSetText('atelierCount', atelierNew);
+    dashSetText('atelierSub', `${atelier.length} gesamt`);
+
+    const activeServices = services.filter((s) => s.active).length;
+    dashSetText('servicesCount', activeServices);
+    dashSetText('servicesSub', `${services.length} gesamt`);
+
+    const totalBytes = media.reduce((sum, f) => sum + (f.size || 0), 0);
+    dashSetText('storageCount', media.length);
+    dashSetText('storageSub', fmFmtSize(totalBytes) || '0 B');
+
+    const unseenContacts = contacts.length;
+    dashSetText('contactCount', unseenContacts);
+    dashSetText('contactSub', unseenContacts === 1 ? '1 Anfrage' : `${unseenContacts} Anfragen`);
+
+    renderDashUpcoming(activeBookings, today);
+    await loadContentVersions();
+  } catch (err) {
+    console.error('Dashboard load error:', err);
+  }
+}
+
+const CONTENT_VERSION_KIND_LABELS = {
+  i18n: 'Texte',
+  site_images: 'Bilder',
+  content_bundle: 'Komplett',
+};
+
+function formatVersionDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleString('de-DE');
+  } catch {
+    return iso;
+  }
+}
+
+async function loadContentVersions() {
+  const list = document.getElementById('contentVersionsList');
+  if (!list) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/content-versions?limit=30`, { credentials: 'include' });
+    if (!res.ok) throw new Error('Versionen nicht geladen');
+    const data = await res.json();
+    const versions = Array.isArray(data.versions) ? data.versions : [];
+    if (!versions.length) {
+      list.innerHTML = '<p class="note">Noch keine Sicherungspunkte – beim nächsten Speichern von Texten oder Bildern wird automatisch eine Version angelegt.</p>';
+      return;
+    }
+    list.innerHTML = versions
+      .map((v) => {
+        const kind = CONTENT_VERSION_KIND_LABELS[v.kind] || v.kind;
+        const who = v.createdBy ? ` · ${escapeHtml(v.createdBy)}` : '';
+        return `
+          <div class="item-card content-version-card">
+            <div class="item-content">
+              <h3>#${v.id} · ${escapeHtml(kind)}</h3>
+              <p><strong>${escapeHtml(v.label || '')}</strong></p>
+              <p class="note">${formatVersionDate(v.createdAt)}${who}</p>
+              <div class="item-actions">
+                <button type="button" class="btn-small btn-edit" onclick="restoreContentVersion(${v.id})">Wiederherstellen</button>
+              </div>
+            </div>
+          </div>`;
+      })
+      .join('');
+  } catch (err) {
+    list.innerHTML = `<p class="note">Versionen konnten nicht geladen werden: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+async function createContentSnapshot() {
+  const label = window.prompt('Name für den Sicherungspunkt (optional):', 'Manueller Sicherungspunkt');
+  if (label === null) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/content-versions/snapshot`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ label: label.trim() || 'Manueller Sicherungspunkt' }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Sicherung fehlgeschlagen');
+    showMessage(`Sicherungspunkt #${data.id} erstellt`, 'success');
+    loadContentVersions();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function restoreContentVersion(id) {
+  if (!confirm('Diesen Stand wirklich wiederherstellen? Der aktuelle Inhalt wird vorher automatisch gesichert.')) {
+    return;
+  }
+  try {
+    const res = await fetch(`${API_URL}/admin/content-versions/${id}/restore`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Wiederherstellung fehlgeschlagen');
+    showMessage('Stand wiederhergestellt – Website ggf. neu laden.', 'success');
+    loadContentVersions();
+    if (document.getElementById('siteImagesList')) loadSiteImagesList();
+    if (document.getElementById('i18nGroupSelect')?.value) loadI18nGroup();
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+// ============================================================================
+// NEWS MANAGEMENT
+// ============================================================================
+
+let newsQuill = null;
+
+function imageUploadHandler() {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'image/*');
+  input.click();
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch(`${API_URL}/admin/upload`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const range = newsQuill.getSelection(true);
+        newsQuill.insertEmbed(range.index, 'image', data.url);
+        newsQuill.setSelection(range.index + 1);
+      } else {
+        showMessage('Bild konnte nicht hochgeladen werden', 'error');
+      }
+    } catch (err) {
+      showMessage('Upload-Fehler: ' + err.message, 'error');
+    }
+  };
+}
+
+function initNewsQuill() {
+  if (newsQuill || typeof Quill === 'undefined') return;
+  newsQuill = new Quill('#newsEditor', {
+    theme: 'snow',
+    placeholder: 'Was möchtest du mitteilen?',
+    modules: {
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['blockquote', 'link', 'image'],
+          [{ align: [] }],
+          ['clean']
+        ],
+        handlers: { image: imageUploadHandler }
+      }
+    }
+  });
+}
+
+function openNewsForm() {
+  document.getElementById('newsForm').style.display = 'block';
+  document.getElementById('newsId').value = '';
+  document.getElementById('newsTitle').value = '';
+  document.getElementById('newsImage').value = '';
+  document.getElementById('newsImageFile').value = '';
+  document.getElementById('newsImagePreview').hidden = true;
+  document.getElementById('newsPublished').checked = true;
+  initNewsQuill();
+  if (newsQuill) newsQuill.setContents([]);
+  document.getElementById('newsTitle').focus();
+}
+
+function closeNewsForm() {
+  document.getElementById('newsForm').style.display = 'none';
+}
+
+async function saveNews(e) {
+  e.preventDefault();
+  const btn = e.currentTarget.querySelector('[type="submit"]');
+  const origText = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
+
+  const id = document.getElementById('newsId').value;
+  const title = document.getElementById('newsTitle').value.trim();
+  const content = newsQuill ? newsQuill.root.innerHTML : document.getElementById('newsContent').value;
+  const isEmpty = !content || content === '<p><br></p>' || (newsQuill && newsQuill.getText().trim() === '');
+  if (!title) { showMessage('Bitte einen Titel eingeben.', 'error'); return; }
+  if (isEmpty) { showMessage('Bitte einen Text eingeben.', 'error'); return; }
+  let image = document.getElementById('newsImage').value;
+  const published = document.getElementById('newsPublished').checked;
+
+  const url = id ? `${API_URL}/admin/news/${id}` : `${API_URL}/admin/news`;
+  const method = id ? 'PUT' : 'POST';
+
+  try {
+    const fileInput = document.getElementById('newsImageFile');
+    if (fileInput?.files?.[0]) {
+      if (btn) btn.textContent = 'Bild wird hochgeladen …';
+    }
+    const uploaded = await uploadImageFile(fileInput);
+    if (uploaded) {
+      image = uploaded;
+      document.getElementById('newsImage').value = image;
+    }
+    if (btn) btn.textContent = 'Wird gespeichert …';
+    const response = await fetch(url, {
+      method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, content, image, published })
+    });
+
+    if (response.ok) {
+      showMessage('Erfolgreich gespeichert!', 'success');
+      closeNewsForm();
+      loadNewsList();
+      loadDashboard();
+    } else {
+      const error = await response.json();
+      showMessage(error.error || 'Fehler beim Speichern', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
+  }
+}
+
+async function editNews(id) {
+  try {
+    const response = await fetch(`${API_URL}/admin/news/${id}`, { credentials: 'include' });
+    if (!response.ok) throw new Error('Nicht gefunden');
+    const news = await response.json();
+
+    openNewsForm(); // resets all fields first
+
+    document.getElementById('newsId').value = news.id;
+    document.getElementById('newsTitle').value = news.title;
+
+    if (newsQuill) {
+      const c = news.content || '';
+      if (/<[a-zA-Z]/.test(c)) {
+        newsQuill.clipboard.dangerouslyPasteHTML(c);
+      } else {
+        newsQuill.setText(c);
+      }
+    }
+
+    document.getElementById('newsImage').value = news.image || '';
+    document.getElementById('newsImageFile').value = '';
+    const prev = document.getElementById('newsImagePreview');
+    if (news.image) {
+      prev.src = news.image;
+      prev.hidden = false;
+    } else {
+      prev.hidden = true;
+    }
+    document.getElementById('newsPublished').checked = !!news.published;
+    document.getElementById('newsTitle').focus();
+  } catch (err) {
+    showMessage('Fehler beim Laden', 'error');
+  }
+}
+
+async function deleteNews(id) {
+  if (!confirm('Wirklich löschen?')) return;
+
+  try {
+    const response = await fetch(`${API_URL}/admin/news/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      showMessage('Gelöscht!', 'success');
+      loadNewsList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+let newsListData = [];
+let newsListFilter = 'all';
+let newsListSearch = '';
+
+function renderNewsListItems() {
+  const listEl = document.getElementById('newsList');
+  const countEl = document.getElementById('newsListCount');
+  if (!listEl) return;
+
+  let items = newsListData.slice();
+  if (newsListFilter === 'published') items = items.filter((n) => n.published);
+  else if (newsListFilter === 'draft') items = items.filter((n) => !n.published);
+  if (newsListSearch) {
+    const q = newsListSearch.toLowerCase();
+    items = items.filter((n) =>
+      (n.title || '').toLowerCase().includes(q) ||
+      (n.content || '').replace(/<[^>]*>/g, '').toLowerCase().includes(q));
+  }
+
+  if (countEl) countEl.textContent = newsListData.length ? `${items.length} von ${newsListData.length}` : '';
+
+  if (!items.length) {
+    listEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Keine Neuigkeiten gefunden.</div>';
+    return;
+  }
+
+  listEl.innerHTML = items.map((item) => {
+    const badge = item.published
+      ? '<span class="status-badge published">Veröffentlicht</span>'
+      : '<span class="status-badge draft">Entwurf</span>';
+    const date = item.createdAt ? new Date(item.createdAt).toLocaleDateString('de-DE') : '';
+    const snippet = (item.content || '').replace(/<[^>]*>/g, '').trim().substring(0, 120);
+    const thumb = item.image ? `<img class="item-thumb" src="${escapeHtml(item.image)}" alt="" loading="lazy"/>` : '';
+    const publishBtn = item.published
+      ? `<button class="btn-small btn-publish" onclick="toggleNewsPublished(${item.id}, false)">Verbergen</button>`
+      : `<button class="btn-small btn-publish" onclick="toggleNewsPublished(${item.id}, true)">Veröffentlichen</button>`;
+    return `
+      <div class="item">
+        ${thumb}
+        <div class="item-info">
+          <h3>${escapeHtml(item.title || '')} ${badge}</h3>
+          <p>${escapeHtml(snippet)}${snippet ? '…' : ''}</p>
+          <p style="font-size: 0.85rem; color: #999;">${date}</p>
+        </div>
+        <div class="item-actions">
+          ${publishBtn}
+          <button class="btn-small btn-edit" onclick="editNews(${item.id})">Bearbeiten</button>
+          <button class="btn-small btn-delete" onclick="deleteNews(${item.id})">Löschen</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function initNewsListControls() {
+  const toolbar = document.getElementById('newsToolbar');
+  if (!toolbar || toolbar.dataset.bound) return;
+  toolbar.dataset.bound = '1';
+  const search = document.getElementById('newsSearch');
+  let t = null;
+  search?.addEventListener('input', () => {
+    clearTimeout(t);
+    t = setTimeout(() => { newsListSearch = search.value.trim(); renderNewsListItems(); }, 150);
+  });
+  toolbar.querySelectorAll('.list-filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      toolbar.querySelectorAll('.list-filter-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+      newsListFilter = btn.dataset.newsfilter;
+      renderNewsListItems();
+    });
+  });
+}
+
+async function loadNewsList() {
+  initNewsListControls();
+  try {
+    const response = await fetch(`${API_URL}/admin/news`, { credentials: 'include' });
+    const data = await response.json();
+    newsListData = Array.isArray(data) ? data : [];
+    renderNewsListItems();
+  } catch (err) {
+    console.error('Error loading news:', err);
+  }
+}
+
+async function toggleNewsPublished(id, publish) {
+  try {
+    const res = await fetch(`${API_URL}/admin/news/${id}/published`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ published: publish })
+    });
+    if (res.ok) {
+      showMessage(publish ? 'Neuigkeit veröffentlicht!' : 'Als Entwurf gespeichert.', 'success');
+      loadNewsList();
+      loadDashboard();
+    } else {
+      const err = await res.json();
+      showMessage(err.error || 'Fehler', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+// ============================================================================
+// EVENTS MANAGEMENT
+// ============================================================================
+
+function openEventForm() {
+  document.getElementById('eventForm').style.display = 'block';
+  document.getElementById('eventId').value = '';
+  document.getElementById('eventTitle').value = '';
+  document.getElementById('eventDescription').value = '';
+  document.getElementById('eventDate').value = '';
+  document.getElementById('eventTime').value = '';
+  document.getElementById('eventLocation').value = '';
+  document.getElementById('eventCapacity').value = '';
+  document.getElementById('eventImage').value = '';
+  document.getElementById('eventImageFile').value = '';
+  document.getElementById('eventImagePreview').hidden = true;
+  document.getElementById('eventPublished').checked = false;
+  document.getElementById('eventTitle').focus();
+}
+
+function closeEventForm() {
+  document.getElementById('eventForm').style.display = 'none';
+}
+
+async function saveEvent(e) {
+  e.preventDefault();
+  const btn = e.currentTarget.querySelector('[type="submit"]');
+  const origText = btn?.textContent;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
+
+  const id = document.getElementById('eventId').value;
+  const title = document.getElementById('eventTitle').value;
+  const description = document.getElementById('eventDescription').value;
+  const date = document.getElementById('eventDate').value;
+  const time = document.getElementById('eventTime').value;
+  const location = document.getElementById('eventLocation').value;
+  const capacity = document.getElementById('eventCapacity').value;
+  let image = document.getElementById('eventImage').value;
+  const published = document.getElementById('eventPublished').checked;
+
+  const url = id ? `${API_URL}/admin/events/${id}` : `${API_URL}/admin/events`;
+  const method = id ? 'PUT' : 'POST';
+
+  try {
+    const fileInput = document.getElementById('eventImageFile');
+    if (fileInput?.files?.[0]) {
+      if (btn) btn.textContent = 'Bild wird hochgeladen …';
+    }
+    const uploaded = await uploadImageFile(fileInput);
+    if (uploaded) {
+      image = uploaded;
+      document.getElementById('eventImage').value = image;
+    }
+    if (btn) btn.textContent = 'Wird gespeichert …';
+    const response = await fetch(url, {
+      method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, description, date, time, location, capacity, image, published })
+    });
+
+    if (response.ok) {
+      showMessage('Erfolgreich gespeichert!', 'success');
+      closeEventForm();
+      loadEventsList();
+      loadDashboard();
+    } else {
+      const error = await response.json();
+      showMessage(error.error || 'Fehler beim Speichern', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
+  }
+}
+
+async function editEvent(id) {
+  try {
+    const response = await fetch(`${API_URL}/admin/events/${id}`, { credentials: 'include' });
+    const event = await response.json();
+
+    document.getElementById('eventId').value = event.id;
+    document.getElementById('eventTitle').value = event.title;
+    document.getElementById('eventDescription').value = event.description;
+    document.getElementById('eventDate').value = event.date;
+    document.getElementById('eventTime').value = event.time || '';
+    document.getElementById('eventLocation').value = event.location || '';
+    document.getElementById('eventCapacity').value = event.capacity || '';
+    document.getElementById('eventImage').value = event.image || '';
+    document.getElementById('eventImageFile').value = '';
+    const prev = document.getElementById('eventImagePreview');
+    if (event.image) {
+      prev.src = event.image;
+      prev.hidden = false;
+    } else prev.hidden = true;
+    document.getElementById('eventPublished').checked = !!event.published;
+    openEventForm();
+  } catch (err) {
+    showMessage('Fehler beim Laden', 'error');
+  }
+}
+
+async function deleteEvent(id) {
+  if (!confirm('Wirklich löschen?')) return;
+
+  try {
+    const response = await fetch(`${API_URL}/admin/events/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      showMessage('Gelöscht!', 'success');
+      loadEventsList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+let eventsListData = [];
+let eventsListFilter = 'all';
+let eventsListSearch = '';
+
+function renderEventsListItems() {
+  const listEl = document.getElementById('eventsList');
+  const countEl = document.getElementById('eventsListCount');
+  if (!listEl) return;
+  const today = new Date().toISOString().slice(0, 10);
+
+  let items = eventsListData.slice();
+  if (eventsListFilter === 'upcoming') items = items.filter((e) => (e.date || '') >= today);
+  else if (eventsListFilter === 'past') items = items.filter((e) => (e.date || '') < today);
+  if (eventsListSearch) {
+    const q = eventsListSearch.toLowerCase();
+    items = items.filter((e) =>
+      (e.title || '').toLowerCase().includes(q) ||
+      (e.description || '').toLowerCase().includes(q) ||
+      (e.location || '').toLowerCase().includes(q));
+  }
+  if (eventsListFilter === 'upcoming') items.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  else items.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  if (countEl) countEl.textContent = eventsListData.length ? `${items.length} von ${eventsListData.length}` : '';
+
+  if (!items.length) {
+    listEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Keine Veranstaltungen gefunden.</div>';
+    return;
+  }
+
+  listEl.innerHTML = items.map((item) => {
+    const badge = item.published
+      ? '<span class="status-badge published">Veröffentlicht</span>'
+      : '<span class="status-badge draft">Entwurf</span>';
+    let date = item.date || '';
+    try { date = new Date(item.date).toLocaleDateString('de-DE'); } catch (_) { /* keep raw */ }
+    const isPast = (item.date || '') < today;
+    const pastBadge = isPast ? ' <span class="status-badge draft">Vergangen</span>' : '';
+    const desc = (item.description || '').substring(0, 100);
+    const thumb = item.image ? `<img class="item-thumb" src="${escapeHtml(item.image)}" alt="" loading="lazy"/>` : '';
+    return `
+      <div class="item">
+        ${thumb}
+        <div class="item-info">
+          <h3>${escapeHtml(item.title || '')} ${badge}${pastBadge}</h3>
+          <p>${escapeHtml(date)}${item.time ? ' um ' + escapeHtml(item.time) : ''}${item.location ? ' | ' + escapeHtml(item.location) : ''}</p>
+          <p>${escapeHtml(desc)}${desc ? '…' : ''}</p>
+        </div>
+        <div class="item-actions">
+          <button class="btn-small btn-edit" onclick="editEvent(${item.id})">Bearbeiten</button>
+          <button class="btn-small btn-delete" onclick="deleteEvent(${item.id})">Löschen</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function initEventsListControls() {
+  const toolbar = document.getElementById('eventsToolbar');
+  if (!toolbar || toolbar.dataset.bound) return;
+  toolbar.dataset.bound = '1';
+  const search = document.getElementById('eventsSearch');
+  let t = null;
+  search?.addEventListener('input', () => {
+    clearTimeout(t);
+    t = setTimeout(() => { eventsListSearch = search.value.trim(); renderEventsListItems(); }, 150);
+  });
+  toolbar.querySelectorAll('.list-filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      toolbar.querySelectorAll('.list-filter-btn').forEach((b) => b.classList.toggle('is-active', b === btn));
+      eventsListFilter = btn.dataset.eventsfilter;
+      renderEventsListItems();
+    });
+  });
+}
+
+async function loadEventsList() {
+  initEventsListControls();
+  try {
+    const response = await fetch(`${API_URL}/admin/events`, { credentials: 'include' });
+    const data = await response.json();
+    eventsListData = Array.isArray(data) ? data : [];
+    renderEventsListItems();
+  } catch (err) {
+    console.error('Error loading events:', err);
+  }
+}
+
+// ============================================================================
+// SERVICES MANAGEMENT
+// ============================================================================
+
+function openServiceForm() {
+  document.getElementById('serviceForm').style.display = 'block';
+  document.getElementById('serviceId').value = '';
+  document.getElementById('serviceTitle').value = '';
+  document.getElementById('serviceDescription').value = '';
+  document.getElementById('servicePrice').value = '';
+  document.getElementById('serviceDuration').value = '';
+  document.getElementById('serviceImage').value = '';
+  document.getElementById('serviceActive').checked = true;
+  document.getElementById('serviceTitle').focus();
+}
+
+function closeServiceForm() {
+  document.getElementById('serviceForm').style.display = 'none';
+}
+
+async function saveService(e) {
+  e.preventDefault();
+  const id = document.getElementById('serviceId').value;
+  const title = document.getElementById('serviceTitle').value;
+  const description = document.getElementById('serviceDescription').value;
+  const price = document.getElementById('servicePrice').value;
+  const duration = document.getElementById('serviceDuration').value;
+  const image = document.getElementById('serviceImage').value;
+  const active = document.getElementById('serviceActive').checked;
+
+  const url = id ? `${API_URL}/admin/services/${id}` : `${API_URL}/admin/services`;
+  const method = id ? 'PUT' : 'POST';
+
+  try {
+    const response = await fetch(url, {
+      method,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, description, price, duration, image, active })
+    });
+
+    if (response.ok) {
+      showMessage('Erfolgreich gespeichert!', 'success');
+      closeServiceForm();
+      loadServicesList();
+      loadDashboard();
+    } else {
+      const error = await response.json();
+      showMessage(error.error || 'Fehler beim Speichern', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function editService(id) {
+  try {
+    const response = await fetch(`${API_URL}/admin/services/${id}`, { credentials: 'include' });
+    const service = await response.json();
+
+    document.getElementById('serviceId').value = service.id;
+    document.getElementById('serviceTitle').value = service.title;
+    document.getElementById('serviceDescription').value = service.description;
+    document.getElementById('servicePrice').value = service.price || '';
+    document.getElementById('serviceDuration').value = service.duration || '';
+    document.getElementById('serviceImage').value = service.image || '';
+    document.getElementById('serviceActive').checked = service.active;
+    openServiceForm();
+  } catch (err) {
+    showMessage('Fehler beim Laden', 'error');
+  }
+}
+
+async function deleteService(id) {
+  if (!confirm('Wirklich löschen?')) return;
+
+  try {
+    const response = await fetch(`${API_URL}/admin/services/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      showMessage('Gelöscht!', 'success');
+      loadServicesList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function loadServicesList() {
+  try {
+    const response = await fetch(`${API_URL}/admin/services`, { credentials: 'include' });
+    const services = await response.json();
+
+    let html = '';
+    services.forEach(item => {
+      const badge = item.active ? '<span class="status-badge published">Aktiv</span>' : '<span class="status-badge draft">Inaktiv</span>';
+      html += `
+        <div class="item">
+          <div class="item-info">
+            <h3>${item.title} ${badge}</h3>
+            <p>${item.description.substring(0, 100)}...</p>
+            ${item.price ? '<p>' + item.price + (item.duration ? ' | ' + item.duration : '') + '</p>' : ''}
+          </div>
+          <div class="item-actions">
+            <button class="btn-small btn-edit" onclick="editService(${item.id})">Bearbeiten</button>
+            <button class="btn-small btn-delete" onclick="deleteService(${item.id})">Löschen</button>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById('servicesList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">Keine Services vorhanden</div>';
+  } catch (err) {
+    console.error('Error loading services:', err);
+  }
+}
+
+// ============================================================================
+// BOOKINGS & GOOGLE CALENDAR
+// ============================================================================
+
+async function loadGoogleStatus() {
+  try {
+    const res = await fetch(`${API_URL}/admin/google/status`, { credentials: 'include' });
+    const data = await res.json();
+    const text = document.getElementById('googleStatusText');
+    const btn = document.getElementById('btnGoogleConnect');
+
+    if (!data.clientConfigured) {
+      text.textContent = 'Google API noch nicht konfiguriert (GOOGLE_CLIENT_ID / SECRET in der .env setzen).';
+      btn.style.display = 'none';
+      return;
+    }
+
+    if (data.connected) {
+      text.textContent = `Verbunden mit Kalender: ${data.calendarId}`;
+      btn.style.display = 'none';
+    } else {
+      text.textContent = 'Noch nicht verbunden. Klicke unten und melde dich mit dem Google-Konto des Ateliers an.';
+      btn.style.display = 'inline-block';
+    }
+  } catch (err) {
+    document.getElementById('googleStatusText').textContent = 'Status konnte nicht geladen werden.';
+  }
+}
+
+async function connectGoogle() {
+  try {
+    const res = await fetch(`${API_URL}/admin/google/auth`, { credentials: 'include' });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else showMessage(data.error || 'Verbindung nicht möglich', 'error');
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function loadBookingsList() {
+  try {
+    const response = await fetch(`${API_URL}/admin/bookings`, { credentials: 'include' });
+    const bookings = await response.json();
+
+    let html = '';
+    bookings.forEach((item) => {
+      const date = new Date(item.date + 'T12:00:00').toLocaleDateString('de-DE');
+      const statusLabels = {
+        pending: 'Ausstehend',
+        confirmed: 'Bestätigt',
+        cancelled: 'Storniert',
+      };
+      const status = statusLabels[item.status] || item.status;
+      html += `
+        <div class="item">
+          <div class="item-info">
+            <h3>${item.name} – ${date} ${item.start_time}–${item.end_time}</h3>
+            <p>${item.email}${item.phone ? ' | ' + item.phone : ''}</p>
+            <p>Status: <strong>${status}</strong>${item.google_event_id ? ' | Google' : ''}</p>
+            ${item.message ? '<p>' + item.message + '</p>' : ''}
+          </div>
+          <div class="item-actions">
+            ${item.status === 'pending' ? `<button class="btn-small btn-edit" onclick="confirmBooking(${item.id})">Bestätigen</button>` : ''}
+            ${item.status !== 'cancelled' ? `<button class="btn-small btn-cancel" onclick="cancelBooking(${item.id})">Stornieren</button>` : ''}
+            <button class="btn-small btn-delete" onclick="deleteBooking(${item.id})">Löschen</button>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById('bookingsList').innerHTML =
+      html || '<div style="padding: 20px; text-align: center; color: #999;">Noch keine Buchungen</div>';
+  } catch (err) {
+    console.error('Error loading bookings:', err);
+  }
+}
+
+async function confirmBooking(id) {
+  try {
+    const response = await fetch(`${API_URL}/admin/bookings/${id}`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'confirmed' }),
+    });
+    if (response.ok) {
+      const data = await response.json().catch(() => ({}));
+      showMessage(data.message || 'Termin bestätigt', 'success');
+      loadBookingsList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function saveManualBooking(e) {
+  e.preventDefault();
+  const block = document.getElementById('manualBlock').checked;
+  const date = document.getElementById('manualDate').value;
+  const startTime = document.getElementById('manualTime').value.slice(0, 5);
+
+  try {
+    const res = await fetch(`${API_URL}/admin/bookings`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        blockSlot: block,
+        date,
+        startTime,
+        name: document.getElementById('manualName').value,
+        email: document.getElementById('manualEmail').value,
+        phone: document.getElementById('manualPhone').value,
+        message: document.getElementById('manualMessage').value,
+      }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showMessage(data.message || 'Gespeichert', 'success');
+      e.target.reset();
+      loadBookingsList();
+      loadDashboard();
+    } else {
+      showMessage(data.error || 'Fehler', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function cancelBooking(id) {
+  if (!confirm('Termin stornieren?')) return;
+  try {
+    const response = await fetch(`${API_URL}/admin/bookings/${id}`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'cancelled' }),
+    });
+    if (response.ok) {
+      showMessage('Storniert', 'success');
+      loadBookingsList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function deleteBooking(id) {
+  if (!confirm('Buchung endgültig löschen?')) return;
+  try {
+    const response = await fetch(`${API_URL}/admin/bookings/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (response.ok) {
+      showMessage('Gelöscht', 'success');
+      loadBookingsList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+// ============================================================================
+// MINI-ATELIER
+// ============================================================================
+
+async function loadAtelierList() {
+  const list = document.getElementById('atelierList');
+  if (!list) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/atelier`, { credentials: 'include' });
+    const items = await res.json();
+    const statusLabels = { new: 'Neu', viewed: 'Gesehen', archived: 'Archiv' };
+    const html = items
+      .map((item) => {
+        const img = `/uploads/${item.image_path.replace(/\\/g, '/')}`;
+        const who = item.is_anonymous
+          ? 'Anonym'
+          : [item.submitter_name, item.submitter_email].filter(Boolean).join(' · ') || 'Mit Kontakt';
+        const date = new Date(item.createdAt).toLocaleString('de-DE');
+        return `
+          <div class="item-card atelier-admin-card">
+            <a href="${img}" target="_blank" rel="noopener" class="atelier-admin-thumb">
+              <img src="${img}" alt="Atelier-Werk #${item.id}" loading="lazy"/>
+            </a>
+            <div class="item-content">
+              <h3>#${item.id} · ${statusLabels[item.status] || item.status}</h3>
+              <p>${date}</p>
+              <p><strong>${who}</strong></p>
+              ${item.note ? `<p class="note">${item.note}</p>` : ''}
+              <div class="item-actions">
+                ${item.status === 'new' ? `<button class="btn-small btn-edit" onclick="setAtelierStatus(${item.id}, 'viewed')">Als gesehen</button>` : ''}
+                ${item.status !== 'archived' ? `<button class="btn-small" onclick="setAtelierStatus(${item.id}, 'archived')">Archiv</button>` : ''}
+                <a class="btn-small btn-edit" href="${img}" download>Werk laden</a>
+                <button class="btn-small btn-cancel" onclick="deleteAtelierSubmission(${item.id})">Löschen</button>
+              </div>
+            </div>
+          </div>`;
+      })
+      .join('');
+    list.innerHTML =
+      html || '<div style="padding:20px;text-align:center;color:#999">Noch keine Einsendungen</div>';
+  } catch (err) {
+    console.error('Atelier load error:', err);
+  }
+}
+
+async function setAtelierStatus(id, status) {
+  try {
+    const res = await fetch(`${API_URL}/admin/atelier/${id}`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    if (res.ok) {
+      showMessage('Status aktualisiert', 'success');
+      loadAtelierList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+async function deleteAtelierSubmission(id) {
+  if (!confirm('Einsendung wirklich löschen?')) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/atelier/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (res.ok) {
+      showMessage('Gelöscht', 'success');
+      loadAtelierList();
+      loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+// ============================================================================
+// CONTACT MESSAGES
+// ============================================================================
+
+async function loadContactMessages() {
+  const list = document.getElementById('contactList');
+  if (!list) return;
+  list.innerHTML = '<p class="note">Wird geladen …</p>';
+  try {
+    const res = await fetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' });
+    const messages = res.ok ? await res.json() : [];
+    if (!messages.length) {
+      list.innerHTML = '<p class="note">Keine Kontaktanfragen vorhanden.</p>';
+      return;
+    }
+    list.innerHTML = messages.map((m) => {
+      const date = m.createdAt
+        ? new Date(m.createdAt).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })
+        : '–';
+      const emailBadge = m.email_sent
+        ? '<span class="badge badge-ok" title="E-Mail wurde gesendet">✉ gesendet</span>'
+        : '<span class="badge badge-warn" title="E-Mail-Versand fehlgeschlagen">✉ nicht gesendet</span>';
+      const phone = m.phone ? `<span class="contact-meta-item">📞 <a href="tel:${encodeURIComponent(m.phone)}">${escapeHtml(m.phone)}</a></span>` : '';
+      return `
+        <div class="contact-item" data-id="${m.id}">
+          <div class="contact-header">
+            <span class="contact-name">${escapeHtml(m.name || '–')}</span>
+            ${emailBadge}
+            <span class="contact-date">${date}</span>
+          </div>
+          <div class="contact-meta">
+            <span class="contact-meta-item">✉ <a href="mailto:${encodeURIComponent(m.email || '')}">${escapeHtml(m.email || '–')}</a></span>
+            ${phone}
+          </div>
+          <div class="contact-message">${escapeHtml(m.message || '')}</div>
+          <div class="contact-actions">
+            <button class="btn outline btn-sm" onclick="deleteContactMessage(${m.id})">Löschen</button>
+          </div>
+        </div>`;
+    }).join('');
+  } catch (err) {
+    list.innerHTML = `<p class="note error">Fehler: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+async function deleteContactMessage(id) {
+  if (!confirm('Nachricht dauerhaft löschen?')) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/contact-messages/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (res.ok) {
+      showMessage('Nachricht gelöscht', 'success');
+      loadContactMessages();
+      loadDashboard();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      showMessage(data.error || 'Fehler beim Löschen', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const adminNavToggle = document.getElementById('adminNavToggle');
+  const adminSidebar = document.getElementById('sidebar');
+  if (adminNavToggle && adminSidebar) {
+    adminNavToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      adminSidebar.classList.toggle('is-collapsed');
+      syncAdminNavToggle();
+    });
+    document.addEventListener('click', (e) => {
+      if (!window.matchMedia('(max-width: 768px)').matches) return;
+      if (adminSidebar.classList.contains('is-collapsed')) return;
+      if (e.target.closest('#sidebar')) return;
+      collapseAdminNav();
+    });
+    window.addEventListener('resize', () => {
+      if (!window.matchMedia('(max-width: 768px)').matches) {
+        adminSidebar.classList.remove('is-collapsed');
+      } else {
+        collapseAdminNav();
+      }
+      syncAdminNavToggle();
+    });
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      collapseAdminNav();
+    } else {
+      adminSidebar.classList.remove('is-collapsed');
+      syncAdminNavToggle();
+    }
+  }
+
+  checkAuthOnLoad();
+  initImagesAdmin();
+  bindImagePreview('newsImageFile', 'newsImage', 'newsImagePreview');
+  bindImagePreview('eventImageFile', 'eventImage', 'eventImagePreview');
+  const manualBlock = document.getElementById('manualBlock');
+  if (manualBlock) {
+    manualBlock.addEventListener('change', toggleManualBlockFields);
+    toggleManualBlockFields();
+  }
+});

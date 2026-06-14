@@ -76,14 +76,12 @@ PAGES.forEach((page) => {
     );
   }
 
-  html = html.replace(/<link rel="stylesheet" href="assets\/css\/style\.css"\/>/, (m) => buildSeoBlock(page) + '\n  ' + m);
+  // Auch gehashte Stylesheets (style.<hash>.css) treffen, sonst greift der
+  // Einschub auf bereits gebauten Seiten nicht.
+  html = html.replace(/<link rel="stylesheet" href="assets\/css\/style[^"]*\.css"\/>/, (m) => buildSeoBlock(page) + '\n  ' + m);
 
-  if (!html.includes('assets/js/seo.js')) {
-    html = html.replace(
-      /<script src="assets\/js\/consent\.js"><\/script>/,
-      '<script src="assets/js/seo.js"></script>\n  <script src="assets/js/consent.js"></script>'
-    );
-  }
+  // Hinweis: seo.js/consent.js sind inzwischen Teil des Core-Bundles
+  // (site-core.<hash>.js) – kein separates Einbinden mehr nötig.
 
   fs.writeFileSync(filePath, html);
   console.log('Patched', page.file);

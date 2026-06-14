@@ -221,6 +221,10 @@ async function loadHomeNews() {
     if (reopenBtn) {
       reopenBtn.onclick = () => openNewsPopup(news.slice(0, popupLimit));
     }
+
+    // Automatisches Popup beim ersten Besuch (mit „gesehen"-Merker, nach Reveal
+    // und Consent). War zuvor nie aufgerufen → Funktion blieb wirkungslos.
+    scheduleNewsPopup(popupItems);
   } catch (err) {
     if (loading) loading.style.display = 'none';
     section.hidden = true;
