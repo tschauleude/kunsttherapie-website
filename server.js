@@ -190,7 +190,7 @@ app.use(session({
   saveUninitialized: false,
   proxy: IS_PRODUCTION,
   cookie: {
-    secure: IS_PRODUCTION,
+    secure: IS_PRODUCTION ? 'auto' : false,
     httpOnly: true,
     sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
