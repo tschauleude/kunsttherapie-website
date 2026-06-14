@@ -1220,6 +1220,16 @@ app.get('/api/admin/contact-messages', requireAuth, (req, res) => {
   );
 });
 
+app.delete('/api/admin/contact-messages/:id', requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
+  dbRun(`DELETE FROM contact_messages WHERE id = ?`, [id], function (err) {
+    if (err) return res.status(500).json({ error: 'Datenbankfehler' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Nicht gefunden' });
+    res.json({ ok: true });
+  });
+});
+
 app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
   const lang = apiLang(req);
   const honeypot = String(req.body.website ?? req.body._hp ?? '').trim();

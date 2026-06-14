@@ -66,6 +66,7 @@
     <div class="nav-item" onclick="switchSection('atelier', this)">Mini-Atelier</div>
     <div class="nav-item" onclick="switchSection('events', this)">Veranstaltungen</div>
     <div class="nav-item" onclick="switchSection('services', this)">Angebote &amp; Preise</div>
+    <div class="nav-item" onclick="switchSection('contact', this)">Nachrichten</div>
     <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
     <p class="sidebar-links">
       <a href="/" target="_blank" rel="noopener">Website ansehen</a><br>
@@ -92,6 +93,7 @@
             <li><strong>Mini-Atelier</strong> – Werke von der Website (anonym oder mit Namen)</li>
             <li><strong>Veranstaltungen</strong> – Workshops &amp; Termine auf der Events-Seite</li>
             <li><strong>Angebote &amp; Preise</strong> – Deine Therapieangebote mit Preis und Dauer verwalten</li>
+            <li><strong>Nachrichten</strong> – Kontaktanfragen aus dem Formular, auch wenn die E-Mail mal ausfällt</li>
           </ul>
         </div>
         <div class="dash-stats">
@@ -130,6 +132,12 @@
             <span class="dash-card-num" id="storageCount">0</span>
             <span class="dash-card-label">Hochgeladene Bilder</span>
             <span class="dash-card-sub" id="storageSub">–</span>
+          </button>
+          <button type="button" class="dash-card" onclick="goToSection('contact')">
+            <span class="dash-card-icon" aria-hidden="true">✉️</span>
+            <span class="dash-card-num" id="contactCount">0</span>
+            <span class="dash-card-label">Nachrichten</span>
+            <span class="dash-card-sub" id="contactSub">–</span>
           </button>
         </div>
         <div class="dash-upcoming">
@@ -555,6 +563,13 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- CONTACT MESSAGES -->
+    <section class="admin-section" id="contact">
+      <h1>Nachrichten</h1>
+      <p class="sub section-desc">Kontaktanfragen aus dem Formular – werden gespeichert, auch wenn die E-Mail-Benachrichtigung mal ausbleibt.</p>
+      <div id="contactList" class="items-list"></div>
     </section>
 
     <!-- WEBSITE TEXTS (i18n) -->

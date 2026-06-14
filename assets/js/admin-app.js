@@ -29,7 +29,7 @@ async function checkAuthOnLoad() {
     showLoginHelp();
   } catch (err) {
     document.getElementById('loginMessage').textContent =
-      'Backend nicht erreichbar. Läuft auf Hostinger „npm start“ (server.js)?';
+      'Backend nicht erreichbar. Server gestartet? „npm start” (server.js)';
     document.getElementById('loginMessage').className = 'message error active';
   }
 }
@@ -37,8 +37,8 @@ async function checkAuthOnLoad() {
 function showLoginHelp() {
   document.getElementById('firstSetupBox').style.display = 'block';
   document.getElementById('loginHint').innerHTML =
-    'Erstlogin oft: <strong>admin</strong> / <strong>admin123</strong> (falls noch nicht in Hostinger .env geändert).<br>' +
-    'Dauerhaft: <strong>ADMIN_USERNAME</strong> und <strong>ADMIN_PASSWORD</strong> in der Hostinger-.env setzen, dann Redeploy.';
+    'Erstlogin oft: <strong>admin</strong> / <strong>admin123</strong> (falls noch nicht in der .env geändert).<br>' +
+    'Dauerhaft: <strong>ADMIN_USERNAME</strong> und <strong>ADMIN_PASSWORD</strong> in der .env setzen, dann Server neu starten.';
 }
 
 async function runFirstSetup() {
@@ -113,7 +113,7 @@ async function handleLogin(e) {
       setTimeout(() => loadNewsList(), 500);
     } else {
       const hint = response.status === 401
-        ? 'Benutzername oder Passwort falsch – oder Session-Cookie blockiert (HTTPS/Hostinger .env prüfen).'
+        ? 'Benutzername oder Passwort falsch – oder Session-Cookie blockiert? HTTPS und .env prüfen.'
         : (data.error || 'Anmeldung fehlgeschlagen');
       showMessage(hint, 'error', 'loginMessage');
     }
@@ -133,7 +133,7 @@ async function handleLogout() {
     document.getElementById('mainContainer').classList.remove('active');
     document.getElementById('loginForm').reset();
   } catch (err) {
-    alert('Logout failed: ' + err.message);
+    alert('Abmelden fehlgeschlagen: ' + err.message);
   }
 }
 
@@ -181,6 +181,7 @@ function switchSection(sectionId, navEl) {
   if (sectionId === 'services') loadServicesList();
   if (sectionId === 'images') loadSiteImagesList();
   if (sectionId === 'texts') initTextsSection();
+  if (sectionId === 'contact') loadContactMessages();
 }
 
 const I18N_PREVIEW = {
@@ -1248,13 +1249,14 @@ function renderDashUpcoming(bookings, today) {
 
 async function loadDashboard() {
   try {
-    const [newsRes, bookingsRes, eventsRes, atelierRes, servicesRes, mediaRes] = await Promise.all([
+    const [newsRes, bookingsRes, eventsRes, atelierRes, servicesRes, mediaRes, contactRes] = await Promise.all([
       fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/atelier`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/services`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
+      fetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' }),
     ]);
 
     const news = newsRes.ok ? await newsRes.json() : [];
@@ -1263,6 +1265,7 @@ async function loadDashboard() {
     const atelier = atelierRes.ok ? await atelierRes.json() : [];
     const services = servicesRes.ok ? await servicesRes.json() : [];
     const media = mediaRes.ok ? ((await mediaRes.json()).files || []) : [];
+    const contacts = contactRes.ok ? await contactRes.json() : [];
 
     const today = new Date().toISOString().slice(0, 10);
 
@@ -1290,6 +1293,10 @@ async function loadDashboard() {
     const totalBytes = media.reduce((sum, f) => sum + (f.size || 0), 0);
     dashSetText('storageCount', media.length);
     dashSetText('storageSub', fmFmtSize(totalBytes) || '0 B');
+
+    const unseenContacts = contacts.length;
+    dashSetText('contactCount', unseenContacts);
+    dashSetText('contactSub', unseenContacts === 1 ? '1 Anfrage' : `${unseenContacts} Anfragen`);
 
     renderDashUpcoming(activeBookings, today);
     await loadContentVersions();
@@ -2014,7 +2021,7 @@ async function loadGoogleStatus() {
     const btn = document.getElementById('btnGoogleConnect');
 
     if (!data.clientConfigured) {
-      text.textContent = 'Google API noch nicht konfiguriert (GOOGLE_CLIENT_ID / SECRET in .env auf Hostinger).';
+      text.textContent = 'Google API noch nicht konfiguriert (GOOGLE_CLIENT_ID / SECRET in der .env setzen).';
       btn.style.display = 'none';
       return;
     }
@@ -2244,6 +2251,71 @@ async function deleteAtelierSubmission(id) {
       showMessage('Gelöscht', 'success');
       loadAtelierList();
       loadDashboard();
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
+}
+
+// ============================================================================
+// CONTACT MESSAGES
+// ============================================================================
+
+async function loadContactMessages() {
+  const list = document.getElementById('contactList');
+  if (!list) return;
+  list.innerHTML = '<p class="note">Wird geladen …</p>';
+  try {
+    const res = await fetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' });
+    const messages = res.ok ? await res.json() : [];
+    if (!messages.length) {
+      list.innerHTML = '<p class="note">Keine Kontaktanfragen vorhanden.</p>';
+      return;
+    }
+    list.innerHTML = messages.map((m) => {
+      const date = m.createdAt
+        ? new Date(m.createdAt).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })
+        : '–';
+      const emailBadge = m.email_sent
+        ? '<span class="badge badge-ok" title="E-Mail wurde gesendet">✉ gesendet</span>'
+        : '<span class="badge badge-warn" title="E-Mail-Versand fehlgeschlagen">✉ nicht gesendet</span>';
+      const phone = m.phone ? `<span class="contact-meta-item">📞 <a href="tel:${encodeURIComponent(m.phone)}">${escapeHtml(m.phone)}</a></span>` : '';
+      return `
+        <div class="contact-item" data-id="${m.id}">
+          <div class="contact-header">
+            <span class="contact-name">${escapeHtml(m.name || '–')}</span>
+            ${emailBadge}
+            <span class="contact-date">${date}</span>
+          </div>
+          <div class="contact-meta">
+            <span class="contact-meta-item">✉ <a href="mailto:${encodeURIComponent(m.email || '')}">${escapeHtml(m.email || '–')}</a></span>
+            ${phone}
+          </div>
+          <div class="contact-message">${escapeHtml(m.message || '')}</div>
+          <div class="contact-actions">
+            <button class="btn outline btn-sm" onclick="deleteContactMessage(${m.id})">Löschen</button>
+          </div>
+        </div>`;
+    }).join('');
+  } catch (err) {
+    list.innerHTML = `<p class="note error">Fehler: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+async function deleteContactMessage(id) {
+  if (!confirm('Nachricht dauerhaft löschen?')) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/contact-messages/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    if (res.ok) {
+      showMessage('Nachricht gelöscht', 'success');
+      loadContactMessages();
+      loadDashboard();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      showMessage(data.error || 'Fehler beim Löschen', 'error');
     }
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');

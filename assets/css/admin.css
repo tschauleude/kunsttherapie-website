@@ -2352,3 +2352,85 @@ hr.sep {
 .af-icon-btn svg {
   pointer-events: none;
 }
+
+/* === CONTACT MESSAGES === */
+.contact-item {
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, #e0ddd5);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.contact-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.4rem;
+}
+
+.contact-name {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.contact-date {
+  font-size: 0.82rem;
+  color: var(--text-light, #888);
+  margin-left: auto;
+}
+
+.contact-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.87rem;
+  color: var(--text-light);
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.contact-meta-item a {
+  color: var(--color-teal);
+  text-decoration: none;
+}
+
+.contact-meta-item a:hover {
+  text-decoration: underline;
+}
+
+.contact-message {
+  font-size: 0.93rem;
+  color: var(--text-main);
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: rgba(0,0,0,0.025);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.contact-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.74rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-ok {
+  background: #d4edda;
+  color: #1e6935;
+}
+
+.badge-warn {
+  background: #fff3cd;
+  color: #856404;
+}
