@@ -37,8 +37,9 @@ async function checkAuthOnLoad() {
 function showLoginHelp() {
   document.getElementById('firstSetupBox').style.display = 'block';
   document.getElementById('loginHint').innerHTML =
-    'Erstlogin oft: <strong>admin</strong> / <strong>admin123</strong> (falls noch nicht in der .env geändert).<br>' +
-    'Dauerhaft: <strong>ADMIN_USERNAME</strong> und <strong>ADMIN_PASSWORD</strong> in der .env setzen, dann Server neu starten.';
+    'Anmeldung mit <strong>ADMIN_USERNAME</strong> und <strong>ADMIN_PASSWORD</strong> aus der .env.<br>' +
+    'Kein Passwort bekannt? In der <strong>.env</strong> setzen und die App neu starten – oder per SSH ' +
+    '<code>ADMIN_USERNAME=… ADMIN_PASSWORD=… node scripts/setup-admin.js</code> ausführen.';
 }
 
 async function runFirstSetup() {
@@ -113,7 +114,7 @@ async function handleLogin(e) {
       setTimeout(() => loadNewsList(), 500);
     } else {
       const hint = response.status === 401
-        ? 'Benutzername oder Passwort falsch – oder Session-Cookie blockiert? HTTPS und .env prüfen.'
+        ? 'Benutzername oder Passwort stimmt nicht. Kein Passwort bekannt? ADMIN_USERNAME und ADMIN_PASSWORD in der .env setzen und die App neu starten (oder scripts/setup-admin.js ausführen).'
         : (data.error || 'Anmeldung fehlgeschlagen');
       showMessage(hint, 'error', 'loginMessage');
     }
