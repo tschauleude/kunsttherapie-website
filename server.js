@@ -429,21 +429,33 @@ function ensureAdminAccounts() {
     }
     if (row && row.count > 0) return;
 
-    // Kein bekanntes Default-Passwort mehr: ein zufälliges erzeugen und einmalig
-    // ins Server-Log schreiben. Wer ADMIN_USERNAME/ADMIN_PASSWORD setzt, landet
-    // hier gar nicht erst.
-    const generatedPassword = require('crypto').randomBytes(9).toString('base64url');
-    const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+    // Lokale Entwicklung: bekanntes Standardpasswort "admin123" (Benutzer: admin),
+    // damit der Login sofort funktioniert. Greift NIE in Produktion
+    // (NODE_ENV=production) und nur, solange kein ADMIN_USERNAME/ADMIN_PASSWORD
+    // gesetzt ist – andernfalls läuft dieser Zweig gar nicht erst an. In
+    // Produktion wird ein zufälliges Passwort erzeugt und einmalig ins Log
+    // geschrieben.
+    const useDevDefault = !IS_PRODUCTION;
+    const initialPassword = useDevDefault
+      ? 'admin123'
+      : require('crypto').randomBytes(9).toString('base64url');
+    const hashedPassword = bcryptjs.hashSync(initialPassword, 10);
     db.run(
       `INSERT INTO admins (username, password, email) VALUES (?, ?, ?)`,
       ['admin', hashedPassword, envEmail],
       (insertErr) => {
         if (insertErr) {
           console.error('Error creating default admin:', insertErr);
+        } else if (useDevDefault) {
+          console.log('====================================================');
+          console.log(' Erst-Admin (Entwicklung) – Login: admin / admin123');
+          console.log('   Für die Live-Seite ADMIN_USERNAME und ADMIN_PASSWORD');
+          console.log('   in der .env setzen und NODE_ENV=production verwenden.');
+          console.log('====================================================');
         } else {
           console.log('====================================================');
           console.log(' Erst-Admin angelegt – Benutzername: admin');
-          console.log(`   Passwort (NUR jetzt sichtbar): ${generatedPassword}`);
+          console.log(`   Passwort (NUR jetzt sichtbar): ${initialPassword}`);
           console.log('   Bitte nach dem Login ändern oder ADMIN_USERNAME/');
           console.log('   ADMIN_PASSWORD in der .env setzen.');
           console.log('====================================================');
