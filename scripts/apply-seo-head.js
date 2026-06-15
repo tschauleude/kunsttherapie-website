@@ -6,7 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ORIGIN = 'https://kunsttherapie.mkmpb.de';
+const ORIGIN = 'https://www.kunsttherapie-pb.de';
 const SITE_NAME = 'Kunsttherapie Paderborn';
 
 const OG_IMAGE = `${ORIGIN}/assets/img/Gruppen-und-Einzeltherapie-768x524.jpg`;

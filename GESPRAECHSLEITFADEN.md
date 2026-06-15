@@ -2,7 +2,7 @@
 
 **Zweck:** Strukturiertes Gespräch (ca. 45–60 Min.) – Stand der Website zeigen, Feedback holen, Preis klären, nächste Schritte vereinbaren.
 
-**Live:** https://kunsttherapie.mkmpb.de/
+**Live:** https://www.kunsttherapie-pb.de/
 
 ---
 
@@ -133,7 +133,7 @@ Individuelle Website mit Design, CMS/Admin, Buchungskalender mit E-Mail-Workflow
 
 ## 7. Abschluss
 
-- Link nochmal senden: https://kunsttherapie.mkmpb.de/
+- Link nochmal senden: https://www.kunsttherapie-pb.de/
 - Admin-Zugang nur wenn nötig; Passwort sicher übermitteln
 - Kurze **E-Mail-Zusammenfassung** innerhalb von 24 h: Was besprochen, was offen, was 500 € abdeckt
 

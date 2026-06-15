@@ -20,7 +20,7 @@
 2. Auf dem Server: `npm install` (falls noch nicht), dann `npm start` oder PM2.
 3. `.env` prüfen (E-Mail, Session, ggf. Google Calendar).
 4. Kurz testen:
-   - https://kunsttherapie.mkmpb.de/ – DE/EN oben rechts
+   - https://www.kunsttherapie-pb.de/ – DE/EN oben rechts
    - `/kunsttherapie` – Angebote aufklappen
    - `/atelier` – Live-Atelier im Footer
    - `/buchung` – Kalender
