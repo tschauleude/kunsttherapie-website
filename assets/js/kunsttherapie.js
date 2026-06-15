@@ -143,7 +143,7 @@
 
     if (!mainEntity.length) return;
 
-    const origin = window.location.origin || 'https://kunsttherapie.mkmpb.de';
+    const origin = window.location.origin || 'https://www.kunsttherapie-pb.de';
     const schema = {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',

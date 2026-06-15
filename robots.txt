@@ -4,4 +4,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: https://kunsttherapie.mkmpb.de/sitemap.xml
+Sitemap: https://www.kunsttherapie-pb.de/sitemap.xml

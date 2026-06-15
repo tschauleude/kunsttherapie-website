@@ -1,7 +1,7 @@
 # Website Kunsttherapie Paderborn – Feature-Übersicht
 
 **Stand:** für Gespräch mit Martina Schwierzke  
-**Live-URL:** https://kunsttherapie.mkmpb.de/  
+**Live-URL:** https://www.kunsttherapie-pb.de/  
 **Technik:** Node.js (Express), SQLite, statische Seiten + Admin-Panel
 
 ---

@@ -4,7 +4,7 @@
 (function () {
   if (document.body.classList.contains('admin-app')) return;
 
-  const origin = 'https://kunsttherapie.mkmpb.de';
+  const origin = 'https://www.kunsttherapie-pb.de';
   const path = window.location.pathname.replace(/\/$/, '') || '/';
   const pageUrl = origin + (path === '/' ? '/' : path);
   const lang = document.documentElement.lang === 'en' ? 'en-GB' : 'de-DE';

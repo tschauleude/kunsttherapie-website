@@ -30,6 +30,44 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 // Hostinger / Passenger: echte Client-IP für Rate-Limits und Session-Cookies
 app.set('trust proxy', 1);
 
+// SEO: kanonischen Host (www) und HTTPS per 301 erzwingen. Konsolidiert
+// Duplicate Content (www/ohne-www, http/https, alte Domain) auf eine Adresse
+// und vererbt so die Suchmaschinen-Relevanz an die Live-Domain. Nur aktiv,
+// wenn PUBLIC_SITE_URL gesetzt ist und NODE_ENV=production – lokale
+// Entwicklung bleibt unberührt.
+const CANONICAL_URL = (() => {
+  try {
+    return process.env.PUBLIC_SITE_URL ? new URL(process.env.PUBLIC_SITE_URL) : null;
+  } catch {
+    return null;
+  }
+})();
+
+if (CANONICAL_URL && IS_PRODUCTION) {
+  app.use((req, res, next) => {
+    // Health-Checks (oft per IP/Loadbalancer) nie umleiten
+    if (req.path === '/health') return next();
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+
+    const host = req.headers.host;
+    if (!host) return next();
+
+    // HTTPS-Upgrade nur, wenn der Proxy ausdrücklich http meldet – verhindert
+    // Redirect-Loops bei Proxies, die X-Forwarded-Proto nicht setzen.
+    const xfProto = req.headers['x-forwarded-proto'];
+    const wrongProto =
+      CANONICAL_URL.protocol === 'https:' &&
+      typeof xfProto === 'string' &&
+      xfProto.split(',')[0].trim() === 'http';
+    const wrongHost = host !== CANONICAL_URL.host;
+
+    if (wrongHost || wrongProto) {
+      return res.redirect(301, CANONICAL_URL.origin + req.originalUrl);
+    }
+    return next();
+  });
+}
+
 // Ensure upload directory exists (Hostinger redeploy may wipe empty dirs)
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(PUBLIC_DIR, 'uploads');
 const ATELIER_DIR = path.join(UPLOAD_DIR, 'atelier');
