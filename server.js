@@ -386,6 +386,13 @@ function initializeDatabase() {
         console.error('Database schema error:', err);
         return;
       }
+      db.run(
+        `DELETE FROM site_images WHERE slot LIKE 'home.gallery.%'
+         AND (url LIKE '%logo.jpg' OR url LIKE '%Sonnige_Pinsel%')`,
+        (migErr) => {
+          if (migErr) console.error('Galerie-Migration Fehler:', migErr.message);
+        }
+      );
       ensureAdminAccounts();
       console.log(' Database initialized');
       if (markDbReady) markDbReady();
