@@ -235,7 +235,6 @@ async function optimizeImages() {
     'martina-malstudie.jpg',
     'martina-vision-board.jpg',
     'martina-pastell-gruppe.jpg',
-    'martina-atelier-arbeit.jpg',
     'methode-platz-am-see.jpg',
     'methode-imagination-baum.jpg',
     'methode-gefuehl-niedergeschlagenheit.jpg',

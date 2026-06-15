@@ -192,25 +192,6 @@
     ],
     "fallback": "martina-pastell-gruppe.jpg"
   },
-  "martina-atelier-arbeit.jpg": {
-    "width": 784,
-    "height": 662,
-    "sources": [
-      {
-        "w": 480,
-        "webp": "martina-atelier-arbeit-480w.webp"
-      },
-      {
-        "w": 768,
-        "webp": "martina-atelier-arbeit-768w.webp"
-      },
-      {
-        "w": 784,
-        "webp": "martina-atelier-arbeit-784w.webp"
-      }
-    ],
-    "fallback": "martina-atelier-arbeit.jpg"
-  },
   "methode-platz-am-see.jpg": {
     "width": 577,
     "height": 433,
