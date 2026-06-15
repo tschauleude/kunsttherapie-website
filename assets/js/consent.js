@@ -233,11 +233,11 @@
           <button type="button" class="consent-settings-close" data-consent-close-settings aria-label="${close}">&times;</button>
           <h2 id="consentSettingsTitle">${tr('consent.settingsTitle')}</h2>
           <div class="consent-option">
-            <label><input type="checkbox" checked disabled> ${tr('consent.necessary')}</label>
+            <label><input type="checkbox" checked disabled> <span class="consent-option-text">${tr('consent.necessary')}</span></label>
             <p class="note">${tr('consent.necessaryNote')}</p>
           </div>
           <div class="consent-option">
-            <label><input type="checkbox" id="consentExternal"> ${tr('consent.external')}</label>
+            <label><input type="checkbox" id="consentExternal"> <span class="consent-option-text">${tr('consent.external')}</span></label>
             <p class="note">${tr('consent.externalNote')}</p>
           </div>
           <div class="consent-actions">
@@ -273,9 +273,9 @@
     setText('[data-consent-essential]', 'consent.essential');
     setText('[data-consent-settings]', 'consent.settings');
     setText('#consentSettingsTitle', 'consent.settingsTitle');
-    setText('#consentSettings .consent-option:nth-of-type(1) label', 'consent.necessary');
+    setText('#consentSettings .consent-option:nth-of-type(1) label .consent-option-text', 'consent.necessary');
     setHtml('#consentSettings .consent-option:nth-of-type(1) .note', 'consent.necessaryNote');
-    setText('#consentSettings .consent-option:nth-of-type(2) label', 'consent.external');
+    setText('#consentSettings .consent-option:nth-of-type(2) label .consent-option-text', 'consent.external');
     setHtml('#consentSettings .consent-option:nth-of-type(2) .note', 'consent.externalNote');
     setText('[data-consent-save]', 'consent.save');
     setHtml('#consentSettings .consent-settings-panel > .note', 'consent.legalLinks');
