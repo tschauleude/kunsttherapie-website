@@ -5,8 +5,8 @@
     <circle cx="77" cy="33" r="21" fill="#a8c3a0" style="mix-blend-mode:multiply"/>
     <circle cx="63" cy="57" r="23" fill="#51695a" style="mix-blend-mode:multiply"/>
   </g>
-  <text x="112" y="41" font-family="Georgia, 'Times New Roman', 'Iowan Old Style', serif" font-size="36" fill="#2c463c">Kunsttherapie</text>
-  <text x="114" y="57" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11.5" letter-spacing="4.5" font-weight="600" fill="#5c7468">PADERBORN</text>
+  <text x="112" y="41" font-family="'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" font-size="36" font-weight="600" fill="#2c463c">Kunsttherapie</text>
+  <text x="114" y="58" font-family="'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" font-size="11.5" letter-spacing="4.5" font-weight="600" fill="#5c7468">PADERBORN</text>
   <line x1="114" y1="66" x2="468" y2="66" stroke="#c5d0c7" stroke-width="0.75"/>
-  <text x="114" y="80" font-family="'Helvetica Neue', Arial, sans-serif" font-size="9" letter-spacing="1.8" fill="#7e9886">GRUPPENTHERAPIE · WORKSHOPS · TEAMBUILDING</text>
+  <text x="114" y="80" font-family="'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" font-size="9" letter-spacing="1.8" font-weight="500" fill="#7e9886">GRUPPENTHERAPIE · WORKSHOPS · TEAMBUILDING</text>
 </svg>

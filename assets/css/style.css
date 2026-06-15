@@ -293,13 +293,13 @@ header.header-scrolled .header-inner {
 
 .brand-logo {
   display: block;
-  height: clamp(42px, 4.6vw, 52px);
+  height: clamp(52px, 5.6vw, 66px);
   width: auto;
   object-fit: contain;
 }
 
 header.header-scrolled .brand-logo {
-  height: clamp(38px, 4vw, 46px);
+  height: clamp(46px, 4.8vw, 56px);
 }
 
 nav ul {
