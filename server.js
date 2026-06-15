@@ -1708,7 +1708,7 @@ const PROTECTED_STATIC = new Set([
   'favicon.svg', 'favicon.ico', 'favicon-32x32.png', 'favicon-16x16.png',
   'apple-touch-icon.png', 'site.webmanifest', 'logo.jpg',
 ]);
-const STATIC_IMG_EXT = /\.(jpe?g|png|gif|webp|svg)$/i;
+const STATIC_IMG_EXT = /\.(jpe?g|png|gif|svg)$/i;
 
 app.get('/api/admin/static-images', requireAuth, async (req, res) => {
   try {
