@@ -210,5 +210,65 @@
       }
     ],
     "fallback": "martina-atelier-arbeit.jpg"
+  },
+  "methode-platz-am-see.jpg": {
+    "width": 577,
+    "height": 433,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "methode-platz-am-see-480w.webp"
+      },
+      {
+        "w": 577,
+        "webp": "methode-platz-am-see-577w.webp"
+      }
+    ],
+    "fallback": "methode-platz-am-see.jpg"
+  },
+  "methode-imagination-baum.jpg": {
+    "width": 597,
+    "height": 900,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "methode-imagination-baum-480w.webp"
+      },
+      {
+        "w": 597,
+        "webp": "methode-imagination-baum-597w.webp"
+      }
+    ],
+    "fallback": "methode-imagination-baum.jpg"
+  },
+  "methode-gefuehl-niedergeschlagenheit.jpg": {
+    "width": 653,
+    "height": 433,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "methode-gefuehl-niedergeschlagenheit-480w.webp"
+      },
+      {
+        "w": 653,
+        "webp": "methode-gefuehl-niedergeschlagenheit-653w.webp"
+      }
+    ],
+    "fallback": "methode-gefuehl-niedergeschlagenheit.jpg"
+  },
+  "methode-gefuehl-mut-kraft.jpg": {
+    "width": 716,
+    "height": 537,
+    "sources": [
+      {
+        "w": 480,
+        "webp": "methode-gefuehl-mut-kraft-480w.webp"
+      },
+      {
+        "w": 716,
+        "webp": "methode-gefuehl-mut-kraft-716w.webp"
+      }
+    ],
+    "fallback": "methode-gefuehl-mut-kraft.jpg"
   }
 }

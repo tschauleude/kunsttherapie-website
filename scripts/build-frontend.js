@@ -236,6 +236,10 @@ async function optimizeImages() {
     'martina-vision-board.jpg',
     'martina-pastell-gruppe.jpg',
     'martina-atelier-arbeit.jpg',
+    'methode-platz-am-see.jpg',
+    'methode-imagination-baum.jpg',
+    'methode-gefuehl-niedergeschlagenheit.jpg',
+    'methode-gefuehl-mut-kraft.jpg',
   ];
   const manifest = {};
 
