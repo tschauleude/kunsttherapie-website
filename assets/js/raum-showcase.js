@@ -71,9 +71,9 @@
     }
 
     function afterClipInset(pct) {
-      if (pct <= 0) return 100;
-      if (pct >= 100) return 0;
-      return 100 - pct;
+      if (pct <= 0) return 0;
+      if (pct >= 100) return 100;
+      return pct;
     }
 
     function applyCompare(pct, syncInput = true) {
@@ -289,7 +289,7 @@
         const val = rangeEl ? Number(rangeEl.value) : 50;
         const afterImg = container.querySelector('.kt-raum-compare-after img');
         const beforeImg = container.querySelector('.kt-raum-compare-before');
-        if (val >= 50 && afterImg) return afterImg;
+        if (val <= 50 && afterImg) return afterImg;
         return beforeImg;
       }
       return container.querySelector('img');
