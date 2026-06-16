@@ -188,6 +188,10 @@
     if (!s || settingsBusy) return;
     if (!s.hidden) return;
 
+    // Refresh labels if dialog was rendered before i18n messages were loaded
+    const titleEl = document.getElementById('consentSettingsTitle');
+    if (titleEl && !titleEl.textContent.trim()) applyConsentI18n();
+
     settingsBusy = true;
     syncToggleInputs(getConsent() || { external: false });
 
