@@ -1,29 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Kunsttherapie Paderborn">
-  <defs>
-    <clipPath id="circClip">
-      <circle cx="256" cy="252" r="204"/>
-    </clipPath>
-  </defs>
-
-  <!-- Cream background -->
-  <rect width="512" height="512" rx="76" fill="#f0ece3"/>
-
-  <!-- Watercolor shapes inside circle -->
-  <g clip-path="url(#circClip)" style="isolation:isolate">
-    <!-- Light teal field (left side) -->
-    <circle cx="208" cy="234" r="152" fill="#7abfc5" style="mix-blend-mode:multiply" opacity="0.88"/>
-    <!-- Deep teal upper-left blob -->
-    <circle cx="175" cy="205" r="92" fill="#35888e" style="mix-blend-mode:multiply" opacity="0.82"/>
-    <!-- Bright cyan accent -->
-    <circle cx="158" cy="248" r="46" fill="#42c0c6" style="mix-blend-mode:multiply" opacity="0.60"/>
-    <!-- Green right field -->
-    <circle cx="322" cy="214" r="142" fill="#68ad5c" style="mix-blend-mode:multiply" opacity="0.88"/>
-    <!-- Darker green depth -->
-    <circle cx="336" cy="204" r="110" fill="#3a7a44" style="mix-blend-mode:multiply" opacity="0.52"/>
-    <!-- Dark teal bottom sweep -->
-    <ellipse cx="312" cy="378" rx="168" ry="54" fill="#28696080" style="mix-blend-mode:multiply" opacity="0.84" transform="rotate(-7 312 378)"/>
+  <rect width="512" height="512" rx="96" fill="#f4f1ea"/>
+  <g style="isolation:isolate">
+    <circle cx="210" cy="224" r="118" fill="#7e9a86" style="mix-blend-mode:multiply"/>
+    <circle cx="302" cy="208" r="110" fill="#a8c3a0" style="mix-blend-mode:multiply"/>
+    <circle cx="256" cy="314" r="118" fill="#51695a" style="mix-blend-mode:multiply"/>
   </g>
-
-  <!-- Enso-style border circle -->
-  <circle cx="256" cy="252" r="204" fill="none" stroke="#5a4030" stroke-width="13" opacity="0.40" stroke-linecap="round"/>
 </svg>
