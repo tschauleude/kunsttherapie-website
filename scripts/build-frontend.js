@@ -39,6 +39,7 @@ const SITE_PAGES = [
   'atelier',
   'impressum',
   'datenschutz',
+  'kostenerstattung',
   '404',
 ];
 
@@ -54,6 +55,7 @@ const PAGE_I18N = {
   atelier: 'atelier',
   impressum: 'imprint',
   datenschutz: 'privacy',
+  kostenerstattung: 'kostenerstattung',
 };
 
 const PAGE_EXTRA_SCRIPTS = {
@@ -100,6 +102,7 @@ function pageForKey(key) {
   if (key.startsWith('meta.atelier.')) return 'atelier';
   if (key.startsWith('meta.imprint.') || key.startsWith('legal.imprint.')) return 'imprint';
   if (key.startsWith('meta.privacy.') || key.startsWith('legal.privacy.')) return 'privacy';
+  if (key.startsWith('costs.') || key.startsWith('meta.costs.')) return 'kostenerstattung';
   return 'shared';
 }
 
@@ -156,7 +159,7 @@ function writeI18nChunk(name, de, en) {
 function splitI18n() {
   const extra = loadI18nExtra();
   const buckets = { shared: { de: {}, en: {} } };
-  ['home', 'therapy', 'about', 'booking', 'contact', 'prices', 'news', 'events', 'atelier', 'imprint', 'privacy'].forEach(
+  ['home', 'therapy', 'about', 'booking', 'contact', 'prices', 'news', 'events', 'atelier', 'imprint', 'privacy', 'kostenerstattung'].forEach(
     (p) => {
       buckets[p] = { de: {}, en: {} };
     }
