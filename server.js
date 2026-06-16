@@ -392,6 +392,16 @@ function initializeDatabase() {
     `);
 
     db.run(`
+      CREATE TABLE IF NOT EXISTS blocked_periods (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date_from TEXT NOT NULL,
+        date_to TEXT NOT NULL,
+        reason TEXT,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    db.run(`
       CREATE TABLE IF NOT EXISTS contact_messages (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -652,6 +662,23 @@ async function getBusyForRange(fromStr, toStr) {
   );
   const localBusy = booking.bookingsToIntervals(rows);
 
+  // blocked_periods → treat each blocked day as an all-day busy interval
+  const blockedRows = await dbAll(
+    `SELECT date_from, date_to FROM blocked_periods
+     WHERE date_to >= ? AND date_from <= ?`,
+    [fromStr, toStr]
+  );
+  const blockedBusy = [];
+  for (const row of blockedRows) {
+    const periodDays = booking.eachDayInRange(row.date_from, row.date_to);
+    for (const d of periodDays) {
+      const start = booking.parseDateTime(d, '00:00');
+      const end = booking.parseDateTime(d, '23:59');
+      end.setHours(23, 59, 59, 999);
+      blockedBusy.push({ start, end, source: 'block' });
+    }
+  }
+
   return new Promise((resolve) => {
     getGoogleRefreshToken(async (err, token) => {
       if (err) {
@@ -668,7 +695,7 @@ async function getBusyForRange(fromStr, toStr) {
           console.error('Google Calendar sync error:', e.message);
         }
       }
-      resolve({ localBusy, googleBusy, days });
+      resolve({ localBusy: [...localBusy, ...blockedBusy], googleBusy, days });
     });
   });
 }
@@ -1440,6 +1467,55 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
   res.status(503).json({ error: apiMsg('contact.mailFailed', lang) });
 });
 
+// ── Preistabelle ─────────────────────────────────────────────────────────────
+
+const DEFAULT_PRICE_TABLE = JSON.stringify({
+  columns: ['Leistung', 'Dauer', 'Preis', 'Hinweis'],
+  rows: [
+    ['Gruppensitzung', '60 Minuten', '39 €', '4–12 Personen, Material i. d. R. inkl.'],
+    ['Auszeit – Familie & Freunde', '60 Minuten', '39 €', 'nur als Gruppe buchbar, Material i. d. R. inkl.'],
+    ['Einzelsitzung', '60 Minuten', '60 €', 'individuell auf dein Thema abgestimmt'],
+    ['Teambuilding', 'nach Konzept', '49 €', 'ab 12 Teilnehmer, Konzept & Material i. d. R. inkl.'],
+  ],
+});
+
+app.get('/api/prices-table', (req, res) => {
+  db.get(`SELECT value FROM settings WHERE key = 'prices_table'`, (err, row) => {
+    try {
+      const data = JSON.parse(row ? row.value : DEFAULT_PRICE_TABLE);
+      res.json(data);
+    } catch {
+      res.json(JSON.parse(DEFAULT_PRICE_TABLE));
+    }
+  });
+});
+
+app.get('/api/admin/prices-table', requireAuth, (req, res) => {
+  db.get(`SELECT value FROM settings WHERE key = 'prices_table'`, (err, row) => {
+    try {
+      res.json(JSON.parse(row ? row.value : DEFAULT_PRICE_TABLE));
+    } catch {
+      res.json(JSON.parse(DEFAULT_PRICE_TABLE));
+    }
+  });
+});
+
+app.put('/api/admin/prices-table', requireAuth, async (req, res) => {
+  const { columns, rows } = req.body;
+  if (!Array.isArray(columns) || !Array.isArray(rows)) {
+    return res.status(400).json({ error: 'Ungültiges Format' });
+  }
+  try {
+    await dbRun(
+      `INSERT OR REPLACE INTO settings (key, value) VALUES ('prices_table', ?)`,
+      [JSON.stringify({ columns, rows })]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Datenbankfehler' });
+  }
+});
+
 // Gespeicherte Kontaktnachrichten (Fallback-Einsicht, falls E-Mail mal ausfällt)
 app.get('/api/admin/bugs', requireAuth, (req, res) => {
   db.get(`SELECT value FROM settings WHERE key = 'bugs_for_marian'`, (err, row) => {
@@ -1481,6 +1557,46 @@ app.delete('/api/admin/contact-messages/:id', requireAuth, async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.error('contact-messages delete [id=%d]:', id, err.message);
+    res.status(500).json({ error: 'Datenbankfehler' });
+  }
+});
+
+// ── Blocked Periods (Wochen / Zeiträume sperren) ─────────────────────────────
+
+app.get('/api/admin/blocked-periods', requireAuth, async (req, res) => {
+  try {
+    const rows = await dbAll(
+      `SELECT * FROM blocked_periods ORDER BY date_from ASC`
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Datenbankfehler' });
+  }
+});
+
+app.post('/api/admin/blocked-periods', requireAuth, async (req, res) => {
+  const { date_from, date_to, reason } = req.body;
+  if (!date_from || !date_to || date_from > date_to) {
+    return res.status(400).json({ error: 'Ungültiger Zeitraum' });
+  }
+  try {
+    const result = await dbRun(
+      `INSERT INTO blocked_periods (date_from, date_to, reason) VALUES (?, ?, ?)`,
+      [date_from, date_to, reason || null]
+    );
+    res.json({ id: result.lastID, date_from, date_to, reason });
+  } catch (err) {
+    res.status(500).json({ error: 'Datenbankfehler' });
+  }
+});
+
+app.delete('/api/admin/blocked-periods/:id', requireAuth, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
+  try {
+    await dbRun(`DELETE FROM blocked_periods WHERE id = ?`, [id]);
+    res.json({ ok: true });
+  } catch (err) {
     res.status(500).json({ error: 'Datenbankfehler' });
   }
 });
