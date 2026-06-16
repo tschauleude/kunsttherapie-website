@@ -2,6 +2,7 @@
   const form = document.getElementById('contactForm');
   if (!form) return;
 
+  const formLoadedAt = Date.now();
   const msg = document.getElementById('contactStatus');
 
   function tr(key) {
@@ -21,7 +22,7 @@
       phone: form.phone.value.trim(),
       message: form.message.value.trim(),
       website: document.getElementById('contactWebsite')?.value || '',
-      _formAt: Date.now(),
+      _formAt: formLoadedAt,
       lang: window.ktI18n?.getLang?.() || 'de',
     };
 
