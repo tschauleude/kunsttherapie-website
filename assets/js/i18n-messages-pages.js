@@ -838,7 +838,7 @@
         "book.weekdays": "<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>",
         "book.calendarAria": "Calendar",
         "book.pickDay": "Please select a day",
-        "book.slotsHint": "Only <strong>Tuesday mornings</strong> and <strong>Thursday evenings</strong> – 90-minute sessions.",
+        "book.slotsHint": "Only <strong>Tuesday mornings</strong> and <strong>Thursday evenings</strong> – 60-minute sessions.",
         "book.slotsHintDynamic": "Bookable: {schedule} ({minutes} min slots). <strong>Click green days only</strong> in the calendar.",
         "book.scheduleSlot.2": "Tuesday morning",
         "book.scheduleSlot.4": "Thursday evening",
