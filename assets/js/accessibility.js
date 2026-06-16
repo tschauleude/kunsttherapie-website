@@ -168,6 +168,8 @@
 
   function openPanel() {
     if (panelBusy || !panel.hidden) return;
+    // Refresh panel text if i18n wasn't ready when it was first created
+    if (!tr('a11y.title')) refreshPanelI18n();
     panelBusy = true;
     syncForm();
 

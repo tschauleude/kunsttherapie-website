@@ -508,6 +508,16 @@ function renderSiteImageSlots() {
             <button type="button" class="btn-save btn-sm" data-action="upload-slot">Hochladen &amp; zuweisen</button>
             <button type="button" class="btn-cancel btn-sm" data-action="reset-slot"${slot.isCustom ? '' : ' disabled'}>Eigenes Bild entfernen</button>
           </div>
+          <div class="form-group" style="margin-top:0.75rem;border-top:1px solid var(--line);padding-top:0.75rem">
+            <label for="alt-${escapeHtml(slot.slot)}" style="font-size:0.85rem;color:var(--text-light)">Bildbeschriftung / Alt-Text</label>
+            <input type="text" id="alt-${escapeHtml(slot.slot)}" class="site-image-alt-input"
+              value="${escapeHtml(slot.altText || '')}"
+              placeholder="Kurze Bildbeschreibung (erscheint in der Lightbox &amp; für Screenreader)"
+              style="font-size:0.85rem"/>
+          </div>
+          <div class="form-actions" style="margin-top:0.4rem">
+            <button type="button" class="btn outline btn-sm" data-action="save-alt-text">Beschriftung speichern</button>
+          </div>
         </article>`;
     }
     html += '</div></div>';
@@ -675,6 +685,30 @@ async function assignSiteImageFromLibrary(slot) {
     loadSiteImagesList();
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = origLabel; }
+  }
+}
+
+async function saveSlotAltText(slot) {
+  const card = findSiteImageCard(slot);
+  const input = card?.querySelector('.site-image-alt-input');
+  const btn = card?.querySelector('[data-action="save-alt-text"]');
+  const origLabel = btn?.textContent;
+  if (!input) return;
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
+  try {
+    const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}/alt-text`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ alt_text: input.value.trim() }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Speichern fehlgeschlagen');
+    showMessage('✓ Bildbeschriftung gespeichert.', 'success');
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  } finally {
     if (btn) { btn.disabled = false; btn.textContent = origLabel; }
   }
 }
@@ -1139,6 +1173,7 @@ function initImagesAdmin() {
     if (btn.dataset.action === 'upload-slot') saveSiteImageSlot(slot);
     if (btn.dataset.action === 'assign-library') assignSiteImageFromLibrary(slot);
     if (btn.dataset.action === 'reset-slot') resetSiteImageSlot(slot);
+    if (btn.dataset.action === 'save-alt-text') saveSlotAltText(slot);
   });
 
   document.getElementById('siteImagesList')?.addEventListener('change', (e) => {
@@ -1762,6 +1797,7 @@ async function editEvent(id) {
     const response = await fetch(`${API_URL}/admin/events/${id}`, { credentials: 'include' });
     const event = await response.json();
 
+    openEventForm();
     document.getElementById('eventId').value = event.id;
     document.getElementById('eventTitle').value = event.title;
     document.getElementById('eventDescription').value = event.description;
@@ -1777,7 +1813,7 @@ async function editEvent(id) {
       prev.hidden = false;
     } else prev.hidden = true;
     document.getElementById('eventPublished').checked = !!event.published;
-    openEventForm();
+    document.getElementById('eventTitle').focus();
   } catch (err) {
     showMessage('Fehler beim Laden', 'error');
   }
@@ -1852,6 +1888,7 @@ function renderEventsListItems() {
         </div>
         <div class="item-actions">
           <button class="btn-small btn-edit" onclick="editEvent(${item.id})">Bearbeiten</button>
+          <button class="btn-small" onclick="showEventRegistrations(${item.id}, '${escapeHtml(item.title || '').replace(/'/g, '\\\'')}')" style="background:#5b8fc4;color:#fff;border:none">Anmeldungen</button>
           <button class="btn-small btn-delete" onclick="deleteEvent(${item.id})">Löschen</button>
         </div>
       </div>`;
@@ -1875,6 +1912,24 @@ function initEventsListControls() {
       renderEventsListItems();
     });
   });
+}
+
+async function showEventRegistrations(eventId, eventTitle) {
+  try {
+    const res = await fetch(`${API_URL}/admin/events/${eventId}/registrations`, { credentials: 'include' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Fehler beim Laden');
+    if (!data.length) {
+      alert(`Anmeldungen für „${eventTitle}":\n\nNoch keine Anmeldungen.`);
+      return;
+    }
+    const lines = data.map((r, i) =>
+      `${i + 1}. ${r.name} <${r.email}>${r.phone ? ' · ' + r.phone : ''}\n   ${r.createdAt ? new Date(r.createdAt).toLocaleDateString('de-DE') : ''}\n   ${r.message || ''}`
+    ).join('\n\n');
+    alert(`Anmeldungen für „${eventTitle}" (${data.length}):\n\n${lines}`);
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
+  }
 }
 
 async function loadEventsList() {
@@ -1949,14 +2004,15 @@ async function editService(id) {
     const response = await fetch(`${API_URL}/admin/services/${id}`, { credentials: 'include' });
     const service = await response.json();
 
+    openServiceForm();
     document.getElementById('serviceId').value = service.id;
     document.getElementById('serviceTitle').value = service.title;
     document.getElementById('serviceDescription').value = service.description;
     document.getElementById('servicePrice').value = service.price || '';
     document.getElementById('serviceDuration').value = service.duration || '';
     document.getElementById('serviceImage').value = service.image || '';
-    document.getElementById('serviceActive').checked = service.active;
-    openServiceForm();
+    document.getElementById('serviceActive').checked = Boolean(service.active);
+    document.getElementById('serviceTitle').focus();
   } catch (err) {
     showMessage('Fehler beim Laden', 'error');
   }
