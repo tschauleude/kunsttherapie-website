@@ -1467,6 +1467,55 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
   res.status(503).json({ error: apiMsg('contact.mailFailed', lang) });
 });
 
+// ── Preistabelle ─────────────────────────────────────────────────────────────
+
+const DEFAULT_PRICE_TABLE = JSON.stringify({
+  columns: ['Leistung', 'Dauer', 'Preis', 'Hinweis'],
+  rows: [
+    ['Gruppensitzung', '60 Minuten', '39 €', '4–12 Personen, Material i. d. R. inkl.'],
+    ['Auszeit – Familie & Freunde', '60 Minuten', '39 €', 'nur als Gruppe buchbar, Material i. d. R. inkl.'],
+    ['Einzelsitzung', '60 Minuten', '60 €', 'individuell auf dein Thema abgestimmt'],
+    ['Teambuilding', 'nach Konzept', '49 €', 'ab 12 Teilnehmer, Konzept & Material i. d. R. inkl.'],
+  ],
+});
+
+app.get('/api/prices-table', (req, res) => {
+  db.get(`SELECT value FROM settings WHERE key = 'prices_table'`, (err, row) => {
+    try {
+      const data = JSON.parse(row ? row.value : DEFAULT_PRICE_TABLE);
+      res.json(data);
+    } catch {
+      res.json(JSON.parse(DEFAULT_PRICE_TABLE));
+    }
+  });
+});
+
+app.get('/api/admin/prices-table', requireAuth, (req, res) => {
+  db.get(`SELECT value FROM settings WHERE key = 'prices_table'`, (err, row) => {
+    try {
+      res.json(JSON.parse(row ? row.value : DEFAULT_PRICE_TABLE));
+    } catch {
+      res.json(JSON.parse(DEFAULT_PRICE_TABLE));
+    }
+  });
+});
+
+app.put('/api/admin/prices-table', requireAuth, async (req, res) => {
+  const { columns, rows } = req.body;
+  if (!Array.isArray(columns) || !Array.isArray(rows)) {
+    return res.status(400).json({ error: 'Ungültiges Format' });
+  }
+  try {
+    await dbRun(
+      `INSERT OR REPLACE INTO settings (key, value) VALUES ('prices_table', ?)`,
+      [JSON.stringify({ columns, rows })]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Datenbankfehler' });
+  }
+});
+
 // Gespeicherte Kontaktnachrichten (Fallback-Einsicht, falls E-Mail mal ausfällt)
 app.get('/api/admin/bugs', requireAuth, (req, res) => {
   db.get(`SELECT value FROM settings WHERE key = 'bugs_for_marian'`, (err, row) => {

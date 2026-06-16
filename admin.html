@@ -66,7 +66,7 @@
     <div class="nav-item" onclick="switchSection('bookings', this)">Buchungen</div>
     <div class="nav-item" onclick="switchSection('atelier', this)">Mini-Atelier</div>
     <div class="nav-item" onclick="switchSection('events', this)">Veranstaltungen</div>
-    <div class="nav-item" onclick="switchSection('services', this)">Angebote &amp; Preise</div>
+    <div class="nav-item" onclick="switchSection('prices', this)">Preistabelle</div>
     <div class="nav-item" onclick="switchSection('contact', this)">Nachrichten</div>
     <div class="nav-item" onclick="switchSection('bugs', this)">Bugs für Marian</div>
     <button type="button" class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
@@ -122,12 +122,6 @@
             <span class="dash-card-num" id="atelierCount">0</span>
             <span class="dash-card-label">Mini-Atelier</span>
             <span class="dash-card-sub" id="atelierSub">–</span>
-          </button>
-          <button type="button" class="dash-card" onclick="goToSection('services')">
-            <span class="dash-card-icon" aria-hidden="true">💚</span>
-            <span class="dash-card-num" id="servicesCount">0</span>
-            <span class="dash-card-label">Angebote</span>
-            <span class="dash-card-sub" id="servicesSub">–</span>
           </button>
           <button type="button" class="dash-card" onclick="goToSection('images')">
             <span class="dash-card-icon" aria-hidden="true">🖼️</span>
@@ -437,50 +431,22 @@
       <div id="eventsList" class="items-list"></div>
     </section>
 
-    <!-- SERVICES/ANGEBOTE SECTION -->
-    <section class="admin-section" id="services">
-      <h1>Angebote &amp; Preise</h1>
-      <p class="sub section-desc">Deine Angebote mit Titel, Beschreibung und Preis. Diese erscheinen auf der Buchungsseite und in der Übersicht.</p>
-      <button type="button" class="btn-add" onclick="openServiceForm()">Neues Angebot</button>
-      <div id="serviceForm" class="form-container" style="display: none;">
-        <h2>Angebot bearbeiten</h2>
-        <form onsubmit="saveService(event)">
-          <input type="hidden" id="serviceId">
-          <div class="form-group full">
-            <label>Titel</label>
-            <input type="text" id="serviceTitle" required placeholder="z.B. Gruppen-Kunsttherapie">
-          </div>
-          <div class="form-group full">
-            <label>Beschreibung</label>
-            <textarea id="serviceDescription" required rows="5" placeholder="Was beinhaltet dieses Angebot?"></textarea>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Preis</label>
-              <input type="text" id="servicePrice" placeholder="z.B. 39 € / Einheit">
-            </div>
-            <div class="form-group">
-              <label>Dauer</label>
-              <input type="text" id="serviceDuration" placeholder="z.B. 90 Minuten">
-            </div>
-          </div>
-          <div class="form-group full">
-            <label>Bild-URL (optional)</label>
-            <input type="text" id="serviceImage" placeholder="https://... oder leer lassen">
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" id="serviceActive">
-              Aktiv (sichtbar)
-            </label>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn-save">Speichern</button>
-            <button type="button" class="btn-cancel" onclick="closeServiceForm()">Abbrechen</button>
-          </div>
-        </form>
+    <!-- PREISTABELLE -->
+    <section class="admin-section" id="prices">
+      <h1>Preistabelle</h1>
+      <p class="sub section-desc">Bearbeite die Preistabelle direkt. Zeilen und Spalten lassen sich jederzeit hinzufügen oder löschen.</p>
+
+      <div class="form-container" style="margin-top:1rem">
+        <div style="overflow-x:auto">
+          <table id="priceEditorTable" style="border-collapse:collapse;width:100%;min-width:500px"></table>
+        </div>
+        <div style="display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap">
+          <button type="button" class="btn-save" onclick="savePriceTable()">Speichern</button>
+          <button type="button" class="btn-small" onclick="addPriceRow()">+ Zeile</button>
+          <button type="button" class="btn-small" onclick="addPriceColumn()">+ Spalte</button>
+        </div>
+        <p id="priceTableStatus" class="note" style="margin-top:0.5rem"></p>
       </div>
-      <div id="servicesList" class="items-list"></div>
     </section>
 
     <!-- SITE IMAGES -->

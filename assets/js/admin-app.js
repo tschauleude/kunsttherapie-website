@@ -179,7 +179,7 @@ function switchSection(sectionId, navEl) {
   }
   if (sectionId === 'atelier') loadAtelierList();
   if (sectionId === 'events') loadEventsList();
-  if (sectionId === 'services') loadServicesList();
+  if (sectionId === 'prices') loadPriceTable();
   if (sectionId === 'images') loadSiteImagesList();
   if (sectionId === 'texts') initTextsSection();
   if (sectionId === 'contact') loadContactMessages();
@@ -1288,12 +1288,11 @@ function renderDashUpcoming(bookings, today) {
 
 async function loadDashboard() {
   try {
-    const [newsRes, bookingsRes, eventsRes, atelierRes, servicesRes, mediaRes, contactRes] = await Promise.all([
+    const [newsRes, bookingsRes, eventsRes, atelierRes, mediaRes, contactRes] = await Promise.all([
       fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/atelier`, { credentials: 'include' }),
-      fetch(`${API_URL}/admin/services`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
       fetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' }),
     ]);
@@ -1302,7 +1301,6 @@ async function loadDashboard() {
     const bookings = bookingsRes.ok ? await bookingsRes.json() : [];
     const events = eventsRes.ok ? await eventsRes.json() : [];
     const atelier = atelierRes.ok ? await atelierRes.json() : [];
-    const services = servicesRes.ok ? await servicesRes.json() : [];
     const media = mediaRes.ok ? ((await mediaRes.json()).files || []) : [];
     const contacts = contactRes.ok ? await contactRes.json() : [];
 
@@ -1324,10 +1322,6 @@ async function loadDashboard() {
     const atelierNew = atelier.filter((a) => a.status === 'new').length;
     dashSetText('atelierCount', atelierNew);
     dashSetText('atelierSub', `${atelier.length} gesamt`);
-
-    const activeServices = services.filter((s) => s.active).length;
-    dashSetText('servicesCount', activeServices);
-    dashSetText('servicesSub', `${services.length} gesamt`);
 
     const totalBytes = media.reduce((sum, f) => sum + (f.size || 0), 0);
     dashSetText('storageCount', media.length);
@@ -1950,6 +1944,110 @@ async function loadEventsList() {
 // ============================================================================
 // SERVICES MANAGEMENT
 // ============================================================================
+
+// ── Preistabelle ─────────────────────────────────────────────────────────────
+
+let _priceData = { columns: [], rows: [] };
+
+function renderPriceEditor(data) {
+  _priceData = data;
+  const tbl = document.getElementById('priceEditorTable');
+  if (!tbl) return;
+
+  const cellStyle = 'border:1px solid #ddd;padding:4px';
+  const inputStyle = 'width:100%;border:none;background:transparent;font:inherit;padding:2px 4px;min-width:80px;box-sizing:border-box';
+
+  let html = '<thead><tr>';
+  data.columns.forEach((col, ci) => {
+    html += `<th style="${cellStyle};background:#f5f5f5;white-space:nowrap">
+      <input data-col="${ci}" data-type="col" value="${esc(col)}" style="${inputStyle};font-weight:600">
+      <button type="button" title="Spalte löschen" onclick="deletePriceColumn(${ci})" style="border:none;background:none;cursor:pointer;color:#c00;padding:0 2px;font-size:0.8rem">✕</button>
+    </th>`;
+  });
+  html += '<th style="width:32px"></th></tr></thead><tbody>';
+
+  data.rows.forEach((row, ri) => {
+    html += '<tr>';
+    data.columns.forEach((_, ci) => {
+      const val = row[ci] != null ? row[ci] : '';
+      html += `<td style="${cellStyle}"><input data-row="${ri}" data-col="${ci}" data-type="cell" value="${esc(val)}" style="${inputStyle}"></td>`;
+    });
+    html += `<td style="${cellStyle};text-align:center">
+      <button type="button" title="Zeile löschen" onclick="deletePriceRow(${ri})" style="border:none;background:none;cursor:pointer;color:#c00;font-size:0.9rem">✕</button>
+    </td></tr>`;
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+
+function collectPriceData() {
+  const tbl = document.getElementById('priceEditorTable');
+  const cols = [...tbl.querySelectorAll('[data-type="col"]')].map(i => i.value.trim());
+  const rowInputs = [...tbl.querySelectorAll('[data-type="cell"]')];
+  const numCols = cols.length;
+  const rows = [];
+  for (let i = 0; i < rowInputs.length; i += numCols) {
+    rows.push(rowInputs.slice(i, i + numCols).map(inp => inp.value.trim()));
+  }
+  return { columns: cols, rows };
+}
+
+async function loadPriceTable() {
+  try {
+    const res = await fetch(`${API_URL}/admin/prices-table`, { credentials: 'include' });
+    const data = await res.json();
+    renderPriceEditor(data);
+  } catch (err) {
+    console.error('loadPriceTable:', err);
+  }
+}
+
+async function savePriceTable() {
+  const data = collectPriceData();
+  const status = document.getElementById('priceTableStatus');
+  try {
+    const res = await fetch(`${API_URL}/admin/prices-table`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    if (status) { status.textContent = 'Gespeichert!'; setTimeout(() => { status.textContent = ''; }, 2500); }
+  } catch (err) {
+    if (status) status.textContent = 'Fehler: ' + err.message;
+  }
+}
+
+function addPriceRow() {
+  const data = collectPriceData();
+  data.rows.push(data.columns.map(() => ''));
+  renderPriceEditor(data);
+}
+
+function addPriceColumn() {
+  const data = collectPriceData();
+  data.columns.push('Neue Spalte');
+  data.rows = data.rows.map(r => [...r, '']);
+  renderPriceEditor(data);
+}
+
+function deletePriceRow(ri) {
+  const data = collectPriceData();
+  data.rows.splice(ri, 1);
+  renderPriceEditor(data);
+}
+
+function deletePriceColumn(ci) {
+  const data = collectPriceData();
+  data.columns.splice(ci, 1);
+  data.rows = data.rows.map(r => { r.splice(ci, 1); return r; });
+  renderPriceEditor(data);
+}
 
 function openServiceForm() {
   document.getElementById('serviceForm').style.display = 'block';

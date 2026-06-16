@@ -210,5 +210,31 @@
   <script src="assets/js/site-core.44cd2490.js" defer></script>
   <script src="assets/js/i18n-messages-shared.js" defer></script>
   <script src="assets/js/i18n-messages-prices.js" defer></script>
+  <script>
+    (function () {
+      fetch('/api/prices-table')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          if (!data || !data.columns || !data.rows) return;
+          var tbl = document.querySelector('table.prices');
+          if (!tbl) return;
+          var thead = tbl.querySelector('thead');
+          var tbody = tbl.querySelector('tbody');
+          if (!thead || !tbody) return;
+          thead.removeAttribute('data-i18n-html');
+          tbody.removeAttribute('data-i18n-html');
+          thead.innerHTML = '<tr>' + data.columns.map(function (c) {
+            return '<th scope="col">' + c + '</th>';
+          }).join('') + '</tr>';
+          tbody.innerHTML = data.rows.map(function (row) {
+            return '<tr>' + row.map(function (cell, ci) {
+              var label = ci > 0 ? ' data-label="' + data.columns[ci] + '"' : '';
+              return '<td' + label + '>' + cell + '</td>';
+            }).join('') + '</tr>';
+          }).join('');
+        })
+        .catch(function () {});
+    })();
+  </script>
 </body>
 </html>
