@@ -326,6 +326,37 @@
         </form>
       </div>
 
+      <!-- Wochen blockieren -->
+      <div class="form-container" style="margin-top:2rem" id="blockedPeriodsBox">
+        <h3>Zeiten sperren &amp; freigeben</h3>
+        <p class="note">Ganze Wochen oder Zeiträume sperren – Kunden können in diesem Zeitraum keine Termine buchen.</p>
+
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;align-items:flex-end">
+          <div class="form-group" style="margin:0">
+            <label>Von</label>
+            <input type="date" id="blockFrom" style="width:160px">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Bis</label>
+            <input type="date" id="blockTo" style="width:160px">
+          </div>
+          <div class="form-group" style="margin:0;flex:1;min-width:160px">
+            <label>Grund (optional)</label>
+            <input type="text" id="blockReason" placeholder="z.&nbsp;B. Urlaub, Krank …" style="width:100%">
+          </div>
+          <div style="display:flex;gap:0.5rem;align-items:center">
+            <button type="button" class="btn-save" onclick="addBlockedPeriod()">Sperren</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem">
+          <button type="button" class="btn-small" onclick="blockCurrentWeek()">Diese Woche</button>
+          <button type="button" class="btn-small" onclick="blockNextWeek()">Nächste Woche</button>
+        </div>
+
+        <div id="blockedPeriodsList" style="margin-top:1.2rem"></div>
+      </div>
+
       <h2 style="margin-top:2rem">Alle Buchungen</h2>
       <div id="bookingsList" class="items-list"></div>
     </section>

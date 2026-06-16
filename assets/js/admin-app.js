@@ -175,6 +175,7 @@ function switchSection(sectionId, navEl) {
   if (sectionId === 'bookings') {
     loadBookingsList();
     loadGoogleStatus();
+    loadBlockedPeriods();
   }
   if (sectionId === 'atelier') loadAtelierList();
   if (sectionId === 'events') loadEventsList();
@@ -2143,6 +2144,87 @@ async function loadBookingsList() {
       html || '<div style="padding: 20px; text-align: center; color: #999;">Noch keine Buchungen</div>';
   } catch (err) {
     console.error('Error loading bookings:', err);
+  }
+}
+
+// ── Blocked Periods ───────────────────────────────────────────────────────────
+
+function weekBounds(offsetWeeks = 0) {
+  const now = new Date();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7) + offsetWeeks * 7);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const fmt = (d) => d.toISOString().slice(0, 10);
+  return { from: fmt(monday), to: fmt(sunday) };
+}
+
+function blockCurrentWeek() {
+  const { from, to } = weekBounds(0);
+  document.getElementById('blockFrom').value = from;
+  document.getElementById('blockTo').value = to;
+}
+
+function blockNextWeek() {
+  const { from, to } = weekBounds(1);
+  document.getElementById('blockFrom').value = from;
+  document.getElementById('blockTo').value = to;
+}
+
+async function addBlockedPeriod() {
+  const date_from = document.getElementById('blockFrom').value;
+  const date_to = document.getElementById('blockTo').value;
+  const reason = document.getElementById('blockReason').value.trim();
+  if (!date_from || !date_to) return alert('Bitte Von- und Bis-Datum auswählen.');
+  if (date_from > date_to) return alert('Das Von-Datum muss vor dem Bis-Datum liegen.');
+  try {
+    const res = await fetch(`${API_URL}/admin/blocked-periods`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date_from, date_to, reason }),
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    document.getElementById('blockFrom').value = '';
+    document.getElementById('blockTo').value = '';
+    document.getElementById('blockReason').value = '';
+    await loadBlockedPeriods();
+  } catch (err) {
+    alert('Fehler: ' + err.message);
+  }
+}
+
+async function deleteBlockedPeriod(id) {
+  if (!confirm('Sperre aufheben?')) return;
+  try {
+    await fetch(`${API_URL}/admin/blocked-periods/${id}`, { method: 'DELETE', credentials: 'include' });
+    await loadBlockedPeriods();
+  } catch (err) {
+    alert('Fehler: ' + err.message);
+  }
+}
+
+async function loadBlockedPeriods() {
+  try {
+    const res = await fetch(`${API_URL}/admin/blocked-periods`, { credentials: 'include' });
+    const list = await res.json();
+    const container = document.getElementById('blockedPeriodsList');
+    if (!list.length) {
+      container.innerHTML = '<p class="note" style="margin:0">Keine Sperrzeiten eingetragen.</p>';
+      return;
+    }
+    const fmt = (s) => new Date(s + 'T12:00:00').toLocaleDateString('de-DE');
+    container.innerHTML = list.map((p) => `
+      <div class="item" style="display:flex;align-items:center;gap:1rem;padding:0.6rem 0.8rem">
+        <div style="flex:1">
+          <strong>${fmt(p.date_from)} – ${fmt(p.date_to)}</strong>
+          ${p.reason ? `<span style="color:#666;margin-left:0.5rem">· ${p.reason}</span>` : ''}
+        </div>
+        <button class="btn-small btn-delete" onclick="deleteBlockedPeriod(${p.id})">Freigeben</button>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error('loadBlockedPeriods:', err);
   }
 }
 
