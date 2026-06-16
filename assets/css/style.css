@@ -2269,6 +2269,17 @@ body.consent-banner-visible {
   border-radius: 4px;
 }
 
+.legal-hint {
+  background: rgba(74, 110, 106, 0.06);
+  border-left: 3px solid var(--color-teal-light, #7fb0ad);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  font-size: 0.92rem;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
 /* === ZITAT-BAND === */
 .quote-band {
   padding: clamp(1.75rem, 3.5vw, 2.75rem) 0;
