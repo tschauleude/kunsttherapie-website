@@ -294,14 +294,14 @@ header.header-scrolled .header-inner {
 .brand-logo {
   display: block;
   height: auto;
-  max-height: clamp(64px, 7.5vw, 88px);
+  max-height: clamp(100px, 13vw, 150px);
   width: auto;
   max-width: 100%;
   object-fit: contain;
 }
 
 header.header-scrolled .brand-logo {
-  max-height: clamp(52px, 6vw, 72px);
+  max-height: clamp(80px, 10vw, 120px);
 }
 
 nav ul {
@@ -2004,7 +2004,7 @@ body.consent-banner-visible {
 }
 
 .consent-banner-inner {
-  /* Nur Buttons fangen Klicks – Seite bleibt nutzbar (z. B. „Mehr erfahren“) */
+  /* Nur Buttons fangen Klicks – Seite bleibt nutzbar (z. B. „Mehr erfahren”) */
   pointer-events: none;
   max-width: 640px;
   margin: 0 auto;
@@ -2013,6 +2013,8 @@ body.consent-banner-visible {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
+  color: var(--text-main);
+  isolation: isolate;
 }
 
 .consent-banner-inner .consent-actions,
@@ -2114,7 +2116,7 @@ body.consent-banner-visible {
 
 .consent-settings-panel {
   opacity: 0;
-  transform: translateY(1.1rem) scale(0.97);
+  transform: translateY(1.1rem) scale(0.97) translateZ(0);
   transition:
     opacity var(--duration-flow) var(--ease-flow),
     transform var(--duration-flow) var(--ease-flow);
@@ -2122,7 +2124,7 @@ body.consent-banner-visible {
 
 .consent-settings.consent-settings-visible .consent-settings-panel {
   opacity: 1;
-  transform: none;
+  transform: translateZ(0);
 }
 
 @media (max-width: 640px) {
@@ -2158,6 +2160,8 @@ body.consent-banner-visible {
   max-height: 90vh;
   overflow: auto;
   padding: 1.75rem;
+  color: var(--text-main);
+  isolation: isolate;
 }
 
 .consent-settings-close {
@@ -2497,8 +2501,10 @@ body.consent-banner-visible {
   overflow: auto;
   padding: clamp(1.5rem, 4vw, 2rem);
   margin: 0;
+  color: var(--text-main);
+  isolation: isolate;
   opacity: 0;
-  transform: translateY(1.5rem) scale(0.96);
+  transform: translateY(1.5rem) scale(0.96) translateZ(0);
   transition:
     opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.45s cubic-bezier(0.34, 1.45, 0.64, 1);
@@ -2507,7 +2513,7 @@ body.consent-banner-visible {
 
 .news-popup.news-popup-visible .news-popup-panel {
   opacity: 1;
-  transform: none;
+  transform: translateZ(0);
 }
 
 .news-popup-close {
@@ -4274,11 +4280,11 @@ body.nav-open .nav-backdrop {
   }
 
   .brand-logo {
-    max-height: clamp(72px, 14vw, 92px);
+    max-height: clamp(90px, 18vw, 130px);
   }
 
   header.header-scrolled .brand-logo {
-    max-height: clamp(60px, 12vw, 76px);
+    max-height: clamp(72px, 14vw, 105px);
   }
 }
 
@@ -4394,8 +4400,10 @@ html.a11y-reduce-motion *::after {
   background: var(--bg-card);
   border: 2px solid rgba(85, 122, 118, 0.35);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+  color: var(--text-main);
+  isolation: isolate;
   opacity: 0;
-  transform: translateY(0.75rem) scale(0.98);
+  transform: translateY(0.75rem) scale(0.98) translateZ(0);
   pointer-events: none;
   transition:
     opacity var(--duration-flow) var(--ease-flow),
@@ -4404,7 +4412,7 @@ html.a11y-reduce-motion *::after {
 
 .a11y-panel.a11y-panel-visible {
   opacity: 1;
-  transform: none;
+  transform: translateZ(0);
   pointer-events: auto;
 }
 
@@ -4533,6 +4541,8 @@ html.a11y-reduce-motion *::after {
   max-height: 90vh;
   overflow-y: auto;
   padding: 2rem;
+  color: var(--text-main);
+  isolation: isolate;
 }
 
 .event-reg-close {
@@ -4620,7 +4630,6 @@ body.reg-modal-open {
   }
 
   .brand-logo {
-    /* Ensure logo always has a visible minimum height on small screens */
-    max-height: 42px;
+    max-height: 72px;
   }
 }
