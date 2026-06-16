@@ -1404,6 +1404,24 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
 });
 
 // Gespeicherte Kontaktnachrichten (Fallback-Einsicht, falls E-Mail mal ausfällt)
+app.get('/api/admin/bugs', requireAuth, (req, res) => {
+  db.get(`SELECT value FROM settings WHERE key = 'bugs_for_marian'`, (err, row) => {
+    if (err) return res.status(500).json({ error: 'Datenbankfehler' });
+    res.json({ text: row ? row.value : '' });
+  });
+});
+
+app.put('/api/admin/bugs', requireAuth, async (req, res) => {
+  const text = String(req.body.text ?? '');
+  try {
+    await dbRun(`INSERT OR REPLACE INTO settings (key, value) VALUES ('bugs_for_marian', ?)`, [text]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('bugs PUT:', err.message);
+    res.status(500).json({ error: 'Datenbankfehler' });
+  }
+});
+
 app.get('/api/admin/contact-messages', requireAuth, (req, res) => {
   db.all(
     `SELECT id, name, email, phone, message, email_sent, createdAt

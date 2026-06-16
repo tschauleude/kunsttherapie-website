@@ -68,6 +68,7 @@
     <div class="nav-item" onclick="switchSection('events', this)">Veranstaltungen</div>
     <div class="nav-item" onclick="switchSection('services', this)">Angebote &amp; Preise</div>
     <div class="nav-item" onclick="switchSection('contact', this)">Nachrichten</div>
+    <div class="nav-item" onclick="switchSection('bugs', this)">Bugs für Marian</div>
     <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
     <p class="sidebar-links">
       <a href="/" target="_blank" rel="noopener">Website ansehen</a><br>
@@ -571,6 +572,21 @@
       <h1>Nachrichten</h1>
       <p class="sub section-desc">Kontaktanfragen aus dem Formular – werden gespeichert, auch wenn die E-Mail-Benachrichtigung mal ausbleibt.</p>
       <div id="contactList" class="items-list"></div>
+    </section>
+
+    <!-- BUGS FÜR MARIAN -->
+    <section class="admin-section" id="bugs">
+      <h1>Bugs für Marian</h1>
+      <p class="sub section-desc">Hier kannst du Fehler oder Probleme notieren, die Marian beheben soll.</p>
+      <div class="form-container">
+        <div class="form-group">
+          <label for="bugsTextarea">Notizen</label>
+          <textarea id="bugsTextarea" rows="14" style="width:100%;resize:vertical;" placeholder="Hier Bugs, Probleme oder Wünsche eintragen …"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn primary" onclick="saveBugs()">Speichern</button>
+        </div>
+      </div>
     </section>
 
     <!-- WEBSITE TEXTS (i18n) -->
