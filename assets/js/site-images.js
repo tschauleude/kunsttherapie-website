@@ -64,12 +64,19 @@
       if (!res.ok) return;
       const data = await res.json();
       const images = data.images || {};
+      const altTexts = data.altTexts || {};
 
       document.querySelectorAll('[data-site-image]').forEach((el) => {
         const slot = el.getAttribute('data-site-image');
         const url = images[slot];
         if (!url) return;
         applyToElement(el, url);
+        // Apply custom alt text if set, overriding i18n default
+        const alt = altTexts[slot];
+        if (alt) {
+          const img = el.tagName === 'IMG' ? el : el.querySelector('img');
+          if (img) img.alt = alt;
+        }
       });
 
       if (data.galleryCount != null) {

@@ -189,6 +189,11 @@ const contactRateLimiter = rateLimit({
   ...rateLimitJson('Zu viele Nachrichten – bitte in einer Stunde erneut versuchen.'),
 });
 
+const eventRegRateLimiter = rateLimit({
+  ...rateLimitJson('Zu viele Anmeldungen – bitte in einer Stunde erneut versuchen.'),
+  max: 8,
+});
+
 app.use(compression());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -353,9 +358,12 @@ function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS site_images (
         slot TEXT PRIMARY KEY,
         url TEXT NOT NULL,
+        alt_text TEXT,
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+    // Migration: add alt_text column if it doesn't exist yet (existing DBs)
+    db.run(`ALTER TABLE site_images ADD COLUMN alt_text TEXT`, () => {/* ignore if already exists */});
 
     db.run(`
       CREATE TABLE IF NOT EXISTS services (
@@ -368,6 +376,19 @@ function initializeDatabase() {
         active INTEGER DEFAULT 1,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    db.run(`
+      CREATE TABLE IF NOT EXISTS event_registrations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT,
+        message TEXT,
+        email_sent INTEGER DEFAULT 0,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -1002,6 +1023,73 @@ app.delete('/api/admin/events/:id', requireAuth, (req, res) => {
   );
 });
 
+// Event registration (public)
+app.post('/api/events/:id/register', eventRegRateLimiter, async (req, res) => {
+  const lang = apiLang(req);
+  const eventId = parseInt(req.params.id, 10);
+  if (!Number.isFinite(eventId)) return res.status(400).json({ error: 'Ungültige Event-ID' });
+
+  const honeypot = String(req.body._hp ?? req.body.website ?? '').trim();
+  if (honeypot) return res.json({ success: true });
+
+  const elapsed = Date.now() - Number(req.body._formAt || 0);
+  if (elapsed < 1200) return res.json({ success: true });
+
+  const { name, email: fromEmail, phone, message } = req.body;
+  if (!name || !fromEmail) return res.status(400).json({ error: 'Name und E-Mail sind erforderlich.' });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail)) return res.status(400).json({ error: 'Bitte eine gültige E-Mail-Adresse eingeben.' });
+
+  const event = await dbGet(`SELECT * FROM events WHERE id = ? AND published = 1`, [eventId]).catch(() => null);
+  if (!event) return res.status(404).json({ error: 'Veranstaltung nicht gefunden.' });
+
+  let savedId = null;
+  try {
+    const ins = await dbRun(
+      `INSERT INTO event_registrations (event_id, name, email, phone, message) VALUES (?, ?, ?, ?, ?)`,
+      [eventId, name.trim(), fromEmail.trim(), phone?.trim() || null, message?.trim() || null]
+    );
+    savedId = ins.lastID;
+  } catch (dbErr) {
+    console.error('event_registration persist error:', dbErr.message);
+  }
+
+  let sent = false;
+  try {
+    const result = await email.sendEventRegistration({
+      name: name.trim(),
+      email: fromEmail.trim(),
+      phone: phone?.trim() || '',
+      message: message?.trim() || '',
+      eventTitle: event.title,
+      eventDate: event.date,
+      eventTime: event.time,
+    });
+    sent = Boolean(result.sent);
+  } catch (e) {
+    console.error('event registration email error:', e.message);
+  }
+
+  if (sent && savedId) {
+    dbRun(`UPDATE event_registrations SET email_sent = 1 WHERE id = ?`, [savedId]).catch(() => {});
+  }
+
+  res.json({ success: true, message: 'Anmeldung eingegangen! Du erhältst eine Bestätigung per E-Mail.' });
+});
+
+// Get event registrations for an event (admin)
+app.get('/api/admin/events/:id/registrations', requireAuth, (req, res) => {
+  const eventId = parseInt(req.params.id, 10);
+  if (!Number.isFinite(eventId)) return res.status(400).json({ error: 'Ungültige ID' });
+  db.all(
+    `SELECT id, name, email, phone, message, email_sent, createdAt FROM event_registrations WHERE event_id = ? ORDER BY createdAt DESC`,
+    [eventId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Database error' });
+      res.json(rows || []);
+    }
+  );
+});
+
 // ============================================================================
 // SERVICES API ROUTES
 // ============================================================================
@@ -1531,15 +1619,15 @@ app.post('/api/admin/upload', requireAuth, (req, res) => {
 
 app.get('/api/site-images', async (req, res) => {
   try {
-    const { images, galleryCount } = await siteImages.getPublicImages(dbAll, dbGet);
+    const { images, altTexts, galleryCount } = await siteImages.getPublicImages(dbAll, dbGet);
     res.setHeader('Cache-Control', 'public, max-age=120');
-    res.json({ images, galleryCount });
+    res.json({ images, altTexts, galleryCount });
   } catch (e) {
     console.error('site-images public:', e.message);
     const fallback = Object.fromEntries(
       siteImages.SITE_IMAGE_SLOTS.map((s) => [s.slot, s.defaultUrl])
     );
-    res.json({ images: fallback, galleryCount: siteImages.DEFAULT_GALLERY_COUNT });
+    res.json({ images: fallback, altTexts: {}, galleryCount: siteImages.DEFAULT_GALLERY_COUNT });
   }
 });
 
@@ -1621,6 +1709,17 @@ app.post('/api/admin/site-images/:slot/upload', requireAuth, (req, res) => {
       res.status(500).json({ error: e.message || 'Speichern fehlgeschlagen' });
     }
   });
+});
+
+app.patch('/api/admin/site-images/:slot/alt-text', requireAuth, async (req, res) => {
+  const { slot } = req.params;
+  const { alt_text } = req.body || {};
+  try {
+    const saved = await siteImages.setSlotAltText(dbRun, slot, alt_text || '');
+    res.json({ success: true, ...saved });
+  } catch (e) {
+    res.status(400).json({ error: e.message || 'Speichern fehlgeschlagen' });
+  }
 });
 
 app.delete('/api/admin/site-images/:slot', requireAuth, async (req, res) => {
