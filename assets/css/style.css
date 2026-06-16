@@ -294,15 +294,14 @@ header.header-scrolled .header-inner {
 .brand-logo {
   display: block;
   height: auto;
-  max-height: clamp(110px, 14vw, 160px);
+  max-height: clamp(64px, 7.5vw, 88px);
   width: auto;
   max-width: 100%;
   object-fit: contain;
-  mix-blend-mode: multiply;
 }
 
 header.header-scrolled .brand-logo {
-  max-height: clamp(90px, 11vw, 130px);
+  max-height: clamp(52px, 6vw, 72px);
 }
 
 nav ul {
@@ -4278,11 +4277,11 @@ body.nav-open .nav-backdrop {
   }
 
   .brand-logo {
-    max-height: clamp(100px, 22vw, 140px);
+    max-height: clamp(72px, 14vw, 92px);
   }
 
   header.header-scrolled .brand-logo {
-    max-height: clamp(80px, 18vw, 115px);
+    max-height: clamp(60px, 12vw, 76px);
   }
 }
 
@@ -4628,6 +4627,6 @@ body.reg-modal-open {
   }
 
   .brand-logo {
-    max-height: 90px;
+    max-height: 42px;
   }
 }
