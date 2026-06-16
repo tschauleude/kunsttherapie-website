@@ -367,6 +367,9 @@ function initializeDatabase() {
 
     // DB-seitige Sperre gegen Doppelbuchungen (schließt die Race-Condition
     // zwischen Verfügbarkeitsprüfung und INSERT). Stornierte Termine zählen nicht.
+    db.run(`CREATE INDEX IF NOT EXISTS idx_news_published ON news(published, createdAt)`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_events_published ON events(published, date)`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date, status)`);
     db.run(
       `CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_slot
        ON bookings(date, start_time) WHERE status != 'cancelled'`,
@@ -1366,10 +1369,12 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
   const lang = apiLang(req);
   const honeypot = String(req.body.website ?? req.body._hp ?? '').trim();
   if (honeypot) {
-    return res.json({
-      success: true,
-      message: apiMsg('contact.success', lang),
-    });
+    return res.json({ success: true, message: apiMsg('contact.success', lang) });
+  }
+  const formAt = Number(req.body._formAt);
+  const elapsed = Number.isFinite(formAt) && formAt > 0 ? Date.now() - formAt : null;
+  if (elapsed !== null && elapsed >= 0 && elapsed < 1200) {
+    return res.json({ success: true, message: apiMsg('contact.success', lang) });
   }
 
   const { name, email: fromEmail, phone, message } = req.body;
@@ -1686,13 +1691,16 @@ app.get('/api/admin/atelier', requireAuth, (req, res) => {
 });
 
 app.patch('/api/admin/atelier/:id', requireAuth, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   const { status } = req.body;
   const allowed = ['new', 'viewed', 'archived'];
   if (!allowed.includes(status)) {
     return res.status(400).json({ error: 'Ungültiger Status' });
   }
   try {
-    await dbRun(`UPDATE atelier_submissions SET status = ? WHERE id = ?`, [status, req.params.id]);
+    const result = await dbRun(`UPDATE atelier_submissions SET status = ? WHERE id = ?`, [status, id]);
+    if (result.changes === 0) return res.status(404).json({ error: 'Nicht gefunden' });
     res.json({ success: true });
   } catch (e) {
     res.status(500).json({ error: 'Update fehlgeschlagen' });
@@ -1700,12 +1708,14 @@ app.patch('/api/admin/atelier/:id', requireAuth, async (req, res) => {
 });
 
 app.delete('/api/admin/atelier/:id', requireAuth, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   try {
-    const row = await dbGet(`SELECT * FROM atelier_submissions WHERE id = ?`, [req.params.id]);
+    const row = await dbGet(`SELECT * FROM atelier_submissions WHERE id = ?`, [id]);
     if (!row) return res.status(404).json({ error: 'Nicht gefunden' });
     const fullPath = path.join(UPLOAD_DIR, row.image_path);
-    if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
-    await dbRun(`DELETE FROM atelier_submissions WHERE id = ?`, [req.params.id]);
+    try { fs.unlinkSync(fullPath); } catch (e) { if (e.code !== 'ENOENT') console.error('atelier unlink:', e.message); }
+    await dbRun(`DELETE FROM atelier_submissions WHERE id = ?`, [id]);
     res.json({ success: true });
   } catch (e) {
     res.status(500).json({ error: 'Löschen fehlgeschlagen' });
@@ -1902,9 +1912,7 @@ app.delete('/api/admin/media/:filename', requireAuth, async (req, res) => {
     }
 
     const filePath = path.join(UPLOAD_DIR, filename);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    try { fs.unlinkSync(filePath); } catch (e) { if (e.code !== 'ENOENT') throw e; }
 
     res.json({ success: true, filename, url });
   } catch (e) {
@@ -1959,13 +1967,11 @@ app.delete('/api/admin/static-images/:filename', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'Nur Bilddateien können gelöscht werden' });
   }
   const filePath = path.join(STATIC_IMG_DIR, filename);
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: 'Datei nicht gefunden' });
-  }
   try {
     fs.unlinkSync(filePath);
     res.json({ success: true, filename, url: `/assets/img/${filename}` });
   } catch (e) {
+    if (e.code === 'ENOENT') return res.status(404).json({ error: 'Datei nicht gefunden' });
     res.status(500).json({ error: 'Löschen fehlgeschlagen' });
   }
 });
@@ -2136,6 +2142,14 @@ app.post('/api/admin/bookings', requireAuth, async (req, res) => {
   if (!isBlock && (!clientName || !clientEmail)) {
     return res.status(400).json({ error: 'Name und E-Mail erforderlich' });
   }
+  if (clientName && clientName.length > 120)
+    return res.status(400).json({ error: 'Name zu lang (max. 120 Zeichen)' });
+  if (clientEmail && clientEmail.length > 200)
+    return res.status(400).json({ error: 'E-Mail-Adresse zu lang (max. 200 Zeichen)' });
+  if (phone && String(phone).trim().length > 50)
+    return res.status(400).json({ error: 'Telefonnummer zu lang (max. 50 Zeichen)' });
+  if (message && String(message).trim().length > 2000)
+    return res.status(400).json({ error: 'Nachricht zu lang (max. 2000 Zeichen)' });
 
   try {
     const { localBusy, googleBusy } = await getBusyForRange(date, date);
@@ -2253,8 +2267,14 @@ app.get('/api/admin/google/status', requireAuth, (req, res) => {
   });
 });
 
-app.get('/api/admin/google/auth', requireAuth, (req, res) => {
-  const url = googleCalendar.getAuthUrl();
+app.get('/api/admin/google/auth', requireAuth, async (req, res) => {
+  const state = require('crypto').randomBytes(16).toString('hex');
+  try {
+    await dbRun(`INSERT OR REPLACE INTO settings (key, value) VALUES ('google_oauth_state', ?)`, [state]);
+  } catch (e) {
+    return res.status(500).json({ error: 'Fehler beim Generieren des OAuth-State' });
+  }
+  const url = googleCalendar.getAuthUrl(state);
   if (!url) {
     return res.status(400).json({
       error: 'GOOGLE_CLIENT_ID und GOOGLE_CLIENT_SECRET in .env eintragen',
@@ -2264,13 +2284,22 @@ app.get('/api/admin/google/auth', requireAuth, (req, res) => {
 });
 
 app.get('/api/admin/google/callback', async (req, res) => {
-  const { code, error } = req.query;
+  const { code, error, state } = req.query;
   if (error) {
-    // error kommt aus req.query – escapen, bevor es in HTML landet (reflected XSS).
     return res.status(400).send(`<p>Google-Verbindung abgebrochen: ${escapeHtml(error)}</p>`);
   }
   if (!code) {
     return res.status(400).send('<p>Kein Autorisierungscode erhalten.</p>');
+  }
+  // CSRF-Schutz: state muss mit dem beim Auth-Start gespeicherten Wert übereinstimmen.
+  try {
+    const storedState = await dbGet(`SELECT value FROM settings WHERE key = 'google_oauth_state'`);
+    if (!state || !storedState || state !== storedState.value) {
+      return res.status(403).send('<p>Ungültiger OAuth-State – bitte Verbindung erneut starten.</p>');
+    }
+    await dbRun(`DELETE FROM settings WHERE key = 'google_oauth_state'`);
+  } catch (e) {
+    return res.status(500).send('<p>Fehler bei der State-Prüfung.</p>');
   }
 
   try {
@@ -2323,11 +2352,10 @@ const SITE_PAGES = [
 
 function sendPage(res, name) {
   const file = path.join(ROOT, `${name}.html`);
-  if (!fs.existsSync(file)) {
-    return res.status(404).send('Seite nicht gefunden');
-  }
   res.setHeader('Cache-Control', 'public, max-age=300, must-revalidate');
-  return res.sendFile(file);
+  res.sendFile(file, (err) => {
+    if (err && !res.headersSent) res.status(404).send('Seite nicht gefunden');
+  });
 }
 
 app.get('/robots.txt', (req, res) => {
@@ -2343,7 +2371,7 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'kunsttherapie-cms', lastBackup: backup.getLastBackup() });
+  res.json({ status: 'ok' });
 });
 
 app.get('/', (req, res) => sendPage(res, 'index'));
