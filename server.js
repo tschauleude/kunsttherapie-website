@@ -27,6 +27,16 @@ const PUBLIC_DIR = path.join(ROOT, 'public');
 const DB_PATH = process.env.DATABASE_PATH || path.join(ROOT, 'database.sqlite');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
+// HTML-Sonderzeichen escapen – verhindert reflected XSS in direkten res.send()-Antworten.
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Hostinger / Passenger: echte Client-IP für Rate-Limits und Session-Cookies
 app.set('trust proxy', 1);
 
@@ -859,7 +869,9 @@ app.get('/api/admin/news', requireAuth, (req, res) => {
 
 // Get single news (admin, inkl. Entwürfe)
 app.get('/api/admin/news/:id', requireAuth, (req, res) => {
-  db.get(`SELECT * FROM news WHERE id = ?`, [req.params.id], (err, row) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
+  db.get(`SELECT * FROM news WHERE id = ?`, [id], (err, row) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (!row) return res.status(404).json({ error: 'Not found' });
     res.json(row);
@@ -868,9 +880,11 @@ app.get('/api/admin/news/:id', requireAuth, (req, res) => {
 
 // Get single news
 app.get('/api/news/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   db.get(
     `SELECT * FROM news WHERE id = ?`,
-    [req.params.id],
+    [id],
     (err, row) => {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -909,6 +923,8 @@ app.post('/api/admin/news', requireAuth, (req, res) => {
 
 // Update news (admin)
 app.put('/api/admin/news/:id', requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   const { title, content, image, published } = req.body;
 
   if (!title || !content) {
@@ -917,7 +933,7 @@ app.put('/api/admin/news/:id', requireAuth, (req, res) => {
 
   db.run(
     `UPDATE news SET title = ?, content = ?, image = ?, published = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
-    [title, content, image || null, published ? 1 : 0, req.params.id],
+    [title, content, image || null, published ? 1 : 0, id],
     function onUpdate(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -930,13 +946,15 @@ app.put('/api/admin/news/:id', requireAuth, (req, res) => {
 
 // Toggle published (admin) – quick publish/unpublish without full update
 app.patch('/api/admin/news/:id/published', requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   const { published } = req.body;
   if (typeof published === 'undefined') {
     return res.status(400).json({ error: 'published field required' });
   }
   db.run(
     `UPDATE news SET published = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
-    [published ? 1 : 0, req.params.id],
+    [published ? 1 : 0, id],
     function(err) {
       if (err) return res.status(500).json({ error: 'Database error' });
       if (this.changes === 0) return res.status(404).json({ error: 'Not found' });
@@ -947,9 +965,11 @@ app.patch('/api/admin/news/:id/published', requireAuth, (req, res) => {
 
 // Delete news (admin)
 app.delete('/api/admin/news/:id', requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   db.run(
     `DELETE FROM news WHERE id = ?`,
-    [req.params.id],
+    [id],
     function onDelete(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -979,7 +999,9 @@ app.get('/api/events', (req, res) => {
 
 // Get single event (admin, inkl. Entwürfe)
 app.get('/api/admin/events/:id', requireAuth, (req, res) => {
-  db.get(`SELECT * FROM events WHERE id = ?`, [req.params.id], (err, row) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
+  db.get(`SELECT * FROM events WHERE id = ?`, [id], (err, row) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (!row) return res.status(404).json({ error: 'Not found' });
     res.json(row);
@@ -1025,6 +1047,8 @@ app.post('/api/admin/events', requireAuth, (req, res) => {
 
 // Update event (admin)
 app.put('/api/admin/events/:id', requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   const { title, description, date, time, location, capacity, image, published } = req.body;
 
   if (!title || !description || !date) {
@@ -1033,7 +1057,7 @@ app.put('/api/admin/events/:id', requireAuth, (req, res) => {
 
   db.run(
     `UPDATE events SET title = ?, description = ?, date = ?, time = ?, location = ?, capacity = ?, image = ?, published = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
-    [title, description, date, time || null, location || null, capacity || null, image || null, published ? 1 : 0, req.params.id],
+    [title, description, date, time || null, location || null, capacity || null, image || null, published ? 1 : 0, id],
     function onUpdate(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -1046,9 +1070,11 @@ app.put('/api/admin/events/:id', requireAuth, (req, res) => {
 
 // Delete event (admin)
 app.delete('/api/admin/events/:id', requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   db.run(
     `DELETE FROM events WHERE id = ?`,
-    [req.params.id],
+    [id],
     function onDelete(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -1150,7 +1176,9 @@ app.get('/api/services', (req, res) => {
 
 // Get single service (admin)
 app.get('/api/admin/services/:id', requireAuth, (req, res) => {
-  db.get(`SELECT * FROM services WHERE id = ?`, [req.params.id], (err, row) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
+  db.get(`SELECT * FROM services WHERE id = ?`, [id], (err, row) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (!row) return res.status(404).json({ error: 'Not found' });
     res.json(row);
@@ -1196,6 +1224,8 @@ app.post('/api/admin/services', requireAuth, (req, res) => {
 
 // Update service (admin)
 app.put('/api/admin/services/:id', requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   const { title, description, price, duration, image, active } = req.body;
 
   if (!title || !description) {
@@ -1204,7 +1234,7 @@ app.put('/api/admin/services/:id', requireAuth, (req, res) => {
 
   db.run(
     `UPDATE services SET title = ?, description = ?, price = ?, duration = ?, image = ?, active = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
-    [title, description, price || null, duration || null, image || null, active ? 1 : 0, req.params.id],
+    [title, description, price || null, duration || null, image || null, active ? 1 : 0, id],
     function onUpdate(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -1217,9 +1247,11 @@ app.put('/api/admin/services/:id', requireAuth, (req, res) => {
 
 // Delete service (admin)
 app.delete('/api/admin/services/:id', requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   db.run(
     `DELETE FROM services WHERE id = ?`,
-    [req.params.id],
+    [id],
     function onDelete(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -2128,6 +2160,8 @@ app.post('/api/admin/bookings', requireAuth, async (req, res) => {
 });
 
 app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {
+  const bookingId = parseInt(req.params.id, 10);
+  if (!Number.isFinite(bookingId)) return res.status(400).json({ error: 'Ungültige ID' });
   const { status } = req.body;
   const allowed = ['pending', 'confirmed', 'cancelled'];
   if (!allowed.includes(status)) {
@@ -2135,11 +2169,11 @@ app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {
   }
 
   try {
-    const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [req.params.id]);
+    const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [bookingId]);
     if (!row) return res.status(404).json({ error: 'Nicht gefunden' });
 
-    await dbRun(`UPDATE bookings SET status = ? WHERE id = ?`, [status, req.params.id]);
-    const updated = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [req.params.id]);
+    await dbRun(`UPDATE bookings SET status = ? WHERE id = ?`, [status, bookingId]);
+    const updated = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [bookingId]);
 
     if (status === 'confirmed' && row.status !== 'confirmed') {
       const baseUrl = publicBaseUrl(req);
@@ -2171,15 +2205,17 @@ app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {
 });
 
 app.delete('/api/admin/bookings/:id', requireAuth, async (req, res) => {
+  const bookingId = parseInt(req.params.id, 10);
+  if (!Number.isFinite(bookingId)) return res.status(400).json({ error: 'Ungültige ID' });
   try {
-    const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [req.params.id]);
+    const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [bookingId]);
     if (!row) return res.status(404).json({ error: 'Nicht gefunden' });
 
     if (row.google_event_id) {
       await syncGoogleDelete(row.google_event_id);
     }
 
-    await dbRun(`DELETE FROM bookings WHERE id = ?`, [req.params.id]);
+    await dbRun(`DELETE FROM bookings WHERE id = ?`, [bookingId]);
     res.json({ success: true, message: 'Buchung gelöscht' });
   } catch (e) {
     res.status(500).json({ error: 'Löschen fehlgeschlagen' });
@@ -2212,7 +2248,8 @@ app.get('/api/admin/google/auth', requireAuth, (req, res) => {
 app.get('/api/admin/google/callback', async (req, res) => {
   const { code, error } = req.query;
   if (error) {
-    return res.status(400).send(`<p>Google-Verbindung abgebrochen: ${error}</p>`);
+    // error kommt aus req.query – escapen, bevor es in HTML landet (reflected XSS).
+    return res.status(400).send(`<p>Google-Verbindung abgebrochen: ${escapeHtml(error)}</p>`);
   }
   if (!code) {
     return res.status(400).send('<p>Kein Autorisierungscode erhalten.</p>');
@@ -2230,13 +2267,14 @@ app.get('/api/admin/google/callback', async (req, res) => {
       saveGoogleRefreshToken(refreshToken, (err) => (err ? reject(err) : resolve()));
     });
 
+    // Refresh-Token NICHT im HTML ausgeben – er steht im Browser-Verlauf und wäre
+    // nach einem Logout noch abrufbar. Token wurde bereits in der DB gespeichert.
     res.send(`
       <!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Google Kalender verbunden</title></head>
       <body style="font-family:sans-serif;max-width:640px;margin:40px auto;padding:20px">
-        <h1>Google Kalender verbunden</h1>
+        <h1>Google Kalender verbunden ✓</h1>
         <p>Der Kalender ist jetzt mit der Website verknüpft. Termine aus Google blockieren freie Slots; neue Buchungen erscheinen im Kalender.</p>
-        <p>Optional für Hostinger in der <code>.env</code> sichern:</p>
-        <pre style="background:#f4f4f4;padding:12px;overflow:auto">GOOGLE_REFRESH_TOKEN=${refreshToken}</pre>
+        <p>Der Refresh-Token wurde in der Datenbank gespeichert. Optional: Trage ihn zusätzlich als <code>GOOGLE_REFRESH_TOKEN</code> in die <code>.env</code> ein – das beschleunigt die Verbindung nach einem Neustart. Den Wert findest du im Admin-Panel unter Google-Kalender-Einstellungen.</p>
         <p><a href="/admin">Zurück zum Admin-Panel</a></p>
       </body></html>
     `);
