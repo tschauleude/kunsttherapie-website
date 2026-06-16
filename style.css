@@ -408,6 +408,17 @@ canvas{
   font-style: italic;
 }
 
+.legal-hint{
+  background:rgba(212,165,116,.06);
+  border-left:3px solid var(--primary-light);
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:1rem 1.25rem;
+  margin:1.5rem 0;
+  font-size:.92rem;
+  color:var(--text-light);
+  line-height:1.7;
+}
+
 table.prices{
   width:100%; 
   border-collapse:collapse; 
