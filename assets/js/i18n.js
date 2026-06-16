@@ -63,8 +63,6 @@
   function detectLang() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === 'de' || stored === 'en') return stored;
-    const browser = (navigator.language || '').toLowerCase();
-    if (browser.startsWith('en')) return 'en';
     return DEFAULT_LANG;
   }
 

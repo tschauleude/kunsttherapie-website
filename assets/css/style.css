@@ -293,13 +293,15 @@ header.header-scrolled .header-inner {
 
 .brand-logo {
   display: block;
-  height: clamp(64px, 7.5vw, 88px);
+  height: auto;
+  max-height: clamp(64px, 7.5vw, 88px);
   width: auto;
+  max-width: 100%;
   object-fit: contain;
 }
 
 header.header-scrolled .brand-logo {
-  height: clamp(52px, 6vw, 72px);
+  max-height: clamp(52px, 6vw, 72px);
 }
 
 nav ul {
@@ -4252,11 +4254,11 @@ body.nav-open .nav-backdrop {
   }
 
   .brand-logo {
-    height: clamp(72px, 14vw, 92px);
+    max-height: clamp(72px, 14vw, 92px);
   }
 
   header.header-scrolled .brand-logo {
-    height: clamp(60px, 12vw, 76px);
+    max-height: clamp(60px, 12vw, 76px);
   }
 }
 
