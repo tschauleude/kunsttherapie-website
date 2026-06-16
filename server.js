@@ -2197,7 +2197,8 @@ const SITE_PAGES = [
   'buchung',
   'atelier',
   'impressum',
-  'datenschutz'
+  'datenschutz',
+  'kostenerstattung'
 ];
 
 function sendPage(res, name) {

@@ -66,7 +66,11 @@
   "home.gallery.img3.alt": "Vision Board – Träume und Ziele gestalten",
   "home.gallery.img4.alt": "Pastellarbeit – Gemeinschaft und innere Stärke",
   "home.gallery.img5.alt": "Atelier von außen – Otto-Stadler-Straße in Paderborn",
-  "home.gallery.img6.alt": "Malen mit Pinseln – Kreativität im Sonnenlicht"
+  "home.gallery.img6.alt": "Malen mit Pinseln – Kreativität im Sonnenlicht",
+  "home.costs.kicker": "Kostenerstattung",
+  "home.costs.title": "Heilpraktikerin für Psychotherapie",
+  "home.costs.text": "Martina Schwierzke ist staatlich anerkannte Heilpraktikerin für Psychotherapie. Private Kranken- und Zusatzversicherungen könnten je nach Tarif die Kosten ganz oder teilweise erstatten – eine Erstattung kann nicht garantiert werden.",
+  "home.costs.cta": "Mehr zur Kostenerstattung"
 }, en: {
   "home.hero.kicker": "Art Therapy · Paderborn",
   "home.hero.title": "Art therapy – Tuesday mornings & Thursday evenings",
@@ -133,7 +137,11 @@
   "home.gallery.img3.alt": "Vision board – shaping dreams and goals",
   "home.gallery.img4.alt": "Pastel artwork – community and inner strength",
   "home.gallery.img5.alt": "Atelier exterior – Otto-Stadler-Straße in Paderborn",
-  "home.gallery.img6.alt": "Painting with brushes – creativity in sunlight"
+  "home.gallery.img6.alt": "Painting with brushes – creativity in sunlight",
+  "home.costs.kicker": "Cost Reimbursement",
+  "home.costs.title": "Licensed Naturopath for Psychotherapy",
+  "home.costs.text": "Martina Schwierzke is a state-licensed naturopath for psychotherapy. Depending on your plan, private health or supplementary insurance may reimburse costs in full or in part — reimbursement is not guaranteed.",
+  "home.costs.cta": "About cost reimbursement"
 } };
   Object.assign(window.I18N_MESSAGES.de, extra.de);
   Object.assign(window.I18N_MESSAGES.en, extra.en);
