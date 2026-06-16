@@ -240,7 +240,7 @@ header.header-scrolled {
   flex-wrap: wrap;
   gap: 1.25rem;
   background: var(--bg-surface);
-  padding: 0.9rem 1.85rem;
+  padding: 0.5rem 1.85rem 0.5rem 0.75rem;
   border-radius: var(--radius-pill);
   backdrop-filter: blur(20px) saturate(1.6);
   -webkit-backdrop-filter: blur(20px) saturate(1.6);
@@ -256,7 +256,7 @@ header.header-scrolled {
 }
 
 header.header-scrolled .header-inner {
-  padding: 0.65rem 1.55rem;
+  padding: 0.35rem 1.55rem 0.35rem 0.6rem;
   background: rgba(255, 255, 255, 0.92);
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.1),
@@ -294,14 +294,15 @@ header.header-scrolled .header-inner {
 .brand-logo {
   display: block;
   height: auto;
-  max-height: clamp(100px, 13vw, 150px);
+  max-height: clamp(110px, 14vw, 160px);
   width: auto;
   max-width: 100%;
   object-fit: contain;
+  mix-blend-mode: multiply;
 }
 
 header.header-scrolled .brand-logo {
-  max-height: clamp(80px, 10vw, 120px);
+  max-height: clamp(90px, 11vw, 130px);
 }
 
 nav ul {
@@ -894,9 +895,7 @@ span.price-hint-pill {
 
 /* === CARDS (Glassmorphism + Float) === */
 .card {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px) saturate(1.5);
-  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  background: rgba(255, 255, 255, 0.94);
   padding: clamp(2rem, 4vw, 3rem) clamp(1.75rem, 3vw, 2.5rem);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow);
@@ -925,7 +924,6 @@ span.price-hint-pill {
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .card,
   .header-inner {
     background: rgba(255, 255, 255, 0.97);
   }
@@ -4280,11 +4278,11 @@ body.nav-open .nav-backdrop {
   }
 
   .brand-logo {
-    max-height: clamp(90px, 18vw, 130px);
+    max-height: clamp(100px, 22vw, 140px);
   }
 
   header.header-scrolled .brand-logo {
-    max-height: clamp(72px, 14vw, 105px);
+    max-height: clamp(80px, 18vw, 115px);
   }
 }
 
@@ -4630,6 +4628,6 @@ body.reg-modal-open {
   }
 
   .brand-logo {
-    max-height: 72px;
+    max-height: 90px;
   }
 }
