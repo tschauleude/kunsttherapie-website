@@ -183,6 +183,7 @@ function switchSection(sectionId, navEl) {
   if (sectionId === 'images') loadSiteImagesList();
   if (sectionId === 'texts') initTextsSection();
   if (sectionId === 'contact') loadContactMessages();
+  if (sectionId === 'bugs') loadBugs();
 }
 
 const I18N_PREVIEW = {
@@ -2356,6 +2357,43 @@ async function loadContactMessages() {
     }).join('');
   } catch (err) {
     list.innerHTML = `<p class="note error">Fehler: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+// ============================================================================
+// BUGS FÜR MARIAN
+// ============================================================================
+
+async function loadBugs() {
+  const ta = document.getElementById('bugsTextarea');
+  if (!ta) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/bugs`, { credentials: 'include' });
+    const data = res.ok ? await res.json() : {};
+    ta.value = data.text || '';
+  } catch (err) {
+    showMessage('Fehler beim Laden der Bugs: ' + err.message, 'error');
+  }
+}
+
+async function saveBugs() {
+  const ta = document.getElementById('bugsTextarea');
+  if (!ta) return;
+  try {
+    const res = await fetch(`${API_URL}/admin/bugs`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: ta.value }),
+    });
+    if (res.ok) {
+      showMessage('Gespeichert', 'success');
+    } else {
+      const data = await res.json().catch(() => ({}));
+      showMessage(data.error || 'Fehler beim Speichern', 'error');
+    }
+  } catch (err) {
+    showMessage('Fehler: ' + err.message, 'error');
   }
 }
 
