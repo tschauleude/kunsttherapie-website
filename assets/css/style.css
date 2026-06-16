@@ -409,6 +409,7 @@ nav a.nav-cta[aria-current="page"] {
   background: rgba(85, 122, 118, 0.12);
   color: var(--color-teal-dark);
   padding: 0.5rem 0.85rem;
+  min-height: 2.75rem;
   border-radius: var(--radius-pill);
   font-weight: 600;
   cursor: pointer;
@@ -1261,6 +1262,13 @@ details .inner strong {
 .gallery-item:focus-visible .gallery-item-zoom {
   opacity: 1;
   transform: scale(1);
+}
+
+@media (pointer: coarse) {
+  .gallery-item-zoom {
+    opacity: 0.7;
+    transform: scale(1);
+  }
 }
 
 @media (max-width: 768px) {
@@ -2954,6 +2962,7 @@ nav[data-site-nav] {
   font-size: 0.82rem;
   font-weight: 800;
   min-width: 2.6rem;
+  min-height: 2.75rem;
   padding: 0.42rem 0.65rem;
   border-radius: 999px;
   cursor: pointer;
@@ -4584,12 +4593,14 @@ body.reg-modal-open {
 
   .lang-switch-btn {
     min-width: 1.85rem;
+    min-height: 0;
     padding: 0.25rem 0.38rem;
     font-size: 0.72rem;
   }
 
   .nav-toggle {
     padding: 0.4rem 0.55rem;
+    min-height: 0;
     gap: 0.35rem;
   }
 
