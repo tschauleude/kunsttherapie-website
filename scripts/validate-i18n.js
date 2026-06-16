@@ -75,7 +75,7 @@ for (const [page, list] of Object.entries(bindings)) {
   }
 }
 
-const REDIRECT_ONLY = new Set(['angebote.html']);
+const REDIRECT_ONLY = new Set(['angebote.html', 'styleguide.html']);
 
 const htmlFiles = fs.readdirSync(root).filter((f) => f.endsWith('.html') && f !== 'admin.html');
 const missingI18n = htmlFiles.filter((f) => {
