@@ -2,7 +2,7 @@
   if (!window.I18N_MESSAGES) window.I18N_MESSAGES = { de: {}, en: {} };
   const extra = { de: {
   "meta.prices.title": "Preise – Kunsttherapie Paderborn",
-  "meta.prices.description": "Klare Preise: Gruppensitzung und Auszeit je 39 €, Einzelsitzung 60 €, Teambuilding 49 € pro Teilnehmer – Material i. d. R. inklusive.",
+  "meta.prices.description": "Klare Preise: Gruppensitzung und Auszeit je 39 €, Einzelsitzung 60 €, Teambuilding 49 € pro Teilnehmer – Material inklusive.",
   "prices.kicker": "Preise",
   "prices.title": "Transparent & fair",
   "prices.sub": "Klare Preise – Materialien sind im Standard enthalten. Bei komplexeren Projekten können zusätzliche Materialkosten anfallen. Gruppe, Auszeit und Einzelsitzung dauern jeweils 60 Minuten.",
@@ -11,10 +11,12 @@
   "prices.onRequest": "Teambuilding und Programme für Einrichtungen stelle ich passend zu Anlass und Gruppengröße zusammen – sprich mich gern an. Für alle anderen Angebote gelten die genannten Festpreise.",
   "prices.unit": "Preise verstehen sich pro Person und Sitzung; beim Teambuilding pro Teilnehmer.",
   "prices.note": "Fragen zu Preisen oder Rabatten? Schreib mir gern – jede Situation ist individuell.",
-  "prices.ask": "Preis anfragen"
+  "prices.ask": "Preis anfragen",
+  "prices.costs.hint": "Je nach Versicherungstarif könnten private Kranken- oder Zusatzversicherungen die Kosten ganz oder teilweise übernehmen.",
+  "prices.costs.cta": "Infos zur Kostenerstattung"
 }, en: {
   "meta.prices.title": "Prices – Art Therapy Paderborn",
-  "meta.prices.description": "Clear prices: group session and creative evening €39 each, one-to-one €60, team building €49 per participant – materials usually included.",
+  "meta.prices.description": "Clear prices: group session and creative evening €39 each, one-to-one €60, team building €49 per participant – materials included.",
   "prices.kicker": "Prices",
   "prices.title": "Transparent & fair",
   "prices.sub": "Clear prices – materials are included as standard. For more complex projects, additional material costs may apply. Group, downtime, and one-to-one sessions each last 60 minutes.",
@@ -23,7 +25,9 @@
   "prices.onRequest": "Team building and programmes for institutions are tailored to the occasion and group size – just get in touch. The listed fixed prices apply to all other offerings.",
   "prices.unit": "Prices are per person and session; for team building, per participant.",
   "prices.note": "Questions about prices or concessions? Write to me directly – every situation is individual.",
-  "prices.ask": "Ask about pricing"
+  "prices.ask": "Ask about pricing",
+  "prices.costs.hint": "Depending on your insurance plan, private health or supplementary insurance may cover the costs in full or in part.",
+  "prices.costs.cta": "About cost reimbursement"
 } };
   Object.assign(window.I18N_MESSAGES.de, extra.de);
   Object.assign(window.I18N_MESSAGES.en, extra.en);
