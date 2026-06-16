@@ -15,9 +15,32 @@ function stripHtml(html) {
   return tmp.textContent || '';
 }
 
+function sanitizeHtml(html) {
+  try {
+    const doc = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html');
+    doc.querySelectorAll('script,style,iframe,object,embed,form,base').forEach((el) => el.remove());
+    doc.querySelectorAll('*').forEach((el) => {
+      Array.from(el.attributes).forEach((attr) => {
+        if (
+          attr.name.startsWith('on') ||
+          (/^(href|src|action)$/i.test(attr.name) && /^\s*javascript:/i.test(attr.value))
+        ) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
+    return doc.body.innerHTML;
+  } catch (e) {
+    return escapeHtml(html);
+  }
+}
+
 function renderContentHtml(content) {
   if (!content) return '';
-  if (/<[a-zA-Z]/.test(content)) return content;
+  // Quill wraps output in block-level tags — detect real rich-text HTML vs. plain text with "<"
+  if (/^<(p|ul|ol|h[1-6]|blockquote|div)[\s>]/i.test(content.trim())) {
+    return sanitizeHtml(content);
+  }
   return content.split(/\n+/).filter(Boolean).map(p => `<p>${escapeHtml(p)}</p>`).join('');
 }
 
@@ -68,9 +91,7 @@ function renderNewsPopupBlock(item, isFirst) {
     ? `<img src="${escapeHtml(item.image)}" alt="" class="news-popup-image"/>`
     : '';
   const raw = item.content || '';
-  const contentHtml = /<[a-zA-Z]/.test(raw)
-    ? raw
-    : raw.split(/\n+/).filter(Boolean).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+  const contentHtml = renderContentHtml(raw);
 
   return `
     <article class="news-popup-item${isFirst ? '' : ' news-popup-item-more'}">

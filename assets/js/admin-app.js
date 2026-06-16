@@ -165,8 +165,7 @@ function switchSection(sectionId, navEl) {
   document.getElementById(sectionId).classList.add('active');
 
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const activeNav = navEl || (typeof event !== 'undefined' ? event.target : null);
-  if (activeNav) activeNav.classList.add('active');
+  if (navEl instanceof Element) navEl.classList.add('active');
 
   if (window.matchMedia('(max-width: 768px)').matches) {
     collapseAdminNav();
@@ -266,7 +265,7 @@ async function loadI18nGroup() {
     container.innerHTML = data.fields
       .map((field) => {
         const rows = i18nFieldRows(field);
-        const hint = field.hint ? `<p class="note">${field.hint}</p>` : '';
+        const hint = field.hint ? `<p class="note">${escapeHtml(field.hint)}</p>` : '';
         const badge = field.isOverride
           ? '<span class="i18n-override-badge">Geändert</span>'
           : '';
@@ -370,7 +369,9 @@ async function compressImageFile(file, maxPx = 1600, quality = 0.82) {
       const canvas = document.createElement('canvas');
       canvas.width = Math.round(width * scale);
       canvas.height = Math.round(height * scale);
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      const ctx = canvas.getContext('2d');
+      if (!ctx) { resolve(file); return; }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       canvas.toBlob(
         (blob) => resolve(blob ? new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg', lastModified: Date.now() }) : file),
         'image/jpeg', quality

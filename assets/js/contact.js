@@ -21,6 +21,7 @@
       phone: form.phone.value.trim(),
       message: form.message.value.trim(),
       website: document.getElementById('contactWebsite')?.value || '',
+      _formAt: Date.now(),
       lang: window.ktI18n?.getLang?.() || 'de',
     };
 
