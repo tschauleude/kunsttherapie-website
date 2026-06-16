@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Styleguide – Kunsttherapie Paderborn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:       #d4a574;
+      --primary-light: #e8c9a8;
+      --accent:        #5b8fc4;
+      --accent-light:  #8cb4d9;
+      --green:         #7fb069;
+      --logo-dark:     #2c463c;
+      --logo-mid:      #5c7468;
+      --logo-light:    #7e9a86;
+      --text:          #2c2c2c;
+      --text-light:    #666666;
+      --bg:            #faf9f5;
+      --card:          #ffffff;
+      --radius:        12px;
+      --max:           900px;
+    }
+
+    body {
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Cover ─────────────────────────────────────── */
+    .cover {
+      background: var(--logo-dark);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      gap: 2.5rem;
+    }
+    .cover-logo svg { filter: drop-shadow(0 4px 24px rgba(0,0,0,0.3)); }
+    .cover-logo svg text { fill: #fff !important; }
+    .cover-logo svg line { stroke: rgba(255,255,255,0.25) !important; }
+    .cover h1 {
+      font-family: 'Lora', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+    .cover p {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.65);
+      max-width: 42ch;
+    }
+    .cover-meta {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .cover-meta div {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .cover-meta strong {
+      display: block;
+      color: rgba(255,255,255,0.85);
+      font-size: 1rem;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    /* ── Page layout ───────────────────────────────── */
+    .page { max-width: var(--max); margin: 0 auto; padding: 5rem 2rem; }
+    .section { margin-bottom: 5rem; }
+
+    /* ── Chapter heading ───────────────────────────── */
+    .chapter {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+    .chapter-num {
+      width: 2.4rem; height: 2.4rem;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .chapter h2 {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--logo-dark);
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 0.5rem;
+      flex: 1;
+    }
+
+    /* ── Cards & grids ─────────────────────────────── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 16px rgba(44,70,60,0.06);
+      padding: 2rem;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    @media(max-width: 640px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* ── Logo section ──────────────────────────────── */
+    .logo-showcase {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .logo-variant {
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-variant.light  { background: #fff; border: 1px solid #e8e4dd; }
+    .logo-variant.cream  { background: var(--bg); border: 1px solid #e8e4dd; }
+    .logo-variant.dark   { background: var(--logo-dark); }
+    .logo-variant.dark svg text { fill: #fff !important; }
+    .logo-variant.dark svg line { stroke: rgba(255,255,255,0.2) !important; }
+    .logo-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-light);
+      margin-top: 0.6rem;
+      text-align: center;
+    }
+    .logo-box { display: flex; flex-direction: column; }
+
+    /* ── Color palette ─────────────────────────────── */
+    .swatch-row { display: flex; flex-direction: column; gap: 0.75rem; }
+    .swatch {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      background: var(--card);
+      border-radius: 10px;
+      padding: 1rem 1.4rem;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    }
+    .swatch-dot {
+      width: 3rem; height: 3rem;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .swatch-info { flex: 1; }
+    .swatch-name { font-weight: 600; font-size: 0.95rem; }
+    .swatch-hex  { font-size: 0.82rem; color: var(--text-light); font-family: 'Courier New', monospace; }
+    .swatch-use  { font-size: 0.8rem; color: var(--text-light); margin-top: 0.15rem; }
+
+    /* ── Typography ─────────────────────────────────── */
+    .type-sample { margin-bottom: 1.5rem; }
+    .type-sample h1 { font-family: 'Lora', Georgia, serif; font-size: 2.5rem; font-weight: 400; color: var(--logo-dark); }
+    .type-sample h2 { font-family: 'Lora', Georgia, serif; font-size: 1.8rem; font-weight: 600; color: var(--logo-dark); }
+    .type-sample h3 { font-family: 'Lora', Georgia, serif; font-size: 1.3rem; font-weight: 400; font-style: italic; color: var(--logo-mid); }
+    .type-meta { font-size: 0.75rem; color: var(--text-light); margin-top: 0.3rem; font-family: monospace; }
+
+    .font-specimen {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 2px 16px rgba(44,70,60,0.06);
+    }
+    .specimen-name {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+    .dm-specimen {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+    .lora-specimen {
+      font-family: 'Lora', serif;
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: var(--logo-dark);
+    }
+    .weight-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .weight-item { font-size: 0.9rem; }
+    .weight-item span { display: block; font-size: 1.4rem; line-height: 1.2; margin-bottom: 0.2rem; }
+
+    /* ── Buttons ────────────────────────────────────── */
+    .btn-showcase { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.75rem 1.6rem;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary   { background: var(--primary); color: #fff; }
+    .btn-accent    { background: var(--accent);  color: #fff; }
+    .btn-outline   { background: transparent; border-color: var(--primary); color: var(--primary); }
+    .btn-dark      { background: var(--logo-dark); color: #fff; }
+
+    /* ── UI Components ──────────────────────────────── */
+    .ui-row { display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--logo-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid #e0dbd2;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(212,165,116,0.15);
+    }
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 0.3rem 0.9rem;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .badge-gold  { background: rgba(212,165,116,0.15); color: #a37840; }
+    .badge-blue  { background: rgba(91,143,196,0.12); color: #3a6a99; }
+    .badge-green { background: rgba(127,176,105,0.15); color: #4a8030; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+
+    /* ── Divider ────────────────────────────────────── */
+    .divider {
+      border: none;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
+      margin: 3rem 0;
+    }
+
+    /* ── Spacing scale ──────────────────────────────── */
+    .spacing-row { display: flex; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; }
+    .spacing-item { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+    .spacing-block { background: var(--primary-light); border-radius: 4px; }
+    .spacing-label { font-size: 0.72rem; color: var(--text-light); font-family: monospace; }
+
+    /* ── Radius ─────────────────────────────────────── */
+    .radius-row { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-end; }
+    .radius-item {
+      width: 80px; height: 56px;
+      background: var(--primary-light);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .radius-label { font-size: 0.72rem; color: var(--text-light); font-family: monospace; text-align: center; }
+
+    /* ── Deliverables ───────────────────────────────── */
+    .checklist { display: flex; flex-direction: column; gap: 0.7rem; }
+    .check-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 0.9rem 1.2rem;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    }
+    .check-icon {
+      width: 1.4rem; height: 1.4rem;
+      background: var(--green);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .check-item strong { display: block; font-size: 0.95rem; margin-bottom: 0.1rem; }
+    .check-item p { font-size: 0.85rem; color: var(--text-light); line-height: 1.5; }
+
+    /* ── Value box ──────────────────────────────────── */
+    .value-box {
+      background: var(--logo-dark);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      text-align: center;
+    }
+    .value-box h3 {
+      font-family: 'Lora', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      color: var(--primary-light);
+    }
+    .value-price {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+      margin: 0.75rem 0;
+    }
+    .value-price span { font-size: 1.1rem; font-weight: 400; color: rgba(255,255,255,0.5); }
+    .value-note { font-size: 0.85rem; color: rgba(255,255,255,0.55); max-width: 44ch; margin: 0 auto; line-height: 1.6; }
+    .value-items {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .value-item {
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.75);
+    }
+    .value-item strong { display: block; color: #fff; font-size: 1rem; }
+
+    /* ── Footer ─────────────────────────────────────── */
+    .sg-footer {
+      text-align: center;
+      padding: 3rem 2rem 5rem;
+      color: var(--text-light);
+      font-size: 0.85rem;
+    }
+    .sg-footer strong { color: var(--logo-dark); }
+
+    /* ── Print ──────────────────────────────────────── */
+    @media print {
+      .cover { min-height: auto; page-break-after: always; }
+      .section { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ COVER ══════════ -->
+<section class="cover">
+  <div class="cover-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 96" width="380" height="76" aria-label="Kunsttherapie Paderborn Logo">
+      <g style="isolation:isolate">
+        <circle cx="52" cy="37" r="23" fill="#7e9a86" style="mix-blend-mode:multiply"/>
+        <circle cx="77" cy="33" r="21" fill="#a8c3a0" style="mix-blend-mode:multiply"/>
+        <circle cx="63" cy="57" r="23" fill="#51695a" style="mix-blend-mode:multiply"/>
+      </g>
+      <text x="112" y="41" font-family="'DM Sans', system-ui, sans-serif" font-size="36" font-weight="600" fill="#ffffff">Kunsttherapie</text>
+      <text x="114" y="58" font-family="'DM Sans', system-ui, sans-serif" font-size="11.5" letter-spacing="4.5" font-weight="600" fill="rgba(255,255,255,0.65)">PADERBORN</text>
+      <line x1="114" y1="66" x2="468" y2="66" stroke="rgba(255,255,255,0.2)" stroke-width="0.75"/>
+      <text x="114" y="80" font-family="'DM Sans', system-ui, sans-serif" font-size="9" letter-spacing="1.8" font-weight="500" fill="rgba(255,255,255,0.5)">GRUPPENTHERAPIE · WORKSHOPS · TEAMBUILDING</text>
+    </svg>
+  </div>
+
+  <div>
+    <h1>Brand &amp; Design<br>Styleguide</h1>
+    <p>Alle visuellen Grundlagen Ihrer Website – Farben, Typografie, Logo und Komponenten.</p>
+  </div>
+
+  <div class="cover-meta">
+    <div>Projekt<strong>Kunsttherapie Paderborn</strong></div>
+    <div>Inhaberin<strong>Martina Schwierzke</strong></div>
+    <div>Erstellt<strong>Juni 2026</strong></div>
+    <div>Version<strong>1.0</strong></div>
+  </div>
+</section>
+
+<!-- ══════════ MAIN ══════════ -->
+<main class="page">
+
+  <!-- 01 LOGO -->
+  <section class="section">
+    <div class="chapter">
+      <div class="chapter-num">01</div>
+      <h2>Logo</h2>
+    </div>
+
+    <div class="logo-showcase">
+      <div class="grid-2">
+        <div class="logo-box">
+          <div class="logo-variant light">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 96" width="360" height="72">
+              <g style="isolation:isolate">
+                <circle cx="52" cy="37" r="23" fill="#7e9a86" style="mix-blend-mode:multiply"/>
+                <circle cx="77" cy="33" r="21" fill="#a8c3a0" style="mix-blend-mode:multiply"/>
+                <circle cx="63" cy="57" r="23" fill="#51695a" style="mix-blend-mode:multiply"/>
+              </g>
+              <text x="112" y="41" font-family="'DM Sans', system-ui, sans-serif" font-size="36" font-weight="600" fill="#2c463c">Kunsttherapie</text>
+              <text x="114" y="58" font-family="'DM Sans', system-ui, sans-serif" font-size="11.5" letter-spacing="4.5" font-weight="600" fill="#5c7468">PADERBORN</text>
+              <line x1="114" y1="66" x2="468" y2="66" stroke="#c5d0c7" stroke-width="0.75"/>
+              <text x="114" y="80" font-family="'DM Sans', system-ui, sans-serif" font-size="9" letter-spacing="1.8" font-weight="500" fill="#7e9886">GRUPPENTHERAPIE · WORKSHOPS · TEAMBUILDING</text>
+            </svg>
+          </div>
+          <div class="logo-label">Auf Weiß</div>
+        </div>
+
+        <div class="logo-box">
+          <div class="logo-variant cream">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 96" width="360" height="72">
+              <g style="isolation:isolate">
+                <circle cx="52" cy="37" r="23" fill="#7e9a86" style="mix-blend-mode:multiply"/>
+                <circle cx="77" cy="33" r="21" fill="#a8c3a0" style="mix-blend-mode:multiply"/>
+                <circle cx="63" cy="57" r="23" fill="#51695a" style="mix-blend-mode:multiply"/>
+              </g>
+              <text x="112" y="41" font-family="'DM Sans', system-ui, sans-serif" font-size="36" font-weight="600" fill="#2c463c">Kunsttherapie</text>
+              <text x="114" y="58" font-family="'DM Sans', system-ui, sans-serif" font-size="11.5" letter-spacing="4.5" font-weight="600" fill="#5c7468">PADERBORN</text>
+              <line x1="114" y1="66" x2="468" y2="66" stroke="#c5d0c7" stroke-width="0.75"/>
+              <text x="114" y="80" font-family="'DM Sans', system-ui, sans-serif" font-size="9" letter-spacing="1.8" font-weight="500" fill="#7e9886">GRUPPENTHERAPIE · WORKSHOPS · TEAMBUILDING</text>
+            </svg>
+          </div>
+          <div class="logo-label">Auf Creme (Website-Hintergrund)</div>
+        </div>
+      </div>
+
+      <div class="logo-box">
+        <div class="logo-variant dark">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 96" width="380" height="76">
+            <g style="isolation:isolate">
+              <circle cx="52" cy="37" r="23" fill="#7e9a86" style="mix-blend-mode:multiply"/>
+              <circle cx="77" cy="33" r="21" fill="#a8c3a0" style="mix-blend-mode:multiply"/>
+              <circle cx="63" cy="57" r="23" fill="#51695a" style="mix-blend-mode:multiply"/>
+            </g>
+            <text x="112" y="41" font-family="'DM Sans', system-ui, sans-serif" font-size="36" font-weight="600" fill="#ffffff">Kunsttherapie</text>
+            <text x="114" y="58" font-family="'DM Sans', system-ui, sans-serif" font-size="11.5" letter-spacing="4.5" font-weight="600" fill="rgba(255,255,255,0.6)">PADERBORN</text>
+            <line x1="114" y1="66" x2="468" y2="66" stroke="rgba(255,255,255,0.2)" stroke-width="0.75"/>
+            <text x="114" y="80" font-family="'DM Sans', system-ui, sans-serif" font-size="9" letter-spacing="1.8" font-weight="500" fill="rgba(255,255,255,0.45)">GRUPPENTHERAPIE · WORKSHOPS · TEAMBUILDING</text>
+          </svg>
+        </div>
+        <div class="logo-label">Auf Dunkelgrün (Kontrastversion)</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1.5rem;">
+      <p style="font-size:0.9rem;color:var(--text-light);"><strong style="color:var(--text);">Schutzzone:</strong> Rund ums Logo immer mindestens so viel Abstand wie die Höhe des Kreis-Icons. Das Logo niemals strecken, drehen oder mit anderem Grafikelement überlagern. Datei: <code style="background:#f0ede6;padding:0.1em 0.4em;border-radius:4px;font-size:0.85em;">assets/img/logo.svg</code></p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 02 FARBEN -->
+  <section class="section">
+    <div class="chapter">
+      <div class="chapter-num">02</div>
+      <h2>Farbpalette</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="swatch-row">
+        <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-light);margin-bottom:0.3rem;">Primärfarben</p>
+
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#2c463c;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Logo Dunkelgrün</div>
+            <div class="swatch-hex">#2c463c</div>
+            <div class="swatch-use">Hauptüberschriften, dunkle Hintergründe, Logo-Text</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#5c7468;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Logo Mittelgrün</div>
+            <div class="swatch-hex">#5c7468</div>
+            <div class="swatch-use">Subheadings, Beschriftungen, Formular-Labels</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#7e9a86;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Logo Hellgrün</div>
+            <div class="swatch-hex">#7e9a86</div>
+            <div class="swatch-use">Taglines, sekundäre Texte, Trennlinien</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#d4a574;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Warm Gold (Primary)</div>
+            <div class="swatch-hex">#d4a574</div>
+            <div class="swatch-use">CTA-Buttons, Akzente, Nummerierungen</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swatch-row">
+        <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-light);margin-bottom:0.3rem;">Ergänzungsfarben</p>
+
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#e8c9a8;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Gold Hell</div>
+            <div class="swatch-hex">#e8c9a8</div>
+            <div class="swatch-use">Hintergründe, Hover-States, Trennlinien</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#5b8fc4;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Blau (Accent)</div>
+            <div class="swatch-hex">#5b8fc4</div>
+            <div class="swatch-use">Links, interaktive Elemente, Info-Badges</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#7fb069;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Grün (Accent)</div>
+            <div class="swatch-hex">#7fb069</div>
+            <div class="swatch-use">Erfolgs-Badges, Checkmarks, positive Statuse</div>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-dot" style="background:#faf9f5; border: 1px solid #e8e4dd;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Creme (Hintergrund)</div>
+            <div class="swatch-hex">#faf9f5</div>
+            <div class="swatch-use">Seitenhintergrund, warme Papier-Anmutung</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 03 TYPOGRAFIE -->
+  <section class="section">
+    <div class="chapter">
+      <div class="chapter-num">03</div>
+      <h2>Typografie</h2>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:2rem;">
+      <div class="font-specimen">
+        <div class="specimen-name">Schrift 1 — Fließtext &amp; UI</div>
+        <div class="dm-specimen" style="font-size:2rem;font-weight:600;margin-bottom:0.3rem;">DM Sans</div>
+        <div class="dm-specimen">Aa Bb Cc Dd Ee Ff Gg<br>0 1 2 3 4 5 6 7 8 9</div>
+        <div class="weight-row">
+          <div class="weight-item" style="font-family:'DM Sans';">
+            <span style="font-weight:400;">Regular</span>400 – Fließtext
+          </div>
+          <div class="weight-item" style="font-family:'DM Sans';">
+            <span style="font-weight:500;">Medium</span>500 – Labels
+          </div>
+          <div class="weight-item" style="font-family:'DM Sans';">
+            <span style="font-weight:600;">Semibold</span>600 – UI-Text
+          </div>
+          <div class="weight-item" style="font-family:'DM Sans';">
+            <span style="font-weight:700;">Bold</span>700 – Emphasis
+          </div>
+        </div>
+      </div>
+
+      <div class="font-specimen">
+        <div class="specimen-name">Schrift 2 — Überschriften</div>
+        <div class="lora-specimen" style="font-size:2rem;font-weight:600;margin-bottom:0.3rem;">Lora</div>
+        <div class="lora-specimen">Aa Bb Cc Dd Ee Ff Gg<br>0 1 2 3 4 5 6 7 8 9</div>
+        <div class="weight-row">
+          <div class="weight-item" style="font-family:'Lora';">
+            <span style="font-weight:400;">Regular</span>400 – H1, H2
+          </div>
+          <div class="weight-item" style="font-family:'Lora';">
+            <span style="font-weight:400;font-style:italic;">Italic</span>400i – Zitate
+          </div>
+          <div class="weight-item" style="font-family:'Lora';">
+            <span style="font-weight:600;">Semibold</span>600 – H3
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="type-sample">
+        <h1>Heilung durch Farbe und Form</h1>
+        <div class="type-meta">Lora Regular 400 · H1 · ~2.5rem</div>
+      </div>
+      <div class="type-sample">
+        <h2>Unsere Angebote im Atelier</h2>
+        <div class="type-meta">Lora Semibold 600 · H2 · ~1.8rem</div>
+      </div>
+      <div class="type-sample">
+        <h3><em>»Kreativität ist der Weg nach innen«</em></h3>
+        <div class="type-meta">Lora Italic 400 · H3 / Zitat · ~1.3rem</div>
+      </div>
+      <div class="type-sample" style="margin-bottom:0;">
+        <p style="font-family:'DM Sans';font-size:1rem;line-height:1.75;color:var(--text);">Kunsttherapie verbindet psychologisches Fachwissen mit künstlerischem Ausdruck. In einem sicheren Raum können Sie Gefühle, Gedanken und Erlebnisse über Materialien und Farben ausdrücken, die sich in Worte oft nicht fassen lassen.</p>
+        <div class="type-meta" style="margin-top:0.4rem;">DM Sans Regular 400 · Fließtext · 1rem / 1.75</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 04 KOMPONENTEN -->
+  <section class="section">
+    <div class="chapter">
+      <div class="chapter-num">04</div>
+      <h2>Buttons &amp; Badges</h2>
+    </div>
+
+    <div class="card" style="margin-bottom:1.5rem;">
+      <p style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-light);margin-bottom:1rem;">Buttons</p>
+      <div class="btn-showcase">
+        <a class="btn btn-primary">Jetzt buchen</a>
+        <a class="btn btn-accent">Mehr erfahren</a>
+        <a class="btn btn-outline">Kontakt aufnehmen</a>
+        <a class="btn btn-dark">Zur Übersicht</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-light);margin-bottom:1rem;">Badges &amp; Tags</p>
+      <div class="tag-row">
+        <span class="badge badge-gold">Gruppentherapie</span>
+        <span class="badge badge-blue">Workshop</span>
+        <span class="badge badge-green">Teambuilding</span>
+        <span class="badge badge-gold">Ab Juli 2026</span>
+        <span class="badge badge-blue">Paderborn</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 05 FORMULAR -->
+  <section class="section">
+    <div class="chapter">
+      <div class="chapter-num">05</div>
+      <h2>Formulare</h2>
+    </div>
+
+    <div class="card">
+      <div class="grid-2">
+        <div class="ui-row">
+          <div class="form-group">
+            <label>Ihr Name</label>
+            <input type="text" placeholder="Martina Mustermann">
+          </div>
+          <div class="form-group">
+            <label>E-Mail-Adresse</label>
+            <input type="email" placeholder="martina@beispiel.de">
+          </div>
+        </div>
+        <div class="form-group" style="height:100%;">
+          <label>Nachricht</label>
+          <textarea rows="4" placeholder="Ihre Nachricht an uns …" style="height:calc(100% - 1.8rem);resize:none;"></textarea>
+        </div>
+      </div>
+      <div style="margin-top:1.2rem;">
+        <a class="btn btn-primary">Nachricht senden</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 06 ABSTÄNDE -->
+  <section class="section">
+    <div class="chapter">
+      <div class="chapter-num">06</div>
+      <h2>Abstände &amp; Rundungen</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <p style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-light);margin-bottom:1.5rem;">Spacing-Skala</p>
+        <div class="spacing-row">
+          <div class="spacing-item">
+            <div class="spacing-block" style="width:8px;height:8px;"></div>
+            <div class="spacing-label">4px</div>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-block" style="width:8px;height:16px;"></div>
+            <div class="spacing-label">8px</div>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-block" style="width:8px;height:24px;"></div>
+            <div class="spacing-label">12px</div>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-block" style="width:8px;height:32px;"></div>
+            <div class="spacing-label">16px</div>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-block" style="width:8px;height:48px;"></div>
+            <div class="spacing-label">24px</div>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-block" style="width:8px;height:64px;"></div>
+            <div class="spacing-label">32px</div>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-block" style="width:8px;height:96px;"></div>
+            <div class="spacing-label">48px</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-light);margin-bottom:1.5rem;">Border Radius</p>
+        <div class="radius-row">
+          <div>
+            <div class="radius-item" style="border-radius:4px;"></div>
+            <div class="radius-label">4px<br>Inputs</div>
+          </div>
+          <div>
+            <div class="radius-item" style="border-radius:8px;"></div>
+            <div class="radius-label">8px<br>Badges</div>
+          </div>
+          <div>
+            <div class="radius-item" style="border-radius:12px;"></div>
+            <div class="radius-label">12px<br>Cards</div>
+          </div>
+          <div>
+            <div class="radius-item" style="border-radius:50px;"></div>
+            <div class="radius-label">50px<br>Buttons</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 07 ARBEITSSCHRITTE -->
+  <section class="section">
+    <div class="chapter">
+      <div class="chapter-num">07</div>
+      <h2>Erledigte Arbeitsschritte</h2>
+    </div>
+
+    <div class="checklist">
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>Konzeption &amp; Informationsarchitektur</strong>
+          <p>Strukturierung aller Seiten und Inhalte: Startseite, Über mich, Angebote, Preise, Buchung, Atelier, Neuigkeiten, Events, Kontakt, Kostenerstattung, Datenschutz &amp; Impressum — 15 Seiten gesamt.</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>Logo-Design &amp; Corporate Identity</strong>
+          <p>Entwicklung des Logos mit drei überlappenden Kreisen (organisch, therapeutisch), Farbwahl, Schriftauswahl und Subtext-System. Ausgabe als SVG (skalierbar) und Favicon-Set (16×16, 32×32, 48×48, Apple Touch Icon).</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>Design System &amp; CSS-Variablen</strong>
+          <p>Vollständiges Design-Token-System: Farbpalette, Typografie-Skala, Abstände, Rundungen. Konsistent via CSS-Custom-Properties in der gesamten Website umgesetzt.</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>Responsive Frontend (HTML/CSS/JS)</strong>
+          <p>15 vollständig responsive HTML-Seiten ohne Framework — schlanker, schneller Code. Mobile-First-Ansatz mit einheitlichem Header &amp; Footer über Partials eingebunden.</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>Online-Buchungssystem</strong>
+          <p>Vollständiges Buchungsmodul mit Zeitslot-Verwaltung, Buchungsbestätigung und Datenbankanbindung (SQLite). Integrierbar mit Google Calendar.</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>Admin-Panel (CMS)</strong>
+          <p>Passwortgeschütztes Admin-Dashboard zum eigenständigen Pflegen von Neuigkeiten, Events, Preisen und Seitentexten — ohne Programmierkenntnisse. Inklusive Bildupload und Rich-Text-Editor.</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>Mehrsprachigkeit (DE / EN)</strong>
+          <p>Vollständiges i18n-System mit 37 JS-Modulen — die gesamte Website ist auf Deutsch und Englisch verfügbar. Texte über JSON-Datei pflegbar.</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>E-Mail-Integration</strong>
+          <p>Automatische E-Mail-Benachrichtigungen bei Buchungsanfragen und Kontaktformular-Eingaben via Nodemailer (SMTP). Konfigurierbar über Admin-Panel.</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>SEO &amp; technische Optimierung</strong>
+          <p>Strukturierte Daten (JSON-LD Schema.org), Open Graph Tags, optimierte Meta-Tags, Bildkomprimierung (WebP + JPG), Lazy Loading, Komprimierung — technisch sauber für gute Google-Platzierung.</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>Sicherheit &amp; Rechtliches</strong>
+          <p>Helmet.js-Security-Headers, CORS, Rate-Limiting, DSGVO-konforme Datenschutzerklärung und Impressum. Passwort-Hashing mit bcrypt.</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>Barrierefreiheit (Accessibility)</strong>
+          <p>Skip-Links, ARIA-Labels, semantisches HTML, Tastaturnavigation — Grundlage für WCAG 2.1-Konformität.</p>
+        </div>
+      </div>
+
+      <div class="check-item">
+        <div class="check-icon">✓</div>
+        <div>
+          <strong>Galerie &amp; Lightbox</strong>
+          <p>Interaktive Bildgalerie mit Lightbox, Responsive-Breakpoints und Lazy Loading für optimale Performance auch auf mobilen Geräten.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 08 WERT -->
+  <section class="section">
+    <div class="chapter">
+      <div class="chapter-num">08</div>
+      <h2>Marktwert dieses Projekts</h2>
+    </div>
+
+    <div class="value-box">
+      <h3>Was dieses Setup am Markt wert ist</h3>
+      <div class="value-price">4.800 – 9.500 € <span>netto</span></div>
+      <div class="value-items">
+        <div class="value-item"><strong>800 – 1.500 €</strong>Logo &amp; CI-Entwicklung</div>
+        <div class="value-item"><strong>1.200 – 2.500 €</strong>15 responsive Seiten</div>
+        <div class="value-item"><strong>1.500 – 2.800 €</strong>Buchungssystem + CMS</div>
+        <div class="value-item"><strong>400 – 900 €</strong>Mehrsprachigkeit (DE/EN)</div>
+        <div class="value-item"><strong>400 – 800 €</strong>SEO-Optimierung</div>
+        <div class="value-item"><strong>500 – 1.000 €</strong>E-Mail &amp; Sicherheit</div>
+      </div>
+      <p class="value-note">Vergleichbare Projekte einer Berliner oder Hamburger Webdesign-Agentur liegen oft bei 8.000–15.000 €. Freelancer mit 5+ Jahren Erfahrung berechnen typischerweise 70–120 €/Std. — das entspricht 70–130 Stunden Arbeit für dieses Setup.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 09 DATEIEN -->
+  <section class="section">
+    <div class="chapter">
+      <div class="chapter-num">09</div>
+      <h2>Übergabe-Dateien</h2>
+    </div>
+
+    <div class="grid-3">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🎨</div>
+        <strong>Logo (SVG)</strong>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.4rem;"><code>assets/img/logo.svg</code><br>Vektorgrafik, beliebig skalierbar, für Druck &amp; Web</p>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🖼️</div>
+        <strong>Favicon-Set</strong>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.4rem;"><code>assets/img/favicon.svg</code><br>+ .ico, 16px, 32px, Apple Touch</p>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">📐</div>
+        <strong>Styleguide (diese Datei)</strong>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.4rem;"><code>styleguide.html</code><br>Alle Farben, Fonts &amp; Regeln zum Nachschlagen</p>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🌐</div>
+        <strong>Website (15 Seiten)</strong>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.4rem;">Alle HTML-Dateien im Root-Verzeichnis, produktionsbereit</p>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">⚙️</div>
+        <strong>Backend (Node.js)</strong>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.4rem;"><code>lib/</code> + <code>package.json</code><br>Buchung, E-Mail, Datenbank, Admin</p>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🔤</div>
+        <strong>Schriften</strong>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.4rem;"><code>assets/fonts/</code><br>DM Sans, woff2-Format, selbst gehostet</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="sg-footer">
+  <p>Erstellt für <strong>Martina Schwierzke · Kunsttherapie Paderborn</strong> · Juni 2026</p>
+  <p style="margin-top:0.3rem;">Dieser Styleguide ist vertraulich und für den internen Gebrauch bestimmt.</p>
+</footer>
+
+</body>
+</html>
