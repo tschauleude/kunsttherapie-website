@@ -68,11 +68,35 @@ if (CANONICAL_URL && IS_PRODUCTION) {
   });
 }
 
+// data/-Verzeichnis sicherstellen – wird für DB-Pfad, Backups und das
+// persistierte App-Secret benötigt (auch wenn SESSION_SECRET in .env gesetzt ist).
+fs.mkdirSync(path.join(ROOT, 'data'), { recursive: true });
+// DB-Elternverzeichnis anlegen falls DATABASE_PATH auf eigenen Pfad zeigt.
+fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+
 // Ensure upload directory exists (Hostinger redeploy may wipe empty dirs)
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(PUBLIC_DIR, 'uploads');
 const ATELIER_DIR = path.join(UPLOAD_DIR, 'atelier');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 fs.mkdirSync(ATELIER_DIR, { recursive: true });
+
+// .env-Validierung: sinnvolle Warnmeldungen beim Start statt lautlosem Fehlverhalten
+(function validateEnv() {
+  const warn = [];
+  if (!process.env.SESSION_SECRET)
+    warn.push('SESSION_SECRET fehlt – Zufalls-Secret wird generiert (Sitzungen verfallen bei Neustart)');
+  if (IS_PRODUCTION && !process.env.ADMIN_USERNAME)
+    warn.push('ADMIN_USERNAME fehlt in Produktion – Default-Admin "admin" wird angelegt');
+  if (IS_PRODUCTION && !process.env.ADMIN_PASSWORD)
+    warn.push('ADMIN_PASSWORD fehlt in Produktion – zufälliges Passwort wird einmalig geloggt');
+  if (IS_PRODUCTION && !process.env.PUBLIC_SITE_URL)
+    warn.push('PUBLIC_SITE_URL fehlt – SEO-Weiterleitungen und Kalender-Links funktionieren nicht korrekt');
+  if (warn.length) {
+    console.warn('\n[Konfigurationshinweise]');
+    warn.forEach((w) => console.warn('  !' , w));
+    console.warn('');
+  }
+}());
 
 const atelierSubmitCounts = new Map();
 
@@ -195,8 +219,10 @@ const eventRegRateLimiter = rateLimit({
 });
 
 app.use(compression());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+// 2 MB ist ausreichend für alle JSON-API-Routen (Texte, Einstellungen, Metadaten).
+// Größere Nutzdaten (Bilder) kommen ausschließlich über Multer-Multipart-Uploads.
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ limit: '2mb', extended: true }));
 
 const ASSET_MAX_AGE = '1y';
 const assetStatic = express.static(path.join(ROOT, 'assets'), {
@@ -249,7 +275,10 @@ const dbReady = new Promise((resolve) => { markDbReady = resolve; });
 
 const db = new sqlite3.Database(DB_PATH, (err) => {
   if (err) {
-    console.error('Database error:', err);
+    console.error('KRITISCH – Datenbankverbindung fehlgeschlagen:', err.message);
+    // markDbReady trotzdem auflösen, damit der Startup-Block nicht hängt.
+    // Alle DB-Operationen geben weiterhin Fehler zurück.
+    if (markDbReady) markDbReady();
   } else {
     console.log('Connected to SQLite database');
     initializeDatabase();
@@ -258,6 +287,13 @@ const db = new sqlite3.Database(DB_PATH, (err) => {
 
 function initializeDatabase() {
   db.serialize(() => {
+    // WAL-Modus: Leser blockieren Schreiber nicht (besser für Web-Server-Last).
+    // busy_timeout: SQLite wartet bis zu 5 s auf Lock-Freigabe statt SQLITE_BUSY.
+    // synchronous=NORMAL ist im WAL-Modus sicher und deutlich schneller als FULL.
+    db.run(`PRAGMA journal_mode=WAL`);
+    db.run(`PRAGMA synchronous=NORMAL`);
+    db.run(`PRAGMA busy_timeout=5000`);
+
     db.run(`
       CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1038,6 +1074,11 @@ app.post('/api/events/:id/register', eventRegRateLimiter, async (req, res) => {
   const { name, email: fromEmail, phone, message } = req.body;
   if (!name || !fromEmail) return res.status(400).json({ error: 'Name und E-Mail sind erforderlich.' });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail)) return res.status(400).json({ error: 'Bitte eine gültige E-Mail-Adresse eingeben.' });
+  // Längenbegrenzung für Freitextfelder.
+  if (String(name).trim().length > 120) return res.status(400).json({ error: 'Name zu lang (max. 120 Zeichen)' });
+  if (String(fromEmail).trim().length > 200) return res.status(400).json({ error: 'E-Mail-Adresse zu lang (max. 200 Zeichen)' });
+  if (phone && String(phone).trim().length > 50) return res.status(400).json({ error: 'Telefonnummer zu lang (max. 50 Zeichen)' });
+  if (message && String(message).trim().length > 2000) return res.status(400).json({ error: 'Nachricht zu lang (max. 2000 Zeichen)' });
 
   const event = await dbGet(`SELECT * FROM events WHERE id = ? AND published = 1`, [eventId]).catch(() => null);
   if (!event) return res.status(404).json({ error: 'Veranstaltung nicht gefunden.' });
@@ -1307,6 +1348,15 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail)) {
     return res.status(400).json({ error: apiMsg('contact.invalidEmail', lang) });
   }
+  // Längenbegrenzung – verhindert überdimensionierte Nutzlast trotz Body-Limit.
+  if (String(name).trim().length > 120)
+    return res.status(400).json({ error: 'Name zu lang (max. 120 Zeichen)' });
+  if (String(fromEmail).trim().length > 200)
+    return res.status(400).json({ error: 'E-Mail-Adresse zu lang (max. 200 Zeichen)' });
+  if (phone && String(phone).trim().length > 50)
+    return res.status(400).json({ error: 'Telefonnummer zu lang (max. 50 Zeichen)' });
+  if (String(message).trim().length > 5000)
+    return res.status(400).json({ error: 'Nachricht zu lang (max. 5000 Zeichen)' });
 
   const payload = {
     name: name.trim(),
@@ -1365,14 +1415,19 @@ app.get('/api/admin/contact-messages', requireAuth, (req, res) => {
   );
 });
 
-app.delete('/api/admin/contact-messages/:id', requireAuth, (req, res) => {
+// BUG-FIX: dbRun ist Promise-basiert – der frühere Callback-Aufruf wurde still
+// ignoriert, die Response hing für immer. Jetzt korrekt mit async/await.
+app.delete('/api/admin/contact-messages/:id', requireAuth, async (req, res) => {
   const id = parseInt(req.params.id, 10);
   if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
-  dbRun(`DELETE FROM contact_messages WHERE id = ?`, [id], function (err) {
-    if (err) return res.status(500).json({ error: 'Datenbankfehler' });
-    if (this.changes === 0) return res.status(404).json({ error: 'Nicht gefunden' });
+  try {
+    const result = await dbRun(`DELETE FROM contact_messages WHERE id = ?`, [id]);
+    if (result.changes === 0) return res.status(404).json({ error: 'Nicht gefunden' });
     res.json({ ok: true });
-  });
+  } catch (err) {
+    console.error('contact-messages delete [id=%d]:', id, err.message);
+    res.status(500).json({ error: 'Datenbankfehler' });
+  }
 });
 
 app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
@@ -1408,6 +1463,15 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(startTime)) {
     return res.status(400).json({ error: apiMsg('booking.invalidDateTime', lang) });
   }
+  // Längenbegrenzung für Freitextfelder.
+  if (name.length > 120)
+    return res.status(400).json({ error: 'Name zu lang (max. 120 Zeichen)' });
+  if (email.length > 200)
+    return res.status(400).json({ error: 'E-Mail-Adresse zu lang (max. 200 Zeichen)' });
+  if (phone && phone.length > 50)
+    return res.status(400).json({ error: 'Telefonnummer zu lang (max. 50 Zeichen)' });
+  if (message && message.length > 2000)
+    return res.status(400).json({ error: 'Nachricht zu lang (max. 2000 Zeichen)' });
   if (!booking.isWorkingDay(date)) {
     return res.status(400).json({ error: apiMsg('booking.noWorkingDay', lang) });
   }
@@ -2295,7 +2359,27 @@ process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err && err.stack ? err.stack : err);
 });
 
-app.listen(PORT, async () => {
+// Graceful Shutdown: SQLite-Verbindung sauber schließen, bevor PM2/systemd den
+// Prozess beendet. Verhindert WAL-Lock-Dateien und mögliche Dateikorruption.
+function gracefulShutdown(signal) {
+  console.log(`${signal} empfangen – Server wird heruntergefahren`);
+  server.close(() => {
+    db.close((closeErr) => {
+      if (closeErr) console.error('DB-Verbindung konnte nicht geschlossen werden:', closeErr.message);
+      else console.log('DB-Verbindung sauber geschlossen');
+      process.exit(0);
+    });
+  });
+  // Notfall-Timeout: nach 10 s hart beenden wenn Verbindungen nicht schließen.
+  setTimeout(() => {
+    console.error('Graceful Shutdown Timeout – erzwungener Abbruch');
+    process.exit(1);
+  }, 10000).unref();
+}
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+const server = app.listen(PORT, async () => {
   console.log(`\n╔════════════════════════════════════════╗`);
   console.log(`║   Kunsttherapie CMS Backend       ║`);
   console.log(`║  Server running on http://localhost:${PORT}      ║`);
