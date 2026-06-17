@@ -66,10 +66,10 @@
     <div class="nav-item" onclick="switchSection('bookings', this)">Buchungen</div>
     <div class="nav-item" onclick="switchSection('atelier', this)">Mini-Atelier</div>
     <div class="nav-item" onclick="switchSection('events', this)">Veranstaltungen</div>
-    <div class="nav-item" onclick="switchSection('services', this)">Preistabelle</div>
+    <div class="nav-item" onclick="switchSection('prices', this)">Preistabelle</div>
     <div class="nav-item" onclick="switchSection('contact', this)">Nachrichten</div>
     <div class="nav-item" onclick="switchSection('bugs', this)">Bugs für Marian</div>
-    <button class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
+    <button type="button" class="btn nav-item logout-btn" onclick="handleLogout()">Abmelden</button>
     <p class="sidebar-links">
       <a href="/" target="_blank" rel="noopener">Website ansehen</a><br>
       <a href="/buchung" target="_blank" rel="noopener">Buchungsseite</a>
@@ -94,7 +94,7 @@
             <li><strong>Buchungen</strong> – Online-Termine von Kunden, Zeiten blockieren, Google Kalender</li>
             <li><strong>Mini-Atelier</strong> – Werke von der Website (anonym oder mit Namen)</li>
             <li><strong>Veranstaltungen</strong> – Workshops &amp; Termine auf der Events-Seite</li>
-            <li><strong>Preistabelle</strong> – Angebote, Dauer, Preis und Hinweistext anpassen</li>
+            <li><strong>Angebote &amp; Preise</strong> – Deine Therapieangebote mit Preis und Dauer verwalten</li>
             <li><strong>Nachrichten</strong> – Kontaktanfragen aus dem Formular, auch wenn die E-Mail mal ausfällt</li>
           </ul>
         </div>
@@ -122,11 +122,6 @@
             <span class="dash-card-num" id="atelierCount">0</span>
             <span class="dash-card-label">Mini-Atelier</span>
             <span class="dash-card-sub" id="atelierSub">–</span>
-          </button>
-          <button type="button" class="dash-card" onclick="goToSection('services')">
-            <span class="dash-card-icon" aria-hidden="true">💶</span>
-            <span class="dash-card-label">Preistabelle</span>
-            <span class="dash-card-sub">Angebote &amp; Preise</span>
           </button>
           <button type="button" class="dash-card" onclick="goToSection('images')">
             <span class="dash-card-icon" aria-hidden="true">🖼️</span>
@@ -176,7 +171,7 @@
     <section class="admin-section" id="news">
       <h1>Neuigkeiten</h1>
       <p class="sub section-desc">Erscheinen auf <a href="/neuigkeiten" target="_blank" rel="noopener">www.kunsttherapie-pb.de/neuigkeiten</a> – Häkchen „Veröffentlichen“ nicht vergessen.</p>
-      <button class="btn-add" onclick="openNewsForm()">Neue Neuigkeit</button>
+      <button type="button" class="btn-add" onclick="openNewsForm()">Neue Neuigkeit</button>
       <div id="newsForm" class="form-container" style="display: none;">
         <h2>Neuigkeit bearbeiten</h2>
         <form onsubmit="saveNews(event)">
@@ -238,6 +233,52 @@
         </div>
       </div>
 
+      <details class="admin-guide" style="margin-top:1.2rem">
+        <summary style="cursor:pointer;font-weight:600;font-size:1rem;padding:0.5rem 0">📅 Anleitung: Google Kalender verbinden</summary>
+        <div style="padding:1rem 0 0.5rem">
+          <p>Wenn du deinen Google Kalender verbindest, passiert Folgendes automatisch:</p>
+          <ul>
+            <li>Neue Buchungen von der Website erscheinen direkt in deinem Google Kalender.</li>
+            <li>Termine, die du in Google einträgst, blockieren automatisch die entsprechenden Zeiten auf der Buchungsseite – Kunden können diese Slots dann nicht mehr buchen.</li>
+          </ul>
+
+          <h4 style="margin:1rem 0 0.5rem">Schritt 1 – Google API einrichten (einmalig, von Marian)</h4>
+          <ol>
+            <li>Gehe zu <strong>console.cloud.google.com</strong> und melde dich mit dem Google-Konto des Ateliers an.</li>
+            <li>Erstelle ein neues Projekt (z.&nbsp;B. „Kunsttherapie Buchung").</li>
+            <li>Aktiviere die <strong>Google Calendar API</strong> unter „APIs &amp; Dienste → Bibliothek".</li>
+            <li>Gehe zu „APIs &amp; Dienste → Anmeldedaten" → „Anmeldedaten erstellen" → <strong>OAuth 2.0-Client-ID</strong>.</li>
+            <li>Wähle Anwendungstyp: <strong>Webanwendung</strong>. Als autorisierte Weiterleitungs-URI einträgst du:<br>
+              <code style="background:#f4f4f4;padding:2px 6px;border-radius:4px;font-size:0.85rem">https://www.kunsttherapie-pb.de/api/admin/google/callback</code>
+            </li>
+            <li>Kopiere <strong>Client-ID</strong> und <strong>Client-Secret</strong> und trage sie in die <code>.env</code>-Datei auf dem Server ein:<br>
+              <code style="background:#f4f4f4;padding:2px 6px;border-radius:4px;font-size:0.85rem">GOOGLE_CLIENT_ID=…<br>GOOGLE_CLIENT_SECRET=…</code>
+            </li>
+            <li>Server neu starten.</li>
+          </ol>
+
+          <h4 style="margin:1rem 0 0.5rem">Schritt 2 – Kalender verbinden (du selbst, einmalig)</h4>
+          <ol>
+            <li>Sobald Schritt 1 erledigt ist, erscheint hier der Button <strong>„Mit Google verbinden"</strong>.</li>
+            <li>Klicke darauf – du wirst zu Google weitergeleitet.</li>
+            <li>Melde dich mit dem Google-Konto an, in dem dein Atelier-Kalender liegt.</li>
+            <li>Erteile der App die Berechtigung, deinen Kalender zu lesen und Termine einzutragen.</li>
+            <li>Du wirst automatisch zurückgeleitet. Der Status hier zeigt dann: <em>„Verbunden mit Kalender: primary"</em>.</li>
+          </ol>
+
+          <h4 style="margin:1rem 0 0.5rem">Schritt 3 – Welchen Kalender verwenden?</h4>
+          <p>Standardmäßig wird dein <strong>Hauptkalender</strong> (primary) verwendet. Wenn du einen separaten Kalender nur für Buchungen möchtest:</p>
+          <ol>
+            <li>Öffne <strong>calendar.google.com</strong> und erstelle einen neuen Kalender (z.&nbsp;B. „Buchungen Atelier").</li>
+            <li>Klicke auf die drei Punkte neben dem Kalender → „Einstellungen und Freigabe".</li>
+            <li>Scrolle zu „Kalender-ID" und kopiere die ID (sieht aus wie eine E-Mail-Adresse).</li>
+            <li>Marian trägt diese ID in der <code>.env</code> ein: <code>GOOGLE_CALENDAR_ID=deine-id@group.calendar.google.com</code></li>
+          </ol>
+
+          <p class="note" style="margin-top:1rem">💡 <strong>Tipp:</strong> Die Verbindung bleibt dauerhaft aktiv. Du musst dich nur neu verbinden, wenn du das Google-Passwort änderst oder die Berechtigung in Google widerrufst.</p>
+        </div>
+      </details>
+
       <div class="form-container" style="margin-top:1.5rem">
         <h3>Termin eintragen oder Zeit blockieren</h3>
         <form onsubmit="saveManualBooking(event)">
@@ -279,6 +320,37 @@
         </form>
       </div>
 
+      <!-- Wochen blockieren -->
+      <div class="form-container" style="margin-top:2rem" id="blockedPeriodsBox">
+        <h3>Zeiten sperren &amp; freigeben</h3>
+        <p class="note">Ganze Wochen oder Zeiträume sperren – Kunden können in diesem Zeitraum keine Termine buchen.</p>
+
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;align-items:flex-end">
+          <div class="form-group" style="margin:0">
+            <label>Von</label>
+            <input type="date" id="blockFrom" style="width:160px">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Bis</label>
+            <input type="date" id="blockTo" style="width:160px">
+          </div>
+          <div class="form-group" style="margin:0;flex:1;min-width:160px">
+            <label>Grund (optional)</label>
+            <input type="text" id="blockReason" placeholder="z.&nbsp;B. Urlaub, Krank …" style="width:100%">
+          </div>
+          <div style="display:flex;gap:0.5rem;align-items:center">
+            <button type="button" class="btn-save" onclick="addBlockedPeriod()">Sperren</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem">
+          <button type="button" class="btn-small" onclick="blockCurrentWeek()">Diese Woche</button>
+          <button type="button" class="btn-small" onclick="blockNextWeek()">Nächste Woche</button>
+        </div>
+
+        <div id="blockedPeriodsList" style="margin-top:1.2rem"></div>
+      </div>
+
       <h2 style="margin-top:2rem">Alle Buchungen</h2>
       <div id="bookingsList" class="items-list"></div>
     </section>
@@ -293,7 +365,7 @@
     <section class="admin-section" id="events">
       <h1>Veranstaltungen</h1>
       <p class="sub section-desc">Workshops und Termine auf <a href="/events" target="_blank" rel="noopener">der Events-Seite</a>.</p>
-      <button class="btn-add" onclick="openEventForm()">Neue Veranstaltung</button>
+      <button type="button" class="btn-add" onclick="openEventForm()">Neue Veranstaltung</button>
       <div id="eventForm" class="form-container" style="display: none;">
         <h2>Event bearbeiten</h2>
         <form onsubmit="saveEvent(event)">
@@ -359,10 +431,11 @@
       <div id="eventsList" class="items-list"></div>
     </section>
 
-    <!-- SERVICES/ANGEBOTE SECTION -->
-    <section class="admin-section" id="services">
+    <!-- PREISTABELLE -->
+    <section class="admin-section" id="prices">
       <h1>Preistabelle</h1>
       <p class="sub section-desc">Passe Angebote, Dauer, Preis und Hinweis an. Änderungen sind sofort auf der Website sichtbar.</p>
+
       <div class="form-container" style="margin-top:1rem">
         <div id="priceCardList"></div>
         <div style="display:flex;gap:0.75rem;margin-top:1.25rem;flex-wrap:wrap;align-items:center">
@@ -538,6 +611,47 @@
     <section class="admin-section" id="contact">
       <h1>Nachrichten</h1>
       <p class="sub section-desc">Kontaktanfragen aus dem Formular – werden gespeichert, auch wenn die E-Mail-Benachrichtigung mal ausbleibt.</p>
+
+      <details class="admin-guide" style="margin-bottom:1.5rem">
+        <summary style="cursor:pointer;font-weight:600;font-size:1rem;padding:0.5rem 0">✉️ Anleitung: E-Mail-Benachrichtigungen einrichten</summary>
+        <div style="padding:1rem 0 0.5rem">
+          <p>Wenn jemand das Kontaktformular auf der Website ausfüllt, wird die Nachricht hier gespeichert <strong>und</strong> gleichzeitig eine E-Mail an dich geschickt – vorausgesetzt, der E-Mail-Versand ist korrekt eingerichtet.</p>
+
+          <h4 style="margin:1rem 0 0.5rem">So funktioniert es</h4>
+          <ul>
+            <li>Nachrichten landen <strong>immer</strong> hier in diesem Bereich – auch wenn die E-Mail nicht ankommt.</li>
+            <li>Die E-Mail-Benachrichtigung geht an: <strong>info@kunsttherapie-pb.de</strong></li>
+            <li>Schau hier regelmäßig nach (z.&nbsp;B. 1× täglich), damit du keine Anfrage verpasst.</li>
+          </ul>
+
+          <h4 style="margin:1rem 0 0.5rem">E-Mail-Versand einrichten (Strato SMTP) – einmalig von Marian</h4>
+          <p>Der Versand läuft über dein Strato-E-Mail-Konto. Marian muss folgende Daten in die Server-Konfiguration eintragen:</p>
+          <ul>
+            <li><strong>SMTP-Server:</strong> <code>smtp.strato.de</code></li>
+            <li><strong>Port:</strong> <code>465</code> (SSL)</li>
+            <li><strong>Benutzername:</strong> <code>info@kunsttherapie-pb.de</code></li>
+            <li><strong>Passwort:</strong> dein Strato-E-Mail-Passwort</li>
+          </ul>
+          <p>Das Passwort findest du in deinem <strong>Strato-Kundencenter</strong> unter „E-Mail → E-Mail-Postfächer". Dort kannst du es auch neu setzen, falls du es vergessen hast.</p>
+
+          <h4 style="margin:1rem 0 0.5rem">Wenn E-Mails nicht ankommen – Checkliste</h4>
+          <ol>
+            <li>Schaue zunächst hier im Admin-Bereich unter „Nachrichten" – die Anfrage ist dort trotzdem gespeichert.</li>
+            <li>Prüfe deinen <strong>Spam-Ordner</strong> in deinem E-Mail-Postfach.</li>
+            <li>Melde dich bei Marian – er kann den E-Mail-Versand im Server-Log prüfen und das Passwort in der Konfiguration aktualisieren.</li>
+          </ol>
+
+          <h4 style="margin:1rem 0 0.5rem">Nachrichten beantworten</h4>
+          <ol>
+            <li>Klicke auf eine Nachricht in der Liste unten.</li>
+            <li>Die E-Mail-Adresse des Absenders ist angegeben – öffne dein E-Mail-Programm und antworte direkt.</li>
+            <li>Nach dem Antworten kannst du die Nachricht hier als „erledigt" markieren oder löschen.</li>
+          </ol>
+
+          <p class="note" style="margin-top:1rem">💡 <strong>Tipp:</strong> Rufe dein E-Mail-Postfach unter <strong>webmail.strato.de</strong> auf – dort kannst du direkt im Browser E-Mails lesen und schreiben, ohne ein separates Programm.</p>
+        </div>
+      </details>
+
       <div id="contactList" class="items-list"></div>
     </section>
 
@@ -551,7 +665,7 @@
           <textarea id="bugsTextarea" rows="14" style="width:100%;resize:vertical;" placeholder="Hier Bugs, Probleme oder Wünsche eintragen …"></textarea>
         </div>
         <div class="form-actions">
-          <button class="btn primary" onclick="saveBugs()">Speichern</button>
+          <button type="button" class="btn primary" onclick="saveBugs()">Speichern</button>
         </div>
       </div>
     </section>

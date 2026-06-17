@@ -31,7 +31,7 @@
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Preise – Kunsttherapie Paderborn"/>
   <meta name="twitter:description" content="Klare Preise: Gruppensitzung und Auszeit je 39 €, Einzelsitzung 60 €, Teambuilding 49 € pro Teilnehmer – Material i. d. R. inklusive."/>
-  <link rel="stylesheet" href="assets/css/style.6fddf312.css"/>
+  <link rel="stylesheet" href="assets/css/style.f34b6ce3.css"/>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -57,7 +57,9 @@
     "latitude": 51.7385453,
     "longitude": 8.7853015
   },
-  "areaServed": "Paderborn",
+  "areaServed": ["Paderborn", "Ostwestfalen-Lippe", "OWL", "Detmold", "Bielefeld", "Bad Salzuflen", "Lemgo", "Gütersloh", "Herford", "Minden"],
+  "hasMap": "https://maps.app.goo.gl/kunsttherapie-paderborn",
+  "sameAs": ["https://www.kunsttherapie-pb.de"],
   "openingHoursSpecification": [
     {
       "@type": "OpeningHoursSpecification",
@@ -113,7 +115,7 @@
 
     <div class="table-wrap">
       <table class="prices">
-        <thead>
+        <thead data-i18n-html="prices.tableHead">
           <tr>
             <th scope="col">Leistung</th>
             <th scope="col">Dauer</th>
@@ -121,7 +123,7 @@
             <th scope="col">Hinweis</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody data-i18n-html="prices.tableBody">
           <tr>
             <td>Gruppensitzung</td>
             <td data-label="Dauer">60 Minuten</td>
@@ -210,29 +212,5 @@
   <script src="assets/js/site-core.44cd2490.js" defer></script>
   <script src="assets/js/i18n-messages-shared.js" defer></script>
   <script src="assets/js/i18n-messages-prices.js" defer></script>
-  <script>
-    (function () {
-      fetch('/api/prices-table')
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (data) {
-          if (!data || !data.columns || !Array.isArray(data.rows) || data.rows.length === 0) return;
-          var tbl = document.querySelector('table.prices');
-          if (!tbl) return;
-          var thead = tbl.querySelector('thead');
-          var tbody = tbl.querySelector('tbody');
-          if (!thead || !tbody) return;
-          thead.innerHTML = '<tr>' + data.columns.map(function (c) {
-            return '<th scope="col">' + c + '</th>';
-          }).join('') + '</tr>';
-          tbody.innerHTML = data.rows.map(function (row) {
-            return '<tr>' + row.map(function (cell, ci) {
-              var label = ci > 0 ? ' data-label="' + data.columns[ci] + '"' : '';
-              return '<td' + label + '>' + cell + '</td>';
-            }).join('') + '</tr>';
-          }).join('');
-        })
-        .catch(function () {});
-    })();
-  </script>
 </body>
 </html>

@@ -31,7 +31,7 @@
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Termin buchen – Kunsttherapie Paderborn"/>
   <meta name="twitter:description" content="Online-Termin anfragen: Dienstag morgens und Donnerstag abends. Freie Zeiten im Kalender – Bestätigung per E-Mail."/>
-  <link rel="stylesheet" href="assets/css/style.6fddf312.css"/>
+  <link rel="stylesheet" href="assets/css/style.f34b6ce3.css"/>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -57,7 +57,9 @@
     "latitude": 51.7385453,
     "longitude": 8.7853015
   },
-  "areaServed": "Paderborn",
+  "areaServed": ["Paderborn", "Ostwestfalen-Lippe", "OWL", "Detmold", "Bielefeld", "Bad Salzuflen", "Lemgo", "Gütersloh", "Herford", "Minden"],
+  "hasMap": "https://maps.app.goo.gl/kunsttherapie-paderborn",
+  "sameAs": ["https://www.kunsttherapie-pb.de"],
   "openingHoursSpecification": [
     {
       "@type": "OpeningHoursSpecification",
@@ -135,6 +137,12 @@
       <div id="slotsList" class="slots-list"></div>
       <p id="slotsHint" class="sub" style="margin-top:1rem" data-i18n-html="book.slotsHint">Nur <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> – Termine à 60 Minuten.</p>
     </div>
+
+    <div class="card booking-selected-panel" id="selectedSlotsPanel" hidden>
+      <h2 data-i18n="book.selectedTitle">Ausgewählte Termine</h2>
+      <ul id="selectedSlotsList" class="selected-slots-list"></ul>
+      <p class="sub" data-i18n="book.selectedHint">Wähle beliebig viele Termine aus – du kannst auch Termine an verschiedenen Tagen kombinieren.</p>
+    </div>
   </div>
 
   <noscript>
@@ -165,8 +173,7 @@
       <label for="bookMessage" data-i18n="form.message">Nachricht (optional)</label>
       <textarea id="bookMessage" name="message" rows="4" data-i18n-placeholder="book.messagePlaceholder" placeholder="z.B. Erstgespräch, Gruppe Dienstag morgens, Auszeit Donnerstag abends …"></textarea>
 
-      <input type="hidden" id="bookDate" name="date"/>
-      <input type="hidden" id="bookStart" name="startTime"/>
+      <input type="hidden" id="bookSlots" name="slots"/>
       <input type="hidden" id="bookFormAt" name="_formAt"/>
       <div class="visually-hidden" aria-hidden="true">
         <label for="bookWebsite">Website</label>

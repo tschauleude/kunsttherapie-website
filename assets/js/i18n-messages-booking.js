@@ -1,8 +1,8 @@
 (function () {
   if (!window.I18N_MESSAGES) window.I18N_MESSAGES = { de: {}, en: {} };
   const extra = { de: {
-  "meta.booking.title": "Termin buchen – Kunsttherapie Paderborn",
-  "meta.booking.description": "Online-Termin anfragen: Dienstag morgens und Donnerstag abends. Freie Zeiten im Kalender – Bestätigung per E-Mail.",
+  "meta.booking.title": "Termin buchen – Kunsttherapie Paderborn & OWL",
+  "meta.booking.description": "Kunsttherapie-Termin in Paderborn online buchen: Di morgens & Do abends. Gruppen, Auszeit, Einzelsitzung – Bestätigung per E-Mail.",
   "book.kicker": "Terminbuchung",
   "book.title": "Kennenlernen oder Sitzung buchen",
   "book.sub": "Nur <strong>Dienstag 11:00–12:30</strong> und <strong>Donnerstag 18:00–19:30</strong> sind buchbar (grüne Tage). <strong>Donnerstag</strong>: Kreativabend für Freunde &amp; Gruppen – bitte im Nachrichtenfeld mitteilen, mit wem du kommen möchtest. Bestätigung per E-Mail.",
@@ -50,8 +50,8 @@
   "book.slotBusy": "(belegt)",
   "book.timeUnit": "Uhr"
 }, en: {
-  "meta.booking.title": "Book appointment – Art Therapy Paderborn",
-  "meta.booking.description": "Request an appointment online: Tuesday mornings and Thursday evenings. Available slots in the calendar – confirmation by email.",
+  "meta.booking.title": "Book Art Therapy – Paderborn & OWL",
+  "meta.booking.description": "Book an art therapy appointment in Paderborn online: Tuesday mornings & Thursday evenings. Groups, downtime, one-to-one – confirmation by email.",
   "book.kicker": "Booking",
   "book.title": "Book an introductory or regular session",
   "book.sub": "Only <strong>Tue 11:00–12:30</strong> and <strong>Thu 18:00–19:30</strong> can be booked (green days). <strong>Thursday</strong>: creative evening for friends &amp; groups – please note in the message field who you'd like to bring. Confirmed by email.",

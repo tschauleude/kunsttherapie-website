@@ -1,8 +1,8 @@
 (function () {
   if (!window.I18N_MESSAGES) window.I18N_MESSAGES = { de: {}, en: {} };
   const extra = { de: {
-  "meta.events.title": "Veranstaltungen – Kunsttherapie Paderborn",
-  "meta.events.description": "Workshops, Teambuilding und Veranstaltungen in Paderborn.",
+  "meta.events.title": "Veranstaltungen – Kunsttherapie Paderborn, OWL",
+  "meta.events.description": "Kunsttherapie-Workshops, Teambuilding und Events in Paderborn und Ostwestfalen-Lippe. Jetzt anmelden.",
   "eventsPage.kicker": "Termine",
   "eventsPage.title": "Events & Workshops",
   "eventsPage.sub": "Kommende Events, Workshops und Gruppentherapien. Anmeldung per Kontakt und sei dabei!",

@@ -23,7 +23,8 @@ function locale() {
 
 let currentMonth = formatMonth(new Date());
 let selectedDate = null;
-let selectedStart = null;
+// Array of { date, startTime, endTime, label } objects
+let selectedSlots = [];
 let monthData = null;
 let bookingConfigCache = null;
 let formLoadedAt = 0;
@@ -125,6 +126,10 @@ async function loadInitialMonth() {
   await loadMonth(month);
 }
 
+function isSlotSelected(dateStr, startTime) {
+  return selectedSlots.some((s) => s.date === dateStr && s.startTime === startTime);
+}
+
 function renderCalendar() {
   const grid = document.getElementById('calendarGrid');
   if (!grid || !monthData) return;
@@ -132,6 +137,9 @@ function renderCalendar() {
   const cells = getMondayBasedCells(currentMonth);
   const today = new Date();
   const todayStr = `${today.getFullYear()}-${pad2(today.getMonth() + 1)}-${pad2(today.getDate())}`;
+
+  // A day counts as "has selection" if any slot on it is selected
+  const datesWithSelections = new Set(selectedSlots.map((s) => s.date));
 
   grid.innerHTML = cells
     .map((cell) => {
@@ -160,6 +168,7 @@ function renderCalendar() {
 
       if (cell.date === todayStr) cls += ' booking-day-today';
       if (cell.date === selectedDate) cls += ' booking-day-selected';
+      if (datesWithSelections.has(cell.date)) cls += ' booking-day-has-selection';
 
       const label = parseInt(cell.date.split('-')[2], 10);
       return `<button type="button" class="${cls}" data-date="${cell.date}" ${
@@ -185,14 +194,94 @@ function showBookingForm() {
   panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+function renderSelectedSlots() {
+  const panel = document.getElementById('selectedSlotsPanel');
+  const list = document.getElementById('selectedSlotsList');
+  if (!panel || !list) return;
+
+  if (selectedSlots.length === 0) {
+    panel.hidden = true;
+    hideBookingForm();
+    return;
+  }
+
+  panel.hidden = false;
+  list.innerHTML = selectedSlots
+    .map(
+      (s, i) =>
+        `<li class="selected-slot-item">
+          <span>${esc(formatDateLabel(s.date))}, ${esc(s.startTime)}–${esc(s.endTime)} Uhr</span>
+          <button type="button" class="slot-remove-btn" data-index="${i}" aria-label="Termin entfernen">✕</button>
+        </li>`
+    )
+    .join('');
+
+  list.querySelectorAll('.slot-remove-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.index, 10);
+      selectedSlots.splice(idx, 1);
+      renderSelectedSlots();
+      renderCalendar();
+      // Re-render slots for current day to update button states
+      if (selectedDate) {
+        const slotBtns = document.querySelectorAll('#slotsList .slot-btn[data-start]');
+        slotBtns.forEach((sb) => {
+          const isNowSelected = isSlotSelected(selectedDate, sb.dataset.start);
+          sb.classList.toggle('slot-selected', isNowSelected);
+          sb.setAttribute('aria-pressed', String(isNowSelected));
+        });
+      }
+      updateBookingFormSummary();
+    });
+  });
+
+  updateBookingFormSummary();
+}
+
+function updateBookingFormSummary() {
+  const summary = document.getElementById('bookingSummary');
+  const slotsInput = document.getElementById('bookSlots');
+
+  if (selectedSlots.length === 0) {
+    hideBookingForm();
+    return;
+  }
+
+  if (summary) {
+    if (selectedSlots.length === 1) {
+      const s = selectedSlots[0];
+      summary.textContent = `${formatDateLabel(s.date)}, ${s.startTime}–${s.endTime} Uhr`;
+    } else {
+      summary.textContent = `${selectedSlots.length} Termine ausgewählt`;
+    }
+  }
+
+  if (slotsInput) {
+    slotsInput.value = JSON.stringify(selectedSlots.map((s) => ({ date: s.date, startTime: s.startTime })));
+  }
+
+  // Update formAt timestamp
+  formLoadedAt = Date.now();
+  const formAt = document.getElementById('bookFormAt');
+  if (formAt) formAt.value = String(formLoadedAt);
+
+  showBookingForm();
+}
+
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 async function selectDay(dateStr) {
   const dayLabel = document.getElementById('selectedDayLabel');
   const list = document.getElementById('slotsList');
   if (!dayLabel || !list) return;
 
   selectedDate = dateStr;
-  selectedStart = null;
-  hideBookingForm();
   dayLabel.textContent = formatDateLabel(dateStr);
   renderCalendar();
 
@@ -219,41 +308,38 @@ async function selectDay(dateStr) {
 
     list.innerHTML = data.slots
       .map((slot) => {
-        const cls = slot.available ? 'slot-btn slot-free' : 'slot-btn slot-busy';
-        const disabled = slot.available ? '' : 'disabled';
-        const busy = slot.available ? '' : tr('book.slotBusy');
-        return `<button type="button" class="${cls}" data-start="${slot.start}" ${disabled}>
-          ${slot.start} – ${slot.end}${busy}
+        if (!slot.available) {
+          return `<button type="button" class="slot-btn slot-busy" disabled>${slot.start} – ${slot.end}${tr('book.slotBusy')}</button>`;
+        }
+        const already = isSlotSelected(dateStr, slot.start);
+        const selCls = already ? ' slot-selected' : '';
+        return `<button type="button" class="slot-btn slot-free${selCls}" data-start="${slot.start}" data-end="${slot.end}" aria-pressed="${already}">
+          ${slot.start} – ${slot.end}
         </button>`;
       })
       .join('');
 
     list.querySelectorAll('.slot-free').forEach((btn) => {
-      btn.addEventListener('click', () => selectSlot(dateStr, btn.dataset.start));
+      btn.addEventListener('click', () => toggleSlot(dateStr, btn.dataset.start, btn.dataset.end, btn));
     });
   } catch (e) {
     list.innerHTML = `<p class="sub">${tr('book.slotsError')}</p>`;
   }
 }
 
-function selectSlot(dateStr, startTime) {
-  const bookDate = document.getElementById('bookDate');
-  const bookStart = document.getElementById('bookStart');
-  const bookingSummary = document.getElementById('bookingSummary');
-  const bookingMessage = document.getElementById('bookingMessage');
-  if (!bookDate || !bookStart || !bookingSummary) return;
-
-  selectedDate = dateStr;
-  selectedStart = startTime;
-  formLoadedAt = Date.now();
-  bookDate.value = dateStr;
-  bookStart.value = startTime;
-  const formAt = document.getElementById('bookFormAt');
-  if (formAt) formAt.value = String(formLoadedAt);
-  const timeSuffix = tr('book.timeUnit');
-  bookingSummary.textContent = `${formatDateLabel(dateStr)}, ${startTime}${timeSuffix}`;
-  if (bookingMessage) bookingMessage.hidden = true;
-  showBookingForm();
+function toggleSlot(dateStr, startTime, endTime, btn) {
+  const idx = selectedSlots.findIndex((s) => s.date === dateStr && s.startTime === startTime);
+  if (idx >= 0) {
+    selectedSlots.splice(idx, 1);
+    btn.classList.remove('slot-selected');
+    btn.setAttribute('aria-pressed', 'false');
+  } else {
+    selectedSlots.push({ date: dateStr, startTime, endTime });
+    btn.classList.add('slot-selected');
+    btn.setAttribute('aria-pressed', 'true');
+  }
+  renderCalendar();
+  renderSelectedSlots();
 }
 
 function showCalendarLinks(links, emailSent) {
@@ -285,6 +371,14 @@ async function submitBooking(e) {
   const msg = document.getElementById('bookingMessage');
   const btn = document.getElementById('bookSubmit');
   if (!msg || !btn) return;
+
+  if (selectedSlots.length === 0) {
+    msg.textContent = tr('book.noSlotSelected') || 'Bitte wähle mindestens einen Termin aus.';
+    msg.className = 'booking-alert booking-alert-error';
+    msg.hidden = false;
+    return;
+  }
+
   btn.disabled = true;
   msg.hidden = true;
 
@@ -293,8 +387,7 @@ async function submitBooking(e) {
     email: document.getElementById('bookEmail').value,
     phone: document.getElementById('bookPhone').value,
     message: document.getElementById('bookMessage').value,
-    date: document.getElementById('bookDate').value,
-    startTime: document.getElementById('bookStart').value,
+    slots: selectedSlots.map((s) => ({ date: s.date, startTime: s.startTime })),
     website: document.getElementById('bookWebsite')?.value || '',
     _formAt: Number(document.getElementById('bookFormAt')?.value) || formLoadedAt || 0,
     lang: window.ktI18n?.getLang?.() || 'de',
@@ -310,15 +403,19 @@ async function submitBooking(e) {
     msg.textContent = data.message || tr('book.success');
     msg.className = 'booking-alert booking-alert-success';
     msg.hidden = false;
+
     const linksBox = document.getElementById('bookingCalendarLinks');
     if (linksBox) linksBox.hidden = true;
     if (data.calendarLinks && data.status === 'confirmed') {
       showCalendarLinks(data.calendarLinks, data.emailSent);
     }
+
+    // Reset
     document.getElementById('bookingForm').reset();
-    selectedStart = null;
+    selectedSlots = [];
+    selectedDate = null;
+    renderSelectedSlots();
     await loadMonth(currentMonth);
-    if (selectedDate) selectDay(selectedDate);
   } catch (err) {
     msg.textContent = err.message;
     msg.className = 'booking-alert booking-alert-error';
