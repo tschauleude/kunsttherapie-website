@@ -361,6 +361,7 @@ function initializeDatabase() {
         message TEXT,
         status TEXT DEFAULT 'pending',
         google_event_id TEXT,
+        verify_token TEXT,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -419,6 +420,7 @@ function initializeDatabase() {
     db.run(`ALTER TABLE contact_messages ADD COLUMN status TEXT DEFAULT 'pending_verification'`, () => {});
     db.run(`ALTER TABLE contact_messages ADD COLUMN verify_token TEXT`, () => {});
     db.run(`ALTER TABLE contact_messages ADD COLUMN action_token TEXT`, () => {});
+    db.run(`ALTER TABLE bookings ADD COLUMN verify_token TEXT`, () => {});
 
     db.run(`
       CREATE TABLE IF NOT EXISTS site_images (
@@ -1728,33 +1730,36 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
       return res.status(409).json({ error: apiMsg('booking.unavailable', lang) });
     }
 
+    const verifyToken = require('crypto').randomBytes(32).toString('hex');
+
     const result = await dbRun(
-      `INSERT INTO bookings (name, email, phone, date, start_time, end_time, message, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')`,
-      [name.trim(), email.trim(), phone ? phone.trim() : null, date, slot.start, slot.end, message ? message.trim() : null]
+      `INSERT INTO bookings (name, email, phone, date, start_time, end_time, message, status, verify_token)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'pending_verification', ?)`,
+      [name.trim(), email.trim(), phone ? phone.trim() : null, date, slot.start, slot.end, message ? message.trim() : null, verifyToken]
     );
 
     const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
+    const baseUrl = publicBaseUrl(req);
+    const verifyUrl = `${baseUrl}/api/bookings/verify/${verifyToken}`;
+    const when = email.formatGermanDateTime(row);
 
     let emailSent = false;
     try {
-      const emailResult = await email.sendBookingRequestEmails(row);
+      const emailResult = await email.sendBookingVerification({ name: row.name, email: row.email, verifyUrl, when });
       emailSent = Boolean(emailResult.sent);
     } catch (mailErr) {
-      console.error('Booking request email failed:', mailErr.message);
+      console.error('Booking verify email failed:', mailErr.message);
     }
 
     res.json({
       success: true,
       id: row.id,
-      status: 'pending',
+      status: 'pending_verification',
       date: row.date,
       startTime: row.start_time,
       endTime: row.end_time,
       emailSent,
-      message: emailSent
-        ? apiMsg('booking.successEmail', lang)
-        : apiMsg('booking.successSaved', lang),
+      message: apiMsg('booking.verifyEmail', lang),
     });
   } catch (e) {
     if (e && (e.code === 'SQLITE_CONSTRAINT' || /UNIQUE constraint/i.test(e.message || ''))) {
@@ -1764,6 +1769,36 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
     console.error('booking create error:', e);
     res.status(500).json({ error: apiMsg('booking.failed', lang) });
   }
+});
+
+// Buchung: E-Mail-Adresse bestätigen
+app.get('/api/bookings/verify/:token', contactVerifyRateLimiter, async (req, res) => {
+  const { token } = req.params;
+  let row;
+  try {
+    row = await dbGet(
+      `SELECT * FROM bookings WHERE verify_token = ? AND status = 'pending_verification' AND datetime(createdAt) > datetime('now', '-24 hours')`,
+      [token]
+    );
+  } catch (e) {
+    return res.status(500).type('text/html; charset=utf-8').send('Datenbankfehler.');
+  }
+  if (!row) {
+    return res.status(400).type('text/html; charset=utf-8').send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Link ungültig</title></head><body style="font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8"><h2 style="color:#4a6e6a">Link ungültig oder abgelaufen</h2><p>Dieser Bestätigungslink ist abgelaufen (gültig 24 Stunden) oder wurde bereits genutzt. Bitte sende die Buchungsanfrage erneut.</p><p><a href="/buchung">Zur Buchung</a></p></body></html>`);
+  }
+
+  await dbRun(`UPDATE bookings SET status = 'pending', verify_token = NULL WHERE id = ?`, [row.id]).catch(() => {});
+
+  const confirmedRow = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [row.id]).catch(() => row);
+  const baseUrl = publicBaseUrl(req);
+
+  try {
+    await email.sendBookingRequestEmails(confirmedRow);
+  } catch (e) {
+    console.error('Booking request email after verify failed:', e.message);
+  }
+
+  res.type('text/html; charset=utf-8').send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Bestätigt</title><style>body{font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8}h2{color:#4a6e6a}a{color:#4a6e6a}</style></head><body><h2>E-Mail bestätigt – Vielen Dank!</h2><p>Ihre Terminanfrage ist eingegangen. Sie erhalten in Kürze eine Bestätigung per E-Mail.</p><p><a href="/">Zurück zur Website</a></p></body></html>`);
 });
 
 function atelierRateLimit(req) {
