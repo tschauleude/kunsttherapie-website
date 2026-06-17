@@ -39,6 +39,7 @@ jobs:
           script: |
             cd ${{ secrets.VPS_PROJECT_PATH }}
             git pull origin main
-            npm ci --omit=dev
+            npm ci
             npm run build-frontend
+            npm prune --omit=dev
             pm2 restart kunsttherapie || true
