@@ -1588,11 +1588,43 @@ app.put('/api/admin/prices-table', requireAuth, async (req, res) => {
       `INSERT OR REPLACE INTO settings (key, value) VALUES ('prices_table', ?)`,
       [JSON.stringify({ columns, rows })]
     );
+    // Sync prices into the i18n system so preise.html picks them up like any other text
+    await syncPriceTableToI18n({ columns, rows });
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: 'Datenbankfehler' });
   }
 });
+
+function buildPriceTableBodyHtml({ columns, rows }) {
+  return rows
+    .map((row) => {
+      const cells = row
+        .map((cell, ci) => {
+          const label = ci > 0 && columns[ci] ? ` data-label="${escapeHtml(columns[ci])}"` : '';
+          const content =
+            ci === 2 && /^\d/.test(String(cell).trim())
+              ? `<strong>${escapeHtml(cell)}</strong>`
+              : escapeHtml(cell);
+          return `<td${label}>${content}</td>`;
+        })
+        .join('');
+      return `<tr>${cells}</tr>`;
+    })
+    .join('');
+}
+
+async function syncPriceTableToI18n(tableData) {
+  try {
+    const bodyHtml = buildPriceTableBodyHtml(tableData);
+    const current = await i18nContent.readOverrides(dbGet);
+    current.de['prices.tableBody'] = bodyHtml;
+    current.en['prices.tableBody'] = bodyHtml;
+    await i18nContent.writeOverrides(dbRun, current);
+  } catch (e) {
+    console.error('syncPriceTableToI18n:', e.message);
+  }
+}
 
 // Gespeicherte Kontaktnachrichten (Fallback-Einsicht, falls E-Mail mal ausfällt)
 app.get('/api/admin/bugs', requireAuth, (req, res) => {
@@ -2729,6 +2761,16 @@ const server = app.listen(PORT, async () => {
     if (seeded) console.log('i18n: Texte aus data/i18n-overrides.json in die Datenbank übernommen');
     await i18nContent.syncI18nFromSource(dbGet);
     console.log('i18n: Übersetzungsdateien aus Quelltexten neu aufgebaut');
+    // Sync saved price table into i18n so preise.html always reflects the DB
+    try {
+      const prRow = await dbGet(`SELECT value FROM settings WHERE key = 'prices_table'`);
+      if (prRow?.value) {
+        const prData = JSON.parse(prRow.value);
+        await syncPriceTableToI18n(prData);
+      }
+    } catch (e) {
+      console.error('Preistabelle i18n-Sync:', e.message);
+    }
   } catch (e) {
     console.error('i18n migrate:', e.message);
   }
