@@ -1,8 +1,8 @@
 (function () {
   if (!window.I18N_MESSAGES) window.I18N_MESSAGES = { de: {}, en: {} };
   const extra = { de: {
-  "meta.about.title": "Über mich – Kunsttherapeutin Paderborn",
-  "meta.about.description": "Ich bin psychosoziale und klinische Kunsttherapeutin mit über 16 Jahren Erfahrung – Palliativ, Psychoonkologie, mein eigenes Atelier in Paderborn.",
+  "meta.about.title": "Kunsttherapeutin Paderborn – Martina Schwierzke | 16 Jahre Erfahrung",
+  "meta.about.description": "Psychosoziale & klinische Kunsttherapeutin in Paderborn (OWL) – über 16 Jahre Erfahrung in Palliativ, Psychoonkologie und Klinischer Kunsttherapie. Atelier Paderborn.",
   "about.kicker": "Psychosoziale Kunsttherapeutin · Paderborn",
   "about.name": "Martina Schwierzke",
   "about.intro": "Als psychosoziale und klinische Kunsttherapeutin und Heilpraktikerin für Psychotherapie arbeite ich selbstständig. Mit über 16 Jahren Erfahrung begleite ich Menschen in schwierigen Situationen – im klinischen Kontext und im eigenen Atelier.",
@@ -17,8 +17,8 @@
   "about.offers": "Kunsttherapie & Angebote",
   "about.imgAlt": "Martina Schwierzke – psychosoziale Kunsttherapeutin in Paderborn"
 }, en: {
-  "meta.about.title": "About me – Art Therapist Paderborn",
-  "meta.about.description": "I am a psychosocial and clinical art therapist with over 16 years of experience – palliative care, psycho-oncology, and my own atelier in Paderborn.",
+  "meta.about.title": "Art Therapist Paderborn – Martina Schwierzke | 16 Years Experience",
+  "meta.about.description": "Psychosocial & clinical art therapist in Paderborn (OWL) – 16+ years in palliative care, psycho-oncology and clinical art therapy. Studio in Paderborn.",
   "about.kicker": "Psychosocial art therapist · Paderborn",
   "about.name": "Martina Schwierzke",
   "about.intro": "As a psychosocial and clinical art therapist and practitioner for psychotherapy, I work independently. With over 16 years of experience, I support people in difficult situations – in clinical settings and in private practice.",

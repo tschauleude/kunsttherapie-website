@@ -1,8 +1,8 @@
 (function () {
   if (!window.I18N_MESSAGES) window.I18N_MESSAGES = { de: {}, en: {} };
   const extra = { de: {
-  "meta.contact.title": "Kontakt – Kunsttherapie Paderborn",
-  "meta.contact.description": "Nachricht senden, anrufen oder Anfahrt zum Atelier Otto-Stadler-Straße 23c, Paderborn.",
+  "meta.contact.title": "Kontakt – Kunsttherapie Paderborn, Ostwestfalen-Lippe",
+  "meta.contact.description": "Kunsttherapeutin Martina Schwierzke, Paderborn (OWL): Anrufen, schreiben oder Anfahrt zum Atelier Otto-Stadler-Straße 23c, 33102 Paderborn.",
   "contact.kicker": "Kontakt",
   "contact.title": "Fragen, Anfragen & Termine",
   "contact.sub": "Für einen festen Termin nutze die <a href=\"buchung\">Online-Buchung</a>. Für alles andere: kurz schreiben oder anrufen.",
@@ -21,8 +21,8 @@
   "contact.msg.success": "Vielen Dank – die Nachricht ist angekommen. Ich melde mich zeitnah.",
   "contact.msg.error": "Nachricht konnte nicht gesendet werden"
 }, en: {
-  "meta.contact.title": "Contact – Art Therapy Paderborn",
-  "meta.contact.description": "Send a message, call, or find directions to the atelier at Otto-Stadler-Straße 23c, Paderborn.",
+  "meta.contact.title": "Contact – Art Therapy Paderborn, Ostwestfalen-Lippe",
+  "meta.contact.description": "Art therapist Martina Schwierzke, Paderborn (OWL): call, write, or get directions to the studio at Otto-Stadler-Straße 23c, 33102 Paderborn.",
   "contact.kicker": "Contact",
   "contact.title": "Questions, enquiries & appointments",
   "contact.sub": "For a fixed appointment, use <a href=\"buchung\">online booking</a>. For everything else: write briefly or call.",

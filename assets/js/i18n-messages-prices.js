@@ -1,8 +1,8 @@
 (function () {
   if (!window.I18N_MESSAGES) window.I18N_MESSAGES = { de: {}, en: {} };
   const extra = { de: {
-  "meta.prices.title": "Preise – Kunsttherapie Paderborn",
-  "meta.prices.description": "Klare Preise: Gruppensitzung und Auszeit je 39 €, Einzelsitzung 60 €, Teambuilding 49 € pro Teilnehmer – Material inklusive.",
+  "meta.prices.title": "Preise Kunsttherapie Paderborn – Gruppen ab 39 € | Einzelsitzung 60 €",
+  "meta.prices.description": "Kunsttherapie Paderborn: Gruppe & Auszeit je 39 €, Einzelsitzung 60 €, Teambuilding ab 49 € – Material i. d. R. inklusive. Für OWL und Paderborn.",
   "prices.kicker": "Preise",
   "prices.title": "Transparent & fair",
   "prices.sub": "Klare Preise – Materialien sind im Standard enthalten. Bei komplexeren Projekten können zusätzliche Materialkosten anfallen. Gruppe, Auszeit und Einzelsitzung dauern jeweils 60 Minuten.",
@@ -15,8 +15,8 @@
   "prices.costs.hint": "Je nach Versicherungstarif könnten private Kranken- oder Zusatzversicherungen die Kosten ganz oder teilweise übernehmen.",
   "prices.costs.cta": "Infos zur Kostenerstattung"
 }, en: {
-  "meta.prices.title": "Prices – Art Therapy Paderborn",
-  "meta.prices.description": "Clear prices: group session and creative evening €39 each, one-to-one €60, team building €49 per participant – materials included.",
+  "meta.prices.title": "Art Therapy Prices Paderborn – Groups from €39 | One-to-One €60",
+  "meta.prices.description": "Art therapy Paderborn: group & downtime from €39, one-to-one €60, team building from €49 – materials usually included.",
   "prices.kicker": "Prices",
   "prices.title": "Transparent & fair",
   "prices.sub": "Clear prices – materials are included as standard. For more complex projects, additional material costs may apply. Group, downtime, and one-to-one sessions each last 60 minutes.",
