@@ -434,18 +434,15 @@
     <!-- PREISTABELLE -->
     <section class="admin-section" id="prices">
       <h1>Preistabelle</h1>
-      <p class="sub section-desc">Bearbeite die Preistabelle direkt. Zeilen und Spalten lassen sich jederzeit hinzufügen oder löschen.</p>
+      <p class="sub section-desc">Passe Angebote, Dauer, Preis und Hinweis an. Änderungen sind sofort auf der Website sichtbar.</p>
 
       <div class="form-container" style="margin-top:1rem">
-        <div style="overflow-x:auto">
-          <table id="priceEditorTable" style="border-collapse:collapse;width:100%;min-width:500px"></table>
-        </div>
-        <div style="display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap">
+        <div id="priceCardList"></div>
+        <div style="display:flex;gap:0.75rem;margin-top:1.25rem;flex-wrap:wrap;align-items:center">
           <button type="button" class="btn-save" onclick="savePriceTable()">Speichern</button>
-          <button type="button" class="btn-small" onclick="addPriceRow()">+ Zeile</button>
-          <button type="button" class="btn-small" onclick="addPriceColumn()">+ Spalte</button>
+          <button type="button" class="btn-small" onclick="addPriceRow()">+ Angebot hinzufügen</button>
+          <span id="priceTableStatus" class="note"></span>
         </div>
-        <p id="priceTableStatus" class="note" style="margin-top:0.5rem"></p>
       </div>
     </section>
 

@@ -1947,37 +1947,49 @@ async function loadEventsList() {
 
 // ── Preistabelle ─────────────────────────────────────────────────────────────
 
-let _priceData = { columns: [], rows: [] };
+const PRICE_FIELDS = [
+  { key: 0, label: 'Angebot / Bezeichnung', placeholder: 'z. B. Einzelsitzung' },
+  { key: 1, label: 'Dauer', placeholder: 'z. B. 60 Minuten' },
+  { key: 2, label: 'Preis', placeholder: 'z. B. 60 €' },
+  { key: 3, label: 'Hinweis / Zusatztext', placeholder: 'z. B. individuell abgestimmt' },
+];
+
+let _priceData = { columns: ['Leistung', 'Dauer', 'Preis', 'Hinweis'], rows: [] };
 
 function renderPriceEditor(data) {
   _priceData = data;
-  const tbl = document.getElementById('priceEditorTable');
-  if (!tbl) return;
+  while (_priceData.columns.length < 4) _priceData.columns.push('');
 
-  const cellStyle = 'border:1px solid #ddd;padding:4px';
-  const inputStyle = 'width:100%;border:none;background:transparent;font:inherit;padding:2px 4px;min-width:80px;box-sizing:border-box';
+  const list = document.getElementById('priceCardList');
+  if (!list) return;
 
-  let html = '<thead><tr>';
-  data.columns.forEach((col, ci) => {
-    html += `<th style="${cellStyle};background:#f5f5f5;white-space:nowrap">
-      <input data-col="${ci}" data-type="col" value="${esc(col)}" style="${inputStyle};font-weight:600">
-      <button type="button" title="Spalte löschen" onclick="deletePriceColumn(${ci})" style="border:none;background:none;cursor:pointer;color:#c00;padding:0 2px;font-size:0.8rem">✕</button>
-    </th>`;
-  });
-  html += '<th style="width:32px"></th></tr></thead><tbody>';
+  const cardStyle = 'background:#f9f7f3;border:1px solid #e8e3d8;border-radius:10px;padding:1.1rem 1.25rem;margin-bottom:1rem;position:relative';
+  const labelStyle = 'display:block;font-size:11px;font-weight:700;color:#4a6e6a;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em';
+  const inputStyle = 'width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font:inherit;font-size:14px;color:#3d3d3d;box-sizing:border-box;background:#fff';
+  const gridStyle = 'display:grid;grid-template-columns:1fr 140px 110px 1fr;gap:12px;align-items:start';
+  const deleteBtnStyle = 'position:absolute;top:10px;right:12px;border:none;background:none;cursor:pointer;color:#b8736f;font-size:1.1rem;line-height:1;padding:2px 6px;border-radius:4px';
 
+  let html = '';
   data.rows.forEach((row, ri) => {
-    html += '<tr>';
-    data.columns.forEach((_, ci) => {
-      const val = row[ci] != null ? row[ci] : '';
-      html += `<td style="${cellStyle}"><input data-row="${ri}" data-col="${ci}" data-type="cell" value="${esc(val)}" style="${inputStyle}"></td>`;
+    html += `<div class="price-card" style="${cardStyle}">
+      <button type="button" title="Angebot löschen" onclick="deletePriceRow(${ri})" style="${deleteBtnStyle}">✕</button>
+      <div style="font-size:11px;color:#aaa;font-weight:600;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:.04em">Angebot ${ri + 1}</div>
+      <div style="${gridStyle}">`;
+    PRICE_FIELDS.forEach(({ key, label, placeholder }) => {
+      const val = row[key] != null ? row[key] : '';
+      html += `<div>
+        <label style="${labelStyle}">${label}</label>
+        <input data-row="${ri}" data-col="${key}" value="${esc(val)}" placeholder="${placeholder}" style="${inputStyle}">
+      </div>`;
     });
-    html += `<td style="${cellStyle};text-align:center">
-      <button type="button" title="Zeile löschen" onclick="deletePriceRow(${ri})" style="border:none;background:none;cursor:pointer;color:#c00;font-size:0.9rem">✕</button>
-    </td></tr>`;
+    html += `</div></div>`;
   });
-  html += '</tbody>';
-  tbl.innerHTML = html;
+
+  if (data.rows.length === 0) {
+    html = '<p style="color:#aaa;font-style:italic;margin:0 0 1rem">Noch keine Angebote. Klicke auf „+ Angebot hinzufügen".</p>';
+  }
+
+  list.innerHTML = html;
 }
 
 function esc(s) {
@@ -1985,15 +1997,16 @@ function esc(s) {
 }
 
 function collectPriceData() {
-  const tbl = document.getElementById('priceEditorTable');
-  const cols = [...tbl.querySelectorAll('[data-type="col"]')].map(i => i.value.trim());
-  const rowInputs = [...tbl.querySelectorAll('[data-type="cell"]')];
-  const numCols = cols.length;
-  const rows = [];
-  for (let i = 0; i < rowInputs.length; i += numCols) {
-    rows.push(rowInputs.slice(i, i + numCols).map(inp => inp.value.trim()));
-  }
-  return { columns: cols, rows };
+  const inputs = document.querySelectorAll('#priceCardList input[data-row]');
+  const rowMap = {};
+  inputs.forEach(inp => {
+    const ri = Number(inp.dataset.row);
+    const ci = Number(inp.dataset.col);
+    if (!rowMap[ri]) rowMap[ri] = [];
+    rowMap[ri][ci] = inp.value.trim();
+  });
+  const rows = Object.keys(rowMap).sort((a, b) => a - b).map(k => rowMap[k]);
+  return { columns: _priceData.columns, rows };
 }
 
 async function loadPriceTable() {
@@ -2017,7 +2030,7 @@ async function savePriceTable() {
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error((await res.json()).error);
-    if (status) { status.textContent = 'Gespeichert!'; setTimeout(() => { status.textContent = ''; }, 2500); }
+    if (status) { status.textContent = '✓ Gespeichert'; setTimeout(() => { status.textContent = ''; }, 2500); }
   } catch (err) {
     if (status) status.textContent = 'Fehler: ' + err.message;
   }
@@ -2025,27 +2038,13 @@ async function savePriceTable() {
 
 function addPriceRow() {
   const data = collectPriceData();
-  data.rows.push(data.columns.map(() => ''));
-  renderPriceEditor(data);
-}
-
-function addPriceColumn() {
-  const data = collectPriceData();
-  data.columns.push('Neue Spalte');
-  data.rows = data.rows.map(r => [...r, '']);
+  data.rows.push(['', '', '', '']);
   renderPriceEditor(data);
 }
 
 function deletePriceRow(ri) {
   const data = collectPriceData();
   data.rows.splice(ri, 1);
-  renderPriceEditor(data);
-}
-
-function deletePriceColumn(ci) {
-  const data = collectPriceData();
-  data.columns.splice(ci, 1);
-  data.rows = data.rows.map(r => { r.splice(ci, 1); return r; });
   renderPriceEditor(data);
 }
 
