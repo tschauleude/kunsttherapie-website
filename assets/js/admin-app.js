@@ -179,7 +179,7 @@ function switchSection(sectionId, navEl) {
   }
   if (sectionId === 'atelier') loadAtelierList();
   if (sectionId === 'events') loadEventsList();
-  if (sectionId === 'prices') loadPriceTable();
+  if (sectionId === 'prices' || sectionId === 'services') loadPriceTable();
   if (sectionId === 'images') loadSiteImagesList();
   if (sectionId === 'texts') initTextsSection();
   if (sectionId === 'contact') loadContactMessages();
