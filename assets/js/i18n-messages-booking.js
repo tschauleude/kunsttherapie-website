@@ -48,7 +48,10 @@
   "book.success": "Anfrage eingegangen. Vielen Dank!",
   "book.error": "Buchung fehlgeschlagen",
   "book.slotBusy": "(belegt)",
-  "book.timeUnit": "Uhr"
+  "book.timeUnit": "Uhr",
+  "book.selectedTitle": "Ausgewählte Termine",
+  "book.selectedHint": "Mehrere Termine wählen: Klicke auf einen grünen Tag und dann auf eine freie Uhrzeit. Du kannst Termine an verschiedenen Tagen kombinieren.",
+  "book.noSlotSelected": "Bitte wähle mindestens einen Termin aus."
 }, en: {
   "meta.booking.title": "Book appointment – Art Therapy Paderborn",
   "meta.booking.description": "Request an appointment online: Tuesday mornings and Thursday evenings. Available slots in the calendar – confirmation by email.",
@@ -97,7 +100,10 @@
   "book.success": "Request received. Thank you!",
   "book.error": "Booking failed",
   "book.slotBusy": "(unavailable)",
-  "book.timeUnit": ""
+  "book.timeUnit": "",
+  "book.selectedTitle": "Selected appointments",
+  "book.selectedHint": "You can select multiple slots: click a green day, then a free time. You can combine slots across different days.",
+  "book.noSlotSelected": "Please select at least one appointment."
 } };
   Object.assign(window.I18N_MESSAGES.de, extra.de);
   Object.assign(window.I18N_MESSAGES.en, extra.en);

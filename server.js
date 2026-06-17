@@ -1701,64 +1701,90 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
     });
   }
 
-  const { name, email, phone, date, startTime, message } = booking.normalizeBookingPayload(req.body);
+  const { name, email: emailAddr, phone, message } = booking.normalizeBookingPayload(req.body);
 
-  if (!name || !email || !date || !startTime) {
+  if (!name || !emailAddr) {
     return res.status(400).json({ error: apiMsg('booking.required', lang) });
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddr)) {
     return res.status(400).json({ error: apiMsg('contact.invalidEmail', lang) });
   }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(startTime)) {
-    return res.status(400).json({ error: apiMsg('booking.invalidDateTime', lang) });
-  }
-  // Längenbegrenzung für Freitextfelder.
   if (name.length > 120)
     return res.status(400).json({ error: 'Name zu lang (max. 120 Zeichen)' });
-  if (email.length > 200)
+  if (emailAddr.length > 200)
     return res.status(400).json({ error: 'E-Mail-Adresse zu lang (max. 200 Zeichen)' });
   if (phone && phone.length > 50)
     return res.status(400).json({ error: 'Telefonnummer zu lang (max. 50 Zeichen)' });
   if (message && message.length > 2000)
     return res.status(400).json({ error: 'Nachricht zu lang (max. 2000 Zeichen)' });
-  if (!booking.isWorkingDay(date)) {
-    return res.status(400).json({ error: apiMsg('booking.noWorkingDay', lang) });
+
+  // Accept either new { slots: [{date, startTime}] } or legacy { date, startTime }
+  let rawSlots = req.body.slots;
+  if (!rawSlots || !Array.isArray(rawSlots) || rawSlots.length === 0) {
+    const { date, startTime } = booking.normalizeBookingPayload(req.body);
+    if (!date || !startTime) return res.status(400).json({ error: apiMsg('booking.required', lang) });
+    rawSlots = [{ date, startTime }];
   }
-  if (booking.isSlotInPast(date, startTime)) {
-    return res.status(400).json({ error: apiMsg('booking.tooSoon', lang) });
+  if (rawSlots.length > 10) {
+    return res.status(400).json({ error: 'Maximal 10 Termine pro Buchung.' });
   }
 
-  const daySlots = booking.generateSlotsForDay(date);
-  const slot = daySlots.find((s) => s.start === startTime);
-  if (!slot) {
-    return res.status(400).json({ error: apiMsg('booking.invalidSlot', lang) });
+  // Validate each slot
+  for (const s of rawSlots) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(s.date) || !/^\d{2}:\d{2}$/.test(s.startTime)) {
+      return res.status(400).json({ error: apiMsg('booking.invalidDateTime', lang) });
+    }
+    if (!booking.isWorkingDay(s.date)) {
+      return res.status(400).json({ error: apiMsg('booking.noWorkingDay', lang) });
+    }
+    if (booking.isSlotInPast(s.date, s.startTime)) {
+      return res.status(400).json({ error: apiMsg('booking.tooSoon', lang) });
+    }
   }
 
   try {
-    const { localBusy, googleBusy } = await getBusyForRange(date, date);
-    const intervals = busyForDate(date, localBusy, googleBusy);
-    const available = booking.slotsWithAvailability(date, intervals);
-    const chosen = available.find((s) => s.start === startTime);
-    if (!chosen || !chosen.available) {
-      return res.status(409).json({ error: apiMsg('booking.unavailable', lang) });
+    // Check availability and resolve end times for all slots
+    const resolvedSlots = [];
+    for (const s of rawSlots) {
+      const { localBusy, googleBusy } = await getBusyForRange(s.date, s.date);
+      const intervals = busyForDate(s.date, localBusy, googleBusy);
+      const available = booking.slotsWithAvailability(s.date, intervals);
+      const chosen = available.find((a) => a.start === s.startTime);
+      if (!chosen || !chosen.available) {
+        return res.status(409).json({ error: apiMsg('booking.unavailable', lang) });
+      }
+      resolvedSlots.push({ date: s.date, start: chosen.start, end: chosen.end });
     }
 
     const verifyToken = require('crypto').randomBytes(32).toString('hex');
+    const nameTrimmed = name.trim();
+    const emailTrimmed = emailAddr.trim();
+    const phoneTrimmed = phone ? phone.trim() : null;
+    const messageTrimmed = message ? message.trim() : null;
 
-    const result = await dbRun(
-      `INSERT INTO bookings (name, email, phone, date, start_time, end_time, message, status, verify_token)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'pending_verification', ?)`,
-      [name.trim(), email.trim(), phone ? phone.trim() : null, date, slot.start, slot.end, message ? message.trim() : null, verifyToken]
-    );
+    const insertedRows = [];
+    for (const s of resolvedSlots) {
+      const result = await dbRun(
+        `INSERT INTO bookings (name, email, phone, date, start_time, end_time, message, status, verify_token)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 'pending_verification', ?)`,
+        [nameTrimmed, emailTrimmed, phoneTrimmed, s.date, s.start, s.end, messageTrimmed, verifyToken]
+      );
+      const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
+      insertedRows.push(row);
+    }
 
-    const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
     const baseUrl = publicBaseUrl(req);
     const verifyUrl = `${baseUrl}/api/bookings/verify/${verifyToken}`;
-    const when = email.formatGermanDateTime(row);
+    const whenList = insertedRows.map((r) => email.formatGermanDateTime(r));
 
     let emailSent = false;
     try {
-      const emailResult = await email.sendBookingVerification({ name: row.name, email: row.email, verifyUrl, when });
+      const emailResult = await email.sendBookingVerification({
+        name: nameTrimmed,
+        email: emailTrimmed,
+        verifyUrl,
+        whenList,
+      });
       emailSent = Boolean(emailResult.sent);
     } catch (mailErr) {
       console.error('Booking verify email failed:', mailErr.message);
@@ -1766,17 +1792,13 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
 
     res.json({
       success: true,
-      id: row.id,
+      count: insertedRows.length,
       status: 'pending_verification',
-      date: row.date,
-      startTime: row.start_time,
-      endTime: row.end_time,
       emailSent,
       message: apiMsg('booking.verifyEmail', lang),
     });
   } catch (e) {
     if (e && (e.code === 'SQLITE_CONSTRAINT' || /UNIQUE constraint/i.test(e.message || ''))) {
-      // Paralleler Buchungsversuch hat den Slot gerade belegt.
       return res.status(409).json({ error: apiMsg('booking.unavailable', lang) });
     }
     console.error('booking create error:', e);
@@ -1788,30 +1810,32 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
 app.get('/api/bookings/verify/:token', contactVerifyRateLimiter, async (req, res) => {
   const { token } = req.params;
   let row;
+  let rows;
   try {
-    row = await dbGet(
+    rows = await dbAll(
       `SELECT * FROM bookings WHERE verify_token = ? AND status = 'pending_verification' AND datetime(createdAt) > datetime('now', '-24 hours')`,
       [token]
     );
   } catch (e) {
     return res.status(500).type('text/html; charset=utf-8').send('Datenbankfehler.');
   }
-  if (!row) {
+  if (!rows || rows.length === 0) {
     return res.status(400).type('text/html; charset=utf-8').send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Link ungültig</title></head><body style="font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8"><h2 style="color:#4a6e6a">Link ungültig oder abgelaufen</h2><p>Dieser Bestätigungslink ist abgelaufen (gültig 24 Stunden) oder wurde bereits genutzt. Bitte sende die Buchungsanfrage erneut.</p><p><a href="/buchung">Zur Buchung</a></p></body></html>`);
   }
 
-  await dbRun(`UPDATE bookings SET status = 'pending', verify_token = NULL WHERE id = ?`, [row.id]).catch(() => {});
-
-  const confirmedRow = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [row.id]).catch(() => row);
-  const baseUrl = publicBaseUrl(req);
+  for (const r of rows) {
+    await dbRun(`UPDATE bookings SET status = 'pending', verify_token = NULL WHERE id = ?`, [r.id]).catch(() => {});
+  }
 
   try {
-    await email.sendBookingRequestEmails(confirmedRow);
+    await email.sendBookingRequestEmails(rows);
   } catch (e) {
     console.error('Booking request email after verify failed:', e.message);
   }
 
-  res.type('text/html; charset=utf-8').send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Bestätigt</title><style>body{font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8}h2{color:#4a6e6a}a{color:#4a6e6a}</style></head><body><h2>E-Mail bestätigt – Vielen Dank!</h2><p>Ihre Terminanfrage ist eingegangen. Sie erhalten in Kürze eine Bestätigung per E-Mail.</p><p><a href="/">Zurück zur Website</a></p></body></html>`);
+  const count = rows.length;
+  const plural = count > 1 ? ` (${count} Termine)` : '';
+  res.type('text/html; charset=utf-8').send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Bestätigt</title><style>body{font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8}h2{color:#4a6e6a}a{color:#4a6e6a}</style></head><body><h2>E-Mail bestätigt – Vielen Dank!</h2><p>Ihre Terminanfrage${plural} ist eingegangen. Sie erhalten in Kürze eine Bestätigung per E-Mail.</p><p><a href="/">Zurück zur Website</a></p></body></html>`);
 });
 
 function atelierRateLimit(req) {

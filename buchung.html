@@ -135,6 +135,12 @@
       <div id="slotsList" class="slots-list"></div>
       <p id="slotsHint" class="sub" style="margin-top:1rem" data-i18n-html="book.slotsHint">Nur <strong>Dienstag morgens</strong> und <strong>Donnerstag abends</strong> – Termine à 60 Minuten.</p>
     </div>
+
+    <div class="card booking-selected-panel" id="selectedSlotsPanel" hidden>
+      <h2 data-i18n="book.selectedTitle">Ausgewählte Termine</h2>
+      <ul id="selectedSlotsList" class="selected-slots-list"></ul>
+      <p class="sub" data-i18n="book.selectedHint">Wähle beliebig viele Termine aus – du kannst auch Termine an verschiedenen Tagen kombinieren.</p>
+    </div>
   </div>
 
   <noscript>
@@ -165,8 +171,7 @@
       <label for="bookMessage" data-i18n="form.message">Nachricht (optional)</label>
       <textarea id="bookMessage" name="message" rows="4" data-i18n-placeholder="book.messagePlaceholder" placeholder="z.B. Erstgespräch, Gruppe Dienstag morgens, Auszeit Donnerstag abends …"></textarea>
 
-      <input type="hidden" id="bookDate" name="date"/>
-      <input type="hidden" id="bookStart" name="startTime"/>
+      <input type="hidden" id="bookSlots" name="slots"/>
       <input type="hidden" id="bookFormAt" name="_formAt"/>
       <div class="visually-hidden" aria-hidden="true">
         <label for="bookWebsite">Website</label>
