@@ -409,9 +409,16 @@ function initializeDatabase() {
         phone TEXT,
         message TEXT NOT NULL,
         email_sent INTEGER DEFAULT 0,
+        status TEXT DEFAULT 'pending_verification',
+        verify_token TEXT,
+        action_token TEXT,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+    // Migration: add columns to existing DBs
+    db.run(`ALTER TABLE contact_messages ADD COLUMN status TEXT DEFAULT 'pending_verification'`, () => {});
+    db.run(`ALTER TABLE contact_messages ADD COLUMN verify_token TEXT`, () => {});
+    db.run(`ALTER TABLE contact_messages ADD COLUMN action_token TEXT`, () => {});
 
     db.run(`
       CREATE TABLE IF NOT EXISTS site_images (
@@ -1429,42 +1436,98 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
     message: message.trim(),
   };
 
-  // Nachricht IMMER zuerst in der DB sichern – so geht sie auch dann nicht
-  // verloren, wenn der E-Mail-Versand scheitert (z. B. SMTP nicht erreichbar).
-  let saved = false;
+  const crypto = require('crypto');
+  const verifyToken = crypto.randomBytes(32).toString('hex');
+  const actionToken = crypto.randomBytes(32).toString('hex');
+
   let savedId = null;
   try {
     const ins = await dbRun(
-      `INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)`,
-      [payload.name, payload.email, payload.phone || null, payload.message]
+      `INSERT INTO contact_messages (name, email, phone, message, status, verify_token, action_token) VALUES (?, ?, ?, ?, 'pending_verification', ?, ?)`,
+      [payload.name, payload.email, payload.phone || null, payload.message, verifyToken, actionToken]
     );
     savedId = ins.lastID;
-    saved = true;
   } catch (dbErr) {
     console.error('contact persist error:', dbErr.message);
+    return res.status(503).json({ error: apiMsg('contact.mailFailed', lang) });
   }
+
+  const baseUrl = publicBaseUrl(req);
+  const verifyUrl = `${baseUrl}/api/contact/verify/${verifyToken}`;
 
   let sent = false;
   try {
-    const result = await email.sendContactMessage(payload);
+    const result = await email.sendContactVerification({ name: payload.name, email: payload.email, verifyUrl });
     sent = Boolean(result.sent);
   } catch (e) {
-    console.error('contact email error:', e.message);
-  }
-
-  if (sent && savedId) {
-    dbRun(`UPDATE contact_messages SET email_sent = 1 WHERE id = ?`, [savedId]).catch(() => {});
+    console.error('contact verify email error:', e.message);
   }
 
   if (sent) {
-    return res.json({ success: true, message: apiMsg('contact.success', lang) });
+    return res.json({ success: true, message: 'Bitte bestätigen Sie Ihre E-Mail-Adresse. Wir haben Ihnen einen Link zugeschickt.' });
   }
-  if (saved) {
-    // E-Mail fehlgeschlagen, aber Nachricht ist gespeichert → Besucher nicht abweisen.
-    return res.json({ success: true, message: apiMsg('contact.success', lang) });
+  // E-Mail fehlgeschlagen aber Nachricht gespeichert
+  return res.json({ success: true, message: apiMsg('contact.success', lang) });
+});
+
+// Schritt 2: Absender bestätigt E-Mail → Nachricht geht an Martina
+app.get('/api/contact/verify/:token', async (req, res) => {
+  const { token } = req.params;
+  let msg;
+  try {
+    msg = await dbGet(`SELECT * FROM contact_messages WHERE verify_token = ? AND status = 'pending_verification'`, [token]);
+  } catch (e) {
+    return res.status(500).send('Datenbankfehler.');
   }
-  // Weder Mail noch Speicherung möglich – ehrliche Fehlermeldung.
-  res.status(503).json({ error: apiMsg('contact.mailFailed', lang) });
+  if (!msg) {
+    return res.status(400).send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Link ungültig</title></head><body style="font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d"><h2>Link ungültig oder bereits verwendet</h2><p>Dieser Bestätigungslink ist abgelaufen oder wurde schon genutzt.</p></body></html>`);
+  }
+
+  await dbRun(`UPDATE contact_messages SET status = 'verified' WHERE id = ?`, [msg.id]).catch(() => {});
+
+  const baseUrl = publicBaseUrl(req);
+  const confirmUrl = `${baseUrl}/api/contact/action/${msg.action_token}/confirm`;
+  const rejectUrl  = `${baseUrl}/api/contact/action/${msg.action_token}/reject`;
+
+  try {
+    await email.sendContactNotificationToPractice({
+      name: msg.name, email: msg.email, phone: msg.phone, message: msg.message,
+      confirmUrl, rejectUrl,
+    });
+  } catch (e) {
+    console.error('contact notify practice error:', e.message);
+  }
+
+  res.send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Bestätigt</title><style>body{font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8}h2{color:#4a6e6a}</style></head><body><h2>Vielen Dank!</h2><p>Ihre E-Mail-Adresse wurde bestätigt. Ihre Nachricht wurde weitergeleitet – Sie erhalten eine Antwort in Kürze.</p></body></html>`);
+});
+
+// Schritt 3: Martina bestätigt oder lehnt ab → Outcome-Mail an Absender
+app.get('/api/contact/action/:token/:action', async (req, res) => {
+  const { token, action } = req.params;
+  if (action !== 'confirm' && action !== 'reject') return res.status(400).send('Ungültige Aktion.');
+
+  let msg;
+  try {
+    msg = await dbGet(`SELECT * FROM contact_messages WHERE action_token = ? AND status = 'verified'`, [token]);
+  } catch (e) {
+    return res.status(500).send('Datenbankfehler.');
+  }
+  if (!msg) {
+    return res.status(400).send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Link ungültig</title></head><body style="font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d"><h2>Link ungültig oder bereits verwendet</h2><p>Diese Anfrage wurde bereits bearbeitet.</p></body></html>`);
+  }
+
+  const newStatus = action === 'confirm' ? 'confirmed' : 'rejected';
+  await dbRun(`UPDATE contact_messages SET status = ? WHERE id = ?`, [newStatus, msg.id]).catch(() => {});
+
+  try {
+    await email.sendContactOutcome({ name: msg.name, email: msg.email, accepted: action === 'confirm' });
+  } catch (e) {
+    console.error('contact outcome email error:', e.message);
+  }
+
+  const label = action === 'confirm' ? 'angenommen' : 'abgelehnt';
+  const color = action === 'confirm' ? '#4a6e6a' : '#b8736f';
+  res.send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Erledigt</title><style>body{font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8}h2{color:${color}}</style></head><body><h2>Anfrage ${label}</h2><p>${msg.name} wurde automatisch per E-Mail benachrichtigt.</p></body></html>`);
 });
 
 // ── Preistabelle ─────────────────────────────────────────────────────────────
