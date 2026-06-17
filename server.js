@@ -223,6 +223,16 @@ const contactRateLimiter = rateLimit({
   ...rateLimitJson('Zu viele Nachrichten – bitte in einer Stunde erneut versuchen.'),
 });
 
+const contactVerifyRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).type('text/html; charset=utf-8').send('<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Zu viele Versuche</title></head><body style="font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d"><h2>Zu viele Versuche</h2><p>Bitte in 15 Minuten erneut versuchen.</p></body></html>');
+  },
+});
+
 const eventRegRateLimiter = rateLimit({
   ...rateLimitJson('Zu viele Anmeldungen – bitte in einer Stunde erneut versuchen.'),
   max: 8,
@@ -1471,19 +1481,22 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
 });
 
 // Schritt 2: Absender bestätigt E-Mail → Nachricht geht an Martina
-app.get('/api/contact/verify/:token', async (req, res) => {
+app.get('/api/contact/verify/:token', contactVerifyRateLimiter, async (req, res) => {
   const { token } = req.params;
   let msg;
   try {
-    msg = await dbGet(`SELECT * FROM contact_messages WHERE verify_token = ? AND status = 'pending_verification'`, [token]);
+    msg = await dbGet(
+      `SELECT * FROM contact_messages WHERE verify_token = ? AND status = 'pending_verification' AND datetime(createdAt) > datetime('now', '-24 hours')`,
+      [token]
+    );
   } catch (e) {
-    return res.status(500).send('Datenbankfehler.');
+    return res.status(500).type('text/html; charset=utf-8').send('Datenbankfehler.');
   }
   if (!msg) {
-    return res.status(400).send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Link ungültig</title></head><body style="font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d"><h2>Link ungültig oder bereits verwendet</h2><p>Dieser Bestätigungslink ist abgelaufen oder wurde schon genutzt.</p></body></html>`);
+    return res.status(400).type('text/html; charset=utf-8').send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Link ungültig</title></head><body style="font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8"><h2 style="color:#4a6e6a">Link ungültig oder abgelaufen</h2><p>Dieser Bestätigungslink ist abgelaufen (gültig 24 Stunden) oder wurde bereits genutzt. Bitte sende die Kontaktanfrage erneut.</p></body></html>`);
   }
 
-  await dbRun(`UPDATE contact_messages SET status = 'verified' WHERE id = ?`, [msg.id]).catch(() => {});
+  await dbRun(`UPDATE contact_messages SET status = 'verified', verify_token = NULL WHERE id = ?`, [msg.id]).catch(() => {});
 
   const baseUrl = publicBaseUrl(req);
   const confirmUrl = `${baseUrl}/api/contact/action/${msg.action_token}/confirm`;
@@ -1498,26 +1511,26 @@ app.get('/api/contact/verify/:token', async (req, res) => {
     console.error('contact notify practice error:', e.message);
   }
 
-  res.send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Bestätigt</title><style>body{font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8}h2{color:#4a6e6a}</style></head><body><h2>Vielen Dank!</h2><p>Ihre E-Mail-Adresse wurde bestätigt. Ihre Nachricht wurde weitergeleitet – Sie erhalten eine Antwort in Kürze.</p></body></html>`);
+  res.type('text/html; charset=utf-8').send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Bestätigt</title><style>body{font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8}h2{color:#4a6e6a}</style></head><body><h2>Vielen Dank!</h2><p>Ihre E-Mail-Adresse wurde bestätigt. Ihre Nachricht wurde weitergeleitet – Sie erhalten eine Antwort in Kürze.</p></body></html>`);
 });
 
 // Schritt 3: Martina bestätigt oder lehnt ab → Outcome-Mail an Absender
-app.get('/api/contact/action/:token/:action', async (req, res) => {
+app.get('/api/contact/action/:token/:action', contactVerifyRateLimiter, async (req, res) => {
   const { token, action } = req.params;
-  if (action !== 'confirm' && action !== 'reject') return res.status(400).send('Ungültige Aktion.');
+  if (action !== 'confirm' && action !== 'reject') return res.status(400).type('text/html; charset=utf-8').send('Ungültige Aktion.');
 
   let msg;
   try {
     msg = await dbGet(`SELECT * FROM contact_messages WHERE action_token = ? AND status = 'verified'`, [token]);
   } catch (e) {
-    return res.status(500).send('Datenbankfehler.');
+    return res.status(500).type('text/html; charset=utf-8').send('Datenbankfehler.');
   }
   if (!msg) {
-    return res.status(400).send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Link ungültig</title></head><body style="font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d"><h2>Link ungültig oder bereits verwendet</h2><p>Diese Anfrage wurde bereits bearbeitet.</p></body></html>`);
+    return res.status(400).type('text/html; charset=utf-8').send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Link ungültig</title></head><body style="font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8"><h2 style="color:#4a6e6a">Bereits bearbeitet</h2><p>Diese Anfrage wurde bereits bearbeitet oder der Link ist ungültig.</p></body></html>`);
   }
 
   const newStatus = action === 'confirm' ? 'confirmed' : 'rejected';
-  await dbRun(`UPDATE contact_messages SET status = ? WHERE id = ?`, [newStatus, msg.id]).catch(() => {});
+  await dbRun(`UPDATE contact_messages SET status = ?, action_token = NULL WHERE id = ?`, [newStatus, msg.id]).catch(() => {});
 
   try {
     await email.sendContactOutcome({ name: msg.name, email: msg.email, accepted: action === 'confirm' });
@@ -1527,7 +1540,7 @@ app.get('/api/contact/action/:token/:action', async (req, res) => {
 
   const label = action === 'confirm' ? 'angenommen' : 'abgelehnt';
   const color = action === 'confirm' ? '#4a6e6a' : '#b8736f';
-  res.send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Erledigt</title><style>body{font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8}h2{color:${color}}</style></head><body><h2>Anfrage ${label}</h2><p>${msg.name} wurde automatisch per E-Mail benachrichtigt.</p></body></html>`);
+  res.type('text/html; charset=utf-8').send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Erledigt</title><style>body{font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8}h2{color:${color}}</style></head><body><h2>Anfrage ${label}</h2><p>${msg.name} wurde automatisch per E-Mail benachrichtigt.</p></body></html>`);
 });
 
 // ── Preistabelle ─────────────────────────────────────────────────────────────
@@ -2648,6 +2661,7 @@ const server = app.listen(PORT, async () => {
   console.log(`║  Server running on http://localhost:${PORT}      ║`);
   console.log(`║  Admin Panel: http://localhost:${PORT}/admin  ║`);
   console.log(`╚════════════════════════════════════════╝\n`);
+  email.logSmtpWarning();
   try {
     await dbReady;
     const cleaned = await i18nContent.migrateRentedOverrides(dbGet, dbRun);
