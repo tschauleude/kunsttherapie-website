@@ -113,7 +113,7 @@
 
     <div class="table-wrap">
       <table class="prices">
-        <thead data-i18n-html="prices.tableHead">
+        <thead>
           <tr>
             <th scope="col">Leistung</th>
             <th scope="col">Dauer</th>
@@ -121,7 +121,7 @@
             <th scope="col">Hinweis</th>
           </tr>
         </thead>
-        <tbody data-i18n-html="prices.tableBody">
+        <tbody>
           <tr>
             <td>Gruppensitzung</td>
             <td data-label="Dauer">60 Minuten</td>
@@ -215,14 +215,12 @@
       fetch('/api/prices-table')
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (data) {
-          if (!data || !data.columns || !data.rows) return;
+          if (!data || !data.columns || !Array.isArray(data.rows) || data.rows.length === 0) return;
           var tbl = document.querySelector('table.prices');
           if (!tbl) return;
           var thead = tbl.querySelector('thead');
           var tbody = tbl.querySelector('tbody');
           if (!thead || !tbody) return;
-          thead.removeAttribute('data-i18n-html');
-          tbody.removeAttribute('data-i18n-html');
           thead.innerHTML = '<tr>' + data.columns.map(function (c) {
             return '<th scope="col">' + c + '</th>';
           }).join('') + '</tr>';
