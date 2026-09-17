@@ -76,6 +76,7 @@ einmalige Ersteinrichtung über `/admin`).
 | `npm run build-frontend` | Kompletter Frontend-Build, siehe [05](05-inhalte-i18n.md) |
 | `npm run qa` | i18n-Validierung + Syntaxprüfung aller Frontend-Skripte |
 | `npm run qa:interactions` | Browser-Durchlauf über alle Seiten (Playwright, Server muss laufen) |
+| `npm run check-google` | Diagnose der Google-Kalender-Anbindung inkl. echtem API-Zugriff |
 | `npm run smoke` | Prüft Assets, i18n und HTML-Referenzen; optional per `SMOKE_URL` gegen eine laufende Instanz |
 | `npm run sync-admin` | `admin.html` → `public/admin.html` kopieren |
 | `npm run setup-admin` | Admin-Konto interaktiv anlegen |

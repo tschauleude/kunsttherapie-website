@@ -130,6 +130,16 @@ selbst und legt ihn in der Datenbank ab (Tabelle `settings`).
 
 ## Schritt 7 – Verbindung prüfen
 
+Auf dem Server:
+
+```bash
+npm run check-google
+```
+
+Das Skript prüft die `.env`-Werte, den gespeicherten Token und macht einen
+**echten Lesezugriff** auf den Kalender. Nur der dritte Punkt beweist, dass die
+Anbindung trägt – siehe [Ausfallverhalten](#ausfallverhalten-wichtig).
+
 ```bash
 curl -s https://www.kunsttherapie-pb.de/api/bookings/config
 ```
