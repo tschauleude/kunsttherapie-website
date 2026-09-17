@@ -65,14 +65,26 @@ Beides muss grün sein, sonst bricht der Workflow vor dem Deploy ab.
 
 ### 2. Nach `main` bringen
 
+Für die aktuelle Arbeit existiert bereits ein Pull Request:
+
+**[PR #98 – Dokumentation und Buchungskalender-Fixes](https://github.com/tschauleude/kunsttherapie-website/pull/98)**
+(Branch `claude/brave-sagan-eowru5` → `main`)
+
+Sobald die Prüfungen im PR grün sind, genügt **Merge pull request** auf GitHub.
+Das ist der Push auf `main` und löst damit den Upload aus – ein zusätzlicher
+Schritt ist nicht nötig.
+
+Falls kein PR vorliegt, ginge es auch direkt:
+
 ```bash
 git checkout main
 git pull origin main
-git merge claude/brave-sagan-eowru5
+git merge <branch>
 git push origin main
 ```
 
-Alternativ – und besser nachvollziehbar – über einen Pull Request auf GitHub.
+Der Weg über einen Pull Request ist aber vorzuziehen: Dort laufen die Prüfungen
+**vor** dem Merge, und der Stand bleibt nachvollziehbar.
 
 ### 3. Zusehen und verifizieren
 
@@ -142,15 +154,18 @@ Ausgangslage, bereits geprüft:
   ERFOLGREICH, inklusive SSH-Schritt. Es gibt keine fehlgeschlagenen Läufe.
 - Das Deployment ist also nicht defekt, es wurde seit Juni nur nichts nach
   main gemerged. Es muss nichts repariert, sondern nur ausgelöst werden.
-- Fertige, noch nicht gemergte Arbeit liegt auf dem Branch
-  claude/brave-sagan-eowru5 (Dokumentation in docs/ plus drei Frontend-Fixes).
+- Fertige, noch nicht gemergte Arbeit liegt im offenen Pull Request #98
+  (Branch claude/brave-sagan-eowru5 -> main): Dokumentation in docs/ plus
+  drei Frontend-Fixes am Buchungskalender und am Porträt.
 
 Bitte der Reihe nach:
-1. npm ci && npm run build-frontend && npm run qa ausführen und bestätigen,
-   dass beides grün ist. Falls der Build assets/asset-manifest.json nur im
-   Zeitstempel ändert, diese Datei nicht committen.
-2. Den Branch claude/brave-sagan-eowru5 nach main bringen (bevorzugt per
-   Pull Request) und pushen.
+1. Den Status der Prüfungen in PR #98 ansehen und melden, ob sie grün sind.
+   Falls rot: Ursache benennen und beheben. Zur Gegenprobe lokal
+   npm ci && npm run build-frontend && npm run qa ausführen. Falls der Build
+   assets/asset-manifest.json nur im Zeitstempel ändert, diese Datei nicht
+   committen.
+2. PR #98 nach main mergen. Der Merge IST der Push auf main und löst den
+   Upload aus - ein separater Push ist nicht nötig.
 3. Den ausgelösten Actions-Lauf "Deploy to Strato VPS" beobachten und melden,
    ob die Jobs "build" und "deploy" grün werden.
 4. Falls der Deploy-Job fehlschlägt: das Log auswerten und die Ursache
