@@ -606,7 +606,10 @@ h3 {
 /* Über mich: Porträt groß wie Text-Karte, Martina zentriert */
 .page-ueber-mich .hero-grid--about {
   grid-template-columns: 1fr 1fr;
-  align-items: stretch;
+  /* Nicht auf Texthöhe strecken: der lange Textblock zwang den Porträtrahmen
+     auf ~1370px, wodurch das Bild (4:5) mit object-fit:contain oben und unten
+     je ~380px Leerfläche stehen ließ. */
+  align-items: start;
 }
 
 .page-ueber-mich .hero-right--portrait.card {
@@ -616,11 +619,10 @@ h3 {
   flex-direction: column;
   align-items: stretch;
   justify-content: stretch;
-  min-height: 100%;
 }
 
 .page-ueber-mich .hero-portrait-frame {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   margin: 0;
   width: 100%;
   min-height: min(520px, 72vh);
@@ -3868,8 +3870,8 @@ nav a[aria-current='page'] {
 }
 
 .legend-free { background: var(--color-teal); }
-.legend-busy { background: #c4c4c4; }
-.legend-off { background: #ebe8e3; }
+.legend-busy { background: var(--color-rose); }
+.legend-off { background: #cfcccc; }
 
 .booking-weekdays {
   display: grid;
@@ -3907,6 +3909,14 @@ nav a[aria-current='page'] {
 .booking-day-off {
   background: rgba(0, 0, 0, 0.04);
   color: var(--text-light);
+  cursor: not-allowed;
+}
+
+/* Vergangene Tage: weder frei noch ausgebucht – nicht anklickbar. */
+.booking-day-past {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--text-light);
+  opacity: 0.55;
   cursor: not-allowed;
 }
 

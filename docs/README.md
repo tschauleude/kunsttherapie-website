@@ -21,6 +21,7 @@ Stand: 16.09.2026 · geprüft gegen den Code in `main`
 | [08 – Google Kalender](08-google-kalender.md) | Betrieb / Praxis | Kalender verbinden, Schritt für Schritt |
 | [09 – Website-Review](09-website-review.md) | alle | Geprüfter Stand vom 16.09.2026, Befunde nach Priorität |
 | [10 – Termin-Vorbereitung](10-termin-vorbereitung.md) | intern | Ablauf und offene Fragen für den Termin mit der Inhaberin |
+| [11 – Automatisches Deployment](11-automatisches-deployment.md) | Betrieb | Automatischen Upload auslösen und verifizieren, inkl. fertigem Prompt |
 
 ---
 

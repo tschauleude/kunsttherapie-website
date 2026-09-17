@@ -1,6 +1,6 @@
 # Website-Review
 
-Stand: 16.09.2026
+Stand: 16.09.2026 · Fixes vom 17.09.2026 eingearbeitet
 
 ## Wie geprüft wurde
 
@@ -71,7 +71,7 @@ Richtung Suchmaschinen.
 
 ### B – Buchung und Kalender, funktional
 
-**B1 · Vergangene Di/Do werden als „Ausgebucht" angezeigt und bleiben klickbar.**
+**B1 · Vergangene Di/Do werden als „Ausgebucht" angezeigt und bleiben klickbar.** ✅ *behoben am 17.09.2026*
 Verifiziert für September 2026: Der 1., 3., 8. und 10. September liefern
 `workingDay: true, hasAvailability: false`, weil die Vorlauffrist alle Slots
 entfernt. Das Frontend rendert daraus `booking-day-busy` – rot eingefärbt, mit
@@ -82,6 +82,11 @@ liest sich wie „keine Kapazität", obwohl die Tage schlicht vorbei sind. Und s
 können auf ein vergangenes Datum klicken, das dann keine Slots zeigt.
 → Vergangene Tage wie Nicht-Ateliertage behandeln: ausgegraut und `disabled`.
 
+*Behoben:* `assets/js/booking.js` kennt jetzt den Zustand `booking-day-past`
+(neuer i18n-Schlüssel `book.dayPast`, DE und EN). Geprüft für September 2026:
+Die Tage 1–16 sind ausgegraut und gesperrt, der 17. bleibt als heutiger Tag
+anklickbar, die freien Tage 22./24./29. sind unverändert grün.
+
 **B2 · Fällt der Google-Kalender aus, zeigt die Website alles als frei.**
 `server.js:706–716` fängt Fehler der Kalenderabfrage ab, loggt sie und macht mit
 einer leeren Belegungsliste weiter. Ein abgelaufener Token oder eine API-Störung
@@ -91,23 +96,33 @@ Refresh-Tokens im Google-Testmodus (siehe [08](08-google-kalender.md)).
 → Mindestens: Fehlerzustand im Admin-Panel sichtbar machen. Sauberer: bei
 Kalenderfehler keine neuen Slots freigeben.
 
-**B3 · Kalender-Legende stimmt farblich nicht mit dem Kalender überein.**
+**B3 · Kalender-Legende stimmt farblich nicht mit dem Kalender überein.** ✅ *behoben am 17.09.2026*
 `assets/css/style.css:3870–3926`: Die Legende zeigt „Ausgebucht" als **grauen**
 Punkt (`#c4c4c4`) und „Kein Ateliertag" als **beigen** (`#ebe8e3`). Im Kalender
 sind ausgebuchte Tage aber **rosa/rot** (`rgba(209,141,137,…)`) und Nicht-Ateliertage
 **grau** (`rgba(0,0,0,.04)`). Die Legende erklärt damit die falschen Farben.
 → Legendenfarben an die Zellenfarben angleichen.
 
+*Behoben:* `legend-busy` ist jetzt `var(--color-rose)`, `legend-off` ein Grauton.
+Legende und Kalender zeigen denselben Farbton.
+
 ---
 
 ### C – Darstellung
 
-**C1 · Großer leerer Block über dem Porträt auf `/ueber-mich`.**
+**C1 · Großer leerer Block über dem Porträt auf `/ueber-mich`.** ✅ *behoben am 17.09.2026*
 Der Bildrahmen wächst durch `flex: 1 1 auto` auf 532 × 1371 px, während das Bild
 mit `object-fit: contain` sein Seitenverhältnis (1060 × 1216) behält – darüber
 bleiben rund 380 px leere Fläche (`assets/css/style.css:622–643`). Auf dem Desktop
 sieht die Porträtkarte dadurch halb leer aus.
 → Entweder `object-fit: cover` oder den Rahmen nicht mitwachsen lassen (`flex: 0 0 auto`).
+
+*Behoben:* Nicht über `cover` – bei einem Rahmen von 532 × 1371 px hätte das
+über die Hälfte der Bildbreite abgeschnitten und das Gesicht beschädigt.
+Stattdessen streckt sich die Porträtkarte nicht mehr auf Texthöhe
+(`align-items: start`, `flex: 0 0 auto`). Der Rahmen misst jetzt 532 × 665 px,
+die Leerfläche sank von 761 px auf 55 px, aufgeteilt auf oben und unten.
+Mobil unverändert ohne horizontales Überlaufen.
 
 **C2 · Text über der Falz blendet erst ein.**
 Auf `/buchung` (und analog anderswo) sind Kicker, Überschrift und Einleitung
@@ -116,10 +131,14 @@ sichtbar waren sie erst ~2 Sekunden nach dem Laden. Auf langsamen Verbindungen
 sieht der erste Eindruck dadurch leer aus. `prefers-reduced-motion` wird korrekt
 respektiert. → Erwägen, Inhalte oberhalb der Falz von der Animation auszunehmen.
 
-**C3 · Ein Bild ohne Alt-Text.**
-Auf Startseite und Kunsttherapie-Seite hat der transparente Lazy-Loading-Platzhalter
-kein `alt`. Kosmetisch, in einem Accessibility-Audit taucht es aber auf.
-→ `alt=""` setzen, damit Screenreader ihn überspringen.
+**C3 · ~~Ein Bild ohne Alt-Text.~~ — Fehlalarm, zurückgezogen.**
+Ursprünglich gemeldet für den Lazy-Loading-Platzhalter auf Startseite und
+Kunsttherapie-Seite. Bei der Nachprüfung stellte sich heraus: Beide Platzhalter
+(`assets/js/gallery.js:53`, `assets/js/raum-showcase.js`) setzen korrekt `alt=""` –
+genau richtig für dekorative Bilder. Der Fehler lag im Prüfskript, das mit
+`!img.getAttribute('alt')` testete; ein leerer String ist in JavaScript falsy,
+weshalb korrekt ausgezeichnete Bilder als fehlerhaft gemeldet wurden.
+**Hier ist nichts zu tun.**
 
 **C4 · Der Barrierefreiheits-Button überlagert mobil Inhalte.**
 Der runde Button unten links liegt beim Scrollen über den Zeit-Chips auf der
@@ -139,7 +158,7 @@ Startseite. Funktional in Ordnung, optisch unschön.
 
 1. **Mit Martina klären** (nur sie kann entscheiden): A1 Datumstexte, A2 Sitzungsdauer, A3 aktuelle Neuigkeiten
 2. **Vor dem Google-Livegang**: Veröffentlichungsstatus auf Produktion ([08](08-google-kalender.md)), danach B2 zumindest sichtbar machen
-3. **Kleine, risikoarme Fixes**: B1, B3, C1, C3 – jeweils wenige Zeilen, klar abgegrenzt
+3. ~~**Kleine, risikoarme Fixes**: B1, B3, C1~~ – erledigt am 17.09.2026
 4. **Danach**: C2, D1, D3, A4
 
 Keiner dieser Punkte ist ein Notfall. Die Seite läuft.
