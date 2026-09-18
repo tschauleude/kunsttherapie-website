@@ -1,6 +1,6 @@
 # Website-Review
 
-Stand: 16.09.2026 · Fixes vom 17.09.2026 eingearbeitet
+Stand: 16.09.2026 · Fixes vom 17.09.2026 · zweiter Durchgang 18.09.2026
 
 ## Wie geprüft wurde
 
@@ -172,6 +172,85 @@ Startseite. Funktional in Ordnung, optisch unschön.
 - **D1** Auf jeder Seite liegt ein drittes JSON-LD-Script ohne `@type`. Kein Fehler, aber wirkungslos – prüfen, ob es Inhalt haben sollte.
 - **D2** Die Google-Maps-Karte auf `/kontakt` wird von `maps.google.com` eingebettet. Erst nach Consent geladen – datenschutzrechtlich sauber gelöst.
 - **D3** Der Bestätigungstext nach dem Google-Verbinden verweist auf einen Refresh-Token „im Admin-Panel", der dort bewusst nicht angezeigt wird (`server.js:2605`). Irreführend, sollte umformuliert werden.
+
+---
+
+### E – Technik und Betrieb (zweiter Durchgang, 18.09.2026)
+
+**E1 · Hochgeladene Bilder werden nicht verkleinert oder komprimiert.**
+`sharp` ist eingebunden, liest aber ausschließlich Metadaten
+(`lib/image-meta.js`). Ein im Admin hochgeladenes Bild geht **unverändert** an
+jeden Besucher. Verschärfend: `.env.example` setzt `MAX_FILE_SIZE=52428800`
+(50 MB), während der Code-Standard bei 5 MB liegt (`server.js:131`). Steht der
+Wert so auf dem Server, werden 50-MB-Uploads angenommen und ausgeliefert.
+
+Ein Foto direkt aus einer Handy-Kamera hat 4–8 MB. Landet es in der Galerie,
+lädt die Startseite für Besucher mit Mobilfunk spürbar langsamer.
+
+→ Kurzfristig entschärft: Im Admin-Panel steht jetzt neben jedem Bild, welche
+Dateigröße hineingehört (siehe unten). → Sauber wäre, Uploads serverseitig mit
+`sharp` auf die benötigte Breite zu skalieren und als WebP zu speichern – die
+Bibliothek ist bereits installiert. → Unabhängig davon sollte `MAX_FILE_SIZE`
+auf einen realistischen Wert (z. B. 5 MB).
+
+*Teilweise adressiert am 18.09.2026:* Format-, Maß- und Dateigrößen-Empfehlung
+neben jedem änderbaren Bild im Admin-Panel, gemessen aus dem echten Rendering.
+
+**E2 · Das Standardbild des Hero-Bereichs passt nicht zum Rahmen.**
+`Gruppen-und-Einzeltherapie-768x524.jpg` ist **Querformat** (768 × 524). Der
+Hero-Rahmen ist am Desktop **hochkant** (490 × 725) mit `object-fit: cover`.
+Zum Füllen wird das Bild auf 1062 px Breite skaliert und dann auf 490 px
+beschnitten – **mehr als die Hälfte der Bildbreite fällt weg**. Am Handy ist
+der Rahmen dagegen quer (379 × 324), dort wird anders beschnitten.
+→ Ein Hochformat-Motiv verwenden (Empfehlung im Admin: 1200 × 1600 px) oder den
+Rahmen ans Bild anpassen.
+
+**E3 · 15 bekannte Schwachstellen in Abhängigkeiten – aber nicht im Request-Pfad.**
+`npm audit --omit=dev` meldet 15 Funde (1 kritisch, 9 hoch). Alle stammen aus
+`tar` über `cacache`, das `sqlite3` zum Herunterladen vorkompilierter Binaries
+beim Installieren nutzt. Dieser Code läuft **beim `npm ci`**, nicht beim
+Ausliefern von Seiten – ein Angreifer über das Web erreicht ihn nicht.
+Die Behebung verlangt `sqlite3@6` und ist ein Breaking Change.
+→ Nicht dringend, aber einplanen. Vor einem Update prüfen, ob `sqlite3@6` mit
+dem verwendeten Node-Stand läuft.
+
+**E4 · `public/uploads/` steht nicht in `.gitignore`.**
+Die hochgeladenen Bilder liegen dort, sind aber weder eingecheckt noch
+ignoriert. Ein versehentliches `git add -A` im Projektverzeichnis auf dem Server
+würde sie ins Repository aufnehmen – darunter Einsendungen aus dem Mini-Atelier,
+die von Besuchern stammen.
+→ `public/uploads/` in `.gitignore` aufnehmen.
+
+**E5 · Verwaiste Großbilder im Repository-Root.**
+`logo.jpg` und `Sonnige_Pinsel.jpg` liegen mit je 2,5 MB im Root und werden von
+keiner Seite referenziert (das Logo kommt aus `assets/img/logo.svg`). Sie
+belegen nur Platz in jedem Klon und Deployment.
+→ Löschen, sobald bestätigt ist, dass sie nirgends gebraucht werden.
+
+**E6 · `/favicon.ico` fehlt im Admin-Panel (404).**
+`admin.html` bindet kein Favicon ein, der Browser fragt deshalb `/favicon.ico`
+an und bekommt 404. Rein kosmetisch; die öffentlichen Seiten sind versorgt.
+
+**E7 · Kosmetik: Buttons in den Bild-Karten wirken gedrängt.**
+Bei `border-radius: 50px` und zweizeiligem Text sitzt die Beschriftung optisch
+sehr nah an der Rundung. Nachgemessen: **kein** tatsächlicher Überlauf
+(`scrollWidth === clientWidth`), die Buttons wachsen korrekt mit. Nur ein
+Schönheitsthema, kein Defekt.
+
+---
+
+### Nicht gefunden (zweiter Durchgang)
+
+Zur Einordnung, was geprüft wurde und in Ordnung war:
+
+- Alle 12 öffentlichen Seiten laden mit 200, genau eine `h1`, kein horizontales
+  Überlaufen (Desktop und Mobil), keine JS-Fehler, keine kaputten Bilder
+- Im Admin-Panel über alle Bereiche hinweg **keine** fehlerhaften Requests
+- Der Rate-Limit-Speicher für das Mini-Atelier (`atelierSubmitCounts`) räumt
+  abgelaufene Einträge bei jedem Aufruf auf – kein Speicherleck
+- Upload-Dateiendungen werden aus dem geprüften MIME-Type abgeleitet, nicht aus
+  dem Dateinamen
+- `npm run qa` und `npm run build-frontend` laufen sauber
 
 ---
 

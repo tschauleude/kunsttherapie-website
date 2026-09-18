@@ -6,3 +6,6 @@ database.sqlite
 data/.session-secret
 backups/
 data/backups/
+
+# Hochgeladene Bilder (liegen nur auf dem Server, separat sichern)
+public/uploads/
