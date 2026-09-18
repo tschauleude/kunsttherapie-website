@@ -37,7 +37,7 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-// Hostinger / Passenger: echte Client-IP für Rate-Limits und Session-Cookies
+// Hinter dem Proxy (Strato VPS): echte Client-IP für Rate-Limits und Session-Cookies
 app.set('trust proxy', 1);
 
 // SEO: kanonischen Host (www) und HTTPS per 301 erzwingen. Konsolidiert
@@ -84,7 +84,7 @@ fs.mkdirSync(path.join(ROOT, 'data'), { recursive: true });
 // DB-Elternverzeichnis anlegen falls DATABASE_PATH auf eigenen Pfad zeigt.
 fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 
-// Ensure upload directory exists (Hostinger redeploy may wipe empty dirs)
+// Ensure upload directory exists (ein Redeploy kann leere Verzeichnisse entfernen)
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(PUBLIC_DIR, 'uploads');
 const ATELIER_DIR = path.join(UPLOAD_DIR, 'atelier');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -2615,7 +2615,7 @@ app.get('/api/admin/google/callback', async (req, res) => {
 });
 
 // ============================================================================
-// FRONTEND ROUTES (fixes "Cannot GET /" on Hostinger Node redeploy)
+// FRONTEND ROUTES (verhindert "Cannot GET /" nach einem Redeploy)
 // ============================================================================
 
 const SITE_PAGES = [

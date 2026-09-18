@@ -63,6 +63,27 @@ Neueres aus der Datenbank kommt, ließ sich von hier nicht prüfen – aber
 „Neuigkeiten" ist die Seite, an der Besucher Aktualität ablesen. → Im Termin
 gemeinsam zwei, drei aktuelle Einträge anlegen (geht direkt im Admin-Panel).
 
+**A5 · Die Datenschutzerklärung nannte den falschen Hoster.** ✅ *behoben am 18.09.2026*
+Nachgetragen am 18.09.2026, nachdem bestätigt wurde, dass der Server ein
+**Strato VPS** ist.
+
+`datenschutz.html` enthielt unter „3. Hosting" bereits die korrekte Angabe
+(„Strato AG, Otto-Ostrowski-Straße 7, 10249 Berlin"). Der i18n-Text
+`legal.privacy.body` überschrieb sie zur Laufzeit aber durch „einem
+europäischen Hosting-Anbieter (z.&nbsp;B. Hostinger)" – in DE und EN. Im
+Browser gegengeprüft: Besucher bekamen den falschen Hoster zu sehen.
+
+In einer Datenschutzerklärung ist das keine Kosmetik, sondern eine falsche
+Angabe zum Auftragsverarbeiter.
+
+*Behoben:* Wortlaut in `assets/js/i18n-messages-pages.js` (Quelle, DE und EN)
+an die Angabe in `datenschutz.html` angeglichen, neu gebaut und im Browser in
+beiden Sprachen verifiziert.
+
+> Hinweis: Das ist Martinas Rechtstext. Der Wortlaut sollte ihr zur Freigabe
+> vorgelegt werden – inhaltlich ist er jetzt korrekt, die Formulierung ist
+> aber ihre Entscheidung.
+
 **A4 · `sitemap.xml` ist statisch auf `2026-06-17` datiert.**
 Sie wird nicht automatisch aktualisiert. Unkritisch, aber ein schwaches Signal
 Richtung Suchmaschinen.
