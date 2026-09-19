@@ -14,6 +14,7 @@ const siteImages = require('./lib/site-images');
 const media = require('./lib/media');
 const contentVersions = require('./lib/content-versions');
 const imageMeta = require('./lib/image-meta');
+const imageOptimize = require('./lib/image-optimize');
 const backup = require('./lib/backup');
 const { resolveAppSecret } = require('./lib/secret');
 const { apiLang, apiMsg } = require('./lib/api-messages');
@@ -155,6 +156,21 @@ const atelierUpload = multer({
     }
   },
 });
+
+// Hochgeladenes Bild verkleinern/komprimieren. Fehler werden geloggt, brechen
+// den Upload aber nie ab – ein misslungener Optimierungsversuch darf eine sonst
+// gültige Datei nicht verwerfen.
+async function optimizeUploadedFile(file) {
+  if (!file?.path) return null;
+  try {
+    const r = await imageOptimize.optimizeUpload(file.path);
+    console.log(imageOptimize.describe(file.filename || file.path, r));
+    return r;
+  } catch (e) {
+    console.error('Bildoptimierung fehlgeschlagen:', e.message);
+    return null;
+  }
+}
 
 // ============================================================================
 // MIDDLEWARE
@@ -1901,6 +1917,8 @@ app.post('/api/atelier/submit', (req, res) => {
       return res.status(400).json({ error: apiMsg('atelier.imageRequired', lang) });
     }
 
+    await optimizeUploadedFile(req.file);
+
     const anonymous = req.body.anonymous === '1' || req.body.anonymous === 'true';
     const name = (req.body.name || '').trim().slice(0, 120);
     const emailAddr = (req.body.email || '').trim().slice(0, 200);
@@ -2006,13 +2024,14 @@ app.delete('/api/admin/atelier/:id', requireAuth, async (req, res) => {
 });
 
 app.post('/api/admin/upload', requireAuth, (req, res) => {
-  imageUpload.single('image')(req, res, (err) => {
+  imageUpload.single('image')(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
     }
     if (!req.file) {
       return res.status(400).json({ error: 'Keine Datei ausgewählt' });
     }
+    await optimizeUploadedFile(req.file);
     res.json({
       success: true,
       url: `/uploads/${req.file.filename}`,
@@ -2095,6 +2114,8 @@ app.post('/api/admin/site-images/:slot/upload', requireAuth, (req, res) => {
       return res.status(400).json({ error: 'Keine Datei ausgewählt' });
     }
 
+    await optimizeUploadedFile(req.file);
+
     try {
       await contentVersions.snapshotBeforeChange(dbRun, dbGet, dbAll, {
         kind: 'site_images',
@@ -2156,13 +2177,14 @@ app.get('/api/admin/media', requireAuth, async (req, res) => {
 });
 
 app.post('/api/admin/media/upload', requireAuth, (req, res) => {
-  imageUpload.single('image')(req, res, (err) => {
+  imageUpload.single('image')(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
     }
     if (!req.file) {
       return res.status(400).json({ error: 'Keine Datei ausgewählt' });
     }
+    await optimizeUploadedFile(req.file);
     res.json({
       success: true,
       url: `/uploads/${req.file.filename}`,

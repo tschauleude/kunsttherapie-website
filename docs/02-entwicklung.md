@@ -64,8 +64,23 @@ BOOKING_SCHEDULE={"2":{"start":"11:00","end":"12:30","label":"Dienstag Vormittag
 ### Sonstiges
 
 `DATABASE_PATH` (Standard `./database.sqlite`), `UPLOAD_DIR`
-(Standard `./public/uploads`), `MAX_FILE_SIZE` (50 MB), `SETUP_TOKEN` (für die
-einmalige Ersteinrichtung über `/admin`).
+(Standard `./public/uploads`), `MAX_FILE_SIZE` (Standard 5 MB), `SETUP_TOKEN`
+(für die einmalige Ersteinrichtung über `/admin`).
+
+### Bild-Uploads
+
+Hochgeladene Bilder werden serverseitig verkleinert und neu komprimiert
+(`lib/image-optimize.js`). Einstellbar:
+
+| Variable | Standard | Bedeutung |
+| --- | --- | --- |
+| `UPLOAD_MAX_WIDTH` | `1600` | Längste Kante, größere Bilder werden verkleinert |
+| `UPLOAD_MAX_HEIGHT` | `1600` | dito für die Höhe |
+| `UPLOAD_QUALITY` | `82` | JPEG-/WebP-Qualität |
+
+Das Format bleibt erhalten, EXIF-Daten werden entfernt – die Drehung eines
+Handy-Fotos wird vorher angewendet. GIFs bleiben unangetastet, damit
+Animationen erhalten bleiben.
 
 ## npm-Skripte
 

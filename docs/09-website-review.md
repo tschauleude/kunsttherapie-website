@@ -1,6 +1,6 @@
 # Website-Review
 
-Stand: 16.09.2026 · Fixes vom 17.09.2026 · zweiter Durchgang 18.09.2026
+Stand: 16.09.2026 · Fixes vom 17.09. und 19.09.2026 · zweiter Durchgang 18.09.2026
 
 ## Wie geprüft wurde
 
@@ -177,7 +177,7 @@ Startseite. Funktional in Ordnung, optisch unschön.
 
 ### E – Technik und Betrieb (zweiter Durchgang, 18.09.2026)
 
-**E1 · Hochgeladene Bilder werden nicht verkleinert oder komprimiert.**
+**E1 · Hochgeladene Bilder werden nicht verkleinert oder komprimiert.** ✅ *behoben am 19.09.2026*
 `sharp` ist eingebunden, liest aber ausschließlich Metadaten
 (`lib/image-meta.js`). Ein im Admin hochgeladenes Bild geht **unverändert** an
 jeden Besucher. Verschärfend: `.env.example` setzt `MAX_FILE_SIZE=52428800`
@@ -193,8 +193,17 @@ Dateigröße hineingehört (siehe unten). → Sauber wäre, Uploads serverseitig
 Bibliothek ist bereits installiert. → Unabhängig davon sollte `MAX_FILE_SIZE`
 auf einen realistischen Wert (z. B. 5 MB).
 
-*Teilweise adressiert am 18.09.2026:* Format-, Maß- und Dateigrößen-Empfehlung
-neben jedem änderbaren Bild im Admin-Panel, gemessen aus dem echten Rendering.
+*Behoben am 19.09.2026:* `lib/image-optimize.js` verkleinert jeden Upload auf
+max. 1600 px und komprimiert neu (Qualität 82). Über die echte API gemessen:
+2795 KB → 264 KB, also −91 %. EXIF-Daten werden entfernt, die Drehung eines
+Handy-Fotos vorher angewendet – ein hochkant aufgenommenes 2000 × 3000-Bild mit
+`orientation: 6` kam korrekt als 1600 × 1067 quer heraus. GIFs bleiben
+unangetastet (Animation), und schlägt die Optimierung fehl, bleibt das Original
+liegen statt den Upload scheitern zu lassen. `MAX_FILE_SIZE` in `.env.example`
+steht jetzt auf 5 MB statt 50 MB.
+
+Die Empfehlungen im Admin-Panel bleiben – sie betreffen jetzt Bildausschnitt und
+Schärfe statt der Dateigröße und sind entsprechend umformuliert.
 
 **E2 · Das Standardbild des Hero-Bereichs passt nicht zum Rahmen.**
 `Gruppen-und-Einzeltherapie-768x524.jpg` ist **Querformat** (768 × 524). Der
@@ -236,6 +245,53 @@ Bei `border-radius: 50px` und zweizeiligem Text sitzt die Beschriftung optisch
 sehr nah an der Rundung. Nachgemessen: **kein** tatsächlicher Überlauf
 (`scrollWidth === clientWidth`), die Buttons wachsen korrekt mit. Nur ein
 Schönheitsthema, kein Defekt.
+
+---
+
+### F – Darstellung auf verschiedenen Bildschirmen (19.09.2026)
+
+Geprüft wurden alle 12 Seiten bei **neun Breiten** von 320 px (iPhone SE) bis
+2560 px, jeweils auf horizontales Überlaufen, herausragende Elemente und
+Größe der Tippziele.
+
+**F1 · Waagerechtes Scrollen auf `/datenschutz` bei 320 px.** ✅ *behoben*
+Die Seite ließ sich um 55 px zur Seite schieben. Die Ursache war durch
+systematisches Ausblenden einzelner Elemente eingegrenzt: die Überschrift
+**„Datenschutzerklärung"**. Das Wort passt bei 320 px nicht in eine Zeile und
+wurde nicht getrennt, wodurch es die Layoutbreite auf 375 px aufzog – alle
+anderen Auffälligkeiten (Cookie-Banner, Zurück-nach-oben-Button) waren nur
+Folge davon, weil fixierte Elemente der Layoutbreite folgen.
+→ Silbentrennung für Überschriften (`hyphens: auto`, Rückfall
+`overflow-wrap: break-word`). Überlauf jetzt 0 px.
+
+**F2 · „Gruppensitzung" brach mitten im Wort um.** ✅ *behoben*
+In der Preistabelle stand `overflow-wrap: anywhere`, was ohne Bindestrich
+mitten im Wort umbrach („Gruppens/itzung"). Der erste Versuch – nur
+Silbentrennung – verschlimmerte es: Die Wertespalte war als `1fr` definiert und
+kann nicht schmaler werden als ihr längstes Wort, wodurch die Tabelle über den
+Kartenrand hinauslief.
+→ Zwei Änderungen: `minmax(0, 1fr)` erlaubt der Spalte zu schrumpfen, und
+unter 400 px steht die Beschriftung über dem Wert statt daneben. Damit passt
+„Gruppensitzung" in eine Zeile.
+
+> Nebenbefund: `hyphens: auto` wirkte im Prüf-Browser nicht, weil dem
+> Headless-Chromium die deutschen Trennwörterbücher fehlen. Auf echten Geräten
+> greift es in der Regel – verlassen sollte man sich darauf aber nicht, deshalb
+> die vom Browser unabhängige Lösung.
+
+**F3 · Tippziele unter der Mindestgröße.** ✅ *behoben*
+WCAG 2.2 (2.5.8) verlangt mindestens 24 × 24 px. Gemessen bei 320 px:
+Sprachumschalter DE/EN 30 × 23, Logo-Link 72 × 14, Menülinks 20 px hoch,
+Zitat-Punkte **7 × 7**.
+→ Sprachumschalter auf 28 px, Logo-Link und Menülinks über 24 px. Bei den
+Zitat-Punkten existierte bereits eine unsichtbare Trefferfläche
+(`.quote-dot::before`), die durch `pointer-events: none` wirkungslos war –
+jetzt aktiv, mit angepasstem Abstand, damit sich benachbarte Flächen nicht
+überlappen. Die Punkte sehen unverändert aus.
+
+**Ergebnis:** Bei allen neun Breiten kein horizontales Scrollen mehr und keine
+Tippziele unter 24 px. Das Admin-Panel wurde bei 375, 768 und 1280 px
+mitgeprüft – dort gab es keine Überläufe.
 
 ---
 

@@ -1814,13 +1814,34 @@ table.prices {
   box-shadow: var(--shadow);
 }
 
+/* Lange deutsche Wörter in Überschriften ("Datenschutzerklärung") passten auf
+   320-px-Displays nicht in die Zeile und schoben die ganze Seite auf 375 px –
+   mit waagerechtem Scrollen als Folge. Silbentrennung löst das; der
+   Zeilenumbruch bleibt die Rückfalloption. Grundlage ist das lang-Attribut
+   am <html>, das der Sprachumschalter mitführt. */
+h1,
+h2,
+h3,
+.hero h1,
+.section-intro h1 {
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
 table.prices th,
 table.prices td {
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  /* Deutsche Komposita ("Gruppensitzung") sind auf schmalen Displays breiter als
+     die Spalte. Silbentrennung bricht sie mit Bindestrich an sinnvoller Stelle;
+     overflow-wrap greift nur, wenn selbst das nicht reicht. Vorher stand hier
+     "anywhere", was mitten im Wort ohne Bindestrich umbrach. */
+  -webkit-hyphens: auto;
+  hyphens: auto;
   word-wrap: break-word;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 table.prices th {
@@ -1880,7 +1901,11 @@ table.prices th {
 
   table.prices td {
     display: grid;
-    grid-template-columns: minmax(6.5rem, 38%) 1fr;
+    /* minmax(0, 1fr) statt 1fr: Eine reine 1fr-Spur kann nicht schmaler werden
+       als ihr längstes Wort. "Gruppensitzung" hat die Tabelle dadurch über den
+       Kartenrand hinausgeschoben. Mit minmax(0, 1fr) darf die Spalte schrumpfen,
+       und die Silbentrennung oben bricht das Wort sauber mit Bindestrich um. */
+    grid-template-columns: minmax(6.5rem, 38%) minmax(0, 1fr);
     gap: 0.35rem 0.75rem;
     align-items: start;
     padding: 0.65rem 1rem;
@@ -1909,6 +1934,18 @@ table.prices th {
 
   table.prices td:first-child::before {
     content: 'Leistung';
+  }
+}
+
+/* Auf sehr schmalen Displays reicht die Wertespalte nicht für lange Wörter wie
+   "Gruppensitzung". Silbentrennung hilft nur, wo der Browser ein deutsches
+   Trennwörterbuch mitbringt – darauf ist kein Verlass. Deshalb steht die
+   Beschriftung hier über dem Wert, statt daneben: Der Wert bekommt die volle
+   Breite und passt in eine Zeile. */
+@media (max-width: 400px) {
+  table.prices td {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
   }
 }
 
@@ -2369,7 +2406,8 @@ body.consent-banner-visible {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.75rem;
+  /* 1.1rem hält die 24-px-Trefferflächen der Punkte überlappungsfrei. */
+  gap: 1.1rem;
   margin-top: 1.35rem;
   pointer-events: auto;
 }
@@ -2428,11 +2466,17 @@ body.consent-banner-visible {
     transform var(--duration-tap) var(--ease-flow);
 }
 
+/* Die Punkte sind optisch nur 7 px groß – als Tippziel wäre das deutlich zu
+   klein (WCAG 2.2, 2.5.8 verlangt 24 x 24 px). Diese unsichtbare Fläche
+   vergrößert den Trefferbereich auf 24 px, ohne den Punkt selbst zu verändern.
+   Sie war bereits angelegt, aber durch pointer-events: none wirkungslos.
+   Der Abstand in .quote-nav ist so gewählt, dass sich benachbarte
+   Trefferflächen nicht überlappen. */
 .quote-dot::before {
   content: '';
   position: absolute;
-  inset: -0.5rem;
-  pointer-events: none;
+  inset: -0.53rem;
+  pointer-events: auto;
 }
 
 .quote-dot:hover,
@@ -4696,5 +4740,37 @@ body.reg-modal-open {
 
   .brand-logo {
     max-height: 42px;
+  }
+}
+
+/* === Tap-Ziele auf Touch-Geräten ===
+   WCAG 2.2 (2.5.8 Target Size Minimum) verlangt mindestens 24 x 24 CSS-Pixel.
+   Gemessen auf einem 320-px-Display waren es vorher: Sprachumschalter 30x23,
+   Logo-Link 72x14, Menülinks 20 px hoch. Die kompakten Regeln weiter oben
+   bleiben bestehen – hier wird nur die Höhe auf ein bedienbares Maß angehoben. */
+@media (max-width: 520px) {
+  .lang-switch-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 1.75rem;
+  }
+
+  .brand {
+    min-height: 1.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  /* Links im ausgeklappten Menü waren nur so hoch wie ihre Textzeile. */
+  nav a {
+    display: inline-block;
+    padding-block: 0.3rem;
+  }
+
+  /* Der Unterstrich sitzt absolut am Linkende – ohne Korrektur würde er durch
+     das neue Innenabstand-Polster sichtbar nach unten rutschen. */
+  nav a:not(.nav-cta):not([aria-current='page'])::after {
+    bottom: 0.1rem;
   }
 }
