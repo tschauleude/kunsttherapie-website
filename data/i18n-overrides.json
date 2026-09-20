@@ -1,12 +1,8 @@
 {
-  "de": {
-    "prices.tableBody": "<tr><td>Gruppensitzung</td><td data-label=\"Dauer\">60 Minuten</td><td data-label=\"Preis\"><strong>39 €</strong></td><td data-label=\"Hinweis\">4–12 Personen, Material i. d. R. inkl.</td></tr><tr><td>Auszeit – Familie &amp; Freunde</td><td data-label=\"Dauer\">60 Minuten</td><td data-label=\"Preis\"><strong>39 €</strong></td><td data-label=\"Hinweis\">nur als Gruppe buchbar, Material i. d. R. inkl.</td></tr><tr><td>Einzelsitzung</td><td data-label=\"Dauer\">60 Minuten</td><td data-label=\"Preis\"><strong>60 €</strong></td><td data-label=\"Hinweis\">individuell auf dein Thema abgestimmt</td></tr><tr><td>Teambuilding</td><td data-label=\"Dauer\">nach Konzept</td><td data-label=\"Preis\"><strong>49 €</strong></td><td data-label=\"Hinweis\">ab 12 Teilnehmer, Konzept &amp; Material i. d. R. inkl.</td></tr>"
-  },
-  "en": {
-    "prices.tableBody": "<tr><td>Gruppensitzung</td><td data-label=\"Dauer\">60 Minuten</td><td data-label=\"Preis\"><strong>39 €</strong></td><td data-label=\"Hinweis\">4–12 Personen, Material i. d. R. inkl.</td></tr><tr><td>Auszeit – Familie &amp; Freunde</td><td data-label=\"Dauer\">60 Minuten</td><td data-label=\"Preis\"><strong>39 €</strong></td><td data-label=\"Hinweis\">nur als Gruppe buchbar, Material i. d. R. inkl.</td></tr><tr><td>Einzelsitzung</td><td data-label=\"Dauer\">60 Minuten</td><td data-label=\"Preis\"><strong>60 €</strong></td><td data-label=\"Hinweis\">individuell auf dein Thema abgestimmt</td></tr><tr><td>Teambuilding</td><td data-label=\"Dauer\">nach Konzept</td><td data-label=\"Preis\"><strong>49 €</strong></td><td data-label=\"Hinweis\">ab 12 Teilnehmer, Konzept &amp; Material i. d. R. inkl.</td></tr>"
-  },
+  "de": {},
+  "en": {},
   "_meta": {
-    "updatedAt": "2026-09-20T10:32:09.647Z",
-    "hint": "Wird beim Speichern im Admin automatisch aktualisiert. In Git committen für dauerhafte Texte."
+    "updatedAt": null,
+    "hint": "Wird beim Speichern im Admin automatisch aktualisiert. In Git committen für dauerhafte Texte auf der Website."
   }
 }

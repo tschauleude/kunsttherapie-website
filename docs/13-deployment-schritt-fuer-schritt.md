@@ -16,13 +16,62 @@ Erst wird gebaut und geprüft, dann verbindet sich GitHub per SSH mit dem Strato
 VPS, macht dort `git pull`, installiert Abhängigkeiten und startet den Prozess
 über `pm2` neu. Die Seite ist dabei **wenige Sekunden** nicht erreichbar.
 
-**Was NICHT mitkommt:**
+---
 
-| | |
-| --- | --- |
-| Die `.env` auf dem Server | bleibt unangetastet – neue Variablen musst du von Hand ergänzen |
-| Die Datenbank | wird nicht verändert; Buchungen, Nachrichten und Texte bleiben |
-| Hochgeladene Bilder in `public/uploads/` | bleiben liegen, sind nicht im Repository |
+## Bleiben Nachrichten und bisherige Änderungen erhalten?
+
+**Ja.** Der Grund ist einfach: `git pull` fasst nur Dateien an, die in Git
+verfolgt werden. Alles, was auf der Live-Seite entstanden ist, liegt außerhalb.
+
+### Sicher – wird nicht angefasst
+
+Nachgeprüft mit `git ls-files`:
+
+| Was | Wo gespeichert | In Git? |
+| --- | --- | --- |
+| Kontaktnachrichten | `database.sqlite` | nein |
+| Terminbuchungen, gesperrte Zeiträume | `database.sqlite` | nein |
+| Neuigkeiten, Veranstaltungen, Anmeldungen | `database.sqlite` | nein |
+| Mini-Atelier-Einsendungen | `database.sqlite` | nein |
+| Preistabelle | `database.sqlite` | nein |
+| Zugeordnete Bilder und Alt-Texte | `database.sqlite` | nein |
+| Sicherungspunkte (bis zu 80) | `database.sqlite` | nein |
+| Google-Kalender-Token | `database.sqlite` | nein |
+| Admin-Konto und Passwort | `database.sqlite` | nein |
+| Hochgeladene Bilder | `public/uploads/` | nein |
+| SMTP- und Google-Zugangsdaten | `.env` | nein |
+
+Ein `git pull` kann diese Dateien weder überschreiben noch löschen.
+
+### Der eine Punkt, auf den zu achten ist: Website-Texte
+
+Wenn Martina unter **Website-Texte** etwas speichert, schreibt der Server das an
+**zwei** Stellen: in die Datenbank *und* in Dateien, die in Git verfolgt werden
+(`data/i18n-overrides.json` sowie `assets/js/i18n-messages-*.js`).
+
+Daraus folgen zwei Dinge:
+
+**1. Ihre Texte gehen nicht verloren.** Zur Laufzeit gewinnt die Datenbank über
+die Datei – nachgelesen in `lib/i18n-content.js`: `mergeOverrideLayers` legt die
+Datenbankwerte *über* die Dateiwerte. Selbst wenn `git pull` die Dateien
+überschreibt, zeigt die Website weiter ihre Texte.
+
+**2. `git pull` kann sich weigern.** Hat der Server diese Dateien seit Juni
+verändert, meldet Git *„Your local changes would be overwritten by merge"* und
+bricht ab. Das ist kein Datenverlust, aber der Deploy kommt nicht durch.
+
+Deshalb der Prüfschritt in Schritt 1e – **vor** dem Mergen.
+
+### Warum ein grüner Deploy früher trügen konnte
+
+Bis einschließlich dieser Änderung endete das Deploy-Skript auf
+`pm2 restart kunsttherapie || true`. Scheiterte `git pull`, lief das Skript
+weiter und der letzte Befehl meldete Erfolg – der Deploy war **grün, obwohl
+nichts ausgeliefert wurde** und weiter der alte Stand lief.
+
+Das ist mit diesem PR behoben: Das Skript bricht jetzt beim ersten Fehler ab
+(`script_stop: true`), gibt den Commit-Stand vor und nach dem Pull aus und
+prüft am Ende `/health`. Ein gescheiterter Pull wird damit sichtbar rot.
 
 ---
 
@@ -59,6 +108,29 @@ git rev-parse --short HEAD
 ```
 
 Schreib sie auf. (Vermutlich `2e049f5`.)
+
+**1e · Prüfen, ob der Server lokale Änderungen hat.** Das ist der Schritt, der
+einen abgebrochenen Deploy verhindert:
+
+```bash
+git status --short
+```
+
+*Leere Ausgabe* → alles in Ordnung, weiter mit Schritt 2.
+
+*Zeigt Dateien* (typischerweise `data/i18n-overrides.json` und
+`assets/js/i18n-messages-*.js`, weil Martina Texte gespeichert hat) → erst
+sichern, dann beiseiteräumen:
+
+```bash
+git diff > ~/sicherung/server-aenderungen-$(date +%F).patch
+git stash push -u -m "vor Deploy $(date +%F)"
+```
+
+`git stash` legt die Änderungen zur Seite, ohne sie zu löschen – mit
+`git stash list` und `git stash pop` sind sie wieder da. Ihre Texte bleiben
+ohnehin in der Datenbank und damit auf der Website sichtbar; die Dateien sind
+nur die zusätzliche Kopie.
 
 **1d · Alles auf deinen Rechner holen.** Liegt die Sicherung nur auf dem
 Server, ist sie bei einem Serverausfall mit weg. Auf deinem eigenen Rechner,
@@ -126,6 +198,17 @@ zeigt der Browser alte Dateien:
 - [ ] `/ueber-mich`: kein leerer Block über dem Porträt
 - [ ] `/datenschutz` auf dem Handy: **nicht** seitlich verschiebbar
 - [ ] `/datenschutz` Abschnitt 3: nennt **Strato AG**, nicht Hostinger
+
+**Und die Daten gegenprüfen** – im Admin-Panel:
+
+- [ ] **Nachrichten**: alle bisherigen Kontaktanfragen noch da
+- [ ] **Buchungen**: bestehende Termine und gesperrte Zeiträume unverändert
+- [ ] **Neuigkeiten** und **Veranstaltungen**: vollzählig
+- [ ] **Preistabelle**: zeigt die gepflegten Preise, nicht die Standardwerte
+- [ ] **Bilder**: eigene Bilder stehen noch in ihren Slots
+- [ ] **Website-Texte**: eine geänderte Stelle stichprobenartig ansehen
+- [ ] Der Stand auf dem Server stimmt:
+      `ssh … 'cd <pfad> && git rev-parse --short HEAD'` – muss der neue sein
 
 ---
 

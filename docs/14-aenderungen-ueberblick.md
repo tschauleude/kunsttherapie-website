@@ -72,6 +72,7 @@ und Mini-Atelier.
 | `.env.example` | `MAX_FILE_SIZE` von 50 MB auf 5 MB; neue Variablen `UPLOAD_MAX_WIDTH`, `UPLOAD_MAX_HEIGHT`, `UPLOAD_QUALITY` |
 | `.gitignore` | `public/uploads/` ergänzt – verhindert, dass Besucher-Einsendungen versehentlich im Repository landen |
 | `server.js` | Optimierung in die Upload-Routen eingehängt; veraltete Hostinger-Kommentare korrigiert |
+| `.github/workflows/deploy.yml` | Bricht beim ersten Fehler ab und prüft `/health`. Vorher konnte ein gescheitertes `git pull` einen **grünen Deploy** melden, obwohl der alte Stand weiterlief |
 | `README.md` | Beschrieb ein statisches Projekt ohne Datenbank mit Netlify-Deployment – ersetzt |
 
 ## 4. Neue Dokumentation
@@ -129,7 +130,29 @@ Aufspielen abzuarbeiten.
 
 ---
 
-## 6. Was offen bleibt
+## 6. Datenerhalt beim Aufspielen
+
+Alles, was auf der Live-Seite entstanden ist – Nachrichten, Buchungen,
+Neuigkeiten, Preise, hochgeladene Bilder, Zugangsdaten – liegt **außerhalb von
+Git** und wird von einem `git pull` nicht berührt. Nachgeprüft mit
+`git ls-files`.
+
+Einzige Besonderheit sind die **Website-Texte**: Sie liegen doppelt, in der
+Datenbank *und* in verfolgten Dateien. Zur Laufzeit gewinnt die Datenbank, ihre
+Texte bleiben also sichtbar. Ein `git pull` kann sich aber weigern, wenn der
+Server diese Dateien verändert hat – dafür gibt es den Prüfschritt 1e in
+[13 – Deployment](13-deployment-schritt-fuer-schritt.md).
+
+> **In eigener Sache:** Beim Funktionstest am 20.09. wurde im Admin-Panel die
+> Preistabelle gespeichert. Das schrieb Testwerte in `data/i18n-overrides.json`
+> und `assets/js/i18n-messages-prices.js` – die englische Preistabelle enthielt
+> dadurch deutschen Text, der deutschen fehlte die Auszeichnung „pro Person".
+> Vor dem Mergen bemerkt und zurückgesetzt; beide Dateien sind wieder identisch
+> mit dem Stand in `main`.
+
+---
+
+## 7. Was offen bleibt
 
 **Nur Martina kann entscheiden:**
 
