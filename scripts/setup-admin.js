@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Admin-Passwort setzen (Hostinger SSH oder lokal):
+ * Admin-Passwort setzen (per SSH auf dem Server oder lokal):
  *   ADMIN_USERNAME=martina ADMIN_PASSWORD='geheim123' node scripts/setup-admin.js
  */
 require('dotenv').config();

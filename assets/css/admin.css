@@ -2436,3 +2436,60 @@ hr.sep {
   background: #fff3cd;
   color: #856404;
 }
+
+/* === Bild-Empfehlungen (Format / Größe) neben jedem änderbaren Bild === */
+.img-rec {
+  margin: 0.6rem 0 0.9rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--line, #e2ded6);
+  border-left: 3px solid var(--color-teal, #4a6e6a);
+  border-radius: 8px;
+  background: rgba(74, 110, 106, 0.05);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.img-rec--wide {
+  margin: 0.9rem 0 1.1rem;
+}
+
+.img-rec-title {
+  font-weight: 700;
+  color: var(--color-teal, #4a6e6a);
+  margin-bottom: 0.35rem;
+}
+
+.img-rec-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.6rem;
+  margin: 0;
+}
+
+.img-rec-list dt {
+  color: var(--text-light, #6b6b6b);
+  font-weight: 500;
+}
+
+.img-rec-list dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.img-rec-note {
+  margin-top: 0.45rem;
+  padding-top: 0.4rem;
+  border-top: 1px dashed rgba(74, 110, 106, 0.25);
+  color: var(--text-light, #6b6b6b);
+  font-weight: 400;
+}
+
+@media (max-width: 480px) {
+  .img-rec-list {
+    grid-template-columns: 1fr;
+    gap: 0 0;
+  }
+  .img-rec-list dd {
+    margin-bottom: 0.3rem;
+  }
+}

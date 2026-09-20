@@ -1,5 +1,14 @@
 # Google Kalender verbinden – Schritt-für-Schritt
 
+> ⚠️ **Veraltet – bitte [`docs/08-google-kalender.md`](docs/08-google-kalender.md) verwenden.**
+>
+> Diese Fassung enthält einen Fehler: Sie bezeichnet den Google-„Testmodus" als
+> ausreichend (Schritt 3) und behauptet gleichzeitig, die Verbindung bleibe
+> dauerhaft bestehen (Häufige Fragen). Beides zusammen stimmt nicht – im
+> Testmodus laufen die Zugangstoken **nach 7 Tagen** ab, und die Website zeigt
+> anschließend alle Termine als frei an, ohne Fehlermeldung. Die App muss auf
+> den Veröffentlichungsstatus **„Produktion"** gesetzt werden.
+
 Diese Anleitung erklärt, wie du deinen Google Kalender mit der Website verbindest, sodass:
 - **neue Buchungen automatisch in deinem Kalender erscheinen**
 - **bestehende Kalendertermine die freien Zeiten auf der Website blockieren**

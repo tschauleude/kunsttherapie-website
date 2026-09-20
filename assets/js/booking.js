@@ -152,7 +152,12 @@ function renderCalendar() {
       let disabled = true;
       let hint = tr('book.dayNoOffer');
 
-      if (!day || !day.workingDay) {
+      if (cell.date < todayStr) {
+        // Vergangene Tage sind weder frei noch ausgebucht – sie sind vorbei.
+        // Ohne diesen Zweig liefen sie als "ausgebucht" (rot, anklickbar) durch.
+        cls += ' booking-day-past';
+        hint = tr('book.dayPast');
+      } else if (!day || !day.workingDay) {
         cls += ' booking-day-off';
         hint = tr('book.dayOff');
       } else {

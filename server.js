@@ -14,6 +14,7 @@ const siteImages = require('./lib/site-images');
 const media = require('./lib/media');
 const contentVersions = require('./lib/content-versions');
 const imageMeta = require('./lib/image-meta');
+const imageOptimize = require('./lib/image-optimize');
 const backup = require('./lib/backup');
 const { resolveAppSecret } = require('./lib/secret');
 const { apiLang, apiMsg } = require('./lib/api-messages');
@@ -37,7 +38,7 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-// Hostinger / Passenger: echte Client-IP für Rate-Limits und Session-Cookies
+// Hinter dem Proxy (Strato VPS): echte Client-IP für Rate-Limits und Session-Cookies
 app.set('trust proxy', 1);
 
 // SEO: kanonischen Host (www) und HTTPS per 301 erzwingen. Konsolidiert
@@ -84,7 +85,7 @@ fs.mkdirSync(path.join(ROOT, 'data'), { recursive: true });
 // DB-Elternverzeichnis anlegen falls DATABASE_PATH auf eigenen Pfad zeigt.
 fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 
-// Ensure upload directory exists (Hostinger redeploy may wipe empty dirs)
+// Ensure upload directory exists (ein Redeploy kann leere Verzeichnisse entfernen)
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(PUBLIC_DIR, 'uploads');
 const ATELIER_DIR = path.join(UPLOAD_DIR, 'atelier');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -155,6 +156,21 @@ const atelierUpload = multer({
     }
   },
 });
+
+// Hochgeladenes Bild verkleinern/komprimieren. Fehler werden geloggt, brechen
+// den Upload aber nie ab – ein misslungener Optimierungsversuch darf eine sonst
+// gültige Datei nicht verwerfen.
+async function optimizeUploadedFile(file) {
+  if (!file?.path) return null;
+  try {
+    const r = await imageOptimize.optimizeUpload(file.path);
+    console.log(imageOptimize.describe(file.filename || file.path, r));
+    return r;
+  } catch (e) {
+    console.error('Bildoptimierung fehlgeschlagen:', e.message);
+    return null;
+  }
+}
 
 // ============================================================================
 // MIDDLEWARE
@@ -442,6 +458,7 @@ function initializeDatabase() {
     `);
     // Migration: add alt_text column if it doesn't exist yet (existing DBs)
     db.run(`ALTER TABLE site_images ADD COLUMN alt_text TEXT`, () => {/* ignore if already exists */});
+    db.run(`ALTER TABLE blocked_periods ADD COLUMN google_event_id TEXT`, () => {/* ignore if already exists */});
 
     db.run(`
       CREATE TABLE IF NOT EXISTS services (
@@ -639,6 +656,39 @@ async function syncGoogleCreate(row) {
     }
   } catch (e) {
     console.error('Google event create failed:', e.message);
+  }
+}
+
+// Vorhandenen Kalendertermin an den neuen Status anpassen (Anfrage -> zugesagt).
+// Existiert noch keiner, wird er angelegt.
+async function syncGoogleUpdate(row) {
+  try {
+    const token = await getGoogleRefreshTokenAsync();
+    if (!token) return;
+    if (!row.google_event_id) return syncGoogleCreate(row);
+    const id = await googleCalendar.updateCalendarEvent(token, row.google_event_id, row);
+    if (id && id !== row.google_event_id) {
+      await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [id, row.id]);
+    }
+  } catch (e) {
+    console.error('Google event update failed:', e.message);
+  }
+}
+
+// Gesperrte Zeiträume (Urlaub) als ganztägige Termine spiegeln.
+async function syncGoogleBlockedPeriod(period) {
+  try {
+    const token = await getGoogleRefreshTokenAsync();
+    if (!token) return null;
+    return await googleCalendar.createAllDayEvent(token, {
+      dateFrom: period.date_from,
+      dateTo: period.date_to,
+      summary: period.reason ? `Nicht buchbar: ${period.reason}` : 'Nicht buchbar',
+      description: 'Über das Admin-Panel gesperrt (Website-Buchung)',
+    });
+  } catch (e) {
+    console.error('Google blocked period create failed:', e.message);
+    return null;
   }
 }
 
@@ -1694,6 +1744,13 @@ app.post('/api/admin/blocked-periods', requireAuth, async (req, res) => {
       `INSERT INTO blocked_periods (date_from, date_to, reason) VALUES (?, ?, ?)`,
       [date_from, date_to, reason || null]
     );
+    const googleEventId = await syncGoogleBlockedPeriod({ date_from, date_to, reason });
+    if (googleEventId) {
+      await dbRun(`UPDATE blocked_periods SET google_event_id = ? WHERE id = ?`, [
+        googleEventId,
+        result.lastID,
+      ]).catch(() => {});
+    }
     res.json({ id: result.lastID, date_from, date_to, reason });
   } catch (err) {
     res.status(500).json({ error: 'Datenbankfehler' });
@@ -1704,7 +1761,10 @@ app.delete('/api/admin/blocked-periods/:id', requireAuth, async (req, res) => {
   const id = parseInt(req.params.id, 10);
   if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   try {
+    // Erst lesen, dann löschen – sonst ist die Kalender-ID weg.
+    const row = await dbGet(`SELECT * FROM blocked_periods WHERE id = ?`, [id]).catch(() => null);
     await dbRun(`DELETE FROM blocked_periods WHERE id = ?`, [id]);
+    if (row?.google_event_id) await syncGoogleDelete(row.google_event_id);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: 'Datenbankfehler' });
@@ -1857,6 +1917,10 @@ app.get('/api/bookings/verify/:token', contactVerifyRateLimiter, async (req, res
 
   for (const r of rows) {
     await dbRun(`UPDATE bookings SET status = 'pending', verify_token = NULL WHERE id = ?`, [r.id]).catch(() => {});
+    // Erst ab hier in den Kalender: Vor der E-Mail-Bestätigung könnten das
+    // Tippfehler oder Bot-Eingaben sein, die Martinas Kalender zumüllen würden.
+    const verified = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [r.id]).catch(() => null);
+    if (verified) await syncGoogleCreate(verified);
   }
 
   try {
@@ -1900,6 +1964,8 @@ app.post('/api/atelier/submit', (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: apiMsg('atelier.imageRequired', lang) });
     }
+
+    await optimizeUploadedFile(req.file);
 
     const anonymous = req.body.anonymous === '1' || req.body.anonymous === 'true';
     const name = (req.body.name || '').trim().slice(0, 120);
@@ -2006,13 +2072,14 @@ app.delete('/api/admin/atelier/:id', requireAuth, async (req, res) => {
 });
 
 app.post('/api/admin/upload', requireAuth, (req, res) => {
-  imageUpload.single('image')(req, res, (err) => {
+  imageUpload.single('image')(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
     }
     if (!req.file) {
       return res.status(400).json({ error: 'Keine Datei ausgewählt' });
     }
+    await optimizeUploadedFile(req.file);
     res.json({
       success: true,
       url: `/uploads/${req.file.filename}`,
@@ -2095,6 +2162,8 @@ app.post('/api/admin/site-images/:slot/upload', requireAuth, (req, res) => {
       return res.status(400).json({ error: 'Keine Datei ausgewählt' });
     }
 
+    await optimizeUploadedFile(req.file);
+
     try {
       await contentVersions.snapshotBeforeChange(dbRun, dbGet, dbAll, {
         kind: 'site_images',
@@ -2156,13 +2225,14 @@ app.get('/api/admin/media', requireAuth, async (req, res) => {
 });
 
 app.post('/api/admin/media/upload', requireAuth, (req, res) => {
-  imageUpload.single('image')(req, res, (err) => {
+  imageUpload.single('image')(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
     }
     if (!req.file) {
       return res.status(400).json({ error: 'Keine Datei ausgewählt' });
     }
+    await optimizeUploadedFile(req.file);
     res.json({
       success: true,
       url: `/uploads/${req.file.filename}`,
@@ -2459,9 +2529,7 @@ app.post('/api/admin/bookings', requireAuth, async (req, res) => {
 
     const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
 
-    if (!isBlock) {
-      await syncGoogleCreate(row);
-    }
+    await syncGoogleCreate({ ...row, is_block: isBlock });
 
     res.json({
       success: true,
@@ -2498,9 +2566,9 @@ app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {
         console.error('Booking confirmation email failed:', mailErr.message);
       }
 
-      if (!updated.google_event_id) {
-        await syncGoogleCreate(updated);
-      }
+      // Der Termin steht meist schon als "Anfrage" im Kalender – dann nur den
+      // Titel anpassen, statt einen zweiten Eintrag anzulegen.
+      await syncGoogleUpdate(updated);
     }
 
     if (status === 'cancelled' && row.google_event_id) {
@@ -2615,7 +2683,7 @@ app.get('/api/admin/google/callback', async (req, res) => {
 });
 
 // ============================================================================
-// FRONTEND ROUTES (fixes "Cannot GET /" on Hostinger Node redeploy)
+// FRONTEND ROUTES (verhindert "Cannot GET /" nach einem Redeploy)
 // ============================================================================
 
 const SITE_PAGES = [

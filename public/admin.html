@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow"/>
   <title>Kunsttherapie Paderborn – Admin Panel</title>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
+  <link rel="icon" href="assets/img/favicon.ico" sizes="any"/>
   <link rel="stylesheet" href="assets/css/style.css?v=20260613"/>
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260613"/>
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260918"/>
   <link rel="stylesheet" href="assets/vendor/quill.snow.css">
 </head>
 <body class="admin-app"><!-- LOGIN SCREEN -->
@@ -33,7 +35,7 @@
     <details id="firstSetupBox" style="margin-top:16px; font-size:0.9rem; display:none">
       <summary style="cursor:pointer; color:var(--color-teal)">Erstes Admin-Konto anlegen</summary>
       <div style="margin-top:12px">
-        <p class="note">Nur wenn noch kein Konto existiert. SETUP_TOKEN muss in Hostinger .env stehen.</p>
+        <p class="note">Nur wenn noch kein Konto existiert. SETUP_TOKEN muss in der .env auf dem Server stehen.</p>
         <div class="form-group">
           <label>Setup-Token</label>
           <input type="password" id="setupToken" autocomplete="off"/>
@@ -189,6 +191,15 @@
             <label>Bild</label>
             <input type="file" id="newsImageFile" accept="image/jpeg,image/png,image/gif,image/webp"/>
             <p class="note">Foto vom Handy/PC wählen – wird automatisch hochgeladen.</p>
+            <div class="img-rec">
+              <div class="img-rec-title">Empfohlenes Bild</div>
+              <dl class="img-rec-list">
+                <dt>Format</dt><dd>JPG oder WebP</dd>
+                <dt>Größe</dt><dd>1200 × 800 px (Querformat 3:2)</dd>
+                <dt>Dateigröße</dt><dd>egal – wird automatisch verkleinert</dd>
+              </dl>
+              <div class="img-rec-note">Fotos direkt vom Handy sind in Ordnung: Große Bilder werden beim Hochladen automatisch auf max. 1600 px verkleinert und komprimiert. Auch die Drehung wird dabei korrigiert.</div>
+            </div>
             <input type="hidden" id="newsImage"/>
             <img id="newsImagePreview" class="upload-preview" alt="" hidden/>
           </div>
@@ -401,6 +412,15 @@
           <div class="form-group full">
             <label>Bild</label>
             <input type="file" id="eventImageFile" accept="image/jpeg,image/png,image/gif,image/webp"/>
+            <div class="img-rec">
+              <div class="img-rec-title">Empfohlenes Bild</div>
+              <dl class="img-rec-list">
+                <dt>Format</dt><dd>JPG oder WebP</dd>
+                <dt>Größe</dt><dd>1200 × 800 px (Querformat 3:2)</dd>
+                <dt>Dateigröße</dt><dd>egal – wird automatisch verkleinert</dd>
+              </dl>
+              <div class="img-rec-note">Fotos direkt vom Handy sind in Ordnung: Große Bilder werden beim Hochladen automatisch auf max. 1600 px verkleinert und komprimiert. Auch die Drehung wird dabei korrigiert.</div>
+            </div>
             <input type="hidden" id="eventImage"/>
             <img id="eventImagePreview" class="upload-preview" alt="" hidden/>
           </div>
@@ -472,6 +492,15 @@
           </label>
           <button type="button" class="btn-cancel" id="mediaDeleteSelectedBtn" disabled>Ausgewählte löschen</button>
           <span class="note" id="mediaLibraryHint"></span>
+        </div>
+        <div class="img-rec img-rec--wide">
+          <div class="img-rec-title">Was für Bilder hier hochladen?</div>
+          <dl class="img-rec-list">
+            <dt>Format</dt><dd>JPG oder WebP (für Logos: SVG oder PNG)</dd>
+            <dt>Größe</dt><dd>1600 px an der längsten Seite reichen aus</dd>
+            <dt>Dateigröße</dt><dd>egal – wird automatisch verkleinert</dd>
+          </dl>
+          <div class="img-rec-note">Große Bilder werden beim Hochladen <strong>automatisch auf max. 1600 px verkleinert</strong> und komprimiert – ein Foto direkt vom Handy ist also kein Problem. Die genaue Empfehlung für einen bestimmten Platz auf der Website steht unter „Website-Bilder" direkt beim jeweiligen Bild.</div>
         </div>
         <div id="mediaLibraryGrid" class="media-library-grid">
           <p class="note">Mediathek wird geladen …</p>

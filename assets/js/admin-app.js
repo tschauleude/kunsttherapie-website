@@ -470,6 +470,23 @@ function renderGalleryCountSettings() {
     </div>`;
 }
 
+function renderImageRecommendation(rec) {
+  if (!rec) return '';
+  const note = rec.note
+    ? `<div class="img-rec-note">${escapeHtml(rec.note)}</div>`
+    : '';
+  return `
+    <div class="img-rec">
+      <div class="img-rec-title">Empfohlenes Bild</div>
+      <dl class="img-rec-list">
+        <dt>Format</dt><dd>${escapeHtml(rec.format || '—')}</dd>
+        <dt>Größe</dt><dd>${escapeHtml(rec.size || '—')}</dd>
+        <dt>Dateigröße</dt><dd>${escapeHtml(rec.maxBytes || '—')}</dd>
+      </dl>
+      ${note}
+    </div>`;
+}
+
 function renderSiteImageSlots() {
   const container = document.getElementById('siteImagesList');
   if (!container) return;
@@ -498,6 +515,7 @@ function renderSiteImageSlots() {
             ${status}
           </div>
           <img class="upload-preview site-image-preview" src="${escapeHtml(slot.url)}" alt="" loading="lazy"/>
+          ${renderImageRecommendation(slot.recommendation)}
           <div class="form-group">
             <label for="lib-${escapeHtml(slot.slot)}">Aus Mediathek</label>
             <select id="lib-${escapeHtml(slot.slot)}" class="site-image-library-select">${renderMediaLibraryOptions(slot.customUrl)}</select>

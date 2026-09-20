@@ -36,8 +36,19 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
+          # Ohne script_stop läuft das Skript nach einem Fehler weiter und endet
+          # mit dem Ergebnis des letzten Befehls. Da dieser auf "|| true" endete,
+          # konnte ein fehlgeschlagenes "git pull" (etwa wegen lokal geänderter
+          # Dateien auf dem Server) einen grünen Deploy melden, obwohl weiterhin
+          # der alte Stand lief. Jetzt bricht das Skript beim ersten Fehler ab.
+          script_stop: true
           script: |
+            set -e
             cd ${{ secrets.VPS_PROJECT_PATH }}
+            echo "Stand vorher: $(git rev-parse --short HEAD)"
             git pull origin main
             npm ci --omit=dev
-            pm2 restart kunsttherapie || true
+            pm2 restart kunsttherapie
+            echo "Stand nachher: $(git rev-parse --short HEAD)"
+            sleep 3
+            curl -fsS http://127.0.0.1:${PORT:-3000}/health || (pm2 logs kunsttherapie --lines 30 --nostream; exit 1)
