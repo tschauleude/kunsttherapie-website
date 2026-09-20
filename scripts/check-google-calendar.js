@@ -86,8 +86,46 @@ function readToken() {
   }
   ok('Refresh-Token vorhanden (Quelle: ' + quelle + ')');
 
-  // 3) Echter Zugriff – das ist der Punkt, der zählt
-  console.log('\n3. Echter Zugriff auf den Kalender');
+  // 3) Welche Kalender gibt es, und welche werden gelesen?
+  console.log('\n3. Kalender des Kontos');
+  const gelesen = googleCalendar.calendarIds();
+  try {
+    const alle = await googleCalendar.listCalendars(token);
+    if (!alle.length) {
+      info('Keine Kalender gefunden.');
+    } else {
+      alle.forEach((c) => {
+        const aktiv = gelesen.includes(c.id) || (c.primary && gelesen.includes('primary'));
+        const markierung = aktiv ? '\x1b[32m[wird gelesen]\x1b[0m' : '\x1b[33m[wird IGNORIERT]\x1b[0m';
+        console.log(`  ${markierung} ${c.name}${c.primary ? ' (Hauptkalender)' : ''}`);
+        console.log(`      ID: ${c.id}`);
+      });
+      const ignoriert = alle.filter(
+        (c) => !(gelesen.includes(c.id) || (c.primary && gelesen.includes('primary')))
+      );
+      if (ignoriert.length) {
+        console.log('');
+        bad(`${ignoriert.length} Kalender werden NICHT gelesen`);
+        info('Termine darin blockieren keine Buchungszeiten auf der Website –');
+        info('es könnte doppelt gebucht werden. Zum Mitlesen die IDs kommagetrennt');
+        info('in GOOGLE_CALENDAR_ID eintragen, zum Beispiel:');
+        info('');
+        info(`  GOOGLE_CALENDAR_ID=${[...gelesen, ignoriert[0].id].join(',')}`);
+        info('');
+        info('Der ERSTE Eintrag ist der Kalender, in den Buchungen geschrieben werden.');
+        info('Danach: pm2 restart kunsttherapie');
+      } else {
+        ok('Alle Kalender des Kontos werden gelesen');
+      }
+    }
+  } catch (e) {
+    bad('Kalenderliste nicht abrufbar: ' + e.message);
+  }
+
+  // 4) Echter Zugriff – das ist der Punkt, der zählt
+  console.log('\n4. Echter Zugriff auf den Kalender');
+  info('Gelesen werden: ' + gelesen.join(', '));
+  info('Geschrieben wird nach: ' + googleCalendar.writeCalendarId());
   const von = new Date();
   const bis = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
   try {

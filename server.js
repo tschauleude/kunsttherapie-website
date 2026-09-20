@@ -458,6 +458,7 @@ function initializeDatabase() {
     `);
     // Migration: add alt_text column if it doesn't exist yet (existing DBs)
     db.run(`ALTER TABLE site_images ADD COLUMN alt_text TEXT`, () => {/* ignore if already exists */});
+    db.run(`ALTER TABLE blocked_periods ADD COLUMN google_event_id TEXT`, () => {/* ignore if already exists */});
 
     db.run(`
       CREATE TABLE IF NOT EXISTS services (
@@ -655,6 +656,39 @@ async function syncGoogleCreate(row) {
     }
   } catch (e) {
     console.error('Google event create failed:', e.message);
+  }
+}
+
+// Vorhandenen Kalendertermin an den neuen Status anpassen (Anfrage -> zugesagt).
+// Existiert noch keiner, wird er angelegt.
+async function syncGoogleUpdate(row) {
+  try {
+    const token = await getGoogleRefreshTokenAsync();
+    if (!token) return;
+    if (!row.google_event_id) return syncGoogleCreate(row);
+    const id = await googleCalendar.updateCalendarEvent(token, row.google_event_id, row);
+    if (id && id !== row.google_event_id) {
+      await dbRun(`UPDATE bookings SET google_event_id = ? WHERE id = ?`, [id, row.id]);
+    }
+  } catch (e) {
+    console.error('Google event update failed:', e.message);
+  }
+}
+
+// Gesperrte Zeiträume (Urlaub) als ganztägige Termine spiegeln.
+async function syncGoogleBlockedPeriod(period) {
+  try {
+    const token = await getGoogleRefreshTokenAsync();
+    if (!token) return null;
+    return await googleCalendar.createAllDayEvent(token, {
+      dateFrom: period.date_from,
+      dateTo: period.date_to,
+      summary: period.reason ? `Nicht buchbar: ${period.reason}` : 'Nicht buchbar',
+      description: 'Über das Admin-Panel gesperrt (Website-Buchung)',
+    });
+  } catch (e) {
+    console.error('Google blocked period create failed:', e.message);
+    return null;
   }
 }
 
@@ -1710,6 +1744,13 @@ app.post('/api/admin/blocked-periods', requireAuth, async (req, res) => {
       `INSERT INTO blocked_periods (date_from, date_to, reason) VALUES (?, ?, ?)`,
       [date_from, date_to, reason || null]
     );
+    const googleEventId = await syncGoogleBlockedPeriod({ date_from, date_to, reason });
+    if (googleEventId) {
+      await dbRun(`UPDATE blocked_periods SET google_event_id = ? WHERE id = ?`, [
+        googleEventId,
+        result.lastID,
+      ]).catch(() => {});
+    }
     res.json({ id: result.lastID, date_from, date_to, reason });
   } catch (err) {
     res.status(500).json({ error: 'Datenbankfehler' });
@@ -1720,7 +1761,10 @@ app.delete('/api/admin/blocked-periods/:id', requireAuth, async (req, res) => {
   const id = parseInt(req.params.id, 10);
   if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
   try {
+    // Erst lesen, dann löschen – sonst ist die Kalender-ID weg.
+    const row = await dbGet(`SELECT * FROM blocked_periods WHERE id = ?`, [id]).catch(() => null);
     await dbRun(`DELETE FROM blocked_periods WHERE id = ?`, [id]);
+    if (row?.google_event_id) await syncGoogleDelete(row.google_event_id);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: 'Datenbankfehler' });
@@ -1873,6 +1917,10 @@ app.get('/api/bookings/verify/:token', contactVerifyRateLimiter, async (req, res
 
   for (const r of rows) {
     await dbRun(`UPDATE bookings SET status = 'pending', verify_token = NULL WHERE id = ?`, [r.id]).catch(() => {});
+    // Erst ab hier in den Kalender: Vor der E-Mail-Bestätigung könnten das
+    // Tippfehler oder Bot-Eingaben sein, die Martinas Kalender zumüllen würden.
+    const verified = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [r.id]).catch(() => null);
+    if (verified) await syncGoogleCreate(verified);
   }
 
   try {
@@ -2481,9 +2529,7 @@ app.post('/api/admin/bookings', requireAuth, async (req, res) => {
 
     const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
 
-    if (!isBlock) {
-      await syncGoogleCreate(row);
-    }
+    await syncGoogleCreate({ ...row, is_block: isBlock });
 
     res.json({
       success: true,
@@ -2520,9 +2566,9 @@ app.patch('/api/admin/bookings/:id', requireAuth, async (req, res) => {
         console.error('Booking confirmation email failed:', mailErr.message);
       }
 
-      if (!updated.google_event_id) {
-        await syncGoogleCreate(updated);
-      }
+      // Der Termin steht meist schon als "Anfrage" im Kalender – dann nur den
+      // Titel anpassen, statt einen zweiten Eintrag anzulegen.
+      await syncGoogleUpdate(updated);
     }
 
     if (status === 'cancelled' && row.google_event_id) {
