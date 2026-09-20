@@ -36,12 +36,19 @@ Anmeldeversuchen.
 
 ## Das Wichtigste zuerst: Sicherungspunkte
 
-Bevor Sie größere Änderungen an Texten oder Bildern machen:
+**Gute Nachricht vorweg: Das geschieht meist von allein.** Bei jedem Speichern
+von Texten oder Bildern legt das System automatisch einen Sicherungspunkt an.
 
-**Website-Texte → „Jetzt Sicherungspunkt erstellen"**
+Zusätzlich von Hand, etwa vor einer größeren Umarbeitung:
 
-Damit wird der aktuelle Stand gespeichert. Geht etwas schief, lässt sich jederzeit
-dorthin zurückkehren. Es werden die letzten 80 Sicherungspunkte aufbewahrt.
+**Übersicht → „Jetzt Sicherungspunkt erstellen"**
+
+(Der Button steht auf der Startseite des Admin-Panels, nicht bei den Texten.)
+Es erscheint ein kleines Fenster für einen optionalen Namen – etwa
+„Vor Überarbeitung Startseite". Danach auf OK.
+
+Geht etwas schief, lässt sich jederzeit dorthin zurückkehren. Es werden die
+letzten 80 Sicherungspunkte aufbewahrt.
 
 **Sie können nichts kaputtmachen, was sich nicht zurückholen ließe.**
 
@@ -184,7 +191,7 @@ keine E-Mails – bitte direkt melden.
 
 ## Kurz gefasst
 
-- Vor größeren Änderungen: **Sicherungspunkt erstellen**
+- Sicherungspunkte entstehen beim Speichern automatisch; zusätzlich von Hand über **Übersicht**
 - Neuigkeiten und Veranstaltungen sind erst nach **Veröffentlicht** sichtbar
 - Urlaub am einfachsten als ganztägigen Termin im Google-Kalender eintragen
 - Bei Bildern immer einen **Alt-Text** vergeben

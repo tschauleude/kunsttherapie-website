@@ -23,6 +23,8 @@ Stand: 16.09.2026 · geprüft gegen den Code in `main`
 | [10 – Termin-Vorbereitung](10-termin-vorbereitung.md) | intern | Ablauf und offene Fragen für den Termin mit der Inhaberin |
 | [11 – Automatisches Deployment](11-automatisches-deployment.md) | Betrieb | Automatischen Upload auslösen und verifizieren, inkl. fertigem Prompt |
 | [12 – Google-Live-Checkliste](12-google-live-checkliste.md) | intern | Zum Abhaken während des Termins, inkl. Prüfschritt |
+| [13 – Deployment Schritt für Schritt](13-deployment-schritt-fuer-schritt.md) | Betrieb | Sichern, aufspielen, prüfen, notfalls zurück |
+| [14 – Änderungsübersicht](14-aenderungen-ueberblick.md) | alle | Was wurde geändert und was wurde geprüft |
 
 ---
 
