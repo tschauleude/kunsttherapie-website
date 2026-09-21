@@ -2607,12 +2607,37 @@ app.delete('/api/admin/bookings/:id', requireAuth, async (req, res) => {
 
 app.get('/api/admin/google/status', requireAuth, (req, res) => {
   const hasClient = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
-  getGoogleRefreshToken((err, token) => {
+  getGoogleRefreshToken(async (err, token) => {
     if (err) return res.status(500).json({ error: 'Database error' });
+
+    // Ein gespeicherter Token heisst noch nicht, dass der Kalender lesbar ist.
+    // Ohne echten Zugriff blieben alle Zeiten frei - darum hier einmal wirklich
+    // lesen und das Ergebnis im Admin-Panel anzeigen.
+    let readOk = null;
+    let readError = null;
+    if (hasClient && token) {
+      try {
+        const von = new Date();
+        const bis = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const busy = await googleCalendar.fetchBusyIntervals(token, von, bis);
+        const fehler = busy.failures || [];
+        readOk = fehler.length === 0;
+        if (fehler.length) {
+          readError = fehler.map((f) => `${f.calendarId}: ${f.message}`).join(' | ');
+        }
+      } catch (e) {
+        readOk = false;
+        readError = e.message;
+      }
+    }
+
     res.json({
       clientConfigured: hasClient,
       connected: Boolean(token),
       calendarId: process.env.GOOGLE_CALENDAR_ID || 'primary',
+      calendarIds: googleCalendar.calendarIds(),
+      readOk,
+      readError,
       authUrl: hasClient && !token ? googleCalendar.getAuthUrl() : null,
     });
   });

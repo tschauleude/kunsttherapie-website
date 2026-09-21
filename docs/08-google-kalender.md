@@ -64,6 +64,13 @@ stimmt nicht.
 
 **APIs & Dienste → Bibliothek** → nach `Google Calendar API` suchen → **Aktivieren**
 
+Dieser Schritt wird leicht übersehen, weil die Verbindung im Admin-Panel auch
+ohne ihn scheinbar klappt: Die Anmeldung gelingt, der Token wird gespeichert –
+erst der erste echte Kalenderzugriff scheitert dann mit
+*„Google Calendar API has not been used in project … before or it is disabled"*.
+Nach dem Aktivieren dauert es ein paar Minuten, bis Google die Freigabe
+durchgereicht hat.
+
 ## Schritt 3 – Zustimmungsbildschirm / Zielgruppe
 
 Google hat diesen Bereich zu **„Google Auth Platform"** umgebaut; je nach Konto
@@ -157,16 +164,25 @@ Nur dieser Test beweist, dass die Leserichtung funktioniert.
 ## Ausfallverhalten (wichtig)
 
 Wenn die Google-Abfrage fehlschlägt – abgelaufener Token, entzogener Zugriff,
-API-Störung – wird der Fehler **nur ins Serverlog geschrieben**
-(`Google Calendar sync error: …`). Die Website behandelt den Kalender dann als
-leer und zeigt **alle Slots als frei** an.
+API nicht aktiviert, Störung bei Google – behandelt die Website den Kalender als
+leer und zeigt **alle Slots als frei** an. Für den Besucher sieht das aus wie ein
+normaler freier Termin; die Folge wären Doppelbuchungen.
 
-Praktische Folge: Ein stiller Kalenderausfall führt nicht zu einer Fehlermeldung,
-sondern zu möglichen Doppelbuchungen. Deshalb:
+Damit das nicht unbemerkt bleibt:
 
+- **Admin-Panel → Buchungen** prüft den Zugriff bei jedem Aufruf wirklich nach
+  und zeigt bei einem Fehler in Rot *„Verbunden, aber der Kalender kann nicht
+  gelesen werden"* samt Google-Meldung an. Steht dort nur
+  *„Verbunden mit Kalender: …"*, ist der Zugriff in Ordnung.
+- `npm run check-google` auf dem Server meldet denselben Zustand ausführlicher,
+  inklusive der Frage, welche Kalender gelesen und welche ignoriert werden.
 - Veröffentlichungsstatus auf Produktion setzen (sonst garantierter Ausfall nach 7 Tagen)
 - Nach dem Verbinden den Praxistest aus Schritt 7 durchführen
-- Gelegentlich ins Log sehen: `pm2 logs kunsttherapie | grep "Google Calendar"`
+- Gelegentlich ins Log sehen: `pm2 logs kunsttherapie | grep "Google Kalender"`
+
+Sind mehrere Kalender eingetragen und nur einer davon nicht lesbar, laufen die
+übrigen weiter – der ausgefallene wird im Admin-Panel und in `check-google`
+namentlich genannt.
 
 Siehe auch [09 – Review](09-website-review.md), Befund B2.
 
@@ -176,13 +192,15 @@ Siehe auch [09 – Review](09-website-review.md), Befund B2.
 
 - **Ganztägige Termine** im verbundenen Kalender (z. B. „Urlaub") blockieren den
   kompletten Tag. Das ist in der Regel gewollt.
-- **Als „Frei"/„Verfügbar" markierte Termine blockieren trotzdem.** Die Website
-  wertet die Google-Eigenschaft `transparency` nicht aus – jeder nicht abgesagte
-  Termin gilt als belegt.
-- **Nur der eine Kalender** aus `GOOGLE_CALENDAR_ID` wird gelesen. Termine in
-  weiteren Kalendern desselben Kontos (Feiertage, Geburtstage, Familienkalender)
-  zählen nicht. Soll ein separater Praxiskalender genutzt werden, muss dessen
-  Kalender-ID in die `.env` (in Google: Kalendereinstellungen → „Kalender-ID").
+- **Als „Frei"/„Verfügbar" markierte Termine blockieren nicht.** Wer einen
+  Kalendereintrag als Notiz führen will, ohne eine Buchungszeit zu sperren,
+  stellt ihn in Google auf „Frei".
+- **Mehrere Kalender** sind möglich: `GOOGLE_CALENDAR_ID` darf kommagetrennt
+  mehrere IDs enthalten. Alle davon blockieren Buchungszeiten; **geschrieben**
+  wird immer in den **ersten** Eintrag der Liste. Welche Kalender es im Konto
+  gibt und welche derzeit gelesen werden, zeigt `npm run check-google` mitsamt
+  fertiger `GOOGLE_CALENDAR_ID=`-Zeile zum Kopieren. Termine in nicht
+  eingetragenen Kalendern zählen nicht.
 - **Trennen:** Der gespeicherte Token liegt in `settings` (`google_refresh_token`).
   Der Zugriff lässt sich jederzeit im Google-Konto unter
   *Sicherheit → Drittanbieter-Apps* widerrufen.
@@ -198,3 +216,5 @@ Siehe auch [09 – Review](09-website-review.md), Befund B2.
 | „Kein Refresh-Token erhalten" | Google gibt nur beim ersten Consent einen Refresh-Token | Zugriff im Google-Konto widerrufen, dann erneut verbinden |
 | „Ungültiger OAuth-State" | Ablauf zu lange her oder zwischendurch neu gestartet | Verbindung im Admin-Panel neu starten |
 | Verbindung reißt nach ~1 Woche ab | App steht auf „Testing" | Veröffentlichungsstatus auf **Produktion** setzen, dann neu verbinden |
+| „Google Calendar API has not been used in project … or it is disabled" | Schritt 2 wurde übersprungen | **APIs & Dienste → Bibliothek → Google Calendar API → Aktivieren**, ein paar Minuten warten, dann `npm run check-google` |
+| Admin-Panel: „Verbunden, aber der Kalender kann nicht gelesen werden" | siehe Google-Meldung in derselben Zeile | `npm run check-google` auf dem Server ausführen – es nennt die Ursache im Klartext |

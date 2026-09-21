@@ -2202,7 +2202,18 @@ async function loadGoogleStatus() {
     }
 
     if (data.connected) {
-      text.textContent = `Verbunden mit Kalender: ${data.calendarId}`;
+      const kalender = (data.calendarIds || [data.calendarId]).join(', ');
+      if (data.readOk === false) {
+        // Verbunden, aber nicht lesbar: Die Website zeigt dann alle Zeiten als
+        // frei an. Das muss sichtbar sein, sonst kommt es zu Doppelbuchungen.
+        text.innerHTML =
+          '<strong style="color:#b3261e">Verbunden, aber der Kalender kann nicht gelesen werden.</strong><br>' +
+          'Termine aus Google sperren derzeit KEINE Buchungszeiten auf der Website.<br>' +
+          '<span style="color:#666">Meldung von Google: ' + escapeHtml(data.readError || 'unbekannt') + '</span><br>' +
+          '<span style="color:#666">Bitte Marian Bescheid geben.</span>';
+      } else {
+        text.textContent = `Verbunden mit Kalender: ${kalender}`;
+      }
       btn.style.display = 'none';
     } else {
       text.textContent = 'Noch nicht verbunden. Klicke unten und melde dich mit dem Google-Konto des Ateliers an.';
