@@ -27,6 +27,7 @@ Anmeldeversuchen.
 | **Buchungen** | Terminanfragen, Google-Kalender, Urlaubssperren |
 | **Nachrichten** | Eingegangene Kontaktanfragen |
 | **Website-Texte** | Alle Texte der Website ändern |
+| **Flyer (PDF)** | Flyer als PDF hochladen – erscheinen auf der Startseite |
 | **Bilder** | Bilder austauschen |
 | **Preistabelle** | Preise pflegen |
 | **Mini-Atelier** | Eingesendete Bilder von Besuchern |
@@ -66,6 +67,34 @@ auf **Veröffentlicht** stellt sie auf die Website. Über die Schaltflächen
 
 Zum Zurückziehen: erneut auf **Veröffentlicht** klicken – der Eintrag wird wieder
 zum Entwurf, ohne gelöscht zu werden.
+
+---
+
+## Flyer hochladen (PDF)
+
+**Flyer (PDF) → Neuen Flyer hochladen**
+
+1. **Titel** eingeben – so steht der Flyer später auf der Startseite
+2. Bei Bedarf einen **kurzen Text** dazu (etwa „Programm und Uhrzeiten")
+3. Die **PDF-Datei** auswählen
+4. **Speichern**
+
+Aus Word heraus wird ein PDF über *Speichern unter* → Dateityp *PDF* erzeugt.
+Andere Formate nimmt das Feld nicht an; es erscheint dann ein Hinweis.
+
+Die Flyer stehen auf der Startseite im Abschnitt **Aktuelle Flyer**. Ist kein
+Flyer veröffentlicht, wird der ganze Abschnitt nicht angezeigt – auf der Seite
+steht also nie eine leere Überschrift.
+
+In der Liste lässt sich jeder Flyer:
+
+- **Ansehen** – öffnet die PDF-Datei so, wie Besucher sie sehen
+- **Bearbeiten** – Titel oder Text ändern; das Dateifeld darf leer bleiben,
+  dann bleibt die bisherige Datei bestehen
+- **Verbergen** / **Anzeigen** – vorübergehend von der Startseite nehmen,
+  ohne ihn zu löschen
+- **nach oben** / **nach unten** – die Reihenfolge auf der Startseite ändern
+- **Löschen** – Eintrag und PDF-Datei werden entfernt
 
 ---
 
@@ -123,8 +152,12 @@ oder ablehnen, ohne sich anzumelden.
 ## Website-Texte ändern
 
 **Website-Texte** zeigt alle änderbaren Texte, nach Seite geordnet: Startseite,
-Kunsttherapie, Häufige Fragen, Über mich, Preise, Kontakt, Buchung sowie die
-Suchmaschinen-Texte.
+Kunsttherapie, Häufige Fragen, Über mich, Preise, Kontakt, Buchung, **Kopf- und
+Fußzeile** sowie die Suchmaschinen-Texte.
+
+Die Gruppe **Kopf- und Fußzeile** gilt für alle Seiten gleichzeitig: die
+Menüpunkte oben und die vier Spalten ganz unten, einschließlich Anschrift,
+Telefonnummern und der Zeile unter dem Namen.
 
 1. Gruppe auswählen
 2. Text ändern – jedes Feld ist beschriftet („Hero – Überschrift", „Karte Privat – Text" …)
@@ -192,7 +225,7 @@ keine E-Mails – bitte direkt melden.
 ## Kurz gefasst
 
 - Sicherungspunkte entstehen beim Speichern automatisch; zusätzlich von Hand über **Übersicht**
-- Neuigkeiten und Veranstaltungen sind erst nach **Veröffentlicht** sichtbar
+- Neuigkeiten, Veranstaltungen und Flyer sind erst nach dem Häkchen sichtbar
 - Urlaub am einfachsten als ganztägigen Termin im Google-Kalender eintragen
 - Bei Bildern immer einen **Alt-Text** vergeben
 - Buchungen und Nachrichten erreichen Sie erst nach der Bestätigung durch den Absender – das ist Absicht

@@ -14,6 +14,13 @@ Wird beim ersten Start aus `ADMIN_USERNAME` / `ADMIN_PASSWORD` befüllt.
 ### `news`
 `id` · `title` · `content` · `image` · `published` (0/1) · Zeitstempel
 
+### `flyers`
+`id` · `title` · `description` · `url` · `original_name` · `size_bytes` ·
+`published` (0/1) · `sort_order` · Zeitstempel
+
+Die PDF-Datei selbst liegt nicht in der Datenbank, sondern unter
+`public/uploads/flyer/`. Beim Löschen eines Eintrags wird sie mit entfernt.
+
 ### `events`
 `id` · `title` · `description` · `date` · `time` · `location` · `capacity` ·
 `image` · `published` · Zeitstempel

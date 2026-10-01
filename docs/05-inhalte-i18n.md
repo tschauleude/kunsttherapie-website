@@ -15,7 +15,7 @@ Der Text im HTML ist nur der Ausgangswert – zur Laufzeit ersetzt ihn
 Sprache. Varianten: `data-i18n` (reiner Text), `data-i18n-html` (mit Auszeichnung),
 `data-i18n-aria-label`.
 
-Aktuell sind **488 Schlüssel** in DE und EN gepflegt, verteilt auf 11 Seiten-Bindings.
+Aktuell sind **495 Schlüssel** in DE und EN gepflegt, verteilt auf 11 Seiten-Bindings.
 
 ## Wo ein Text tatsächlich herkommt
 
@@ -48,6 +48,11 @@ Stattdessen:
 - Texte im **Admin-Panel** ändern (empfohlen), oder
 - `assets/js/i18n-messages-pages.js` bearbeiten – das ist die Quelldatei.
 
+Kopf- und Fußzeile hängen an denselben Schlüsseln wie alles andere
+(`brand.*`, `nav.*`, `footer.*`) und sind im Admin-Panel unter **Website-Texte →
+Kopf- und Fußzeile** gepflegt. Sie landen in `i18n-messages-shared.js` und gelten
+damit auf allen Seiten.
+
 Welcher Schlüssel in welche Datei wandert, entscheidet `pageForKey()` in
 `scripts/build-frontend.js` anhand des Präfixes (`home.` → `home`, `kt.`/`offer.`
 → `therapy`, `nav.`/`btn.`/`form.`/`consent.` → `shared` usw.).
@@ -78,7 +83,7 @@ npm run validate-i18n   # DE/EN vollständig? Bindings gültig?
 npm run qa              # dasselbe plus Syntaxprüfung der Frontend-Skripte
 ```
 
-Ausgabe im Normalfall: `OK: 488 Schlüssel DE/EN, 11 Seiten-Bindings`. Fehlt ein
+Ausgabe im Normalfall: `OK: 495 Schlüssel DE/EN, 11 Seiten-Bindings`. Fehlt ein
 Schlüssel in einer Sprache, schlägt die CI fehl.
 
 ## Bilder

@@ -2,6 +2,54 @@
    Content-Security-Policy (script-src 'self') ausgeführt wird. */
 const API_URL = window.location.origin + '/api';
 
+// ---------------------------------------------------------------------------
+// Serverantworten robust lesen
+//
+// Die eigene API antwortet immer mit JSON. Ein Webserver davor tut das nicht:
+// Bei einer zu großen Datei, einer Zeitüberschreitung oder einem Neustart kommt
+// eine HTML-Fehlerseite zurück. res.json() warf dann
+// "JSON.parse: unexpected character at line 1 column 1" – damit kann im
+// Admin-Panel niemand etwas anfangen. Deshalb hier einmal zentral: Antwort als
+// Text lesen, nur echtes JSON parsen und sonst eine Meldung in Klartext.
+// ---------------------------------------------------------------------------
+const rawFetch = window.fetch.bind(window);
+
+function serverErrorText(status) {
+  if (status === 401 || status === 403) return 'Die Anmeldung ist abgelaufen. Bitte die Seite neu laden und noch einmal anmelden.';
+  if (status === 413) return 'Die Datei ist zu groß für den Server. Bitte ein kleineres Bild wählen – oder Marian Bescheid geben, damit er das Limit erhöht.';
+  if (status === 429) return 'Zu viele Versuche in kurzer Zeit. Bitte eine Minute warten.';
+  if (status === 404) return 'Diese Funktion gibt es auf dem Server nicht. Bitte Marian Bescheid geben.';
+  if (status === 502 || status === 503 || status === 504) return 'Der Server antwortet gerade nicht. Bitte in einer Minute noch einmal versuchen.';
+  if (status >= 500) return 'Auf dem Server ist ein Fehler aufgetreten. Bitte noch einmal versuchen.';
+  return 'Unerwartete Antwort vom Server (Code ' + status + ').';
+}
+
+async function apiFetch(url, options) {
+  let res;
+  try {
+    res = await rawFetch(url, options);
+  } catch (netErr) {
+    throw new Error('Keine Verbindung zum Server. Bitte die Internetverbindung prüfen.');
+  }
+
+  res.json = async function readJsonSafely() {
+    const text = await res.text();
+    const trimmed = text.trim();
+    if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+      try {
+        return JSON.parse(trimmed);
+      } catch (parseErr) {
+        // Abgeschnittene Antwort – wie eine Nicht-JSON-Antwort behandeln.
+      }
+    }
+    if (!trimmed && res.ok) return {};
+    if (res.ok) throw new Error('Der Server hat unerwartet geantwortet. Bitte noch einmal versuchen.');
+    return { error: serverErrorText(res.status) };
+  };
+
+  return res;
+}
+
 // ============================================================================
 // AUTH FUNCTIONS
 // ============================================================================
@@ -18,7 +66,7 @@ function showAdminApp(username) {
 
 async function checkAuthOnLoad() {
   try {
-    const response = await fetch(`${API_URL}/auth/status`, { credentials: 'include' });
+    const response = await apiFetch(`${API_URL}/auth/status`, { credentials: 'include' });
     const data = await response.json();
     if (data.authenticated) {
       showAdminApp(data.username);
@@ -47,7 +95,7 @@ async function runFirstSetup() {
   const username = document.getElementById('setupUsername').value.trim();
   const password = document.getElementById('setupPassword').value;
   try {
-    const res = await fetch(`${API_URL}/auth/setup`, {
+    const res = await apiFetch(`${API_URL}/auth/setup`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -69,7 +117,7 @@ async function changePassword(e) {
   e.preventDefault();
   const msg = document.getElementById('passwordChangeMsg');
   try {
-    const res = await fetch(`${API_URL}/admin/change-password`, {
+    const res = await apiFetch(`${API_URL}/admin/change-password`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -99,7 +147,7 @@ async function handleLogin(e) {
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch(`${API_URL}/auth/login`, {
+    const response = await apiFetch(`${API_URL}/auth/login`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -125,7 +173,7 @@ async function handleLogin(e) {
 
 async function handleLogout() {
   try {
-    await fetch(`${API_URL}/auth/logout`, {
+    await apiFetch(`${API_URL}/auth/logout`, {
       method: 'POST',
       credentials: 'include'
     });
@@ -181,6 +229,7 @@ function switchSection(sectionId, navEl) {
   if (sectionId === 'events') loadEventsList();
   if (sectionId === 'prices' || sectionId === 'services') loadPriceTable();
   if (sectionId === 'images') loadSiteImagesList();
+  if (sectionId === 'flyers') loadFlyerList();
   if (sectionId === 'texts') initTextsSection();
   if (sectionId === 'contact') loadContactMessages();
   if (sectionId === 'bugs') loadBugs();
@@ -209,7 +258,7 @@ let i18nCatalog = [];
 let i18nCurrentLang = 'de';
 
 async function fetchI18nCatalog() {
-  const res = await fetch(`${API_URL}/admin/i18n/catalog`, { credentials: 'include' });
+  const res = await apiFetch(`${API_URL}/admin/i18n/catalog`, { credentials: 'include' });
   const data = await res.json();
   if (!res.ok) {
     if (res.status === 401) throw new Error('Sitzung abgelaufen – bitte erneut anmelden.');
@@ -253,7 +302,7 @@ async function loadI18nGroup() {
   if (preview) preview.href = I18N_PREVIEW[groupId] || '/';
 
   try {
-    const res = await fetch(`${API_URL}/admin/i18n/${groupId}?lang=${i18nCurrentLang}`, {
+    const res = await apiFetch(`${API_URL}/admin/i18n/${groupId}?lang=${i18nCurrentLang}`, {
       credentials: 'include',
     });
     const data = await res.json();
@@ -307,7 +356,7 @@ async function saveI18nGroup(e) {
   });
 
   try {
-    const res = await fetch(`${API_URL}/admin/i18n/${groupId}`, {
+    const res = await apiFetch(`${API_URL}/admin/i18n/${groupId}`, {
       method: 'PUT',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -331,7 +380,7 @@ async function resetI18nGroup() {
   if (!confirm(`Alle Texte in diesem Bereich (${langLabel}) auf Standard zurücksetzen?`)) return;
 
   try {
-    const res = await fetch(`${API_URL}/admin/i18n/${groupId}?lang=${i18nCurrentLang}`, {
+    const res = await apiFetch(`${API_URL}/admin/i18n/${groupId}?lang=${i18nCurrentLang}`, {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -351,9 +400,21 @@ function showMessage(text, type, elementId) {
   msg.textContent = text;
   msg.className = `message ${type} active`;
   clearTimeout(msg._hideTimer);
-  if (type === 'success') {
-    msg._hideTimer = setTimeout(() => msg.classList.remove('active'), 4000);
+
+  // Anklicken schließt die Meldung. Vorher ließ sich eine Fehlermeldung gar
+  // nicht wegklicken und blieb bis zum nächsten Vorgang stehen.
+  if (!msg._dismissBound) {
+    msg.addEventListener('click', () => {
+      clearTimeout(msg._hideTimer);
+      msg.classList.remove('active');
+    });
+    msg._dismissBound = true;
   }
+
+  // Erfolg verschwindet von selbst; ein Fehler bleibt länger stehen, damit er
+  // in Ruhe gelesen – und notfalls abgeschrieben – werden kann.
+  const dauer = type === 'success' ? 6000 : 20000;
+  msg._hideTimer = setTimeout(() => msg.classList.remove('active'), dauer);
 }
 
 async function compressImageFile(file, maxPx = 1600, quality = 0.82) {
@@ -389,7 +450,7 @@ async function uploadImageFile(fileInput) {
   const compressed = await compressImageFile(file);
   const fd = new FormData();
   fd.append('image', compressed);
-  const res = await fetch(`${API_URL}/admin/upload`, {
+  const res = await apiFetch(`${API_URL}/admin/upload`, {
     method: 'POST',
     credentials: 'include',
     body: fd,
@@ -413,7 +474,7 @@ async function uploadSiteImageSlot(slot, fileInput) {
   if (!file) throw new Error('Bitte zuerst ein Bild auswählen');
   const fd = new FormData();
   fd.append('image', file);
-  const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}/upload`, {
+  const res = await apiFetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}/upload`, {
     method: 'POST',
     credentials: 'include',
     body: fd,
@@ -424,7 +485,7 @@ async function uploadSiteImageSlot(slot, fileInput) {
 }
 
 async function assignSiteImageUrl(slot, url) {
-  const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}`, {
+  const res = await apiFetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}`, {
     method: 'PUT',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -556,7 +617,7 @@ async function saveGalleryCount() {
   const select = document.getElementById('galleryCountInput');
   if (!select) return;
   try {
-    const res = await fetch(`${API_URL}/admin/site-images/gallery-count`, {
+    const res = await apiFetch(`${API_URL}/admin/site-images/gallery-count`, {
       method: 'PUT',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -652,8 +713,8 @@ async function loadSiteImagesList() {
 
   try {
     const [slotsRes, mediaRes] = await Promise.all([
-      fetch(`${API_URL}/admin/site-images`, { credentials: 'include' }),
-      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
+      apiFetch(`${API_URL}/admin/site-images`, { credentials: 'include' }),
+      apiFetch(`${API_URL}/admin/media`, { credentials: 'include' }),
     ]);
     const slotsData = await slotsRes.json();
     const mediaData = await mediaRes.json();
@@ -718,7 +779,7 @@ async function saveSlotAltText(slot) {
   if (!input) return;
   if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
   try {
-    const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}/alt-text`, {
+    const res = await apiFetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}/alt-text`, {
       method: 'PATCH',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -737,7 +798,7 @@ async function saveSlotAltText(slot) {
 async function resetSiteImageSlot(slot) {
   if (!confirm('Eigenes Bild entfernen und Website-Standard wiederherstellen?')) return;
   try {
-    const res = await fetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}`, {
+    const res = await apiFetch(`${API_URL}/admin/site-images/${encodeURIComponent(slot)}`, {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -764,7 +825,7 @@ async function deleteMediaFiles(filenames) {
 
   let deleted = 0;
   for (const filename of unique) {
-    const res = await fetch(`${API_URL}/admin/media/${encodeURIComponent(filename)}`, {
+    const res = await apiFetch(`${API_URL}/admin/media/${encodeURIComponent(filename)}`, {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -997,8 +1058,8 @@ async function loadAllFiles() {
   initAllFilesPanel();
   try {
     const [staticRes, uploadRes] = await Promise.all([
-      fetch(`${API_URL}/admin/static-images`, { credentials: 'include' }),
-      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
+      apiFetch(`${API_URL}/admin/static-images`, { credentials: 'include' }),
+      apiFetch(`${API_URL}/admin/media`, { credentials: 'include' }),
     ]);
     const staticData = await staticRes.json();
     const uploadData = await uploadRes.json();
@@ -1020,7 +1081,7 @@ async function fmDeleteOne(f, { silent = false } = {}) {
   const endpoint = f.source === 'static'
     ? `${API_URL}/admin/static-images/${encodeURIComponent(f.filename)}`
     : `${API_URL}/admin/media/${encodeURIComponent(f.filename)}`;
-  const res = await fetch(endpoint, { method: 'DELETE', credentials: 'include' });
+  const res = await apiFetch(endpoint, { method: 'DELETE', credentials: 'include' });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     const extra = data.usedBy ? ' (' + data.usedBy.map((u) => u.type).join(', ') + ')' : '';
@@ -1073,7 +1134,7 @@ async function fmUploadFile(file) {
   const fd = new FormData();
   fd.append('image', file);
   try {
-    const res = await fetch(`${API_URL}/admin/media/upload`, { method: 'POST', credentials: 'include', body: fd });
+    const res = await apiFetch(`${API_URL}/admin/media/upload`, { method: 'POST', credentials: 'include', body: fd });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Upload fehlgeschlagen');
     showMessage('✓ Bild hochgeladen.', 'success');
@@ -1216,7 +1277,7 @@ function initImagesAdmin() {
     const fd = new FormData();
     fd.append('image', file);
     try {
-      const res = await fetch(`${API_URL}/admin/media/upload`, {
+      const res = await apiFetch(`${API_URL}/admin/media/upload`, {
         method: 'POST',
         credentials: 'include',
         body: fd,
@@ -1307,12 +1368,12 @@ function renderDashUpcoming(bookings, today) {
 async function loadDashboard() {
   try {
     const [newsRes, bookingsRes, eventsRes, atelierRes, mediaRes, contactRes] = await Promise.all([
-      fetch(`${API_URL}/admin/news`, { credentials: 'include' }),
-      fetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
-      fetch(`${API_URL}/admin/events`, { credentials: 'include' }),
-      fetch(`${API_URL}/admin/atelier`, { credentials: 'include' }),
-      fetch(`${API_URL}/admin/media`, { credentials: 'include' }),
-      fetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' }),
+      apiFetch(`${API_URL}/admin/news`, { credentials: 'include' }),
+      apiFetch(`${API_URL}/admin/bookings`, { credentials: 'include' }),
+      apiFetch(`${API_URL}/admin/events`, { credentials: 'include' }),
+      apiFetch(`${API_URL}/admin/atelier`, { credentials: 'include' }),
+      apiFetch(`${API_URL}/admin/media`, { credentials: 'include' }),
+      apiFetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' }),
     ]);
 
     const news = newsRes.ok ? await newsRes.json() : [];
@@ -1375,7 +1436,7 @@ async function loadContentVersions() {
   const list = document.getElementById('contentVersionsList');
   if (!list) return;
   try {
-    const res = await fetch(`${API_URL}/admin/content-versions?limit=30`, { credentials: 'include' });
+    const res = await apiFetch(`${API_URL}/admin/content-versions?limit=30`, { credentials: 'include' });
     if (!res.ok) throw new Error('Versionen nicht geladen');
     const data = await res.json();
     const versions = Array.isArray(data.versions) ? data.versions : [];
@@ -1409,7 +1470,7 @@ async function createContentSnapshot() {
   const label = window.prompt('Name für den Sicherungspunkt (optional):', 'Manueller Sicherungspunkt');
   if (label === null) return;
   try {
-    const res = await fetch(`${API_URL}/admin/content-versions/snapshot`, {
+    const res = await apiFetch(`${API_URL}/admin/content-versions/snapshot`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -1429,7 +1490,7 @@ async function restoreContentVersion(id) {
     return;
   }
   try {
-    const res = await fetch(`${API_URL}/admin/content-versions/${id}/restore`, {
+    const res = await apiFetch(`${API_URL}/admin/content-versions/${id}/restore`, {
       method: 'POST',
       credentials: 'include',
     });
@@ -1461,7 +1522,7 @@ function imageUploadHandler() {
     const formData = new FormData();
     formData.append('image', file);
     try {
-      const res = await fetch(`${API_URL}/admin/upload`, {
+      const res = await apiFetch(`${API_URL}/admin/upload`, {
         method: 'POST',
         credentials: 'include',
         body: formData
@@ -1547,7 +1608,7 @@ async function saveNews(e) {
       document.getElementById('newsImage').value = image;
     }
     if (btn) btn.textContent = 'Wird gespeichert …';
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       method,
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -1572,7 +1633,7 @@ async function saveNews(e) {
 
 async function editNews(id) {
   try {
-    const response = await fetch(`${API_URL}/admin/news/${id}`, { credentials: 'include' });
+    const response = await apiFetch(`${API_URL}/admin/news/${id}`, { credentials: 'include' });
     if (!response.ok) throw new Error('Nicht gefunden');
     const news = await response.json();
 
@@ -1610,7 +1671,7 @@ async function deleteNews(id) {
   if (!confirm('Wirklich löschen?')) return;
 
   try {
-    const response = await fetch(`${API_URL}/admin/news/${id}`, {
+    const response = await apiFetch(`${API_URL}/admin/news/${id}`, {
       method: 'DELETE',
       credentials: 'include'
     });
@@ -1700,7 +1761,7 @@ function initNewsListControls() {
 async function loadNewsList() {
   initNewsListControls();
   try {
-    const response = await fetch(`${API_URL}/admin/news`, { credentials: 'include' });
+    const response = await apiFetch(`${API_URL}/admin/news`, { credentials: 'include' });
     const data = await response.json();
     newsListData = Array.isArray(data) ? data : [];
     renderNewsListItems();
@@ -1711,7 +1772,7 @@ async function loadNewsList() {
 
 async function toggleNewsPublished(id, publish) {
   try {
-    const res = await fetch(`${API_URL}/admin/news/${id}/published`, {
+    const res = await apiFetch(`${API_URL}/admin/news/${id}/published`, {
       method: 'PATCH',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -1728,6 +1789,246 @@ async function toggleNewsPublished(id, publish) {
   } catch (err) {
     showMessage('Fehler: ' + err.message, 'error');
   }
+}
+
+// ============================================================================
+// FLYER (PDF)
+// ============================================================================
+
+let flyerListData = [];
+
+function flyerSizeText(bytes) {
+  if (!bytes) return '';
+  const mb = bytes / (1024 * 1024);
+  if (mb >= 1) return mb.toFixed(1).replace('.', ',') + ' MB';
+  // Bei sehr kleinen Dateien nicht "0 KB" anzeigen – das sieht nach Fehler aus.
+  return Math.max(1, Math.round(bytes / 1024)) + ' KB';
+}
+
+function openFlyerForm() {
+  document.getElementById('flyerForm').style.display = 'block';
+  document.getElementById('flyerFormTitle').textContent = 'Neuer Flyer';
+  document.getElementById('flyerId').value = '';
+  document.getElementById('flyerUrl').value = '';
+  document.getElementById('flyerTitle').value = '';
+  document.getElementById('flyerDescription').value = '';
+  document.getElementById('flyerFile').value = '';
+  document.getElementById('flyerPublished').checked = true;
+  const current = document.getElementById('flyerCurrentFile');
+  current.hidden = true;
+  current.textContent = '';
+  document.getElementById('flyerTitle').focus();
+}
+
+function closeFlyerForm() {
+  document.getElementById('flyerForm').style.display = 'none';
+}
+
+function editFlyer(id) {
+  const flyer = flyerListData.find((f) => f.id === id);
+  if (!flyer) return;
+
+  openFlyerForm();
+  document.getElementById('flyerFormTitle').textContent = 'Flyer bearbeiten';
+  document.getElementById('flyerId').value = flyer.id;
+  document.getElementById('flyerUrl').value = flyer.url;
+  document.getElementById('flyerTitle').value = flyer.title || '';
+  document.getElementById('flyerDescription').value = flyer.description || '';
+  document.getElementById('flyerPublished').checked = flyer.published;
+
+  const current = document.getElementById('flyerCurrentFile');
+  const size = flyerSizeText(flyer.sizeBytes);
+  current.textContent = 'Bisherige Datei: ' + (flyer.originalName || 'Flyer.pdf') + (size ? ' (' + size + ')' : '');
+  current.hidden = false;
+
+  document.getElementById('flyerForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function uploadFlyerFile(fileInput) {
+  const file = fileInput?.files?.[0];
+  if (!file) return null;
+
+  if (file.type !== 'application/pdf' && !/\.pdf$/i.test(file.name)) {
+    throw new Error('Bitte eine PDF-Datei auswählen. Word-Dateien oder Bilder gehen hier nicht.');
+  }
+
+  const fd = new FormData();
+  fd.append('pdf', file);
+  const res = await apiFetch(`${API_URL}/admin/flyers/upload`, {
+    method: 'POST',
+    credentials: 'include',
+    body: fd,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Das Hochladen hat nicht geklappt.');
+  return data;
+}
+
+async function saveFlyer(e) {
+  e.preventDefault();
+  const btn = e.currentTarget.querySelector('[type="submit"]');
+  const origText = btn?.textContent;
+
+  const id = document.getElementById('flyerId').value;
+  const title = document.getElementById('flyerTitle').value.trim();
+  if (!title) {
+    showMessage('Bitte einen Titel eingeben.', 'error');
+    return;
+  }
+
+  const fileInput = document.getElementById('flyerFile');
+  const hasExisting = Boolean(document.getElementById('flyerUrl').value);
+  if (!fileInput.files?.[0] && !hasExisting) {
+    showMessage('Bitte eine PDF-Datei auswählen.', 'error');
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert …'; }
+
+  try {
+    let url = document.getElementById('flyerUrl').value;
+    let originalName = '';
+
+    if (fileInput.files?.[0]) {
+      if (btn) btn.textContent = 'PDF wird hochgeladen …';
+      const uploaded = await uploadFlyerFile(fileInput);
+      url = uploaded.url;
+      originalName = uploaded.originalName;
+      if (btn) btn.textContent = 'Wird gespeichert …';
+    }
+
+    const payload = {
+      title,
+      description: document.getElementById('flyerDescription').value.trim(),
+      published: document.getElementById('flyerPublished').checked,
+      url: fileInput.files?.[0] ? url : (id ? '' : url),
+      originalName,
+    };
+
+    const res = await apiFetch(id ? `${API_URL}/admin/flyers/${id}` : `${API_URL}/admin/flyers`, {
+      method: id ? 'PUT' : 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Speichern fehlgeschlagen');
+
+    showMessage('Flyer gespeichert.', 'success');
+    closeFlyerForm();
+    loadFlyerList();
+  } catch (err) {
+    showMessage(err.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
+  }
+}
+
+async function toggleFlyerPublished(id, publish) {
+  try {
+    const res = await apiFetch(`${API_URL}/admin/flyers/${id}/published`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ published: publish }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Änderung nicht möglich');
+    showMessage(publish ? 'Flyer ist jetzt auf der Startseite zu sehen.' : 'Flyer ist jetzt verborgen.', 'success');
+    loadFlyerList();
+  } catch (err) {
+    showMessage(err.message, 'error');
+  }
+}
+
+async function moveFlyer(id, direction) {
+  try {
+    const res = await apiFetch(`${API_URL}/admin/flyers/${id}/move`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ direction }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Reihenfolge konnte nicht geändert werden');
+    loadFlyerList();
+  } catch (err) {
+    showMessage(err.message, 'error');
+  }
+}
+
+async function deleteFlyer(id) {
+  const flyer = flyerListData.find((f) => f.id === id);
+  const name = flyer ? flyer.title : 'dieser Flyer';
+  if (!confirm('„' + name + '" wirklich löschen? Die PDF-Datei wird dabei mit entfernt.')) return;
+
+  try {
+    const res = await apiFetch(`${API_URL}/admin/flyers/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Löschen fehlgeschlagen');
+    showMessage('Flyer gelöscht.', 'success');
+    loadFlyerList();
+  } catch (err) {
+    showMessage(err.message, 'error');
+  }
+}
+
+async function loadFlyerList() {
+  const listEl = document.getElementById('flyerList');
+  if (!listEl) return;
+
+  try {
+    const res = await apiFetch(`${API_URL}/admin/flyers`, { credentials: 'include' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Flyer konnten nicht geladen werden');
+    flyerListData = Array.isArray(data.flyers) ? data.flyers : [];
+  } catch (err) {
+    listEl.innerHTML = '<div class="list-empty">' + escapeHtml(err.message) + '</div>';
+    return;
+  }
+
+  if (!flyerListData.length) {
+    listEl.innerHTML = '<div class="list-empty">Noch kein Flyer hochgeladen. Oben auf „Neuen Flyer hochladen" klicken.</div>';
+    return;
+  }
+
+  listEl.innerHTML = flyerListData.map((flyer, index) => {
+    const badge = flyer.published
+      ? '<span class="status-badge published">Auf der Startseite</span>'
+      : '<span class="status-badge draft">Verborgen</span>';
+    const size = flyerSizeText(flyer.sizeBytes);
+    const meta = ['PDF', size, flyer.originalName].filter(Boolean).join(' · ');
+    const publishBtn = flyer.published
+      ? `<button class="btn-small btn-publish" onclick="toggleFlyerPublished(${flyer.id}, false)">Verbergen</button>`
+      : `<button class="btn-small btn-publish" onclick="toggleFlyerPublished(${flyer.id}, true)">Anzeigen</button>`;
+    const upBtn = index > 0
+      ? `<button class="btn-small" onclick="moveFlyer(${flyer.id}, 'up')" title="Eine Position nach oben">▲ nach oben</button>`
+      : '';
+    const downBtn = index < flyerListData.length - 1
+      ? `<button class="btn-small" onclick="moveFlyer(${flyer.id}, 'down')" title="Eine Position nach unten">▼ nach unten</button>`
+      : '';
+
+    return `
+      <div class="item">
+        <span class="item-thumb item-thumb-pdf" aria-hidden="true">PDF</span>
+        <div class="item-info">
+          <h3>${escapeHtml(flyer.title)} ${badge}</h3>
+          ${flyer.description ? `<p>${escapeHtml(flyer.description)}</p>` : ''}
+          <p style="font-size: 0.85rem; color: #777;">${escapeHtml(meta)}</p>
+        </div>
+        <div class="item-actions">
+          <a class="btn-small" href="${escapeHtml(flyer.url)}" target="_blank" rel="noopener">Ansehen</a>
+          <button class="btn-small btn-edit" onclick="editFlyer(${flyer.id})">Bearbeiten</button>
+          ${publishBtn}
+          ${upBtn}
+          ${downBtn}
+          <button class="btn-small btn-delete" onclick="deleteFlyer(${flyer.id})">Löschen</button>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 // ============================================================================
@@ -1784,7 +2085,7 @@ async function saveEvent(e) {
       document.getElementById('eventImage').value = image;
     }
     if (btn) btn.textContent = 'Wird gespeichert …';
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       method,
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -1809,7 +2110,7 @@ async function saveEvent(e) {
 
 async function editEvent(id) {
   try {
-    const response = await fetch(`${API_URL}/admin/events/${id}`, { credentials: 'include' });
+    const response = await apiFetch(`${API_URL}/admin/events/${id}`, { credentials: 'include' });
     const event = await response.json();
 
     openEventForm();
@@ -1838,7 +2139,7 @@ async function deleteEvent(id) {
   if (!confirm('Wirklich löschen?')) return;
 
   try {
-    const response = await fetch(`${API_URL}/admin/events/${id}`, {
+    const response = await apiFetch(`${API_URL}/admin/events/${id}`, {
       method: 'DELETE',
       credentials: 'include'
     });
@@ -1931,7 +2232,7 @@ function initEventsListControls() {
 
 async function showEventRegistrations(eventId, eventTitle) {
   try {
-    const res = await fetch(`${API_URL}/admin/events/${eventId}/registrations`, { credentials: 'include' });
+    const res = await apiFetch(`${API_URL}/admin/events/${eventId}/registrations`, { credentials: 'include' });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Fehler beim Laden');
     if (!data.length) {
@@ -1950,7 +2251,7 @@ async function showEventRegistrations(eventId, eventTitle) {
 async function loadEventsList() {
   initEventsListControls();
   try {
-    const response = await fetch(`${API_URL}/admin/events`, { credentials: 'include' });
+    const response = await apiFetch(`${API_URL}/admin/events`, { credentials: 'include' });
     const data = await response.json();
     eventsListData = Array.isArray(data) ? data : [];
     renderEventsListItems();
@@ -2029,7 +2330,7 @@ function collectPriceData() {
 
 async function loadPriceTable() {
   try {
-    const res = await fetch(`${API_URL}/admin/prices-table`, { credentials: 'include' });
+    const res = await apiFetch(`${API_URL}/admin/prices-table`, { credentials: 'include' });
     const data = await res.json();
     renderPriceEditor(data);
   } catch (err) {
@@ -2041,7 +2342,7 @@ async function savePriceTable() {
   const data = collectPriceData();
   const status = document.getElementById('priceTableStatus');
   try {
-    const res = await fetch(`${API_URL}/admin/prices-table`, {
+    const res = await apiFetch(`${API_URL}/admin/prices-table`, {
       method: 'PUT',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -2096,7 +2397,7 @@ async function saveService(e) {
   const method = id ? 'PUT' : 'POST';
 
   try {
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       method,
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -2119,7 +2420,7 @@ async function saveService(e) {
 
 async function editService(id) {
   try {
-    const response = await fetch(`${API_URL}/admin/services/${id}`, { credentials: 'include' });
+    const response = await apiFetch(`${API_URL}/admin/services/${id}`, { credentials: 'include' });
     const service = await response.json();
 
     openServiceForm();
@@ -2140,7 +2441,7 @@ async function deleteService(id) {
   if (!confirm('Wirklich löschen?')) return;
 
   try {
-    const response = await fetch(`${API_URL}/admin/services/${id}`, {
+    const response = await apiFetch(`${API_URL}/admin/services/${id}`, {
       method: 'DELETE',
       credentials: 'include'
     });
@@ -2157,7 +2458,7 @@ async function deleteService(id) {
 
 async function loadServicesList() {
   try {
-    const response = await fetch(`${API_URL}/admin/services`, { credentials: 'include' });
+    const response = await apiFetch(`${API_URL}/admin/services`, { credentials: 'include' });
     const services = await response.json();
 
     let html = '';
@@ -2190,7 +2491,7 @@ async function loadServicesList() {
 
 async function loadGoogleStatus() {
   try {
-    const res = await fetch(`${API_URL}/admin/google/status`, { credentials: 'include' });
+    const res = await apiFetch(`${API_URL}/admin/google/status`, { credentials: 'include' });
     const data = await res.json();
     const text = document.getElementById('googleStatusText');
     const btn = document.getElementById('btnGoogleConnect');
@@ -2226,7 +2527,7 @@ async function loadGoogleStatus() {
 
 async function connectGoogle() {
   try {
-    const res = await fetch(`${API_URL}/admin/google/auth`, { credentials: 'include' });
+    const res = await apiFetch(`${API_URL}/admin/google/auth`, { credentials: 'include' });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
     else showMessage(data.error || 'Verbindung nicht möglich', 'error');
@@ -2237,7 +2538,7 @@ async function connectGoogle() {
 
 async function loadBookingsList() {
   try {
-    const response = await fetch(`${API_URL}/admin/bookings`, { credentials: 'include' });
+    const response = await apiFetch(`${API_URL}/admin/bookings`, { credentials: 'include' });
     const bookings = await response.json();
 
     let html = '';
@@ -2304,7 +2605,7 @@ async function addBlockedPeriod() {
   if (!date_from || !date_to) return alert('Bitte Von- und Bis-Datum auswählen.');
   if (date_from > date_to) return alert('Das Von-Datum muss vor dem Bis-Datum liegen.');
   try {
-    const res = await fetch(`${API_URL}/admin/blocked-periods`, {
+    const res = await apiFetch(`${API_URL}/admin/blocked-periods`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -2323,7 +2624,7 @@ async function addBlockedPeriod() {
 async function deleteBlockedPeriod(id) {
   if (!confirm('Sperre aufheben?')) return;
   try {
-    await fetch(`${API_URL}/admin/blocked-periods/${id}`, { method: 'DELETE', credentials: 'include' });
+    await apiFetch(`${API_URL}/admin/blocked-periods/${id}`, { method: 'DELETE', credentials: 'include' });
     await loadBlockedPeriods();
   } catch (err) {
     alert('Fehler: ' + err.message);
@@ -2332,7 +2633,7 @@ async function deleteBlockedPeriod(id) {
 
 async function loadBlockedPeriods() {
   try {
-    const res = await fetch(`${API_URL}/admin/blocked-periods`, { credentials: 'include' });
+    const res = await apiFetch(`${API_URL}/admin/blocked-periods`, { credentials: 'include' });
     const list = await res.json();
     const container = document.getElementById('blockedPeriodsList');
     if (!list.length) {
@@ -2356,7 +2657,7 @@ async function loadBlockedPeriods() {
 
 async function confirmBooking(id) {
   try {
-    const response = await fetch(`${API_URL}/admin/bookings/${id}`, {
+    const response = await apiFetch(`${API_URL}/admin/bookings/${id}`, {
       method: 'PATCH',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -2380,7 +2681,7 @@ async function saveManualBooking(e) {
   const startTime = document.getElementById('manualTime').value.slice(0, 5);
 
   try {
-    const res = await fetch(`${API_URL}/admin/bookings`, {
+    const res = await apiFetch(`${API_URL}/admin/bookings`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -2411,7 +2712,7 @@ async function saveManualBooking(e) {
 async function cancelBooking(id) {
   if (!confirm('Termin stornieren?')) return;
   try {
-    const response = await fetch(`${API_URL}/admin/bookings/${id}`, {
+    const response = await apiFetch(`${API_URL}/admin/bookings/${id}`, {
       method: 'PATCH',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -2430,7 +2731,7 @@ async function cancelBooking(id) {
 async function deleteBooking(id) {
   if (!confirm('Buchung endgültig löschen?')) return;
   try {
-    const response = await fetch(`${API_URL}/admin/bookings/${id}`, {
+    const response = await apiFetch(`${API_URL}/admin/bookings/${id}`, {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -2452,7 +2753,7 @@ async function loadAtelierList() {
   const list = document.getElementById('atelierList');
   if (!list) return;
   try {
-    const res = await fetch(`${API_URL}/admin/atelier`, { credentials: 'include' });
+    const res = await apiFetch(`${API_URL}/admin/atelier`, { credentials: 'include' });
     const items = await res.json();
     const statusLabels = { new: 'Neu', viewed: 'Gesehen', archived: 'Archiv' };
     const html = items
@@ -2491,7 +2792,7 @@ async function loadAtelierList() {
 
 async function setAtelierStatus(id, status) {
   try {
-    const res = await fetch(`${API_URL}/admin/atelier/${id}`, {
+    const res = await apiFetch(`${API_URL}/admin/atelier/${id}`, {
       method: 'PATCH',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -2510,7 +2811,7 @@ async function setAtelierStatus(id, status) {
 async function deleteAtelierSubmission(id) {
   if (!confirm('Einsendung wirklich löschen?')) return;
   try {
-    const res = await fetch(`${API_URL}/admin/atelier/${id}`, {
+    const res = await apiFetch(`${API_URL}/admin/atelier/${id}`, {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -2533,7 +2834,7 @@ async function loadContactMessages() {
   if (!list) return;
   list.innerHTML = '<p class="note">Wird geladen …</p>';
   try {
-    const res = await fetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' });
+    const res = await apiFetch(`${API_URL}/admin/contact-messages`, { credentials: 'include' });
     const messages = res.ok ? await res.json() : [];
     if (!messages.length) {
       list.innerHTML = '<p class="note">Keine Kontaktanfragen vorhanden.</p>';
@@ -2577,7 +2878,7 @@ async function loadBugs() {
   const ta = document.getElementById('bugsTextarea');
   if (!ta) return;
   try {
-    const res = await fetch(`${API_URL}/admin/bugs`, { credentials: 'include' });
+    const res = await apiFetch(`${API_URL}/admin/bugs`, { credentials: 'include' });
     const data = res.ok ? await res.json() : {};
     ta.value = data.text || '';
   } catch (err) {
@@ -2589,7 +2890,7 @@ async function saveBugs() {
   const ta = document.getElementById('bugsTextarea');
   if (!ta) return;
   try {
-    const res = await fetch(`${API_URL}/admin/bugs`, {
+    const res = await apiFetch(`${API_URL}/admin/bugs`, {
       method: 'PUT',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -2609,7 +2910,7 @@ async function saveBugs() {
 async function deleteContactMessage(id) {
   if (!confirm('Nachricht dauerhaft löschen?')) return;
   try {
-    const res = await fetch(`${API_URL}/admin/contact-messages/${id}`, {
+    const res = await apiFetch(`${API_URL}/admin/contact-messages/${id}`, {
       method: 'DELETE',
       credentials: 'include',
     });

@@ -33,6 +33,24 @@ gilt 24 Stunden.
 | PATCH | `/api/admin/news/:id/published` | 🔒 Veröffentlichen / zurückziehen |
 | DELETE | `/api/admin/news/:id` | 🔒 Löschen |
 
+## Flyer (PDF)
+
+| Methode | Pfad | Beschreibung |
+| --- | --- | --- |
+| GET | `/api/flyers` | Veröffentlichte Flyer, in der gewählten Reihenfolge |
+| GET | `/api/admin/flyers` | 🔒 Alle, inkl. verborgener |
+| POST | `/api/admin/flyers/upload` | 🔒 PDF hochladen (Feld `pdf`), liefert die Adresse |
+| POST | `/api/admin/flyers` | 🔒 Anlegen (Titel + Adresse aus dem Upload) |
+| PUT | `/api/admin/flyers/:id` | 🔒 Ändern; ohne `url` bleibt die bisherige Datei |
+| PATCH | `/api/admin/flyers/:id/published` | 🔒 Anzeigen / verbergen |
+| PATCH | `/api/admin/flyers/:id/move` | 🔒 Reihenfolge (`direction`: `up` oder `down`) |
+| DELETE | `/api/admin/flyers/:id` | 🔒 Löschen, entfernt auch die PDF-Datei |
+
+Es werden ausschließlich PDFs angenommen (`application/pdf`), bis 25 MB
+(`MAX_PDF_SIZE`). Die Dateien liegen unter `public/uploads/flyer/` und werden
+unter `/uploads/flyer/…` ausgeliefert. Gespeichert wird nur eine Adresse, die
+auf eine selbst abgelegte Datei zeigt – ein beliebiger Pfad wird abgelehnt.
+
 ## Veranstaltungen
 
 | Methode | Pfad | Beschreibung |

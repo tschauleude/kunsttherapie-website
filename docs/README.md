@@ -3,7 +3,7 @@
 Technische und redaktionelle Dokumentation für die Website und das CMS von
 Martina Schwierzke (kunsttherapie-pb.de).
 
-Stand: 16.09.2026 · geprüft gegen den Code in `main`
+Stand: 01.10.2026 · geprüft gegen den Code in `main`
 
 ---
 
@@ -25,6 +25,7 @@ Stand: 16.09.2026 · geprüft gegen den Code in `main`
 | [12 – Google-Live-Checkliste](12-google-live-checkliste.md) | intern | Zum Abhaken während des Termins, inkl. Prüfschritt |
 | [13 – Deployment Schritt für Schritt](13-deployment-schritt-fuer-schritt.md) | Betrieb | Sichern, aufspielen, prüfen, notfalls zurück |
 | [14 – Änderungsübersicht](14-aenderungen-ueberblick.md) | alle | Was wurde geändert und was wurde geprüft |
+| [15 – Flyer, Kopf-/Fußzeile, Bedienbarkeit](15-flyer-und-bedienbarkeit.md) | alle | Flyer als PDF, bearbeitbare Kopf-/Fußzeile, Upload-Fehler, größere Bedienelemente |
 
 ---
 
