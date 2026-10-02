@@ -59,7 +59,7 @@ const PAGE_I18N = {
 };
 
 const PAGE_EXTRA_SCRIPTS = {
-  index: ['gallery.js', 'quotes.js', 'main.js', 'news.js'],
+  index: ['gallery.js', 'quotes.js', 'main.js', 'news.js', 'flyers.js'],
   kunsttherapie: ['kunsttherapie.js', 'quotes.js', 'raum-showcase.js'],
   kontakt: ['contact.js'],
   buchung: ['booking.js'],

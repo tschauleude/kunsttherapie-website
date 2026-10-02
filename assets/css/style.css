@@ -4774,3 +4774,84 @@ body.reg-modal-open {
     bottom: 0.1rem;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Flyer-Liste auf der Startseite
+   Bewusst eine Liste statt einer Kachelreihe: Die Einträge sind unterschiedlich
+   lang, und ein breites Ziel ist leichter zu treffen als eine kleine Kachel.
+   --------------------------------------------------------------------------- */
+.flyer-list {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 820px;
+  display: grid;
+  gap: 1rem;
+}
+
+.flyer-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.flyer-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3.6rem;
+  border-radius: 8px;
+  background: rgba(209, 141, 137, 0.16);
+  color: var(--color-rose-dark);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.flyer-card-body {
+  min-width: 0;
+}
+
+.flyer-card-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.12rem;
+  overflow-wrap: break-word;
+}
+
+.flyer-card-text {
+  margin: 0 0 0.35rem;
+  color: var(--text-light);
+  overflow-wrap: break-word;
+}
+
+.flyer-card-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-light);
+}
+
+.flyer-card-link {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .flyer-card {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.9rem 1rem;
+  }
+
+  /* Der Knopf rutscht unter den Text und nimmt die volle Breite –
+     auf dem Handy deutlich leichter zu treffen. */
+  .flyer-card-link {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    text-align: center;
+  }
+}

@@ -108,14 +108,27 @@ können auf ein vergangenes Datum klicken, das dann keine Slots zeigt.
 Die Tage 1–16 sind ausgegraut und gesperrt, der 17. bleibt als heutiger Tag
 anklickbar, die freien Tage 22./24./29. sind unverändert grün.
 
-**B2 · Fällt der Google-Kalender aus, zeigt die Website alles als frei.**
-`server.js:706–716` fängt Fehler der Kalenderabfrage ab, loggt sie und macht mit
-einer leeren Belegungsliste weiter. Ein abgelaufener Token oder eine API-Störung
-führt also nicht zu einer Warnung, sondern dazu, dass belegte Zeiten buchbar
-erscheinen → Doppelbuchungen. Verschärft wird das durch den 7-Tage-Ablauf von
+**B2 · Fällt der Google-Kalender aus, zeigt die Website alles als frei.** ✅ *sichtbar gemacht am 20.09.2026*
+Die Kalenderabfrage in `server.js` fängt Fehler ab, loggt sie und macht mit einer
+leeren Belegungsliste weiter. Ein abgelaufener Token oder eine API-Störung führte
+also nicht zu einer Warnung, sondern dazu, dass belegte Zeiten buchbar erscheinen
+→ Doppelbuchungen. Verschärft wird das durch den 7-Tage-Ablauf von
 Refresh-Tokens im Google-Testmodus (siehe [08](08-google-kalender.md)).
-→ Mindestens: Fehlerzustand im Admin-Panel sichtbar machen. Sauberer: bei
-Kalenderfehler keine neuen Slots freigeben.
+
+*Behoben (Sichtbarkeit):* `/api/admin/google/status` liest den Kalender bei jedem
+Aufruf wirklich einmal und meldet `readOk` / `readError`. Das Admin-Panel zeigt
+unter **Buchungen** bei einem Fehler in Rot „Verbunden, aber der Kalender kann
+nicht gelesen werden" samt Google-Meldung. `fetchBusyIntervals` wirft jetzt, wenn
+**alle** konfigurierten Kalender fehlschlagen, statt ein leeres Ergebnis
+vorzutäuschen; schlagen nur einzelne fehl, hängen sie als `failures` am Ergebnis
+und werden im Admin-Panel und in `npm run check-google` namentlich genannt.
+Aufgefallen ist das in der Praxis: Bei Martina war die Calendar API im
+Google-Projekt nicht aktiviert – die Diagnose meldete trotzdem
+„Verbindung funktioniert".
+
+*Noch offen:* Das Buchungsverhalten selbst ist unverändert – bei Kalenderfehler
+bleiben die Slots buchbar. Sauberer wäre, in diesem Fall keine neuen Slots
+freizugeben.
 
 **B3 · Kalender-Legende stimmt farblich nicht mit dem Kalender überein.** ✅ *behoben am 17.09.2026*
 `assets/css/style.css:3870–3926`: Die Legende zeigt „Ausgebucht" als **grauen**
@@ -313,7 +326,7 @@ Zur Einordnung, was geprüft wurde und in Ordnung war:
 ## Vorschlag zur Reihenfolge
 
 1. **Mit Martina klären** (nur sie kann entscheiden): A1 Datumstexte, A2 Sitzungsdauer, A3 aktuelle Neuigkeiten
-2. **Vor dem Google-Livegang**: Veröffentlichungsstatus auf Produktion ([08](08-google-kalender.md)), danach B2 zumindest sichtbar machen
+2. **Vor dem Google-Livegang**: Veröffentlichungsstatus auf Produktion ([08](08-google-kalender.md)); B2 ist sichtbar gemacht, das Buchungsverhalten bei Kalenderfehler bleibt offen
 3. ~~**Kleine, risikoarme Fixes**: B1, B3, C1~~ – erledigt am 17.09.2026
 4. **Danach**: C2, D1, D3, A4
 

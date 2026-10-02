@@ -2493,3 +2493,188 @@ hr.sep {
     margin-bottom: 0.3rem;
   }
 }
+
+/* ===========================================================================
+   LESBARKEIT UND BEDIENBARKEIT
+   Das Panel wird von einer Person über 60 bedient, überwiegend am Notebook,
+   gelegentlich am Tablet. Darum: größere Schrift, größere Flächen zum Klicken,
+   deutlichere Beschriftungen. Die Werte stehen hier gesammelt und überschreiben
+   bewusst die kompakteren Angaben weiter oben – so bleibt an einer Stelle
+   nachvollziehbar, was aus Rücksicht auf die Lesbarkeit angepasst wurde.
+   =========================================================================== */
+
+.admin-app .form-group label {
+  font-size: 1rem;
+  margin-bottom: 0.45rem;
+}
+
+.admin-app .form-group input,
+.admin-app .form-group textarea,
+.admin-app .form-group select {
+  font-size: 1.05rem;
+  padding: 0.8rem 1rem;
+  /* 16px+ verhindert zusätzlich, dass Tablets beim Antippen hineinzoomen. */
+  min-height: 48px;
+}
+
+.admin-app .form-group textarea {
+  min-height: 150px;
+  line-height: 1.6;
+}
+
+/* Fokus muss man sehen können – 3px Rahmen statt eines zarten Schattens. */
+.admin-app .form-group input:focus,
+.admin-app .form-group textarea:focus,
+.admin-app .form-group select:focus,
+.admin-app button:focus-visible,
+.admin-app a:focus-visible,
+.admin-app .nav-item:focus-visible {
+  outline: 3px solid var(--color-teal);
+  outline-offset: 2px;
+}
+
+.admin-app .note {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #5f5f5f;
+}
+
+/* Pflicht- und Kannfelder benennen, statt sie mit einem Sternchen anzudeuten. */
+.admin-app .label-req,
+.admin-app .label-opt {
+  font-weight: 500;
+  font-size: 0.86rem;
+  letter-spacing: 0;
+}
+
+.admin-app .label-req {
+  color: #8b3a38;
+}
+
+.admin-app .label-opt {
+  color: #6f6f6f;
+}
+
+/* Häkchen: große Schaltfläche, die ganze Zeile ist anklickbar. */
+.admin-app .check-line {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.02rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.55rem 0;
+  min-height: 44px;
+}
+
+.admin-app .check-line input[type='checkbox'],
+.admin-app .form-group label > input[type='checkbox'] {
+  width: 1.4rem;
+  height: 1.4rem;
+  min-height: 0;
+  flex: 0 0 auto;
+  accent-color: var(--color-teal);
+  cursor: pointer;
+}
+
+/* Kleine Knöpfe sind die am häufigsten verfehlten Ziele – 44px Mindesthöhe
+   entspricht der Empfehlung für Berührungsflächen (WCAG 2.5.8). */
+.admin-app .btn-small {
+  font-size: 0.92rem;
+  padding: 0.55rem 1rem;
+  min-height: 44px;
+}
+
+.admin-app .item-actions {
+  gap: 0.5rem;
+}
+
+.admin-app .message {
+  font-size: 1.02rem;
+  padding: 1rem 1.25rem;
+  line-height: 1.55;
+}
+
+/* Leere Listen erklären, was als Nächstes zu tun ist. */
+.admin-app .list-empty {
+  padding: 1.6rem 1.25rem;
+  text-align: center;
+  color: #6f6f6f;
+  font-size: 1rem;
+  line-height: 1.6;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+}
+
+/* Platzhalter statt Vorschaubild – PDFs haben keins. */
+.admin-app .item-thumb-pdf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(209, 141, 137, 0.16);
+  color: #8b3a38;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.admin-app .nav-item {
+  font-size: 1rem;
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
+/* Die Rückmeldung unten rechts wurde leicht übersehen: größere Schrift,
+   mehr Kontrast, und ein Hinweis, dass man sie wegklicken kann. */
+.admin-app #adminToast {
+  font-size: 1.05rem;
+  max-width: 460px;
+  padding: 1.1rem 1.4rem;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.admin-app #adminToast.error {
+  background: #fdeeee;
+  color: #7d2f2d;
+  border: 2px solid #c96765;
+}
+
+.admin-app #adminToast.success {
+  background: #eaf2f1;
+  color: #2f4f4c;
+  border: 2px solid var(--color-teal);
+}
+
+.admin-app #adminToast::after {
+  content: 'Zum Schließen anklicken';
+  display: block;
+  margin-top: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+@media (max-width: 640px) {
+  .admin-app #adminToast {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    max-width: none;
+  }
+}
+
+/* Auch in Aktionsreihen gilt die größere Mindesthöhe – die kompaktere Angabe
+   weiter oben ist spezifischer und würde sonst gewinnen. */
+.admin-app .item-actions .btn-small {
+  min-height: 44px;
+}
+
+/* Knöpfe ohne eigene Farbe (z. B. „Ansehen", „nach oben") brauchen trotzdem
+   eine sichtbare Fläche – sonst wirken sie wie bloßer Text. */
+.admin-app .btn-small:not(.btn-edit):not(.btn-delete):not(.btn-publish) {
+  background: rgba(74, 110, 106, 0.1);
+  color: var(--color-teal-dark);
+  border: 1px solid rgba(74, 110, 106, 0.22);
+  text-decoration: none;
+}

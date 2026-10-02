@@ -39,6 +39,30 @@ function readToken() {
   });
 }
 
+/** Klartext-Hinweis zu den Fehlern, die in der Praxis vorkommen. */
+function hinweisZuFehler(message) {
+  const m = String(message || '');
+  const calendarId = process.env.GOOGLE_CALENDAR_ID || 'primary';
+  if (/has not been used in project|accessNotConfigured|api .* disabled/i.test(m)) {
+    info('→ Die Google-Calendar-API ist im Google-Cloud-Projekt nicht aktiviert.');
+    info('  In der Google Cloud Console: APIs & Dienste → Bibliothek →');
+    info('  „Google Calendar API" → Aktivieren. Danach ein paar Minuten warten');
+    info('  und diese Prüfung erneut laufen lassen.');
+  } else if (/invalid_client/i.test(m)) {
+    info('→ Client-ID oder Secret stimmen nicht. Werte in der .env mit denen in der');
+    info('  Google Cloud Console (APIs & Dienste → Anmeldedaten) abgleichen und');
+    info('  danach den Server neu starten: pm2 restart kunsttherapie');
+  } else if (/invalid_grant/i.test(m)) {
+    info('→ Der Token ist abgelaufen oder wurde widerrufen. Häufigste Ursache:');
+    info('  Die OAuth-App steht in Google auf „Testing" – dort verfallen Token');
+    info('  nach 7 Tagen. Status auf „Produktion" setzen und neu verbinden.');
+  } else if (/not ?found/i.test(m)) {
+    info('→ Kalender „' + calendarId + '" nicht gefunden. GOOGLE_CALENDAR_ID prüfen.');
+  } else if (/insufficient|forbidden|403/i.test(m)) {
+    info('→ Fehlende Berechtigung. Beim Verbinden muss der Kalenderzugriff erlaubt werden.');
+  }
+}
+
 (async () => {
   let problem = false;
   console.log('\nGoogle-Kalender – Diagnose\n');
@@ -120,6 +144,8 @@ function readToken() {
     }
   } catch (e) {
     bad('Kalenderliste nicht abrufbar: ' + e.message);
+    problem = true;
+    hinweisZuFehler(e.message);
   }
 
   // 4) Echter Zugriff – das ist der Punkt, der zählt
@@ -130,7 +156,15 @@ function readToken() {
   const bis = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
   try {
     const busy = await googleCalendar.fetchBusyIntervals(token, von, bis);
-    ok('Zugriff erfolgreich – ' + busy.length + ' Termin(e) in den nächsten 14 Tagen gelesen');
+    const fehlgeschlagen = busy.failures || [];
+    if (fehlgeschlagen.length) {
+      bad(fehlgeschlagen.length + ' von ' + gelesen.length + ' Kalender(n) nicht lesbar:');
+      fehlgeschlagen.forEach((f) => info('· ' + f.calendarId + ': ' + f.message));
+      info('Termine aus diesen Kalendern sperren KEINE Buchungszeiten.');
+      problem = true;
+      hinweisZuFehler(fehlgeschlagen[0].message);
+    }
+    ok(busy.length + ' Termin(e) in den nächsten 14 Tagen gelesen');
     busy.slice(0, 5).forEach((b) => {
       info('· ' + b.start.toLocaleString('de-DE') + '  ' + (b.summary || 'ohne Titel'));
     });
@@ -142,20 +176,7 @@ function readToken() {
   } catch (e) {
     bad('Zugriff fehlgeschlagen: ' + e.message);
     problem = true;
-    const m = String(e.message || '');
-    if (/invalid_client/i.test(m)) {
-      info('→ Client-ID oder Secret stimmen nicht. Werte in der .env mit denen in der');
-      info('  Google Cloud Console (APIs & Dienste → Anmeldedaten) abgleichen und');
-      info('  danach den Server neu starten: pm2 restart kunsttherapie');
-    } else if (/invalid_grant/i.test(m)) {
-      info('→ Der Token ist abgelaufen oder wurde widerrufen. Häufigste Ursache:');
-      info('  Die OAuth-App steht in Google auf „Testing" – dort verfallen Token');
-      info('  nach 7 Tagen. Status auf „Produktion" setzen und neu verbinden.');
-    } else if (/not ?found/i.test(m)) {
-      info('→ Kalender „' + calendarId + '" nicht gefunden. GOOGLE_CALENDAR_ID prüfen.');
-    } else if (/insufficient|forbidden|403/i.test(m)) {
-      info('→ Fehlende Berechtigung. Beim Verbinden muss der Kalenderzugriff erlaubt werden.');
-    }
+    hinweisZuFehler(e.message);
     info('');
     info('WICHTIG: Solange dieser Fehler besteht, zeigt die Website ALLE Zeiten');
     info('als frei an – Termine aus dem Kalender blockieren nichts. Doppelbuchungen');

@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="assets/img/favicon.ico" sizes="any"/>
   <link rel="stylesheet" href="assets/css/style.css?v=20260613"/>
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260918"/>
+  <link rel="stylesheet" href="assets/css/admin.css?v=20261001"/>
   <link rel="stylesheet" href="assets/vendor/quill.snow.css">
 </head>
 <body class="admin-app"><!-- LOGIN SCREEN -->
@@ -64,6 +64,7 @@
     <div class="nav-item active" onclick="switchSection('dashboard', this)">Übersicht</div>
     <div class="nav-item" onclick="switchSection('news', this)">Neuigkeiten</div>
     <div class="nav-item" onclick="switchSection('images', this)">Bilder</div>
+    <div class="nav-item" onclick="switchSection('flyers', this)">Flyer (PDF)</div>
     <div class="nav-item" onclick="switchSection('texts', this)">Website-Texte</div>
     <div class="nav-item" onclick="switchSection('bookings', this)">Buchungen</div>
     <div class="nav-item" onclick="switchSection('atelier', this)">Mini-Atelier</div>
@@ -81,7 +82,7 @@
 
   <!-- CONTENT -->
   <div class="content">
-    <div class="message" id="adminToast"></div>
+    <div class="message" id="adminToast" role="status" aria-live="polite"></div>
     <!-- DASHBOARD -->
     <section class="admin-section active" id="dashboard">
       <h1>Übersicht</h1>
@@ -179,16 +180,16 @@
         <form onsubmit="saveNews(event)">
           <input type="hidden" id="newsId">
           <div class="form-group full">
-            <label>Titel</label>
+            <label for="newsTitle">Titel <span class="label-req">(muss ausgefüllt sein)</span></label>
             <input type="text" id="newsTitle" required placeholder="z.B. Neue Gruppen ab Juli">
           </div>
           <div class="form-group full">
-            <label>Text</label>
+            <label>Text <span class="label-req">(muss ausgefüllt sein)</span></label>
             <div id="newsEditor" class="news-quill-editor"></div>
             <textarea id="newsContent" style="display:none"></textarea>
           </div>
           <div class="form-group full">
-            <label>Bild</label>
+            <label for="newsImageFile">Bild <span class="label-opt">(kann leer bleiben)</span></label>
             <input type="file" id="newsImageFile" accept="image/jpeg,image/png,image/gif,image/webp"/>
             <p class="note">Foto vom Handy/PC wählen – wird automatisch hochgeladen.</p>
             <div class="img-rec">
@@ -204,9 +205,9 @@
             <img id="newsImagePreview" class="upload-preview" alt="" hidden/>
           </div>
           <div class="form-group">
-            <label>
+            <label class="check-line">
               <input type="checkbox" id="newsPublished">
-              Veröffentlichen
+              Auf der Website anzeigen
             </label>
           </div>
           <div class="form-actions">
@@ -228,6 +229,62 @@
         <span class="list-count" id="newsListCount"></span>
       </div>
       <div id="newsList" class="items-list"></div>
+    </section>
+
+    <!-- FLYER (PDF) -->
+    <section class="admin-section" id="flyers">
+      <h1>Flyer (PDF)</h1>
+      <p class="sub section-desc">Erscheinen auf der <a href="/#flyer" target="_blank" rel="noopener">Startseite</a> im Abschnitt „Aktuelle Flyer“. Ohne veröffentlichten Flyer wird der Abschnitt gar nicht angezeigt.</p>
+
+      <button type="button" class="btn-add" onclick="openFlyerForm()">Neuen Flyer hochladen</button>
+
+      <div id="flyerForm" class="form-container" style="display: none;">
+        <h2 id="flyerFormTitle">Neuer Flyer</h2>
+        <form onsubmit="saveFlyer(event)">
+          <input type="hidden" id="flyerId">
+          <input type="hidden" id="flyerUrl">
+
+          <div class="form-group full">
+            <label for="flyerTitle">Titel <span class="label-req">(muss ausgefüllt sein)</span></label>
+            <input type="text" id="flyerTitle" required placeholder="z. B. Welthospiztag 2026">
+            <p class="note">So steht der Flyer auf der Startseite.</p>
+          </div>
+
+          <div class="form-group full">
+            <label for="flyerDescription">Kurzer Text <span class="label-opt">(kann leer bleiben)</span></label>
+            <input type="text" id="flyerDescription" placeholder="z. B. Programm und Uhrzeiten">
+          </div>
+
+          <div class="form-group full">
+            <label for="flyerFile">PDF-Datei</label>
+            <input type="file" id="flyerFile" accept="application/pdf,.pdf"/>
+            <div class="img-rec">
+              <div class="img-rec-title">Was hier hineingehört</div>
+              <dl class="img-rec-list">
+                <dt>Format</dt><dd>PDF (keine Bilder, kein Word)</dd>
+                <dt>Seiten</dt><dd>beliebig – eine Seite genügt meistens</dd>
+                <dt>Dateigröße</dt><dd>bis 25 MB</dd>
+              </dl>
+              <div class="img-rec-note">Aus Word heraus: „Speichern unter“ → Dateityp „PDF“. Beim Bearbeiten eines vorhandenen Flyers kann dieses Feld leer bleiben – dann bleibt die bisherige Datei bestehen.</div>
+            </div>
+            <p class="note" id="flyerCurrentFile" hidden></p>
+          </div>
+
+          <div class="form-group">
+            <label class="check-line">
+              <input type="checkbox" id="flyerPublished" checked>
+              Auf der Startseite anzeigen
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-save">Speichern</button>
+            <button type="button" class="btn-cancel" onclick="closeFlyerForm()">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="flyerList" class="items-list"></div>
     </section>
 
     <!-- BOOKINGS & GOOGLE CALENDAR -->
@@ -305,7 +362,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label><input type="checkbox" id="manualBlock"> Nur Zeitslot blockieren (kein Kunde)</label>
+            <label class="check-line"><input type="checkbox" id="manualBlock"> Nur Zeitslot blockieren (kein Kunde)</label>
           </div>
           <div id="manualClientFields">
             <div class="form-row">
@@ -425,9 +482,9 @@
             <img id="eventImagePreview" class="upload-preview" alt="" hidden/>
           </div>
           <div class="form-group">
-            <label>
+            <label class="check-line">
               <input type="checkbox" id="eventPublished">
-              Veröffentlichen
+              Auf der Website anzeigen
             </label>
           </div>
           <div class="form-actions">
@@ -734,7 +791,7 @@
 </div>
 
 <script src="assets/vendor/quill.min.js"></script>
-<script src="assets/js/admin-app.js"></script>
+<script src="assets/js/admin-app.js?v=20261001"></script>
 
 </body>
 </html>

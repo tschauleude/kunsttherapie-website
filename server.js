@@ -88,8 +88,10 @@ fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 // Ensure upload directory exists (ein Redeploy kann leere Verzeichnisse entfernen)
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(PUBLIC_DIR, 'uploads');
 const ATELIER_DIR = path.join(UPLOAD_DIR, 'atelier');
+const FLYER_DIR = path.join(UPLOAD_DIR, 'flyer');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 fs.mkdirSync(ATELIER_DIR, { recursive: true });
+fs.mkdirSync(FLYER_DIR, { recursive: true });
 
 // .env-Validierung: sinnvolle Warnmeldungen beim Start statt lautlosem Fehlverhalten
 (function validateEnv() {
@@ -121,6 +123,23 @@ const IMAGE_MIME_EXT = {
   'image/webp': '.webp',
 };
 
+const MAX_IMAGE_BYTES = parseInt(process.env.MAX_FILE_SIZE || '20971520', 10);
+
+/**
+ * Upload-Fehler in verständliches Deutsch übersetzen. multer meldet z. B.
+ * "File too large" – damit kann in der Praxis niemand etwas anfangen.
+ */
+function uploadErrorMessage(err, maxBytes = MAX_IMAGE_BYTES) {
+  const mb = Math.round((maxBytes / (1024 * 1024)) * 10) / 10;
+  if (err && (err.code === 'LIMIT_FILE_SIZE' || /file too large/i.test(err.message || ''))) {
+    return `Die Datei ist zu groß (erlaubt sind ${mb} MB). Bitte ein kleineres Bild wählen.`;
+  }
+  if (err && err.code === 'LIMIT_UNEXPECTED_FILE') {
+    return 'Es wurde mehr als eine Datei geschickt. Bitte nur ein Bild auswählen.';
+  }
+  return (err && err.message) || 'Das Hochladen hat nicht geklappt. Bitte noch einmal versuchen.';
+}
+
 const imageUpload = multer({
   storage: multer.diskStorage({
     destination: UPLOAD_DIR,
@@ -129,12 +148,36 @@ const imageUpload = multer({
       cb(null, `${Date.now()}-${uuidv4().slice(0, 8)}${ext}`);
     },
   }),
-  limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE || '5242880', 10) },
+  limits: { fileSize: MAX_IMAGE_BYTES },
   fileFilter: (req, file, cb) => {
     if (IMAGE_MIME_EXT[file.mimetype]) {
       cb(null, true);
     } else {
       cb(new Error('Nur Bilder (JPG, PNG, GIF, WebP)'));
+    }
+  },
+});
+
+/**
+ * Flyer werden als PDF hochgeladen. Eigene Instanz, weil hier ein anderer
+ * Dateityp und ein anderes Limit gilt – PDFs mit Bildern sind schnell größer
+ * als ein Foto, und verkleinern lässt sich daran nichts.
+ */
+const MAX_PDF_BYTES = parseInt(process.env.MAX_PDF_SIZE || '26214400', 10);
+
+const pdfUpload = multer({
+  storage: multer.diskStorage({
+    destination: FLYER_DIR,
+    filename: (req, file, cb) => {
+      cb(null, `flyer-${Date.now()}-${uuidv4().slice(0, 8)}.pdf`);
+    },
+  }),
+  limits: { fileSize: MAX_PDF_BYTES },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Bitte eine PDF-Datei auswählen. Andere Formate sind hier nicht möglich.'));
     }
   },
 });
@@ -285,6 +328,10 @@ const assetStatic = express.static(path.join(ROOT, 'assets'), {
 // Static: admin panel, uploads, assets (css/js/img)
 app.use('/assets', assetStatic);
 app.use(express.static(PUBLIC_DIR, { maxAge: '1h', etag: true }));
+// Uploads liegen normalerweise unter public/uploads und sind damit schon oben
+// abgedeckt. UPLOAD_DIR kann aber auf ein anderes Verzeichnis zeigen – dann
+// würden hochgeladene Dateien sonst nicht ausgeliefert.
+app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: '1h', etag: true }));
 
 // Session-Secret: zentral über lib/secret (ENV bevorzugt, sonst persistiertes
 // Zufalls-Secret) – dasselbe Secret signiert auch die Kalender-Token.
@@ -469,6 +516,22 @@ function initializeDatabase() {
         duration TEXT,
         image TEXT,
         active INTEGER DEFAULT 1,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Flyer als PDF – Martina lädt sie im Admin hoch, die Startseite verlinkt sie.
+    db.run(`
+      CREATE TABLE IF NOT EXISTS flyers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT,
+        url TEXT NOT NULL,
+        original_name TEXT,
+        size_bytes INTEGER,
+        published INTEGER DEFAULT 1,
+        sort_order INTEGER DEFAULT 0,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
@@ -1077,6 +1140,223 @@ app.delete('/api/admin/news/:id', requireAuth, (req, res) => {
       res.json({ success: true, message: 'News deleted successfully' });
     }
   );
+});
+
+/**
+ * Prüft, ob eine Adresse auf eine von uns selbst abgelegte Flyer-Datei zeigt.
+ * Schützt davor, dass über das Formular ein beliebiger Pfad gespeichert wird.
+ */
+function isOwnUploadPath(url) {
+  if (typeof url !== 'string') return false;
+  if (!/^\/uploads\/flyer\/[A-Za-z0-9._-]+\.pdf$/.test(url)) return false;
+  return !url.includes('..');
+}
+
+/** Tatsächliche Größe einer Flyer-Datei; 0, wenn sie nicht lesbar ist. */
+function flyerFileSize(url) {
+  if (!isOwnUploadPath(url)) return 0;
+  try {
+    return fs.statSync(path.join(FLYER_DIR, path.basename(url))).size;
+  } catch {
+    return 0;
+  }
+}
+
+/** Flyer-Datei vom Datenträger entfernen; ein Fehlschlag bleibt folgenlos. */
+function removeFlyerFile(url) {
+  if (!isOwnUploadPath(url)) return;
+  const file = path.join(FLYER_DIR, path.basename(url));
+  fs.unlink(file, (err) => {
+    if (err && err.code !== 'ENOENT') console.error('Flyer-Datei löschen:', err.message);
+  });
+}
+
+// ============================================================================
+// FLYER (PDF)
+// ============================================================================
+
+function flyerRow(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description || '',
+    url: row.url,
+    originalName: row.original_name || '',
+    sizeBytes: row.size_bytes || 0,
+    published: row.published === 1,
+    sortOrder: row.sort_order || 0,
+    createdAt: row.createdAt,
+  };
+}
+
+/** Öffentlich: nur veröffentlichte Flyer, in der gewählten Reihenfolge. */
+app.get('/api/flyers', async (req, res) => {
+  try {
+    const rows = await dbAll(
+      `SELECT * FROM flyers WHERE published = 1 ORDER BY sort_order ASC, createdAt DESC`
+    );
+    res.setHeader('Cache-Control', 'public, max-age=120');
+    res.json({ flyers: rows.map(flyerRow) });
+  } catch (e) {
+    console.error('Flyer laden:', e.message);
+    res.status(500).json({ error: 'Flyer konnten nicht geladen werden' });
+  }
+});
+
+app.get('/api/admin/flyers', requireAuth, async (req, res) => {
+  try {
+    const rows = await dbAll(`SELECT * FROM flyers ORDER BY sort_order ASC, createdAt DESC`);
+    res.json({ flyers: rows.map(flyerRow) });
+  } catch (e) {
+    res.status(500).json({ error: 'Flyer konnten nicht geladen werden' });
+  }
+});
+
+/** PDF hochladen – liefert nur die Adresse zurück, gespeichert wird danach. */
+app.post('/api/admin/flyers/upload', requireAuth, (req, res) => {
+  pdfUpload.single('pdf')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ error: uploadErrorMessage(err, MAX_PDF_BYTES) });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: 'Es wurde keine Datei ausgewählt.' });
+    }
+    res.json({
+      success: true,
+      url: `/uploads/flyer/${req.file.filename}`,
+      originalName: req.file.originalname,
+      sizeBytes: req.file.size,
+    });
+  });
+});
+
+app.post('/api/admin/flyers', requireAuth, async (req, res) => {
+  const title = (req.body.title || '').trim();
+  const description = (req.body.description || '').trim();
+  const url = (req.body.url || '').trim();
+
+  if (!title) return res.status(400).json({ error: 'Bitte einen Titel eingeben.' });
+  if (!isOwnUploadPath(url)) {
+    return res.status(400).json({ error: 'Bitte zuerst eine PDF-Datei hochladen.' });
+  }
+
+  try {
+    const next = await dbGet(`SELECT COALESCE(MAX(sort_order), 0) + 1 AS n FROM flyers`);
+    const result = await dbRun(
+      `INSERT INTO flyers (title, description, url, original_name, size_bytes, published, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title.slice(0, 200),
+        description.slice(0, 1000),
+        url,
+        (req.body.originalName || '').toString().slice(0, 255),
+        flyerFileSize(url),
+        req.body.published === false ? 0 : 1,
+        next?.n || 1,
+      ]
+    );
+    res.json({ success: true, id: result.lastID, message: 'Flyer gespeichert' });
+  } catch (e) {
+    console.error('Flyer speichern:', e.message);
+    res.status(500).json({ error: 'Flyer konnte nicht gespeichert werden' });
+  }
+});
+
+app.put('/api/admin/flyers/:id', requireAuth, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
+
+  const title = (req.body.title || '').trim();
+  if (!title) return res.status(400).json({ error: 'Bitte einen Titel eingeben.' });
+
+  // Eine neue Datei ist optional – ohne sie bleibt die bisherige bestehen.
+  const url = (req.body.url || '').trim();
+  if (url && !isOwnUploadPath(url)) {
+    return res.status(400).json({ error: 'Die Datei konnte nicht übernommen werden.' });
+  }
+
+  try {
+    const current = await dbGet(`SELECT * FROM flyers WHERE id = ?`, [id]);
+    if (!current) return res.status(404).json({ error: 'Flyer nicht gefunden' });
+
+    await dbRun(
+      `UPDATE flyers SET title = ?, description = ?, url = ?, original_name = ?, size_bytes = ?,
+              published = ?, updatedAt = CURRENT_TIMESTAMP
+       WHERE id = ?`,
+      [
+        title.slice(0, 200),
+        (req.body.description || '').trim().slice(0, 1000),
+        url || current.url,
+        url ? (req.body.originalName || '').toString().slice(0, 255) : current.original_name,
+        url ? flyerFileSize(url) : current.size_bytes,
+        req.body.published === false ? 0 : 1,
+        id,
+      ]
+    );
+
+    // Alte Datei aufräumen, wenn sie ersetzt wurde.
+    if (url && url !== current.url) removeFlyerFile(current.url);
+
+    res.json({ success: true, message: 'Flyer aktualisiert' });
+  } catch (e) {
+    console.error('Flyer aktualisieren:', e.message);
+    res.status(500).json({ error: 'Flyer konnte nicht aktualisiert werden' });
+  }
+});
+
+app.patch('/api/admin/flyers/:id/published', requireAuth, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
+  try {
+    const result = await dbRun(
+      `UPDATE flyers SET published = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
+      [req.body.published ? 1 : 0, id]
+    );
+    if (!result.changes) return res.status(404).json({ error: 'Flyer nicht gefunden' });
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Änderung nicht möglich' });
+  }
+});
+
+/** Reihenfolge: ein Flyer eine Position nach oben oder unten. */
+app.patch('/api/admin/flyers/:id/move', requireAuth, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const direction = req.body.direction === 'down' ? 'down' : 'up';
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
+
+  try {
+    const rows = await dbAll(`SELECT id FROM flyers ORDER BY sort_order ASC, createdAt DESC`);
+    const index = rows.findIndex((r) => r.id === id);
+    if (index === -1) return res.status(404).json({ error: 'Flyer nicht gefunden' });
+
+    const target = direction === 'up' ? index - 1 : index + 1;
+    if (target < 0 || target >= rows.length) return res.json({ success: true, moved: false });
+
+    [rows[index], rows[target]] = [rows[target], rows[index]];
+    for (let i = 0; i < rows.length; i += 1) {
+      await dbRun(`UPDATE flyers SET sort_order = ? WHERE id = ?`, [i + 1, rows[i].id]);
+    }
+    res.json({ success: true, moved: true });
+  } catch (e) {
+    console.error('Flyer sortieren:', e.message);
+    res.status(500).json({ error: 'Reihenfolge konnte nicht geändert werden' });
+  }
+});
+
+app.delete('/api/admin/flyers/:id', requireAuth, async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: 'Ungültige ID' });
+  try {
+    const row = await dbGet(`SELECT * FROM flyers WHERE id = ?`, [id]);
+    if (!row) return res.status(404).json({ error: 'Flyer nicht gefunden' });
+    await dbRun(`DELETE FROM flyers WHERE id = ?`, [id]);
+    removeFlyerFile(row.url);
+    res.json({ success: true, message: 'Flyer gelöscht' });
+  } catch (e) {
+    console.error('Flyer löschen:', e.message);
+    res.status(500).json({ error: 'Flyer konnte nicht gelöscht werden' });
+  }
 });
 
 // ============================================================================
@@ -1959,7 +2239,10 @@ app.post('/api/atelier/submit', (req, res) => {
   atelierUpload.single('image')(req, res, async (err) => {
     const lang = apiLang(req);
     if (err) {
-      return res.status(400).json({ error: err.message || apiMsg('atelier.uploadFailed', lang) });
+      const tooLarge = err.code === 'LIMIT_FILE_SIZE' || /file too large/i.test(err.message || '');
+      return res.status(400).json({
+        error: apiMsg(tooLarge ? 'atelier.tooLarge' : 'atelier.uploadFailed', lang),
+      });
     }
     if (!req.file) {
       return res.status(400).json({ error: apiMsg('atelier.imageRequired', lang) });
@@ -2074,10 +2357,10 @@ app.delete('/api/admin/atelier/:id', requireAuth, async (req, res) => {
 app.post('/api/admin/upload', requireAuth, (req, res) => {
   imageUpload.single('image')(req, res, async (err) => {
     if (err) {
-      return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
+      return res.status(400).json({ error: uploadErrorMessage(err) });
     }
     if (!req.file) {
-      return res.status(400).json({ error: 'Keine Datei ausgewählt' });
+      return res.status(400).json({ error: 'Es wurde keine Datei ausgewählt.' });
     }
     await optimizeUploadedFile(req.file);
     res.json({
@@ -2156,10 +2439,10 @@ app.post('/api/admin/site-images/:slot/upload', requireAuth, (req, res) => {
 
   imageUpload.single('image')(req, res, async (err) => {
     if (err) {
-      return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
+      return res.status(400).json({ error: uploadErrorMessage(err) });
     }
     if (!req.file) {
-      return res.status(400).json({ error: 'Keine Datei ausgewählt' });
+      return res.status(400).json({ error: 'Es wurde keine Datei ausgewählt.' });
     }
 
     await optimizeUploadedFile(req.file);
@@ -2227,10 +2510,10 @@ app.get('/api/admin/media', requireAuth, async (req, res) => {
 app.post('/api/admin/media/upload', requireAuth, (req, res) => {
   imageUpload.single('image')(req, res, async (err) => {
     if (err) {
-      return res.status(400).json({ error: err.message || 'Upload fehlgeschlagen' });
+      return res.status(400).json({ error: uploadErrorMessage(err) });
     }
     if (!req.file) {
-      return res.status(400).json({ error: 'Keine Datei ausgewählt' });
+      return res.status(400).json({ error: 'Es wurde keine Datei ausgewählt.' });
     }
     await optimizeUploadedFile(req.file);
     res.json({
@@ -2607,12 +2890,37 @@ app.delete('/api/admin/bookings/:id', requireAuth, async (req, res) => {
 
 app.get('/api/admin/google/status', requireAuth, (req, res) => {
   const hasClient = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
-  getGoogleRefreshToken((err, token) => {
+  getGoogleRefreshToken(async (err, token) => {
     if (err) return res.status(500).json({ error: 'Database error' });
+
+    // Ein gespeicherter Token heisst noch nicht, dass der Kalender lesbar ist.
+    // Ohne echten Zugriff blieben alle Zeiten frei - darum hier einmal wirklich
+    // lesen und das Ergebnis im Admin-Panel anzeigen.
+    let readOk = null;
+    let readError = null;
+    if (hasClient && token) {
+      try {
+        const von = new Date();
+        const bis = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const busy = await googleCalendar.fetchBusyIntervals(token, von, bis);
+        const fehler = busy.failures || [];
+        readOk = fehler.length === 0;
+        if (fehler.length) {
+          readError = fehler.map((f) => `${f.calendarId}: ${f.message}`).join(' | ');
+        }
+      } catch (e) {
+        readOk = false;
+        readError = e.message;
+      }
+    }
+
     res.json({
       clientConfigured: hasClient,
       connected: Boolean(token),
       calendarId: process.env.GOOGLE_CALENDAR_ID || 'primary',
+      calendarIds: googleCalendar.calendarIds(),
+      readOk,
+      readError,
       authUrl: hasClient && !token ? googleCalendar.getAuthUrl() : null,
     });
   });

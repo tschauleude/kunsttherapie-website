@@ -64,7 +64,7 @@ BOOKING_SCHEDULE={"2":{"start":"11:00","end":"12:30","label":"Dienstag Vormittag
 ### Sonstiges
 
 `DATABASE_PATH` (Standard `./database.sqlite`), `UPLOAD_DIR`
-(Standard `./public/uploads`), `MAX_FILE_SIZE` (Standard 5 MB), `SETUP_TOKEN`
+(Standard `./public/uploads`), `SETUP_TOKEN`
 (für die einmalige Ersteinrichtung über `/admin`).
 
 ### Bild-Uploads
@@ -77,6 +77,17 @@ Hochgeladene Bilder werden serverseitig verkleinert und neu komprimiert
 | `UPLOAD_MAX_WIDTH` | `1600` | Längste Kante, größere Bilder werden verkleinert |
 | `UPLOAD_MAX_HEIGHT` | `1600` | dito für die Höhe |
 | `UPLOAD_QUALITY` | `82` | JPEG-/WebP-Qualität |
+| `MAX_FILE_SIZE` | `20971520` | Größte Bilddatei beim Hochladen (20 MB) |
+| `MAX_PDF_SIZE` | `26214400` | Größte Flyer-PDF (25 MB) |
+
+> **Ein Webserver davor hat ein eigenes Limit.** Steht nginx vor der Anwendung,
+> gilt zusätzlich `client_max_body_size` – im Auslieferungszustand nur **1 MB**.
+> Wird es überschritten, antwortet nginx mit einer HTML-Fehlerseite, die nie bis
+> zur Anwendung durchdringt. Im Admin-Panel erscheint dann „Die Datei ist zu groß
+> für den Server". Prüfen mit
+> `grep -r client_max_body_size /etc/nginx/` – fehlt die Zeile, gehört sie in den
+> `server`-Block, zum Beispiel `client_max_body_size 30m;`, danach
+> `nginx -t && systemctl reload nginx`.
 
 Das Format bleibt erhalten, EXIF-Daten werden entfernt – die Drehung eines
 Handy-Fotos wird vorher angewendet. GIFs bleiben unangetastet, damit
