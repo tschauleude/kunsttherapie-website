@@ -4855,3 +4855,87 @@ body.reg-modal-open {
     text-align: center;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Trefferflächen in der Hauptnavigation
+   Die Links waren nur 18 px hoch. WCAG 2.2 (2.5.8) verlangt mindestens 24 px –
+   gemeint ist die anklickbare Fläche, nicht die Schriftgröße. Innenabstand
+   statt größerer Schrift, damit das Layout unverändert bleibt.
+   --------------------------------------------------------------------------- */
+nav a {
+  display: inline-block;
+  padding-top: 0.22rem;
+  padding-bottom: 0.22rem;
+}
+
+/* Die Unterstreichung sitzt an der Textunterkante, nicht am Rand des
+   neuen Innenabstands. */
+nav a:not(.nav-cta):not([aria-current='page'])::after {
+  bottom: 0.08rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Buchungskalender: Zustände deutlicher unterscheidbar
+   Frei, ausgebucht und „kein Ateliertag" lagen bei 4–15 % Deckkraft so dicht
+   beieinander, dass sie sich kaum unterscheiden ließen. Die Legende spricht
+   von „grünen Tagen" – das muss man auch sehen.
+   --------------------------------------------------------------------------- */
+.booking-day-free {
+  background: rgba(85, 122, 118, 0.3);
+  border: 1px solid rgba(74, 110, 106, 0.55);
+  font-weight: 700;
+}
+
+.booking-day-busy {
+  background: rgba(209, 141, 137, 0.28);
+  border: 1px solid rgba(184, 115, 111, 0.5);
+}
+
+/* Freie Tage sind das Ziel der Seite – sie dürfen sich auch beim Überfahren
+   als anklickbar zu erkennen geben. */
+.booking-day-free:hover,
+.booking-day-free:focus-visible {
+  background: rgba(85, 122, 118, 0.45);
+}
+
+/* Häkchen im Mini-Atelier waren 13 px groß – zu klein zum sicheren Treffen. */
+.atelier-check input[type="checkbox"],
+.atelier-send input[type='checkbox'],
+.atelier-panel input[type='checkbox'] {
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: var(--color-teal);
+  cursor: pointer;
+}
+
+.atelier-check,
+.atelier-send label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------------------
+   Punkte im Raum-Rundgang: Trefferfläche vergrößern
+   Der sichtbare Punkt bleibt klein (18 px) – das ist Absicht, er soll das Foto
+   nicht verdecken. Die anklickbare Fläche wächst über ein unsichtbares ::before
+   auf 28 px, damit sie auf dem Handy sicher zu treffen ist.
+   --------------------------------------------------------------------------- */
+.kt-hotspot::before {
+  content: '';
+  position: absolute;
+  inset: -0.32rem;
+  border-radius: 50%;
+  pointer-events: auto;
+}
+
+/* Spaltenlinks in der Fußzeile sind eine Liste zum Navigieren, kein Fließtext –
+   dort gilt die Mindestgröße für Trefferflächen. */
+.footer-col a {
+  display: inline-block;
+  padding-top: 0.12rem;
+  padding-bottom: 0.12rem;
+  min-height: 24px;
+}

@@ -323,7 +323,7 @@ async function loadI18nGroup() {
         const inputTag = `<textarea id="${fieldId}" name="${field.key}" rows="${rows}">${escapeHtml(field.value)}</textarea>`;
         return `
           <div class="form-group full i18n-field${field.isOverride ? ' is-override' : ''}">
-            <label for="${fieldId}">${field.label} ${badge}</label>
+            <label for="${fieldId}">${escapeHtml(field.label)} ${badge}</label>
             ${inputTag}
             ${hint}
           </div>`;
@@ -2297,7 +2297,7 @@ function renderPriceEditor(data) {
     PRICE_FIELDS.forEach(({ key, label, placeholder }) => {
       const val = row[key] != null ? row[key] : '';
       html += `<div>
-        <label style="${labelStyle}">${label}</label>
+        <label style="${labelStyle}">${escapeHtml(label)}</label>
         <input data-row="${ri}" data-col="${key}" value="${esc(val)}" placeholder="${placeholder}" style="${inputStyle}">
       </div>`;
     });
@@ -2467,9 +2467,9 @@ async function loadServicesList() {
       html += `
         <div class="item">
           <div class="item-info">
-            <h3>${item.title} ${badge}</h3>
-            <p>${item.description.substring(0, 100)}...</p>
-            ${item.price ? '<p>' + item.price + (item.duration ? ' | ' + item.duration : '') + '</p>' : ''}
+            <h3>${escapeHtml(item.title)} ${badge}</h3>
+            <p>${escapeHtml(String(item.description || '').substring(0, 100))}...</p>
+            ${item.price ? '<p>' + escapeHtml(item.price) + (item.duration ? ' | ' + escapeHtml(item.duration) : '') + '</p>' : ''}
           </div>
           <div class="item-actions">
             <button class="btn-small btn-edit" onclick="editService(${item.id})">Bearbeiten</button>
@@ -2545,18 +2545,22 @@ async function loadBookingsList() {
     bookings.forEach((item) => {
       const date = new Date(item.date + 'T12:00:00').toLocaleDateString('de-DE');
       const statusLabels = {
+        pending_verification: 'Noch nicht bestätigt (Absender hat den E-Mail-Link nicht geklickt)',
         pending: 'Ausstehend',
         confirmed: 'Bestätigt',
         cancelled: 'Storniert',
       };
       const status = statusLabels[item.status] || item.status;
+      // Name, E-Mail und Nachricht kommen aus dem öffentlichen Buchungsformular.
+      // Ohne escapeHtml würde dort eingetragener HTML-Code hier im Admin-Panel
+      // ausgeführt – also immer maskieren.
       html += `
         <div class="item">
           <div class="item-info">
-            <h3>${item.name} – ${date} ${item.start_time}–${item.end_time}</h3>
-            <p>${item.email}${item.phone ? ' | ' + item.phone : ''}</p>
-            <p>Status: <strong>${status}</strong>${item.google_event_id ? ' | Google' : ''}</p>
-            ${item.message ? '<p>' + item.message + '</p>' : ''}
+            <h3>${escapeHtml(item.name)} – ${date} ${escapeHtml(item.start_time)}–${escapeHtml(item.end_time)}</h3>
+            <p>${escapeHtml(item.email)}${item.phone ? ' | ' + escapeHtml(item.phone) : ''}</p>
+            <p>Status: <strong>${escapeHtml(status)}</strong>${item.google_event_id ? ' | Google' : ''}</p>
+            ${item.message ? '<p>' + escapeHtml(item.message) + '</p>' : ''}
           </div>
           <div class="item-actions">
             ${item.status === 'pending' ? `<button class="btn-small btn-edit" onclick="confirmBooking(${item.id})">Bestätigen</button>` : ''}
@@ -2758,7 +2762,7 @@ async function loadAtelierList() {
     const statusLabels = { new: 'Neu', viewed: 'Gesehen', archived: 'Archiv' };
     const html = items
       .map((item) => {
-        const img = `/uploads/${item.image_path.replace(/\\/g, '/')}`;
+        const img = escapeHtml(`/uploads/${String(item.image_path || '').replace(/\\/g, '/')}`);
         const who = item.is_anonymous
           ? 'Anonym'
           : [item.submitter_name, item.submitter_email].filter(Boolean).join(' · ') || 'Mit Kontakt';
@@ -2769,10 +2773,10 @@ async function loadAtelierList() {
               <img src="${img}" alt="Atelier-Werk #${item.id}" loading="lazy"/>
             </a>
             <div class="item-content">
-              <h3>#${item.id} · ${statusLabels[item.status] || item.status}</h3>
-              <p>${date}</p>
-              <p><strong>${who}</strong></p>
-              ${item.note ? `<p class="note">${item.note}</p>` : ''}
+              <h3>#${item.id} · ${escapeHtml(statusLabels[item.status] || item.status)}</h3>
+              <p>${escapeHtml(date)}</p>
+              <p><strong>${escapeHtml(who)}</strong></p>
+              ${item.note ? `<p class="note">${escapeHtml(item.note)}</p>` : ''}
               <div class="item-actions">
                 ${item.status === 'new' ? `<button class="btn-small btn-edit" onclick="setAtelierStatus(${item.id}, 'viewed')">Als gesehen</button>` : ''}
                 ${item.status !== 'archived' ? `<button class="btn-small" onclick="setAtelierStatus(${item.id}, 'archived')">Archiv</button>` : ''}
@@ -2847,11 +2851,18 @@ async function loadContactMessages() {
       const emailBadge = m.email_sent
         ? '<span class="badge badge-ok" title="E-Mail wurde gesendet">✉ gesendet</span>'
         : '<span class="badge badge-warn" title="E-Mail-Versand fehlgeschlagen">✉ nicht gesendet</span>';
+      // Unbestätigte Nachrichten sahen bisher aus wie bestätigte. Wer den Link
+      // in der E-Mail nie geklickt hat, erwartet auch keine Antwort.
+      const bestaetigt = m.status !== 'pending_verification';
+      const statusBadge = bestaetigt
+        ? ''
+        : '<span class="badge badge-warn" title="Der Absender hat den Bestätigungslink nicht geklickt">nicht bestätigt</span>';
       const phone = m.phone ? `<span class="contact-meta-item">📞 <a href="tel:${encodeURIComponent(m.phone)}">${escapeHtml(m.phone)}</a></span>` : '';
       return `
         <div class="contact-item" data-id="${m.id}">
           <div class="contact-header">
             <span class="contact-name">${escapeHtml(m.name || '–')}</span>
+            ${statusBadge}
             ${emailBadge}
             <span class="contact-date">${date}</span>
           </div>

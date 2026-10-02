@@ -1977,7 +1977,7 @@ app.put('/api/admin/bugs', requireAuth, async (req, res) => {
 
 app.get('/api/admin/contact-messages', requireAuth, (req, res) => {
   db.all(
-    `SELECT id, name, email, phone, message, email_sent, createdAt
+    `SELECT id, name, email, phone, message, email_sent, status, createdAt
      FROM contact_messages ORDER BY createdAt DESC LIMIT 200`,
     (err, rows) => {
       if (err) return res.status(500).json({ error: 'Database error' });
@@ -2162,12 +2162,15 @@ app.post('/api/bookings', bookingRateLimiter, async (req, res) => {
       console.error('Booking verify email failed:', mailErr.message);
     }
 
+    // Ohne versendete Mail kommt der Bestätigungslink nie an – dann darf hier
+    // nicht stehen, man habe einen Link geschickt. Sonst wartet die anfragende
+    // Person auf eine Mail, die es nicht gibt, und die Anfrage bleibt liegen.
     res.json({
       success: true,
       count: insertedRows.length,
       status: 'pending_verification',
       emailSent,
-      message: apiMsg('booking.verifyEmail', lang),
+      message: apiMsg(emailSent ? 'booking.verifyEmail' : 'booking.verifyMailFailed', lang),
     });
   } catch (e) {
     if (e && (e.code === 'SQLITE_CONSTRAINT' || /UNIQUE constraint/i.test(e.message || ''))) {

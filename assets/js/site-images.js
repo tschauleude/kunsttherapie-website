@@ -11,13 +11,38 @@
     'image-gallery--six',
   ];
 
+  /**
+   * Zeigt die Adresse auf dasselbe Bild wie das HTML? Die API liefert für jeden
+   * Slot auch dann eine Adresse, wenn im Admin-Panel gar nichts geändert wurde –
+   * dann ist es schlicht der Standard aus dem HTML. Diese Fälle müssen wir
+   * erkennen und in Ruhe lassen.
+   */
+  function istGleichesBild(img, url) {
+    if (!img || !url) return false;
+    const normalisieren = (v) => String(v || '')
+      .split('?')[0]
+      .replace(/^https?:\/\/[^/]+/, '')
+      .replace(/^\.?\//, '');
+    // getAttribute statt .src: .src ist bereits absolut aufgelöst.
+    return normalisieren(img.getAttribute('src')) === normalisieren(url);
+  }
+
   function applyToElement(el, url) {
     if (!url) return;
 
     if (el.tagName === 'IMG') {
+      // Wichtig: Nur anfassen, wenn es wirklich ein anderes Bild ist.
+      //
+      // Vorher wurde bei JEDEM Seitenaufruf src neu gesetzt und alle <source>
+      // entfernt. Damit war die gesamte WebP-Auslieferung des Builds wirkungslos –
+      // der Browser lud statt der 131-KB-WebP-Variante die 2,5-MB-JPG-Datei.
+      if (istGleichesBild(el, url)) return;
+
       el.src = url;
       const picture = el.closest('picture');
       if (picture) {
+        // Ein eigenes Bild aus dem Admin-Panel hat keine WebP-Varianten –
+        // die <source>-Angaben des Standardbilds würden es sonst überdecken.
         picture.querySelectorAll('source').forEach((source) => source.remove());
       }
       return;
