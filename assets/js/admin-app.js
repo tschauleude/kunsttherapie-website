@@ -566,15 +566,25 @@ function renderSiteImageSlots() {
     }
     html += '<div class="site-images-grid">';
     for (const slot of slots) {
-      const status = slot.isCustom
-        ? '<span class="site-image-badge site-image-badge--custom">Eigenes Bild</span>'
-        : '<span class="site-image-badge">Standard</span>';
+      const status = slot.fileMissing
+        ? '<span class="site-image-badge site-image-badge--missing">Datei fehlt</span>'
+        : slot.isCustom
+          ? '<span class="site-image-badge site-image-badge--custom">Eigenes Bild</span>'
+          : '<span class="site-image-badge">Standard</span>';
+      // Die hochgeladene Datei ist nicht mehr da. Die Website zeigt deshalb das
+      // Standardbild – das soll hier nicht stillschweigend passieren.
+      const fehltHinweis = slot.fileMissing
+        ? `<p class="site-image-missing">Das hochgeladene Bild liegt nicht mehr auf dem Server
+             (<code>${escapeHtml(slot.customUrl || '')}</code>). Auf der Website erscheint solange das
+             Standardbild. Bitte das Bild erneut hochladen.</p>`
+        : '';
       html += `
         <article class="site-image-card card" data-slot="${escapeHtml(slot.slot)}">
           <div class="site-image-card-head">
             <h3>${escapeHtml(slot.label)}</h3>
             ${status}
           </div>
+          ${fehltHinweis}
           <img class="upload-preview site-image-preview" src="${escapeHtml(slot.url)}" alt="" loading="lazy"/>
           ${renderImageRecommendation(slot.recommendation)}
           <div class="form-group">

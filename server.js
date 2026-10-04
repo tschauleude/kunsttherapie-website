@@ -225,7 +225,10 @@ const CSP_DIRECTIVES = {
   styleSrc: ["'self'", "'unsafe-inline'"],
   fontSrc: ["'self'"],
   scriptSrc: ["'self'"],
-  scriptSrcAttr: ["'unsafe-inline'"],
+  // Öffentliche Seiten kommen ohne onclick-Attribute aus. 'none' bedeutet:
+  // Selbst wenn irgendwo ungefilterter Besuchertext ins HTML geriete, würde
+  // ein eingeschleustes onerror/onclick vom Browser nicht ausgeführt.
+  scriptSrcAttr: ["'none'"],
   connectSrc: ["'self'"],
   frameSrc: ["'self'", 'https://maps.google.com', 'https://www.google.com'],
   objectSrc: ["'none'"],
@@ -233,18 +236,29 @@ const CSP_DIRECTIVES = {
   frameAncestors: ["'none'"],
 };
 
-app.use(
-  helmet({
-    contentSecurityPolicy: { directives: CSP_DIRECTIVES },
-    crossOriginEmbedderPolicy: false,
-    frameguard: false,
-    hsts: {
-      maxAge: 63072000,
-      includeSubDomains: true,
-      preload: true,
-    },
-  })
-);
+// Das Admin-Panel bindet seine Knöpfe noch über onclick-Attribute an (rund 70
+// Stellen in admin.html und admin-app.js). Bis die umgestellt sind, gilt dort
+// die alte, weichere Regel – aber eben nur dort, hinter der Anmeldung.
+const CSP_DIRECTIVES_ADMIN = { ...CSP_DIRECTIVES, scriptSrcAttr: ["'unsafe-inline'"] };
+
+const helmetOptionen = (directives) => ({
+  contentSecurityPolicy: { directives },
+  crossOriginEmbedderPolicy: false,
+  frameguard: false,
+  hsts: {
+    maxAge: 63072000,
+    includeSubDomains: true,
+    preload: true,
+  },
+});
+
+const helmetOeffentlich = helmet(helmetOptionen(CSP_DIRECTIVES));
+const helmetAdmin = helmet(helmetOptionen(CSP_DIRECTIVES_ADMIN));
+
+app.use((req, res, next) => {
+  const istAdmin = req.path === '/admin' || req.path.startsWith('/admin/') || req.path.startsWith('/api/admin/');
+  return (istAdmin ? helmetAdmin : helmetOeffentlich)(req, res, next);
+});
 
 const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean)
@@ -3034,6 +3048,51 @@ app.get('/sitemap.xml', (req, res) => {
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
+});
+
+/**
+ * Adressen vereinheitlichen, bevor die Seitenrouten greifen.
+ *
+ * Express behandelt "/preise/" und "/preise" als dieselbe Route. Die Seite kam
+ * also mit 200 zurück, der Browser löste relative Pfade aber gegen "/preise/"
+ * auf – daher die ungestylte Seite. Die Pfade sind inzwischen wurzelrelativ;
+ * trotzdem gehört jede Seite unter genau eine Adresse, sonst entsteht für
+ * Suchmaschinen derselbe Inhalt unter mehreren URLs.
+ *
+ * Nur Seitenadressen werden angefasst – /api, /assets und /uploads bleiben
+ * unberührt, dort sind Groß-/Kleinschreibung und Schrägstrich bedeutsam.
+ */
+const SEITEN_SLUGS = new Set(SITE_PAGES.filter((p) => p !== 'index').concat(['admin', 'angebote']));
+
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  const pfad = req.path;
+  if (pfad === '/' || pfad.startsWith('/api/') || pfad.startsWith('/assets/') || pfad.startsWith('/uploads/')) {
+    return next();
+  }
+
+  let ziel = pfad;
+  // Abschließender Schrägstrich
+  if (ziel.length > 1 && ziel.endsWith('/')) ziel = ziel.replace(/\/+$/, '');
+  // Großschreibung nur bei bekannten Seitennamen korrigieren – Dateinamen in
+  // /uploads dürfen Großbuchstaben enthalten und sind oben ausgenommen.
+  const ohneSlash = ziel.replace(/^\//, '');
+  if (SEITEN_SLUGS.has(ohneSlash.toLowerCase()) && ohneSlash !== ohneSlash.toLowerCase()) {
+    ziel = '/' + ohneSlash.toLowerCase();
+  }
+
+  if (ziel !== pfad) {
+    const rest = req.originalUrl.slice(pfad.length);
+    return res.redirect(301, (ziel || '/') + rest);
+  }
+  next();
+});
+
+/* Browser fragen /favicon.ico an, auch ohne <link>. Ohne diese Zeile 404. */
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(ROOT, 'assets', 'img', 'favicon.ico'), (err) => {
+    if (err) res.status(404).end();
+  });
 });
 
 app.get('/', (req, res) => sendPage(res, 'index'));

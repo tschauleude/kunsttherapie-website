@@ -219,14 +219,23 @@
   }
 
   function scheduleBoot() {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        boot();
-      });
+    /*
+     * Erst starten, wenn alle defer-Skripte gelaufen sind.
+     *
+     * Dieses Skript wird selbst mit defer geladen; zu diesem Zeitpunkt ist
+     * readyState bereits "interactive", nicht "loading". Die frühere Variante
+     * ging deshalb über setTimeout(…, 0) – und verließ sich darauf, dass die
+     * i18n-messages-*.js, die im Dokument NACH diesem Skript stehen, bis dahin
+     * ausgeführt sind. Das ist eine Eigenheit der Browser-Umsetzung, keine
+     * Zusage. Greift sie nicht, bleiben die Texte auf dem HTML-Stand stehen.
+     *
+     * DOMContentLoaded liegt garantiert hinter allen defer-Skripten.
+     */
+    if (document.readyState === 'complete') {
+      boot();
       return;
     }
-    /* Body-Skripte (z. B. site.js) laufen erst danach – einen Tick warten */
-    window.setTimeout(boot, 0);
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
   }
 
   scheduleBoot();

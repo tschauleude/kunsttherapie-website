@@ -25,12 +25,12 @@ const HEADER = `  <a class="skip-link" href="#main">Zum Inhalt springen</a>
       </div>
       <nav id="site-nav" data-site-nav aria-label="Hauptnavigation">
         <ul>
-          <li><a href="ueber-mich" data-nav="ansatz">Mein Ansatz</a></li>
-          <li><a href="kunsttherapie" data-nav="kunsttherapie">Kunsttherapie</a></li>
-          <li><a href="kunsttherapie#atelier" data-nav="praxis">Das Atelier</a></li>
-          <li><a href="neuigkeiten" data-nav="neuigkeiten">Neuigkeiten</a></li>
-          <li><a href="buchung" class="nav-cta" data-nav="termin">Termin</a></li>
-          <li><a href="kontakt" data-nav="kontakt">Kontakt</a></li>
+          <li><a href="/ueber-mich" data-nav="ansatz">Mein Ansatz</a></li>
+          <li><a href="/kunsttherapie" data-nav="kunsttherapie">Kunsttherapie</a></li>
+          <li><a href="/kunsttherapie#atelier" data-nav="praxis">Das Atelier</a></li>
+          <li><a href="/neuigkeiten" data-nav="neuigkeiten">Neuigkeiten</a></li>
+          <li><a href="/buchung" class="nav-cta" data-nav="termin">Termin</a></li>
+          <li><a href="/kontakt" data-nav="kontakt">Kontakt</a></li>
         </ul>
       </nav>
     </div>
@@ -52,17 +52,17 @@ const FOOTER = `  <footer class="site-footer">
       </div>
       <div class="footer-col">
         <h4>Angebot</h4>
-        <a href="kunsttherapie">Kunsttherapie</a>
-        <a href="buchung">Termin buchen</a>
-        <a href="events">Veranstaltungen</a>
-        <a href="neuigkeiten">Neuigkeiten</a>
-        <a href="preise">Preise</a>
-        <a href="atelier"><span data-i18n="footer.atelier">Live-Atelier</span></a>
+        <a href="/kunsttherapie">Kunsttherapie</a>
+        <a href="/buchung">Termin buchen</a>
+        <a href="/events">Veranstaltungen</a>
+        <a href="/neuigkeiten">Neuigkeiten</a>
+        <a href="/preise">Preise</a>
+        <a href="/atelier"><span data-i18n="footer.atelier">Live-Atelier</span></a>
       </div>
       <div class="footer-col">
         <h4>Rechtliches</h4>
-        <a href="impressum">Impressum</a>
-        <a href="datenschutz">Datenschutz</a>
+        <a href="/impressum">Impressum</a>
+        <a href="/datenschutz">Datenschutz</a>
       </div>
     </div>
     <div class="container legal-footer">
@@ -70,10 +70,10 @@ const FOOTER = `  <footer class="site-footer">
     </div>
   </footer>`;
 
-const SCRIPTS = `  <script src="assets/js/consent.js"></script>
-  <script src="assets/js/site.js"></script>
-  <script src="assets/js/reveal.js"></script>
-  <script src="assets/js/scroll-top.js"></script>`;
+const SCRIPTS = `  <script src="/assets/js/consent.js"></script>
+  <script src="/assets/js/site.js"></script>
+  <script src="/assets/js/reveal.js"></script>
+  <script src="/assets/js/scroll-top.js"></script>`;
 
 const dir = path.join(ROOT, 'partials');
 fs.mkdirSync(dir, { recursive: true });

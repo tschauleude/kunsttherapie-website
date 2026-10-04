@@ -2678,3 +2678,27 @@ hr.sep {
   border: 1px solid rgba(74, 110, 106, 0.22);
   text-decoration: none;
 }
+
+/* Hochgeladenes Bild fehlt auf dem Server – muss auffallen, weil die Website
+   dann stillschweigend das Standardbild zeigt. */
+.admin-app .site-image-badge--missing {
+  background: #fdeeee;
+  color: #7d2f2d;
+  border: 1px solid #c96765;
+}
+
+.admin-app .site-image-missing {
+  margin: 0 0 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  background: #fdeeee;
+  border: 1px solid #e3b3b2;
+  color: #7d2f2d;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.admin-app .site-image-missing code {
+  word-break: break-all;
+  font-size: 0.86rem;
+}
