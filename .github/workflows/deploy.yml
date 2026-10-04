@@ -36,12 +36,18 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || 22 }}
-          # Ohne script_stop läuft das Skript nach einem Fehler weiter und endet
-          # mit dem Ergebnis des letzten Befehls. Da dieser auf "|| true" endete,
-          # konnte ein fehlgeschlagenes "git pull" (etwa wegen lokal geänderter
-          # Dateien auf dem Server) einen grünen Deploy melden, obwohl weiterhin
-          # der alte Stand lief. Jetzt bricht das Skript beim ersten Fehler ab.
-          script_stop: true
+          # script_stop ist bewusst AUS.
+          #
+          # Die Option haengt nach JEDER Zeile des Skripts eine Pruefung an:
+          #   DRONE_SSH_PREV_COMMAND_EXIT_CODE=$? ; if [ ... ]; then exit ...; fi;
+          # Bei mehrzeiligen Konstrukten landet diese Pruefung mitten im Block
+          # und zerlegt ihn:
+          #   bash: -c: line 60: syntax error near unexpected token `;'
+          # Genau daran sind drei Laeufe gescheitert.
+          #
+          # Die Abbruchsicherung leistet stattdessen "set -e" im Skript selbst,
+          # und der abschliessende Gesundheitstest bestimmt den Rueckgabewert.
+          # Ein fehlgeschlagener Schritt faerbt den Deploy also weiterhin rot.
           script: |
             set -e
             cd ${{ secrets.VPS_PROJECT_PATH }}
@@ -52,6 +58,10 @@ jobs:
             # über das npm-Paket. VACUUM INTO liefert eine in sich stimmige
             # Kopie, auch wenn gerade geschrieben wird.
             echo "--- Schritt 1: Datenbank sichern ---"
+            # Ohne diese Pruefung legt sqlite beim Sichern stillschweigend eine
+            # leere Datenbank an und meldet Erfolg - wir haetten dann nichts in
+            # der Hand. Lieber ein roter Deploy als eine Scheinsicherung.
+            test -f database.sqlite || { echo "Abbruch: database.sqlite nicht gefunden. Steht DATABASE_PATH in der .env auf einem anderen Pfad?"; exit 1; }
             mkdir -p "$HOME/sicherung"
             node -e "const s=require('sqlite3');const z=process.env.HOME+'/sicherung/database-vor-deploy-'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')+'.sqlite';const db=new s.Database('database.sqlite');db.run('VACUUM INTO ?',[z],e=>{console.log(e?'Sicherung FEHLGESCHLAGEN: '+e.message:'Sicherung: '+z);db.close();process.exit(e?1:0);});"
 
