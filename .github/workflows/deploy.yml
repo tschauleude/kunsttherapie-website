@@ -51,10 +51,17 @@ jobs:
             # sqlite3 als Kommandozeilenwerkzeug ist nicht installiert, daher
             # über das npm-Paket. VACUUM INTO liefert eine in sich stimmige
             # Kopie, auch wenn gerade geschrieben wird.
+            echo "--- Schritt 1: Datenbank sichern ---"
             mkdir -p "$HOME/sicherung"
             node -e "const s=require('sqlite3');const z=process.env.HOME+'/sicherung/database-vor-deploy-'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')+'.sqlite';const db=new s.Database('database.sqlite');db.run('VACUUM INTO ?',[z],e=>{console.log(e?'Sicherung FEHLGESCHLAGEN: '+e.message:'Sicherung: '+z);db.close();process.exit(e?1:0);});"
-            ls -1t "$HOME/sicherung"/database-vor-deploy-*.sqlite | tail -n +15 | xargs -r rm --
 
+            echo "--- Schritt 2: alte Sicherungen aufraeumen ---"
+            # Aufraeumen darf den Deploy nie stoppen: Das Loeschen alter
+            # Sicherungen ist Hausarbeit, kein Teil der Auslieferung. Ohne das
+            # abschliessende "|| true" brach hier der gesamte Deploy ab.
+            (ls -1t "$HOME"/sicherung/database-vor-deploy-*.sqlite 2>/dev/null | tail -n +15 | while read -r alt; do rm -f "$alt"; done) || true
+
+            echo "--- Schritt 3: generierte Dateien zuruecksetzen ---"
             # Beim Speichern im Admin-Panel schreibt der Server diese Dateien neu.
             # Sie stehen unter Versionskontrolle und blockieren dann "git pull".
             # Zurücksetzen ist gefahrlos: Die Texte liegen in der Datenbank und
@@ -77,8 +84,11 @@ jobs:
               exit 1
             fi
 
+            echo "--- Schritt 4: Stand holen ---"
             git pull origin main
+            echo "--- Schritt 5: Abhaengigkeiten ---"
             npm ci --omit=dev
+            echo "--- Schritt 6: Neustart ---"
             pm2 restart kunsttherapie
             echo "Stand nachher: $(git rev-parse --short HEAD)"
             sleep 3
