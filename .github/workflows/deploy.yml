@@ -46,6 +46,37 @@ jobs:
             set -e
             cd ${{ secrets.VPS_PROJECT_PATH }}
             echo "Stand vorher: $(git rev-parse --short HEAD)"
+
+            # Sicherung der Datenbank, bevor irgendetwas angefasst wird.
+            # sqlite3 als Kommandozeilenwerkzeug ist nicht installiert, daher
+            # über das npm-Paket. VACUUM INTO liefert eine in sich stimmige
+            # Kopie, auch wenn gerade geschrieben wird.
+            mkdir -p "$HOME/sicherung"
+            node -e "const s=require('sqlite3');const z=process.env.HOME+'/sicherung/database-vor-deploy-'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')+'.sqlite';const db=new s.Database('database.sqlite');db.run('VACUUM INTO ?',[z],e=>{console.log(e?'Sicherung FEHLGESCHLAGEN: '+e.message:'Sicherung: '+z);db.close();process.exit(e?1:0);});"
+            ls -1t "$HOME/sicherung"/database-vor-deploy-*.sqlite | tail -n +15 | xargs -r rm --
+
+            # Beim Speichern im Admin-Panel schreibt der Server diese Dateien neu.
+            # Sie stehen unter Versionskontrolle und blockieren dann "git pull".
+            # Zurücksetzen ist gefahrlos: Die Texte liegen in der Datenbank und
+            # haben dort Vorrang; die Dateien entstehen beim nächsten Build neu.
+            # Die Quelldatei i18n-messages-pages.js ist bewusst ausgenommen --
+            # sie wird nie automatisch geschrieben, eine Änderung daran wäre echt.
+            for f in assets/js/i18n-messages-*.js; do
+              [ "$f" = "assets/js/i18n-messages-pages.js" ] && continue
+              git checkout -- "$f" 2>/dev/null || true
+            done
+            git checkout -- assets/asset-manifest.json data/i18n-overrides.json 2>/dev/null || true
+
+            # Alles andere bleibt ein Grund abzubrechen: lieber ein roter Deploy
+            # als stillschweigend verworfene Arbeit.
+            REST="$(git status --porcelain --untracked-files=no)"
+            if [ -n "$REST" ]; then
+              echo "Abbruch: unerwartete lokale Aenderungen auf dem Server:"
+              echo "$REST"
+              echo "Bitte pruefen und von Hand sichern (git stash push -u), dann Deploy erneut starten."
+              exit 1
+            fi
+
             git pull origin main
             npm ci --omit=dev
             pm2 restart kunsttherapie
