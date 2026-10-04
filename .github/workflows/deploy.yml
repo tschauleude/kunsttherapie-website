@@ -64,25 +64,44 @@ jobs:
             echo "--- Schritt 3: generierte Dateien zuruecksetzen ---"
             # Beim Speichern im Admin-Panel schreibt der Server diese Dateien neu.
             # Sie stehen unter Versionskontrolle und blockieren dann "git pull".
-            # Zurücksetzen ist gefahrlos: Die Texte liegen in der Datenbank und
-            # haben dort Vorrang; die Dateien entstehen beim nächsten Build neu.
+            # Zuruecksetzen ist gefahrlos: Die Texte liegen in der Datenbank und
+            # haben dort Vorrang; die Dateien entstehen beim naechsten Build neu.
             # Die Quelldatei i18n-messages-pages.js ist bewusst ausgenommen --
-            # sie wird nie automatisch geschrieben, eine Änderung daran wäre echt.
+            # sie wird nie automatisch geschrieben, eine Aenderung daran waere echt.
+            #
+            # "set -e" ist hier aus: In diesem Block sind fehlschlagende Befehle
+            # normal (eine Datei ist unveraendert, ein Pfad fehlt). Zwei Laeufe
+            # sind genau daran gescheitert, ohne zu sagen woran. Jeder Schritt
+            # meldet deshalb jetzt seinen Rueckgabewert selbst.
+            set +e
             for f in assets/js/i18n-messages-*.js; do
-              [ "$f" = "assets/js/i18n-messages-pages.js" ] && continue
-              git checkout -- "$f" 2>/dev/null || true
+              case "$f" in
+                assets/js/i18n-messages-pages.js) continue ;;
+              esac
+              git checkout -- "$f" 2>/dev/null
             done
-            git checkout -- assets/asset-manifest.json data/i18n-overrides.json 2>/dev/null || true
+            git checkout -- assets/asset-manifest.json 2>/dev/null
+            git checkout -- data/i18n-overrides.json 2>/dev/null
+
+            REST="$(git status --porcelain --untracked-files=no)"
+            STATUS_RC=$?
+            set -e
+            echo "git status Rueckgabewert: $STATUS_RC"
+
+            if [ "$STATUS_RC" -ne 0 ]; then
+              echo "Abbruch: 'git status' ist fehlgeschlagen - Arbeitsverzeichnis pruefen."
+              exit 1
+            fi
 
             # Alles andere bleibt ein Grund abzubrechen: lieber ein roter Deploy
             # als stillschweigend verworfene Arbeit.
-            REST="$(git status --porcelain --untracked-files=no)"
             if [ -n "$REST" ]; then
               echo "Abbruch: unerwartete lokale Aenderungen auf dem Server:"
               echo "$REST"
               echo "Bitte pruefen und von Hand sichern (git stash push -u), dann Deploy erneut starten."
               exit 1
             fi
+            echo "Arbeitsverzeichnis sauber."
 
             echo "--- Schritt 4: Stand holen ---"
             git pull origin main
