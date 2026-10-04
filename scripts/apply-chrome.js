@@ -48,7 +48,7 @@ function apply(filePath) {
   if (!html.includes('assets/js/site.js')) {
     html = html.replace(
       /(<script src="assets\/js\/consent\.js"><\/script>)/,
-      '$1\n  <script src="assets/js/site.js"></script>'
+      '$1\n  <script src="/assets/js/site.js"></script>'
     );
   }
 

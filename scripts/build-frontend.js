@@ -282,11 +282,11 @@ async function optimizeImages() {
 function buildScriptTags(pageName, coreBundle, cssFile) {
   const i18nPage = PAGE_I18N[pageName];
   const scripts = [
-    `assets/js/${coreBundle}`,
-    'assets/js/i18n-messages-shared.js',
+    `/assets/js/${coreBundle}`,
+    '/assets/js/i18n-messages-shared.js',
   ];
-  if (i18nPage) scripts.push(`assets/js/i18n-messages-${i18nPage}.js`);
-  (PAGE_EXTRA_SCRIPTS[pageName] || []).forEach((s) => scripts.push(`assets/js/${s}`));
+  if (i18nPage) scripts.push(`/assets/js/i18n-messages-${i18nPage}.js`);
+  (PAGE_EXTRA_SCRIPTS[pageName] || []).forEach((s) => scripts.push(`/assets/js/${s}`));
   return scripts.map((s) => `  <script src="${s}" defer></script>`).join('\n');
 }
 
@@ -338,13 +338,13 @@ function patchHtml(coreBundle, cssFile) {
 
     // Hashed CSS
     html = html.replace(
-      /<link rel="stylesheet" href="assets\/css\/style[^"]*\.css"\s*\/?>/,
-      `<link rel="stylesheet" href="assets/css/${cssFile}"/>`
+      /<link rel="stylesheet" href="\/?assets\/css\/style[^"]*\.css"\s*\/?>/,
+      `<link rel="stylesheet" href="/assets/css/${cssFile}"/>`
     );
 
     // Replace all script blocks at end of body
     const scriptBlock = buildScriptTags(pageName, coreBundle, cssFile);
-    html = html.replace(/(?:^[ \t]*)*<script src="assets\/js\/[^<]+<\/script>\n?/gm, '');
+    html = html.replace(/(?:^[ \t]*)*<script src="\/?assets\/js\/[^<]+<\/script>\n?/gm, '');
     html = html.replace(/<\/body>/, `${scriptBlock}\n</body>`);
 
     // Email obfuscation class

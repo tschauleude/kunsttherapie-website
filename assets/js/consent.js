@@ -48,6 +48,24 @@
     showSettings();
   };
 
+  /*
+   * Den Knopf auf der Datenschutzseite hier anbinden statt per onclick im HTML.
+   * Ein einziges onclick-Attribut zwang die Content-Security-Policy dazu,
+   * script-src-attr 'unsafe-inline' zu erlauben – und damit genau die Art von
+   * eingeschleustem Code, die sonst blockiert würde.
+   *
+   * Bewusst am document und nicht am Knopf selbst: Die Datenschutzseite wird
+   * von der Übersetzung komplett neu geschrieben (legal.privacy.body ersetzt
+   * den ganzen Textbereich). Ein direkt gebundener Listener wäre danach weg,
+   * weil es ein anderes Element ist.
+   */
+  document.addEventListener('click', (e) => {
+    const knopf = e.target.closest?.('#cookieSettingsBtn');
+    if (!knopf) return;
+    e.preventDefault();
+    showSettings();
+  });
+
   function applyMaps(enabled) {
     document.querySelectorAll('[data-google-maps-src]').forEach((iframe) => {
       const wrap = iframe.closest('.map-consent-wrap');
