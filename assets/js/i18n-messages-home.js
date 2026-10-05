@@ -80,7 +80,7 @@
   "home.hero.kicker": "Art Therapy · Paderborn",
   "home.hero.title": "Art therapy – Tuesday mornings & Thursday evenings",
   "home.hero.titleHtml": "Art therapy in <span class=\"text-accent\">Paderborn</span>",
-  "home.hero.lead": "When words fall short, creating finds a way.",
+  "home.hero.lead": "TEST ENGLISH ONLY",
   "home.hero.sub": "Tuesday mornings and Thursday evenings in Paderborn – for companies, clinics, and institutions.",
   "home.hero.note": "New groups from 1 July 2026 · Tue 11:00–12:30 · Thu 18:00–19:30 · Otto-Stadler-Straße 23c",
   "home.audience.title": "Who is this for?",

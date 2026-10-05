@@ -8,7 +8,7 @@
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/assets/img/favicon.ico" sizes="any"/>
   <link rel="stylesheet" href="/assets/css/style.css?v=20260613"/>
-  <link rel="stylesheet" href="/assets/css/admin.css?v=20261005"/>
+  <link rel="stylesheet" href="/assets/css/admin.css?v=20261005b"/>
   <link rel="stylesheet" href="/assets/vendor/quill.snow.css">
 </head>
 <body class="admin-app"><!-- LOGIN SCREEN -->
@@ -511,9 +511,15 @@
     <!-- PREISTABELLE -->
     <section class="admin-section" id="prices">
       <h1>Preistabelle</h1>
-      <p class="sub section-desc">Passe Angebote, Dauer, Preis und Hinweis an. Änderungen sind sofort auf der Website sichtbar.</p>
+      <p class="sub section-desc">Passe Angebote, Dauer, Preis und Hinweis an. Änderungen sind sofort auf der Website sichtbar.
+      Die Tabelle gibt es einmal auf Deutsch und einmal auf Englisch – oben umschalten.</p>
 
       <div class="form-container" style="margin-top:1rem">
+        <div class="i18n-lang-switch" role="group" aria-label="Sprache der Preistabelle">
+          <button type="button" class="i18n-lang-btn is-active" data-pricelang="de" onclick="switchPriceLang('de', this)">Deutsch</button>
+          <button type="button" class="i18n-lang-btn" data-pricelang="en" onclick="switchPriceLang('en', this)">English</button>
+        </div>
+        <p class="note" id="priceLangHint"></p>
         <div id="priceCardList"></div>
         <div style="display:flex;gap:0.75rem;margin-top:1.25rem;flex-wrap:wrap;align-items:center">
           <button type="button" class="btn-save" onclick="savePriceTable()">Speichern</button>
@@ -792,7 +798,7 @@
 
 <script src="/assets/vendor/quill.min.js"></script>
 <script src="/assets/js/flyer-preview.js?v=20261005"></script>
-<script src="/assets/js/admin-app.js?v=20261005"></script>
+<script src="/assets/js/admin-app.js?v=20261005b"></script>
 
 </body>
 </html>

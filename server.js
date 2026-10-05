@@ -1953,6 +1953,19 @@ const DEFAULT_PRICE_TABLE = JSON.stringify({
   ],
 });
 
+/**
+ * Schlüssel der Preistabelle je Sprache.
+ *
+ * Bis hierher gab es nur eine Tabelle, und beim Speichern wurde dasselbe
+ * deutsche HTML in BEIDE Sprachebenen geschrieben. Auf der englischen Seite
+ * stand deshalb dauerhaft die deutsche Tabelle - und weil ein gespeicherter
+ * Text den übersetzten Quelltext überstimmt, war daran von außen nichts zu
+ * erkennen.
+ */
+function priceTableKey(lang) {
+  return lang === 'en' ? 'prices_table_en' : 'prices_table';
+}
+
 app.get('/api/prices-table', (req, res) => {
   db.get(`SELECT value FROM settings WHERE key = 'prices_table'`, (err, row) => {
     try {
@@ -1965,27 +1978,54 @@ app.get('/api/prices-table', (req, res) => {
 });
 
 app.get('/api/admin/prices-table', requireAuth, (req, res) => {
-  db.get(`SELECT value FROM settings WHERE key = 'prices_table'`, (err, row) => {
-    try {
-      res.json(JSON.parse(row ? row.value : DEFAULT_PRICE_TABLE));
-    } catch {
-      res.json(JSON.parse(DEFAULT_PRICE_TABLE));
+  const lang = req.query.lang === 'en' ? 'en' : 'de';
+  db.get(`SELECT value FROM settings WHERE key = ?`, [priceTableKey(lang)], (err, row) => {
+    if (row) {
+      try {
+        return res.json({ lang, translated: true, ...JSON.parse(row.value) });
+      } catch {
+        /* unten weiter */
+      }
     }
+    // Für Englisch noch nichts gepflegt: die deutsche Tabelle als Vorlage
+    // liefern, damit die Preise in beiden Sprachen gleich sind und nur noch
+    // die Bezeichnungen übersetzt werden müssen.
+    db.get(`SELECT value FROM settings WHERE key = 'prices_table'`, (err2, deRow) => {
+      try {
+        res.json({ lang, translated: false, ...JSON.parse(deRow ? deRow.value : DEFAULT_PRICE_TABLE) });
+      } catch {
+        res.json({ lang, translated: false, ...JSON.parse(DEFAULT_PRICE_TABLE) });
+      }
+    });
   });
 });
 
 app.put('/api/admin/prices-table', requireAuth, async (req, res) => {
   const { columns, rows } = req.body;
+  const lang = req.body.lang === 'en' ? 'en' : 'de';
   if (!Array.isArray(columns) || !Array.isArray(rows)) {
     return res.status(400).json({ error: 'Ungültiges Format' });
   }
   try {
     await dbRun(
-      `INSERT OR REPLACE INTO settings (key, value) VALUES ('prices_table', ?)`,
-      [JSON.stringify({ columns, rows })]
+      `INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)`,
+      [priceTableKey(lang), JSON.stringify({ columns, rows })]
     );
-    // Sync prices into the i18n system so preise.html picks them up like any other text
-    await syncPriceTableToI18n({ columns, rows });
+    await syncPriceTableToI18n({ columns, rows }, lang);
+
+    // Beim ersten Speichern der deutschen Tabelle die englische als Kopie
+    // anlegen, falls es noch keine gibt. Sonst stünden auf der englischen Seite
+    // andere Preise als auf der deutschen - schlimmer als deutsche Wörter.
+    if (lang === 'de') {
+      const vorhanden = await dbGet(`SELECT value FROM settings WHERE key = 'prices_table_en'`);
+      if (!vorhanden) {
+        await dbRun(
+          `INSERT OR REPLACE INTO settings (key, value) VALUES ('prices_table_en', ?)`,
+          [JSON.stringify({ columns, rows })]
+        );
+        await syncPriceTableToI18n({ columns, rows }, 'en');
+      }
+    }
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: 'Datenbankfehler' });
@@ -2010,12 +2050,13 @@ function buildPriceTableBodyHtml({ columns, rows }) {
     .join('');
 }
 
-async function syncPriceTableToI18n(tableData) {
+async function syncPriceTableToI18n(tableData, lang = 'de') {
   try {
     const bodyHtml = buildPriceTableBodyHtml(tableData);
     const current = await i18nContent.readOverrides(dbGet);
-    current.de['prices.tableBody'] = bodyHtml;
-    current.en['prices.tableBody'] = bodyHtml;
+    // Nur die bearbeitete Sprache anfassen. Vorher landete das deutsche HTML
+    // auch in der englischen Ebene und überstimmte dort die Übersetzung.
+    current[lang === 'en' ? 'en' : 'de']['prices.tableBody'] = bodyHtml;
     await i18nContent.writeOverrides(dbRun, current);
   } catch (e) {
     console.error('syncPriceTableToI18n:', e.message);
@@ -3252,12 +3293,29 @@ const server = app.listen(PORT, async () => {
     if (seeded) console.log('i18n: Texte aus data/i18n-overrides.json in die Datenbank übernommen');
     await i18nContent.syncI18nFromSource(dbGet);
     console.log('i18n: Übersetzungsdateien aus Quelltexten neu aufgebaut');
-    // Sync saved price table into i18n so preise.html always reflects the DB
+    // Gespeicherte Preistabellen in die Texte spiegeln, damit die Preisseite
+    // immer den Stand der Datenbank zeigt - je Sprache getrennt.
     try {
-      const prRow = await dbGet(`SELECT value FROM settings WHERE key = 'prices_table'`);
-      if (prRow?.value) {
-        const prData = JSON.parse(prRow.value);
-        await syncPriceTableToI18n(prData);
+      const deRow = await dbGet(`SELECT value FROM settings WHERE key = 'prices_table'`);
+      const deData = deRow?.value ? JSON.parse(deRow.value) : null;
+      if (deData) await syncPriceTableToI18n(deData, 'de');
+
+      const enRow = await dbGet(`SELECT value FROM settings WHERE key = 'prices_table_en'`);
+      if (enRow?.value) {
+        await syncPriceTableToI18n(JSON.parse(enRow.value), 'en');
+      } else if (deData) {
+        // Vor dieser Fassung wurde beim Speichern dasselbe deutsche HTML in die
+        // englische Textebene geschrieben - die englische Preisseite zeigte
+        // deshalb die deutsche Tabelle. Eine eigene englische Tabelle gab es
+        // nicht. Sie wird hier einmalig aus der deutschen angelegt: Die Preise
+        // stimmen damit in beiden Sprachen, und die Bezeichnungen lassen sich
+        // im Admin-Panel unter "Preistabelle" auf Englisch umstellen.
+        await dbRun(
+          `INSERT OR REPLACE INTO settings (key, value) VALUES ('prices_table_en', ?)`,
+          [JSON.stringify(deData)]
+        );
+        await syncPriceTableToI18n(deData, 'en');
+        console.log('i18n: englische Preistabelle aus der deutschen angelegt – Bezeichnungen bitte im Admin-Panel übersetzen');
       }
     } catch (e) {
       console.error('Preistabelle i18n-Sync:', e.message);
