@@ -17,6 +17,7 @@ const imageMeta = require('./lib/image-meta');
 const imageOptimize = require('./lib/image-optimize');
 const backup = require('./lib/backup');
 const { resolveAppSecret } = require('./lib/secret');
+const sessionStore = require('./lib/session-store');
 const { apiLang, apiMsg } = require('./lib/api-messages');
 require('dotenv').config();
 
@@ -347,22 +348,6 @@ app.use(express.static(PUBLIC_DIR, { maxAge: '1h', etag: true }));
 // würden hochgeladene Dateien sonst nicht ausgeliefert.
 app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: '1h', etag: true }));
 
-// Session-Secret: zentral über lib/secret (ENV bevorzugt, sonst persistiertes
-// Zufalls-Secret) – dasselbe Secret signiert auch die Kalender-Token.
-// Session Configuration
-app.use(session({
-  secret: resolveAppSecret(),
-  resave: false,
-  saveUninitialized: false,
-  proxy: IS_PRODUCTION,
-  cookie: {
-    secure: IS_PRODUCTION ? 'auto' : false,
-    httpOnly: true,
-    sameSite: 'lax',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
-}));
-
 // ============================================================================
 // DATENBANK SETUP
 // ============================================================================
@@ -381,6 +366,28 @@ const db = new sqlite3.Database(DB_PATH, (err) => {
     initializeDatabase();
   }
 });
+
+// Session-Secret: zentral über lib/secret (ENV bevorzugt, sonst persistiertes
+// Zufalls-Secret) – dasselbe Secret signiert auch die Kalender-Token.
+//
+// Die Sitzungen liegen in der Datenbank, nicht im Arbeitsspeicher. Mit dem
+// Standardspeicher von express-session war nach jedem Neustart - also nach
+// jedem Deploy - jede Anmeldung weg: Das Admin-Panel blieb offen und zeigte
+// bei jeder Aktion nur noch "Fehler: Unauthorized". Deshalb steht dieser
+// Block hinter dem Aufbau der Datenbankverbindung.
+app.use(session({
+  secret: resolveAppSecret(),
+  store: sessionStore.erzeugeSessionStore(db),
+  resave: false,
+  saveUninitialized: false,
+  proxy: IS_PRODUCTION,
+  cookie: {
+    secure: IS_PRODUCTION ? 'auto' : false,
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 
 function initializeDatabase() {
   db.serialize(() => {
@@ -697,7 +704,12 @@ function ensureAdminAccounts() {
 
 const requireAuth = (req, res, next) => {
   if (!req.session.userId) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    // Kennzeichnet genau diesen Fall: nicht (mehr) angemeldet. Das Admin-Panel
+    // schaltet daraufhin zur Anmeldung zurück, statt "Fehler: Unauthorized"
+    // stehen zu lassen. Ein 401 aus anderem Grund - etwa ein falsches
+    // aktuelles Passwort beim Ändern - trägt diesen Hinweis nicht.
+    res.setHeader('X-Anmeldung', 'abgelaufen');
+    return res.status(401).json({ error: 'Nicht angemeldet' });
   }
   next();
 };

@@ -24,12 +24,40 @@ function serverErrorText(status) {
   return 'Unerwartete Antwort vom Server (Code ' + status + ').';
 }
 
+/**
+ * Zurück zur Anmeldung, wenn die Sitzung nicht mehr gilt.
+ *
+ * Vorher blieb das Panel in so einem Fall einfach offen stehen und zeigte in
+ * jedem Bereich "Fehler: Unauthorized" - ohne zu sagen, was zu tun ist.
+ */
+function zurueckZurAnmeldung() {
+  const login = document.getElementById('loginScreen');
+  const panel = document.getElementById('mainContainer');
+  if (!login || !panel || login.classList.contains('active')) return;
+  panel.classList.remove('active');
+  login.classList.add('active');
+  const hinweis = document.getElementById('loginMessage');
+  if (hinweis) {
+    hinweis.textContent = 'Deine Anmeldung ist abgelaufen. Bitte melde dich noch einmal an – deine gespeicherten Inhalte sind davon nicht betroffen.';
+    hinweis.className = 'message error active';
+  }
+  window.scrollTo(0, 0);
+}
+
 async function apiFetch(url, options) {
   let res;
   try {
     res = await rawFetch(url, options);
   } catch (netErr) {
     throw new Error('Keine Verbindung zum Server. Bitte die Internetverbindung prüfen.');
+  }
+
+  // Der Server setzt diesen Hinweis nur, wenn die Sitzung fehlt oder abgelaufen
+  // ist - nicht bei einem 401 aus anderem Grund, etwa einem falschen aktuellen
+  // Passwort beim Passwortwechsel.
+  if (res.status === 401 && res.headers.get('X-Anmeldung') === 'abgelaufen') {
+    zurueckZurAnmeldung();
+    throw new Error('Deine Anmeldung ist abgelaufen. Bitte melde dich noch einmal an.');
   }
 
   res.json = async function readJsonSafely() {
