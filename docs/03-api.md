@@ -46,6 +46,13 @@ gilt 24 Stunden.
 | PATCH | `/api/admin/flyers/:id/move` | 🔒 Reihenfolge (`direction`: `up` oder `down`) |
 | DELETE | `/api/admin/flyers/:id` | 🔒 Löschen, entfernt auch die PDF-Datei |
 
+`POST /api/admin/flyers` und `PUT` nehmen zusätzlich `previewUrl` entgegen –
+ein Bild der ersten PDF-Seite. Es entsteht **im Browser des Admin-Panels**
+(pdf.js, siehe `assets/js/vendor/pdfjs/HERKUNFT.md`) und wird über den normalen
+Bild-Upload abgelegt. Serverseitig ginge es nicht: Auf dem Server gibt es weder
+poppler noch Ghostscript, und sharp liest keine PDFs. Besucher laden nur dieses
+Bild – pdf.js wird auf den öffentlichen Seiten nie geladen.
+
 Es werden ausschließlich PDFs angenommen (`application/pdf`), bis 25 MB
 (`MAX_PDF_SIZE`). Die Dateien liegen unter `public/uploads/flyer/` und werden
 unter `/uploads/flyer/…` ausgeliefert. Gespeichert wird nur eine Adresse, die

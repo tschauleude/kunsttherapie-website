@@ -33,6 +33,13 @@
       : null;
   }
 
+  /** Dasselbe für das Vorschaubild, das beim Hochladen entstanden ist. */
+  function safeBildUrl(url) {
+    return typeof url === 'string' && /^\/uploads\/[A-Za-z0-9._-]+\.(jpe?g|png|webp)$/i.test(url)
+      ? url
+      : null;
+  }
+
   function renderFlyer(flyer) {
     const url = safeUrl(flyer.url);
     if (!url) return '';
@@ -45,8 +52,17 @@
       ? `<p class="flyer-card-text">${escapeHtml(flyer.description)}</p>`
       : '';
 
-    return `<li class="flyer-card">
-      <span class="flyer-card-icon" aria-hidden="true">PDF</span>
+    // Die Vorschau zeigt die erste Seite. Sie ist selbst ein Link auf die PDF –
+    // wer ein Flyerbild sieht, klickt erfahrungsgemäß darauf, nicht auf den Knopf.
+    const bild = safeBildUrl(flyer.previewUrl);
+    const vorschau = bild
+      ? `<a class="flyer-card-preview" href="${bild ? url : url}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+           <img src="${bild}" alt="" loading="lazy" decoding="async"/>
+         </a>`
+      : '<span class="flyer-card-icon" aria-hidden="true">PDF</span>';
+
+    return `<li class="flyer-card${bild ? ' flyer-card--mit-bild' : ''}">
+      ${vorschau}
       <div class="flyer-card-body">
         <h3 class="flyer-card-title">${escapeHtml(flyer.title)}</h3>
         ${desc}

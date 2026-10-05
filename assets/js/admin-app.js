@@ -1899,11 +1899,34 @@ async function saveFlyer(e) {
     let url = document.getElementById('flyerUrl').value;
     let originalName = '';
 
+    let previewUrl = '';
+
     if (fileInput.files?.[0]) {
       if (btn) btn.textContent = 'PDF wird hochgeladen …';
       const uploaded = await uploadFlyerFile(fileInput);
       url = uploaded.url;
       originalName = uploaded.originalName;
+
+      // Vorschau der ersten Seite erzeugen und als Bild mit hochladen. Klappt
+      // das nicht, wird der Flyer trotzdem gespeichert – dann eben ohne Bild.
+      if (btn) btn.textContent = 'Vorschau wird erstellt …';
+      try {
+        const vorschau = typeof window.ktFlyerVorschau === 'function'
+          ? await window.ktFlyerVorschau(fileInput.files[0])
+          : null;
+        if (vorschau) {
+          const fd = new FormData();
+          fd.append('image', vorschau);
+          const res = await apiFetch(`${API_URL}/admin/upload`, {
+            method: 'POST', credentials: 'include', body: fd,
+          });
+          const data = await res.json();
+          if (res.ok && data.url) previewUrl = data.url;
+        }
+      } catch (vorschauFehler) {
+        console.error('Vorschau übersprungen:', vorschauFehler);
+      }
+
       if (btn) btn.textContent = 'Wird gespeichert …';
     }
 
@@ -1913,6 +1936,7 @@ async function saveFlyer(e) {
       published: document.getElementById('flyerPublished').checked,
       url: fileInput.files?.[0] ? url : (id ? '' : url),
       originalName,
+      previewUrl,
     };
 
     const res = await apiFetch(id ? `${API_URL}/admin/flyers/${id}` : `${API_URL}/admin/flyers`, {
@@ -2021,9 +2045,12 @@ async function loadFlyerList() {
       ? `<button class="btn-small" onclick="moveFlyer(${flyer.id}, 'down')" title="Eine Position nach unten">▼ nach unten</button>`
       : '';
 
+    const vorschau = flyer.previewUrl
+      ? `<img class="item-thumb item-thumb-flyer" src="${escapeHtml(flyer.previewUrl)}" alt="" loading="lazy"/>`
+      : '<span class="item-thumb item-thumb-pdf" aria-hidden="true">PDF</span>';
     return `
       <div class="item">
-        <span class="item-thumb item-thumb-pdf" aria-hidden="true">PDF</span>
+        ${vorschau}
         <div class="item-info">
           <h3>${escapeHtml(flyer.title)} ${badge}</h3>
           ${flyer.description ? `<p>${escapeHtml(flyer.description)}</p>` : ''}
