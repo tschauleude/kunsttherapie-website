@@ -3,8 +3,7 @@
     "prices.tableBody": "<tr><td>Gruppensitzung</td><td data-label=\"Dauer\">90 Minuten</td><td data-label=\"Preis\"><strong>55 €</strong></td><td data-label=\"Hinweis\">4–12 Personen, Material i. d. R. inkl.</td></tr>"
   },
   "en": {
-    "prices.tableBody": "<tr><td>Group session</td><td data-label=\"Duration\">90 minutes</td><td data-label=\"Price\">€55</td><td data-label=\"Note\">4–12 people, materials usually incl.</td></tr>",
-    "home.hero.lead": "TEST ENGLISH ONLY"
+    "prices.tableBody": "<tr><td>Group session</td><td data-label=\"Duration\">90 minutes</td><td data-label=\"Price\">€55</td><td data-label=\"Note\">4–12 people, materials usually incl.</td></tr>"
   },
   "_meta": {
     "updatedAt": "2026-10-05T12:22:33.500Z",
