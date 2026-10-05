@@ -449,18 +449,36 @@ function initializeDatabase() {
         status TEXT DEFAULT 'pending',
         google_event_id TEXT,
         verify_token TEXT,
+        is_block INTEGER DEFAULT 0,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+    // Eine im Admin-Panel blockierte Zeit war bisher nur an der Nachricht
+    // "Manuell blockiert" zu erkennen und wurde nirgends gespeichert. Mit
+    // Plätzen je Zeitfenster muss der Unterschied in der Datenbank stehen:
+    // eine Sperre schließt das Fenster ganz, eine Anfrage belegt einen Platz.
+    db.run(`ALTER TABLE bookings ADD COLUMN is_block INTEGER DEFAULT 0`, () => {});
+    db.run(
+      `UPDATE bookings SET is_block = 1
+       WHERE is_block IS NOT 1 AND message = 'Manuell blockiert'`,
+      () => {}
+    );
 
-    // DB-seitige Sperre gegen Doppelbuchungen (schließt die Race-Condition
-    // zwischen Verfügbarkeitsprüfung und INSERT). Stornierte Termine zählen nicht.
     db.run(`CREATE INDEX IF NOT EXISTS idx_news_published ON news(published, createdAt)`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_events_published ON events(published, date)`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date, status)`);
+
+    // Der frühere Index machte (Datum, Uhrzeit) eindeutig und verhinderte damit
+    // jede zweite Anfrage im selben Zeitfenster. Gruppen haben aber mehrere
+    // Plätze, deshalb muss er weg.
+    db.run(`DROP INDEX IF EXISTS idx_bookings_slot`, () => {});
+
+    // Was bleibt: dieselbe Person nicht zweimal im selben Fenster. Das fängt
+    // den häufigsten Fall ab - versehentlich zweimal auf Absenden geklickt -
+    // und schließt die Lücke zwischen Prüfung und Eintrag für genau diesen Fall.
     db.run(
-      `CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_slot
-       ON bookings(date, start_time) WHERE status != 'cancelled'`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_slot_person
+       ON bookings(date, start_time, email) WHERE status != 'cancelled'`,
       (idxErr) => {
         if (idxErr) console.error('Buchungs-Index konnte nicht erstellt werden:', idxErr.message);
       }
@@ -544,12 +562,15 @@ function initializeDatabase() {
         url TEXT NOT NULL,
         original_name TEXT,
         size_bytes INTEGER,
+        preview_url TEXT,
         published INTEGER DEFAULT 1,
         sort_order INTEGER DEFAULT 0,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+    // Nachtrag für Datenbanken, die vor der Vorschaufunktion angelegt wurden.
+    db.run(`ALTER TABLE flyers ADD COLUMN preview_url TEXT`, () => {/* ignore if already exists */});
 
     db.run(`
       CREATE TABLE IF NOT EXISTS event_registrations (
@@ -1166,6 +1187,25 @@ function isOwnUploadPath(url) {
   return !url.includes('..');
 }
 
+/**
+ * Die Vorschau entsteht im Browser des Admin-Panels (erste PDF-Seite) und wird
+ * über den normalen Bild-Upload abgelegt, liegt also direkt unter /uploads/.
+ */
+function isOwnImagePath(url) {
+  if (typeof url !== 'string') return false;
+  if (!/^\/uploads\/[A-Za-z0-9._-]+\.(jpe?g|png|webp)$/i.test(url)) return false;
+  return !url.includes('..');
+}
+
+/** Vorschaubild entfernen; ein Fehlschlag bleibt folgenlos. */
+function removePreviewFile(url) {
+  if (!isOwnImagePath(url)) return;
+  const file = path.join(UPLOAD_DIR, path.basename(url));
+  fs.unlink(file, (err) => {
+    if (err && err.code !== 'ENOENT') console.error('Vorschaubild löschen:', err.message);
+  });
+}
+
 /** Tatsächliche Größe einer Flyer-Datei; 0, wenn sie nicht lesbar ist. */
 function flyerFileSize(url) {
   if (!isOwnUploadPath(url)) return 0;
@@ -1197,6 +1237,7 @@ function flyerRow(row) {
     url: row.url,
     originalName: row.original_name || '',
     sizeBytes: row.size_bytes || 0,
+    previewUrl: row.preview_url && isOwnImagePath(row.preview_url) ? row.preview_url : null,
     published: row.published === 1,
     sortOrder: row.sort_order || 0,
     createdAt: row.createdAt,
@@ -1256,15 +1297,17 @@ app.post('/api/admin/flyers', requireAuth, async (req, res) => {
 
   try {
     const next = await dbGet(`SELECT COALESCE(MAX(sort_order), 0) + 1 AS n FROM flyers`);
+    const previewUrl = (req.body.previewUrl || '').trim();
     const result = await dbRun(
-      `INSERT INTO flyers (title, description, url, original_name, size_bytes, published, sort_order)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO flyers (title, description, url, original_name, size_bytes, preview_url, published, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title.slice(0, 200),
         description.slice(0, 1000),
         url,
         (req.body.originalName || '').toString().slice(0, 255),
         flyerFileSize(url),
+        isOwnImagePath(previewUrl) ? previewUrl : null,
         req.body.published === false ? 0 : 1,
         next?.n || 1,
       ]
@@ -1293,9 +1336,13 @@ app.put('/api/admin/flyers/:id', requireAuth, async (req, res) => {
     const current = await dbGet(`SELECT * FROM flyers WHERE id = ?`, [id]);
     if (!current) return res.status(404).json({ error: 'Flyer nicht gefunden' });
 
+    // Nur mit einer neuen PDF kommt auch eine neue Vorschau; sonst bleibt die alte.
+    const previewUrl = (req.body.previewUrl || '').trim();
+    const neueVorschau = url && isOwnImagePath(previewUrl) ? previewUrl : null;
+
     await dbRun(
       `UPDATE flyers SET title = ?, description = ?, url = ?, original_name = ?, size_bytes = ?,
-              published = ?, updatedAt = CURRENT_TIMESTAMP
+              preview_url = ?, published = ?, updatedAt = CURRENT_TIMESTAMP
        WHERE id = ?`,
       [
         title.slice(0, 200),
@@ -1303,13 +1350,17 @@ app.put('/api/admin/flyers/:id', requireAuth, async (req, res) => {
         url || current.url,
         url ? (req.body.originalName || '').toString().slice(0, 255) : current.original_name,
         url ? flyerFileSize(url) : current.size_bytes,
+        url ? neueVorschau : current.preview_url,
         req.body.published === false ? 0 : 1,
         id,
       ]
     );
 
-    // Alte Datei aufräumen, wenn sie ersetzt wurde.
-    if (url && url !== current.url) removeFlyerFile(current.url);
+    // Alte Dateien aufräumen, wenn sie ersetzt wurden.
+    if (url && url !== current.url) {
+      removeFlyerFile(current.url);
+      if (current.preview_url !== neueVorschau) removePreviewFile(current.preview_url);
+    }
 
     res.json({ success: true, message: 'Flyer aktualisiert' });
   } catch (e) {
@@ -1366,6 +1417,7 @@ app.delete('/api/admin/flyers/:id', requireAuth, async (req, res) => {
     if (!row) return res.status(404).json({ error: 'Flyer nicht gefunden' });
     await dbRun(`DELETE FROM flyers WHERE id = ?`, [id]);
     removeFlyerFile(row.url);
+    removePreviewFile(row.preview_url);
     res.json({ success: true, message: 'Flyer gelöscht' });
   } catch (e) {
     console.error('Flyer löschen:', e.message);
@@ -2814,8 +2866,8 @@ app.post('/api/admin/bookings', requireAuth, async (req, res) => {
     }
 
     const result = await dbRun(
-      `INSERT INTO bookings (name, email, phone, date, start_time, end_time, message, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed')`,
+      `INSERT INTO bookings (name, email, phone, date, start_time, end_time, message, status, is_block)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed', ?)`,
       [
         clientName,
         clientEmail,
@@ -2824,12 +2876,13 @@ app.post('/api/admin/bookings', requireAuth, async (req, res) => {
         slot.start,
         slot.end,
         isBlock ? (message?.trim() || 'Manuell blockiert') : message?.trim() || null,
+        isBlock ? 1 : 0,
       ]
     );
 
     const row = await dbGet(`SELECT * FROM bookings WHERE id = ?`, [result.lastID]);
 
-    await syncGoogleCreate({ ...row, is_block: isBlock });
+    await syncGoogleCreate(row);
 
     res.json({
       success: true,

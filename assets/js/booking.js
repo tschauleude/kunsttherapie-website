@@ -318,8 +318,14 @@ async function selectDay(dateStr) {
         }
         const already = isSlotSelected(dateStr, slot.start);
         const selCls = already ? ' slot-selected' : '';
+        // Freie Plätze nur zeigen, wenn es eng wird. Bei einer Gruppe mit zwölf
+        // Plätzen ist "noch 12 frei" keine Information, "nur noch 2 frei" schon.
+        const restlich = typeof slot.remaining === 'number' && typeof slot.capacity === 'number'
+          && slot.capacity > 1 && slot.remaining > 0 && slot.remaining <= 3
+          ? `<span class="slot-remaining">${tr('book.slotRemaining').replace('{n}', slot.remaining)}</span>`
+          : '';
         return `<button type="button" class="slot-btn slot-free${selCls}" data-start="${slot.start}" data-end="${slot.end}" aria-pressed="${already}">
-          ${slot.start} – ${slot.end}
+          ${slot.start} – ${slot.end}${restlich}
         </button>`;
       })
       .join('');

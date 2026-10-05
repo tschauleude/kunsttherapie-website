@@ -16,7 +16,10 @@ Wird beim ersten Start aus `ADMIN_USERNAME` / `ADMIN_PASSWORD` befüllt.
 
 ### `flyers`
 `id` · `title` · `description` · `url` · `original_name` · `size_bytes` ·
-`published` (0/1) · `sort_order` · Zeitstempel
+`preview_url` · `published` (0/1) · `sort_order` · Zeitstempel
+
+`preview_url` zeigt auf ein Bild der ersten PDF-Seite. Es entsteht beim
+Hochladen im Browser des Admin-Panels (siehe [03 – API](03-api.md)).
 
 Die PDF-Datei selbst liegt nicht in der Datenbank, sondern unter
 `public/uploads/flyer/`. Beim Löschen eines Eintrags wird sie mit entfernt.
@@ -33,11 +36,23 @@ Die PDF-Datei selbst liegt nicht in der Datenbank, sondern unter
 
 ### `bookings`
 `id` · `name` · `email` · `phone` · `date` · `start_time` · `end_time` ·
-`message` · `status` · `google_event_id` · `verify_token` · Zeitstempel
+`message` · `status` · `google_event_id` · `verify_token` · `is_block` (0/1) ·
+Zeitstempel
 
 Statuswerte: `pending_verification` → `pending` → `confirmed` bzw. `cancelled`.
 `google_event_id` verknüpft die Buchung mit dem Kalendertermin, damit er beim
 Stornieren gelöscht werden kann.
+
+`is_block` unterscheidet eine im Admin-Panel blockierte Zeit von einer echten
+Anfrage. Das ist seit Einführung der Plätze je Zeitfenster entscheidend: Eine
+Anfrage belegt einen Platz, eine Sperre schließt das Fenster ganz. Vorher war
+eine Sperre nur an der Nachricht „Manuell blockiert" zu erkennen; bestehende
+Einträge werden beim Start einmalig danach umgestellt.
+
+> **Kein eindeutiger Index mehr auf (Datum, Uhrzeit).** Der verhinderte jede
+> zweite Anfrage im selben Zeitfenster. An seine Stelle tritt
+> `idx_bookings_slot_person` auf (Datum, Uhrzeit, E-Mail): dieselbe Person kann
+> sich nicht zweimal für dasselbe Fenster eintragen, verschiedene Personen schon.
 
 ### `contact_messages`
 `id` · `name` · `email` · `phone` · `message` · `email_sent` · `status` ·

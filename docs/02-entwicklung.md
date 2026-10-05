@@ -50,6 +50,20 @@ keine Mails, läuft aber weiter.
 | `BOOKING_MIN_ADVANCE_HOURS` | `24` | Mindestvorlauf für eine Buchung |
 | `BOOKING_TIMEZONE` | `Europe/Berlin` | |
 | `BOOKING_SCHEDULE` | Di 11:00–12:30, Do 18:00–19:30 | JSON, Wochentag 0 = Sonntag |
+| `BOOKING_SLOT_CAPACITY` | `12` | Plätze je Zeitfenster |
+
+**Plätze je Zeitfenster.** Bis Oktober 2026 galt ein Termin nach *einer* Anfrage
+als ausgebucht. Die Gruppen haben laut den Texten 4–12 Plätze; elf Interessierte
+bekamen also „ausgebucht" zu sehen, obwohl noch alles frei war. Die Zahl lässt
+sich je Wochentag setzen – für eine Einzelsitzung gehört dort `1` hinein:
+
+```bash
+BOOKING_SCHEDULE={"2":{"start":"11:00","end":"12:30","label":"Dienstag Vormittag","capacity":12},"4":{"start":"18:00","end":"19:30","label":"Donnerstag Abend","capacity":12}}
+```
+
+Nur Kundenanfragen belegen Plätze. Eine im Admin-Panel blockierte Zeit, ein
+Urlaubszeitraum und Termine aus dem Google-Kalender schließen das Fenster
+weiterhin vollständig.
 
 ```bash
 BOOKING_SCHEDULE={"2":{"start":"11:00","end":"12:30","label":"Dienstag Vormittag"},"4":{"start":"18:00","end":"19:30","label":"Donnerstag Abend"}}

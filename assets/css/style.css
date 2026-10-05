@@ -4946,3 +4946,68 @@ nav a:not(.nav-cta):not([aria-current='page'])::after {
   padding-bottom: 0.12rem;
   min-height: 24px;
 }
+
+/* ---------------------------------------------------------------------------
+   Flyer mit Vorschaubild
+   Die Vorschau zeigt die erste PDF-Seite. Sie ersetzt das kleine PDF-Symbol
+   und macht aus der Zeile eine Karte, bei der man sofort sieht, worum es geht.
+   --------------------------------------------------------------------------- */
+.flyer-card--mit-bild {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.flyer-card-preview {
+  display: block;
+  /* Groß genug, dass Überschrift und Datum des Flyers erkennbar bleiben. */
+  width: 9.5rem;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.04);
+  line-height: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.flyer-card-preview img {
+  width: 100%;
+  height: auto;
+  /* Hochformat-Flyer würden die Karte sonst sehr lang machen. */
+  max-height: 13.5rem;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.flyer-card-preview:hover,
+.flyer-card-preview:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+}
+
+@media (max-width: 640px) {
+  /* Am Handy steht die Vorschau oben und nimmt die volle Breite –
+     ein 120-px-Bild neben dem Text wäre dort zu klein zum Erkennen. */
+  .flyer-card--mit-bild {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: stretch;
+  }
+
+  .flyer-card-preview {
+    width: 100%;
+  }
+
+  .flyer-card-preview img {
+    max-height: 14rem;
+  }
+}
+
+/* Hinweis auf knappe Plätze im Zeitfenster. */
+.slot-remaining {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-rose-dark);
+}

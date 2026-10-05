@@ -82,6 +82,11 @@ zum Entwurf, ohne gelöscht zu werden.
 Aus Word heraus wird ein PDF über *Speichern unter* → Dateityp *PDF* erzeugt.
 Andere Formate nimmt das Feld nicht an; es erscheint dann ein Hinweis.
 
+Beim Hochladen erzeugt das System automatisch ein **Vorschaubild der ersten
+Seite**. Besucher sehen den Flyer damit direkt auf der Startseite, ohne ihn erst
+öffnen zu müssen. Das dauert einen Moment – während „Vorschau wird erstellt …"
+im Knopf steht, bitte kurz warten.
+
 Die Flyer stehen auf der Startseite im Abschnitt **Aktuelle Flyer**. Ist kein
 Flyer veröffentlicht, wird der ganze Abschnitt nicht angezeigt – auf der Seite
 steht also nie eine leere Überschrift.
@@ -136,7 +141,12 @@ Website automatisch.
 ### Buchbare Zeiten
 
 Standardmäßig **Dienstag 11:00–12:30** und **Donnerstag 18:00–19:30**, jeweils
-90 Minuten, mit mindestens 24 Stunden Vorlauf. Sollen sich diese Zeiten ändern,
+90 Minuten, mit mindestens 24 Stunden Vorlauf.
+
+**Plätze je Termin:** Ein Zeitfenster hat 12 Plätze – mehrere Personen können
+sich also für dieselbe Gruppe anmelden. Sind nur noch drei oder weniger frei,
+steht das für Besucher am Zeitfenster. Soll ein Termin nur von einer Person
+belegt werden können, bitte Bescheid geben; das ist eine Einstellung am Server. Sollen sich diese Zeiten ändern,
 ist das eine Einstellung am Server – bitte Bescheid geben.
 
 ---
