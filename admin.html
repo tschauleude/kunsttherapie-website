@@ -8,7 +8,7 @@
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/assets/img/favicon.ico" sizes="any"/>
   <link rel="stylesheet" href="/assets/css/style.css?v=20260613"/>
-  <link rel="stylesheet" href="/assets/css/admin.css?v=20261005c"/>
+  <link rel="stylesheet" href="/assets/css/admin.css?v=20261005d"/>
   <link rel="stylesheet" href="/assets/vendor/quill.snow.css">
 </head>
 <body class="admin-app"><!-- LOGIN SCREEN -->
@@ -708,13 +708,22 @@
       <details class="admin-guide" style="margin-bottom:1.5rem">
         <summary style="cursor:pointer;font-weight:600;font-size:1rem;padding:0.5rem 0">✉️ Anleitung: E-Mail-Benachrichtigungen einrichten</summary>
         <div style="padding:1rem 0 0.5rem">
-          <p>Wenn jemand das Kontaktformular auf der Website ausfüllt, wird die Nachricht hier gespeichert <strong>und</strong> gleichzeitig eine E-Mail an dich geschickt – vorausgesetzt, der E-Mail-Versand ist korrekt eingerichtet.</p>
+          <p>Wenn jemand das Kontaktformular auf der Website ausfüllt, wird die Nachricht <strong>sofort hier gespeichert</strong>. Die E-Mail an dich geht erst raus, wenn der Absender seine Adresse bestätigt hat – das verhindert Anfragen mit fremden oder erfundenen E-Mail-Adressen.</p>
 
           <h4 style="margin:1rem 0 0.5rem">So funktioniert es</h4>
+          <ol>
+            <li>Jemand schickt das Formular ab. Die Nachricht steht ab sofort hier in der Liste. Der Absender bekommt eine E-Mail mit einem Bestätigungslink.</li>
+            <li>Klickt er den Link, bekommst <strong>du</strong> die Anfrage per E-Mail an <strong>info@kunsttherapie-pb.de</strong> – mit zwei Schaltflächen: „Annehmen" und „Ablehnen".</li>
+            <li>Dein Klick darauf schickt dem Absender automatisch eine Rückmeldung.</li>
+          </ol>
+          <p>Nachrichten landen <strong>immer</strong> hier in diesem Bereich – auch wenn keine einzige E-Mail durchkommt. Schau deshalb regelmäßig nach (z.&nbsp;B. 1× täglich).</p>
+
+          <h4 style="margin:1rem 0 0.5rem">Was der farbige Hinweis an jeder Nachricht bedeutet</h4>
           <ul>
-            <li>Nachrichten landen <strong>immer</strong> hier in diesem Bereich – auch wenn die E-Mail nicht ankommt.</li>
-            <li>Die E-Mail-Benachrichtigung geht an: <strong>info@kunsttherapie-pb.de</strong></li>
-            <li>Schau hier regelmäßig nach (z.&nbsp;B. 1× täglich), damit du keine Anfrage verpasst.</li>
+            <li><strong>Wartet auf Bestätigung</strong> (gelb): Der Absender hat den Link aus seiner E-Mail noch nicht geklickt. Du musst nichts tun – antworten kannst du trotzdem jederzeit.</li>
+            <li><strong>Bestätigt – wartet auf dich</strong> (blau): Die Anfrage liegt in deinem E-Mail-Postfach und wartet auf „Annehmen" oder „Ablehnen".</li>
+            <li><strong>Von dir angenommen / abgelehnt</strong> (grün bzw. grau): Erledigt, der Absender hat automatisch Bescheid bekommen.</li>
+            <li><strong>Rot, mit rotem Balken links</strong>: Eine E-Mail konnte nicht verschickt werden. Dann steht die Anfrage nur hier – bitte direkt per E-Mail oder Telefon antworten und Marian Bescheid geben.</li>
           </ul>
 
           <h4 style="margin:1rem 0 0.5rem">E-Mail-Versand einrichten (Strato SMTP) – einmalig von Marian</h4>
@@ -736,9 +745,9 @@
 
           <h4 style="margin:1rem 0 0.5rem">Nachrichten beantworten</h4>
           <ol>
-            <li>Klicke auf eine Nachricht in der Liste unten.</li>
-            <li>Die E-Mail-Adresse des Absenders ist angegeben – öffne dein E-Mail-Programm und antworte direkt.</li>
-            <li>Nach dem Antworten kannst du die Nachricht hier als „erledigt" markieren oder löschen.</li>
+            <li>In der Liste unten steht bei jeder Nachricht die E-Mail-Adresse (und die Telefonnummer, falls angegeben) – ein Klick darauf öffnet dein E-Mail-Programm bzw. wählt die Nummer.</li>
+            <li>„Annehmen" und „Ablehnen" findest du <strong>in der E-Mail</strong>, die du zu jeder bestätigten Anfrage bekommst; der Absender wird dann automatisch benachrichtigt.</li>
+            <li>Ist eine Nachricht erledigt, kannst du sie hier mit „Löschen" entfernen.</li>
           </ol>
 
           <p class="note" style="margin-top:1rem">💡 <strong>Tipp:</strong> Rufe dein E-Mail-Postfach unter <strong>webmail.strato.de</strong> auf – dort kannst du direkt im Browser E-Mails lesen und schreiben, ohne ein separates Programm.</p>
@@ -799,7 +808,7 @@
 
 <script src="/assets/vendor/quill.min.js"></script>
 <script src="/assets/js/flyer-preview.js?v=20261005"></script>
-<script src="/assets/js/admin-app.js?v=20261005c"></script>
+<script src="/assets/js/admin-app.js?v=20261005d"></script>
 
 </body>
 </html>

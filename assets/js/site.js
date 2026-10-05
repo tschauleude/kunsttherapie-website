@@ -333,17 +333,65 @@
     const header = document.querySelector('header');
     if (!header) return;
 
+    // BUG-FIX (Header wackelt beim Hochscrollen):
+    // Der kompakte Header ist je nach Fensterbreite 49–67 px flacher als der
+    // normale. Weil der Header im Textfluss steht (position: sticky), rutscht
+    // beim Umschalten der ganze Inhalt nach oben – und der Browser korrigiert
+    // die Scrollposition per Scroll-Anchoring um genau diese Differenz
+    // zurück. Mit einer einzigen Schwelle (vorher: 28 px) landete die Seite
+    // dadurch wieder auf der anderen Seite der Schwelle, schaltete erneut um,
+    // wurde wieder korrigiert … gemessen 11 Umschaltungen bei einmal runter
+    // und rauf, am schlimmsten beim Hochscrollen.
+    //
+    // Zwei getrennte Schwellen (Hysterese) beenden diese Rückkopplung: Der
+    // Abstand zwischen ihnen (96 px) ist größer als die größte gemessene
+    // Höhendifferenz (67 px bei 768–900 px Fensterbreite), deshalb kann die
+    // Korrektur die Scrollposition nie über die jeweils andere Schwelle
+    // schieben. Wer den Header umgestaltet: Abstand groß genug halten.
+    const SCHWELLE_KOMPAKT = 160;
+    const SCHWELLE_NORMAL = 64;
+    const SPERRE_MS = 600;
+
+    let kompakt = header.classList.contains('header-scrolled');
+    let gesperrtBis = 0;
+    let nachlauf = 0;
     let ticking = false;
+
+    const jetzt = () => (window.performance ? window.performance.now() : Date.now());
+
+    const anwenden = () => {
+      const t = jetzt();
+      // Während der Höhenanimation verschiebt der Browser die Scrollposition
+      // schrittweise – in dieser Zeit nicht umschalten, aber danach einmal
+      // nachsehen, damit der Zustand auch bei sehr schnellem Scrollen zur
+      // endgültigen Position passt.
+      if (t < gesperrtBis) {
+        if (!nachlauf) {
+          nachlauf = window.setTimeout(() => {
+            nachlauf = 0;
+            anwenden();
+          }, gesperrtBis - t + 20);
+        }
+        return;
+      }
+      const y = window.scrollY;
+      const soll = kompakt ? y > SCHWELLE_NORMAL : y > SCHWELLE_KOMPAKT;
+      if (soll === kompakt) return;
+      kompakt = soll;
+      gesperrtBis = t + SPERRE_MS;
+      header.classList.toggle('header-scrolled', kompakt);
+    };
+
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
       window.requestAnimationFrame(() => {
-        header.classList.toggle('header-scrolled', window.scrollY > 28);
         ticking = false;
+        anwenden();
       });
     };
 
-    onScroll();
+    anwenden();
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 

@@ -2929,6 +2929,95 @@ async function deleteAtelierSubmission(id) {
 // CONTACT MESSAGES
 // ============================================================================
 
+/**
+ * Was mit einer Kontaktanfrage passiert ist - in einem Satz, den man ohne
+ * technisches Vorwissen versteht.
+ *
+ * Der Weg einer Anfrage:
+ *  1. Formular abgeschickt  -> status 'pending_verification'.
+ *     Der Absender bekommt eine E-Mail mit Bestätigungslink (email_sent).
+ *  2. Link geklickt         -> status 'verified'.
+ *     Die Praxis bekommt die Anfrage per E-Mail (notify_sent).
+ *  3. In dieser E-Mail auf "Annehmen" oder "Ablehnen" geklickt
+ *                           -> status 'confirmed' / 'rejected'.
+ *     Der Absender bekommt automatisch Bescheid.
+ *
+ * Bei email_sent und notify_sent heißt 1 = E-Mail ging raus, 0 = Versand
+ * fehlgeschlagen, null = Anfrage ist älter als diese Protokollierung.
+ *
+ * Vorher stand an jeder Nachricht "✉ nicht gesendet", weil email_sent für
+ * Kontaktanfragen nie gesetzt wurde - die Anzeige war immer dieselbe und
+ * sagte nichts aus. Jetzt steht dort, was tatsächlich passiert ist und ob
+ * Martina etwas tun muss.
+ */
+function kontaktZustand(m) {
+  const status = m.status || 'pending_verification';
+  const mailRaus = m.email_sent === 1 || m.email_sent === true;
+  const mailFehler = m.email_sent === 0 || m.email_sent === false;
+  const praxisFehler = m.notify_sent === 0 || m.notify_sent === false;
+
+  if (status === 'pending_verification') {
+    if (mailFehler) {
+      return {
+        titel: 'Bestätigungs-E-Mail nicht verschickt',
+        klasse: 'badge-err',
+        achtung: true,
+        text: 'Die Nachricht ist hier gespeichert, aber der Bestätigungslink konnte nicht an den Absender verschickt werden. Er kann die Anfrage deshalb nicht bestätigen – bitte direkt per E-Mail oder Telefon antworten.',
+      };
+    }
+    return {
+      titel: 'Wartet auf Bestätigung',
+      klasse: 'badge-warn',
+      achtung: false,
+      text: mailRaus
+        ? 'Der Absender hat eine E-Mail mit Bestätigungslink bekommen, ihn aber noch nicht geklickt. Erst danach wird die Anfrage an dich weitergeleitet. Antworten kannst du trotzdem jederzeit.'
+        : 'Der Absender hat den Bestätigungslink aus seiner E-Mail noch nicht geklickt. Erst danach wird die Anfrage an dich weitergeleitet. Antworten kannst du trotzdem jederzeit.',
+    };
+  }
+
+  if (status === 'verified') {
+    if (praxisFehler) {
+      return {
+        titel: 'Nur hier sichtbar',
+        klasse: 'badge-err',
+        achtung: true,
+        text: 'Der Absender hat bestätigt, aber die Benachrichtigung an die Praxis konnte nicht verschickt werden: Diese Anfrage steht nur hier im Panel, nicht in deinem Postfach. Bitte direkt antworten.',
+      };
+    }
+    return {
+      titel: 'Bestätigt – wartet auf dich',
+      klasse: 'badge-info',
+      achtung: false,
+      text: 'Der Absender hat seine E-Mail-Adresse bestätigt, die Anfrage liegt in deinem Postfach. Dort kannst du auf „Annehmen“ oder „Ablehnen“ klicken – der Absender bekommt dann automatisch Bescheid.',
+    };
+  }
+
+  if (status === 'confirmed') {
+    return {
+      titel: 'Von dir angenommen',
+      klasse: 'badge-ok',
+      achtung: false,
+      text: 'Du hast die Anfrage angenommen. Der Absender wurde automatisch per E-Mail benachrichtigt.',
+    };
+  }
+
+  if (status === 'rejected') {
+    return {
+      titel: 'Von dir abgelehnt',
+      klasse: 'badge-neutral',
+      achtung: false,
+      text: 'Du hast die Anfrage abgelehnt. Der Absender wurde automatisch per E-Mail benachrichtigt.',
+    };
+  }
+
+  return {
+    titel: escapeHtml(status),
+    klasse: 'badge-neutral',
+    achtung: false,
+    text: 'Zu dieser Nachricht liegt kein bekannter Stand vor.',
+  };
+}
+
 async function loadContactMessages() {
   const list = document.getElementById('contactList');
   if (!list) return;
@@ -2944,24 +3033,16 @@ async function loadContactMessages() {
       const date = m.createdAt
         ? new Date(m.createdAt).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' })
         : '–';
-      const emailBadge = m.email_sent
-        ? '<span class="badge badge-ok" title="E-Mail wurde gesendet">✉ gesendet</span>'
-        : '<span class="badge badge-warn" title="E-Mail-Versand fehlgeschlagen">✉ nicht gesendet</span>';
-      // Unbestätigte Nachrichten sahen bisher aus wie bestätigte. Wer den Link
-      // in der E-Mail nie geklickt hat, erwartet auch keine Antwort.
-      const bestaetigt = m.status !== 'pending_verification';
-      const statusBadge = bestaetigt
-        ? ''
-        : '<span class="badge badge-warn" title="Der Absender hat den Bestätigungslink nicht geklickt">nicht bestätigt</span>';
+      const zustand = kontaktZustand(m);
       const phone = m.phone ? `<span class="contact-meta-item">📞 <a href="tel:${encodeURIComponent(m.phone)}">${escapeHtml(m.phone)}</a></span>` : '';
       return `
-        <div class="contact-item" data-id="${m.id}">
+        <div class="contact-item${zustand.achtung ? ' contact-item--achtung' : ''}" data-id="${m.id}">
           <div class="contact-header">
             <span class="contact-name">${escapeHtml(m.name || '–')}</span>
-            ${statusBadge}
-            ${emailBadge}
+            <span class="badge ${zustand.klasse}">${zustand.titel}</span>
             <span class="contact-date">${date}</span>
           </div>
+          <p class="contact-status">${zustand.text}</p>
           <div class="contact-meta">
             <span class="contact-meta-item">✉ <a href="mailto:${encodeURIComponent(m.email || '')}">${escapeHtml(m.email || '–')}</a></span>
             ${phone}
