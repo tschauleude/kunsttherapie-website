@@ -2567,11 +2567,34 @@ hr.sep {
   min-height: 44px;
 }
 
+/* Häkchen und Auswahlknöpfe brauchen die Darstellung des Browsers.
+ *
+ * Die Regel für .form-group input ganz oben setzt appearance: none – gedacht
+ * für Textfelder, damit sie überall gleich aussehen. Bei einem Kästchen
+ * bedeutet das: Der Browser zeichnet gar nichts mehr, auch keinen Haken. Ein
+ * gesetztes Kästchen sah deshalb genauso aus wie ein leeres. accent-color
+ * bleibt dabei ebenfalls wirkungslos.
+ *
+ * Hier also die Textfeld-Vorgaben zurücknehmen und die Standarddarstellung
+ * wiederherstellen.
+ */
+.admin-app input[type='checkbox'],
+.admin-app input[type='radio'],
+.admin-app .form-group input[type='checkbox'],
+.admin-app .form-group input[type='radio'],
 .admin-app .check-line input[type='checkbox'],
 .admin-app .form-group label > input[type='checkbox'] {
-  width: 1.4rem;
-  height: 1.4rem;
-  min-height: 0;
+  -webkit-appearance: auto;
+  appearance: auto;
+  width: 1.35rem;
+  height: 1.35rem;
+  min-width: 1.35rem;
+  min-height: 1.35rem;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
   flex: 0 0 auto;
   accent-color: var(--color-teal);
   cursor: pointer;
