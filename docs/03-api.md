@@ -115,6 +115,11 @@ Google-Kalendertermin angelegt.
 | GET | `/api/prices-table` | Öffentliche Preistabelle |
 | GET · PUT | `/api/admin/prices-table` | 🔒 Lesen / Speichern |
 
+`/api/admin/prices-table` nimmt `?lang=de|en` entgegen und speichert je Sprache
+eine eigene Tabelle (`prices_table` bzw. `prices_table_en`). Beim ersten Speichern
+der deutschen Tabelle wird die englische als Kopie angelegt, damit die Preise nicht
+auseinanderlaufen. Gespeichert wird jeweils nur die Textebene der gewählten Sprache.
+
 ## Website-Texte (i18n)
 
 | Methode | Pfad | Beschreibung |

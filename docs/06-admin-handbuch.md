@@ -212,6 +212,20 @@ Die Anzahl der Galeriebilder auf der Startseite lässt sich ebenfalls hier einst
 Unter **Preistabelle** lassen sich Leistung, Dauer, Preis und Hinweis ändern.
 Nach dem Speichern ist die Preisseite sofort aktuell.
 
+**Die Tabelle gibt es zweimal: auf Deutsch und auf Englisch.** Oben wird
+umgeschaltet. Beim ersten Speichern der deutschen Tabelle entsteht die englische
+automatisch als Kopie – die Preise stimmen damit sofort in beiden Sprachen, die
+Bezeichnungen stehen aber noch auf Deutsch. Ein Hinweis über der Tabelle weist
+darauf hin, solange nichts übersetzt wurde.
+
+Zum Übersetzen auf **English** umschalten, die Wörter anpassen (die Zahlen
+können stehen bleiben) und speichern. Die deutsche Tabelle bleibt davon
+unberührt und umgekehrt.
+
+> Bis Oktober 2026 wurde beim Speichern dieselbe deutsche Tabelle auch als
+> englische gespeichert. Auf der englischen Preisseite stand deshalb dauerhaft
+> die deutsche Tabelle.
+
 ---
 
 ## Mini-Atelier

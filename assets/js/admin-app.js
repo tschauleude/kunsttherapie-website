@@ -2367,12 +2367,37 @@ function collectPriceData() {
 
 async function loadPriceTable() {
   try {
-    const res = await apiFetch(`${API_URL}/admin/prices-table`, { credentials: 'include' });
+    const res = await apiFetch(`${API_URL}/admin/prices-table?lang=${priceCurrentLang}`, { credentials: 'include' });
     const data = await res.json();
     renderPriceEditor(data);
+
+    const hinweis = document.getElementById('priceLangHint');
+    if (hinweis) {
+      if (priceCurrentLang === 'en' && !data.translated) {
+        hinweis.innerHTML = '<strong>Noch nicht übersetzt.</strong> Hier stehen die deutschen Angaben als Vorlage – '
+          + 'die Preise stimmen also schon. Bitte die Bezeichnungen ins Englische ändern und speichern.';
+        hinweis.hidden = false;
+      } else if (priceCurrentLang === 'en') {
+        hinweis.textContent = 'Diese Tabelle erscheint auf der englischen Fassung der Preisseite.';
+        hinweis.hidden = false;
+      } else {
+        hinweis.textContent = '';
+        hinweis.hidden = true;
+      }
+    }
   } catch (err) {
     console.error('loadPriceTable:', err);
   }
+}
+
+/* Welche Sprachfassung der Preistabelle gerade bearbeitet wird. */
+let priceCurrentLang = 'de';
+
+function switchPriceLang(lang, el) {
+  priceCurrentLang = lang === 'en' ? 'en' : 'de';
+  document.querySelectorAll('[data-pricelang]').forEach((b) => b.classList.remove('is-active'));
+  if (el) el.classList.add('is-active');
+  loadPriceTable();
 }
 
 async function savePriceTable() {
@@ -2383,7 +2408,7 @@ async function savePriceTable() {
       method: 'PUT',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, lang: priceCurrentLang }),
     });
     if (!res.ok) throw new Error((await res.json()).error);
     if (status) { status.textContent = '✓ Gespeichert'; setTimeout(() => { status.textContent = ''; }, 2500); }

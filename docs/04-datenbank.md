@@ -89,7 +89,7 @@ Nur die in `lib/site-images.js` definierten Slots sind zulässig:
 | `google_refresh_token` | OAuth-Token für den Kalender |
 | `google_oauth_state` | Kurzlebiger CSRF-Wert während des OAuth-Ablaufs |
 | `i18n_overrides` | Textänderungen (zusätzlich in `data/i18n-overrides.json`) |
-| `prices_table` | Preistabelle |
+| `prices_table` / `prices_table_en` | Preistabelle |
 
 ## Backups
 
