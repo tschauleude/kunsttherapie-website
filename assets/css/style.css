@@ -621,12 +621,17 @@ h3 {
   justify-content: stretch;
 }
 
+/* Kein festes Seitenverhältnis am Rahmen.
+   Vorher stand hier aspect-ratio: 4/5 (= 0,80), das Porträt hat aber 1060×1216
+   (= 0,87). Zusammen mit object-fit: contain wurde das Bild eingepasst statt
+   gefüllt – oben und unten blieb je ein knapp 30 px hoher Streifen des
+   Rahmenhintergrunds stehen, sichtbar als grauer Balken. Das Porträt lässt sich
+   im Admin-Panel austauschen, ein fest verdrahtetes Verhältnis geht also früher
+   oder später wieder daneben. Darum bestimmt jetzt das Bild die Höhe. */
 .page-ueber-mich .hero-portrait-frame {
   flex: 0 0 auto;
   margin: 0;
   width: 100%;
-  min-height: min(520px, 72vh);
-  aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: calc(var(--radius-card) - 2px);
   background: linear-gradient(165deg, rgba(67, 97, 94, 0.12), rgba(209, 141, 137, 0.08));
@@ -635,9 +640,11 @@ h3 {
 .page-ueber-mich .hero-portrait-frame img,
 .page-ueber-mich .about-portrait {
   width: 100%;
-  height: 100%;
-  min-height: 100%;
-  object-fit: contain;
+  height: auto;
+  /* Nur als Notbremse für ein sehr hochformatiges Bild. Greift die Grenze,
+     schneidet cover zu, statt das Bild zu verzerren. */
+  max-height: 78vh;
+  object-fit: cover;
   object-position: center center;
   border-radius: var(--radius-card);
   display: block;
@@ -700,8 +707,8 @@ h3 {
   }
 
   .page-ueber-mich .hero-portrait-frame {
-    min-height: min(420px, 88vw);
-    aspect-ratio: 4 / 5;
+    /* Auch am Handy ohne festes Verhältnis – siehe Begründung oben. */
+    min-height: 0;
   }
 }
 
