@@ -298,6 +298,10 @@ header.header-scrolled .header-inner {
   width: auto;
   max-width: 100%;
   object-fit: contain;
+  /* Ohne Übergang sprang das Logo beim Umschalten in einem Schritt kleiner,
+     während das Polster des Headers weich animierte – das sah aus wie ein
+     Ruckeln. Jetzt läuft beides in derselben Zeit. */
+  transition: max-height var(--duration-flow) var(--ease-flow);
 }
 
 header.header-scrolled .brand-logo {
