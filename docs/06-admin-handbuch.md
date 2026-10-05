@@ -213,14 +213,22 @@ Unter **Preistabelle** lassen sich Leistung, Dauer, Preis und Hinweis ändern.
 Nach dem Speichern ist die Preisseite sofort aktuell.
 
 **Die Tabelle gibt es zweimal: auf Deutsch und auf Englisch.** Oben wird
-umgeschaltet. Beim ersten Speichern der deutschen Tabelle entsteht die englische
-automatisch als Kopie – die Preise stimmen damit sofort in beiden Sprachen, die
-Bezeichnungen stehen aber noch auf Deutsch. Ein Hinweis über der Tabelle weist
-darauf hin, solange nichts übersetzt wurde.
+umgeschaltet. Beim Speichern der deutschen Tabelle entsteht die englische
+automatisch – mit **denselben Preisen** und übersetzten Bezeichnungen
+(„Gruppensitzung" → „Group session", „90 Minuten" → „90 minutes").
 
-Zum Übersetzen auf **English** umschalten, die Wörter anpassen (die Zahlen
-können stehen bleiben) und speichern. Die deutsche Tabelle bleibt davon
-unberührt und umgekehrt.
+Zahlen werden dabei nie verändert. Formulierungen, die das System nicht kennt,
+bleiben auf Deutsch stehen – lieber ein deutsches Wort als eine erfundene
+Übersetzung in einer Preisliste. In dem Fall steht ein Hinweis über der Tabelle.
+
+Die englische Fassung lässt sich jederzeit von Hand überarbeiten: auf
+**English** umschalten, ändern, speichern. Danach wird sie **nicht mehr
+automatisch überschrieben** – auch nicht, wenn die deutsche Tabelle gespeichert
+wird.
+
+Soll sie doch neu erzeugt werden (etwa nach größeren Änderungen am deutschen
+Text), gibt es unten den Knopf **„Englische Tabelle aus der deutschen
+erzeugen"**. Er ersetzt die englische Fassung vollständig.
 
 > Bis Oktober 2026 wurde beim Speichern dieselbe deutsche Tabelle auch als
 > englische gespeichert. Auf der englischen Preisseite stand deshalb dauerhaft

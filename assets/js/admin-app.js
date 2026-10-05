@@ -2393,6 +2393,40 @@ async function loadPriceTable() {
 /* Welche Sprachfassung der Preistabelle gerade bearbeitet wird. */
 let priceCurrentLang = 'de';
 
+/** Englische Tabelle aus der deutschen erzeugen (Zahlen bleiben unverändert). */
+async function translatePriceTable() {
+  if (!confirm('Die englische Tabelle aus der deutschen neu erzeugen?\n\n'
+    + 'Die Preise und Zahlen werden dabei nicht verändert, nur die Bezeichnungen übersetzt. '
+    + 'Bisherige englische Änderungen gehen verloren.')) return;
+
+  const status = document.getElementById('priceTableStatus');
+  try {
+    const res = await apiFetch(`${API_URL}/admin/prices-table/translate`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Übersetzen fehlgeschlagen');
+
+    priceCurrentLang = 'en';
+    document.querySelectorAll('[data-pricelang]').forEach((b) =>
+      b.classList.toggle('is-active', b.dataset.pricelang === 'en'));
+    renderPriceEditor(data);
+
+    const hinweis = document.getElementById('priceLangHint');
+    if (hinweis) {
+      hinweis.innerHTML = data.restDeutsch
+        ? '<strong>Fast fertig.</strong> Einzelne Angaben konnten nicht übersetzt werden und stehen '
+          + 'noch auf Deutsch – bitte durchsehen und anpassen, danach speichern.'
+        : 'Übersetzt. Bitte kurz durchsehen und speichern.';
+      hinweis.hidden = false;
+    }
+    if (status) { status.textContent = '✓ Übersetzt – noch speichern'; }
+  } catch (err) {
+    if (status) status.textContent = 'Fehler: ' + err.message;
+  }
+}
+
 function switchPriceLang(lang, el) {
   priceCurrentLang = lang === 'en' ? 'en' : 'de';
   document.querySelectorAll('[data-pricelang]').forEach((b) => b.classList.remove('is-active'));
