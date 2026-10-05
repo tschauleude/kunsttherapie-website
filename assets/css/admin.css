@@ -2437,6 +2437,42 @@ hr.sep {
   color: #856404;
 }
 
+/* Rot: Hier ist eine E-Mail nicht angekommen, Martina muss selbst antworten. */
+.badge-err {
+  background: #f8d7da;
+  color: #842029;
+}
+
+/* Blau: alles in Ordnung, die Anfrage wartet auf eine Entscheidung. */
+.badge-info {
+  background: #d8eaf0;
+  color: #1c5663;
+}
+
+.badge-neutral {
+  background: #e9e7e1;
+  color: #5b574f;
+}
+
+/* Ein ganzer Satz statt eines kryptischen Kürzels: Was ist mit dieser
+   Nachricht passiert, und muss ich etwas tun? */
+.contact-status {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-light, #6b6b6b);
+  margin: 0 0 0.6rem;
+}
+
+.contact-item--achtung {
+  border-color: #e8c4c0;
+  border-left: 4px solid #b8736f;
+}
+
+.contact-item--achtung .contact-status {
+  color: #842029;
+  font-weight: 600;
+}
+
 /* === Bild-Empfehlungen (Format / Größe) neben jedem änderbaren Bild === */
 .img-rec {
   margin: 0.6rem 0 0.9rem;

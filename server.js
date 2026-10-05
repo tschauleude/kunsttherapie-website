@@ -514,7 +514,8 @@ function initializeDatabase() {
         email TEXT NOT NULL,
         phone TEXT,
         message TEXT NOT NULL,
-        email_sent INTEGER DEFAULT 0,
+        email_sent INTEGER,
+        notify_sent INTEGER,
         status TEXT DEFAULT 'pending_verification',
         verify_token TEXT,
         action_token TEXT,
@@ -525,6 +526,10 @@ function initializeDatabase() {
     db.run(`ALTER TABLE contact_messages ADD COLUMN status TEXT DEFAULT 'pending_verification'`, () => {});
     db.run(`ALTER TABLE contact_messages ADD COLUMN verify_token TEXT`, () => {});
     db.run(`ALTER TABLE contact_messages ADD COLUMN action_token TEXT`, () => {});
+    // email_sent: Bestätigungsmail an den Absender verschickt? notify_sent:
+    // Benachrichtigung an die Praxis verschickt? 1 = ja, 0 = nein,
+    // NULL = unbekannt (Nachricht ist älter als diese Protokollierung).
+    db.run(`ALTER TABLE contact_messages ADD COLUMN notify_sent INTEGER`, () => {});
     db.run(`ALTER TABLE bookings ADD COLUMN verify_token TEXT`, () => {});
 
     db.run(`
@@ -1872,6 +1877,12 @@ app.post('/api/contact', contactRateLimiter, async (req, res) => {
     console.error('contact verify email error:', e.message);
   }
 
+  // Ergebnis festhalten: Im Admin-Panel soll stehen, ob der Absender den
+  // Bestätigungslink überhaupt bekommen hat. Vorher blieb email_sent für
+  // Kontaktanfragen immer auf 0 - das Panel zeigte deshalb bei jeder
+  // Nachricht "nicht gesendet", ohne dass das etwas bedeutete.
+  await dbRun(`UPDATE contact_messages SET email_sent = ? WHERE id = ?`, [sent ? 1 : 0, savedId]).catch(() => {});
+
   if (sent) {
     return res.json({ success: true, message: 'Bitte bestätigen Sie Ihre E-Mail-Adresse. Wir haben Ihnen einen Link zugeschickt.' });
   }
@@ -1901,14 +1912,19 @@ app.get('/api/contact/verify/:token', contactVerifyRateLimiter, async (req, res)
   const confirmUrl = `${baseUrl}/api/contact/action/${msg.action_token}/confirm`;
   const rejectUrl  = `${baseUrl}/api/contact/action/${msg.action_token}/reject`;
 
+  let benachrichtigt = false;
   try {
-    await email.sendContactNotificationToPractice({
+    const result = await email.sendContactNotificationToPractice({
       name: msg.name, email: msg.email, phone: msg.phone, message: msg.message,
       confirmUrl, rejectUrl,
     });
+    benachrichtigt = Boolean(result && result.sent);
   } catch (e) {
     console.error('contact notify practice error:', e.message);
   }
+  // Schlägt dieser Versand fehl, erfährt die Praxis von der Anfrage nur noch
+  // im Admin-Panel. Also dort auch anzeigen, dass keine E-Mail ankam.
+  await dbRun(`UPDATE contact_messages SET notify_sent = ? WHERE id = ?`, [benachrichtigt ? 1 : 0, msg.id]).catch(() => {});
 
   res.type('text/html; charset=utf-8').send(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><title>Bestätigt</title><style>body{font-family:Georgia,serif;max-width:500px;margin:60px auto;color:#3d3d3d;background:#f2efe8}h2{color:#4a6e6a}</style></head><body><h2>Vielen Dank!</h2><p>Ihre E-Mail-Adresse wurde bestätigt. Ihre Nachricht wurde weitergeleitet – Sie erhalten eine Antwort in Kürze.</p></body></html>`);
 });
@@ -2109,7 +2125,7 @@ app.put('/api/admin/bugs', requireAuth, async (req, res) => {
 
 app.get('/api/admin/contact-messages', requireAuth, (req, res) => {
   db.all(
-    `SELECT id, name, email, phone, message, email_sent, status, createdAt
+    `SELECT id, name, email, phone, message, email_sent, notify_sent, status, createdAt
      FROM contact_messages ORDER BY createdAt DESC LIMIT 200`,
     (err, rows) => {
       if (err) return res.status(500).json({ error: 'Database error' });
@@ -3365,6 +3381,30 @@ const server = app.listen(PORT, async () => {
   } catch (e) {
     console.error('i18n migrate:', e.message);
   }
+  // Einmalige Bereinigung: Vor dieser Fassung wurde bei Kontaktanfragen nie
+  // festgehalten, ob die E-Mails tatsächlich rausgingen - email_sent blieb
+  // immer auf 0. Das Admin-Panel zeigte deshalb bei jeder Nachricht
+  // "nicht gesendet". Diese Altbestände würden jetzt als echter Fehler
+  // gelesen, bekommen also NULL = "unbekannt".
+  try {
+    await dbReady;
+    const schonErledigt = await dbGet(
+      `SELECT value FROM settings WHERE key = 'contact_mailstatus_migriert'`
+    );
+    if (!schonErledigt) {
+      const res = await dbRun(`UPDATE contact_messages SET email_sent = NULL WHERE email_sent = 0`);
+      await dbRun(
+        `INSERT OR REPLACE INTO settings (key, value) VALUES ('contact_mailstatus_migriert', ?)`,
+        [new Date().toISOString()]
+      );
+      if (res.changes) {
+        console.log(`Kontaktanfragen: ${res.changes} alte Einträge auf "E-Mail-Status unbekannt" gesetzt`);
+      }
+    }
+  } catch (e) {
+    console.error('contact mailstatus migrate:', e.message);
+  }
+
   try {
     await dbReady;
     backup.scheduleBackups(db, DB_PATH, { keep: 7 });
