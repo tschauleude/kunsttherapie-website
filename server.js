@@ -133,10 +133,10 @@ const MAX_IMAGE_BYTES = parseInt(process.env.MAX_FILE_SIZE || '20971520', 10);
 function uploadErrorMessage(err, maxBytes = MAX_IMAGE_BYTES) {
   const mb = Math.round((maxBytes / (1024 * 1024)) * 10) / 10;
   if (err && (err.code === 'LIMIT_FILE_SIZE' || /file too large/i.test(err.message || ''))) {
-    return `Die Datei ist zu groß (erlaubt sind ${mb} MB). Bitte ein kleineres Bild wählen.`;
+    return `Die Datei ist zu groß (erlaubt sind ${mb} MB). Bitte eine kleinere Datei wählen.`;
   }
   if (err && err.code === 'LIMIT_UNEXPECTED_FILE') {
-    return 'Es wurde mehr als eine Datei geschickt. Bitte nur ein Bild auswählen.';
+    return 'Es wurde mehr als eine Datei geschickt. Bitte nur eine Datei auswählen.';
   }
   return (err && err.message) || 'Das Hochladen hat nicht geklappt. Bitte noch einmal versuchen.';
 }
