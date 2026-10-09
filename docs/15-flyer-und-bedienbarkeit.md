@@ -41,9 +41,11 @@ Die eigentliche Ursache blieb damit unsichtbar.
 - Die Meldung „File too large" von multer ist durch einen deutschen Satz ersetzt,
   der das tatsächliche Limit nennt.
 
-**Noch zu prüfen auf dem Server:** Steht nginx vor der Anwendung, gilt dessen
-eigenes Limit `client_max_body_size` – im Auslieferungszustand **1 MB**. Das ist
-der wahrscheinlichste Grund für die HTML-Antwort. Prüfen mit:
+**Auf dem Server noch offen (Stand 09.10.2026 – bestätigt):** Steht nginx vor der
+Anwendung, gilt dessen eigenes Limit `client_max_body_size` – im
+Auslieferungszustand **1 MB**. Genau daran sind am 09.10.2026 zwei Flyer
+gescheitert: eine Broschüre mit 1,26 MB und ein Plakat mit 4,31 MB, beide weit
+unter dem Limit der Anwendung selbst (25 MB für PDFs). Prüfen mit:
 
 ```bash
 grep -r client_max_body_size /etc/nginx/
@@ -52,6 +54,11 @@ grep -r client_max_body_size /etc/nginx/
 Fehlt die Zeile, gehört sie in den `server`-Block (`client_max_body_size 30m;`),
 danach `nginx -t && systemctl reload nginx`. Siehe
 [02 – Entwicklung & Setup](02-entwicklung.md).
+
+Solange das Limit steht, hilft nur: die PDF vorher verkleinern. Beide genannten
+Dateien ließen sich ohne sichtbaren Verlust auf 450 kB bzw. 421 kB bringen,
+indem die eingebetteten Bilder neu kodiert wurden (CMYK → RGB, JPEG-Qualität
+78–92). Der Text der Broschüre blieb dabei echter Text, kein Bild.
 
 ---
 

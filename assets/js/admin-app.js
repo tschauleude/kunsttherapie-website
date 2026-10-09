@@ -16,7 +16,10 @@ const rawFetch = window.fetch.bind(window);
 
 function serverErrorText(status) {
   if (status === 401 || status === 403) return 'Die Anmeldung ist abgelaufen. Bitte die Seite neu laden und noch einmal anmelden.';
-  if (status === 413) return 'Die Datei ist zu groß für den Server. Bitte ein kleineres Bild wählen – oder Marian Bescheid geben, damit er das Limit erhöht.';
+  // 413 kommt nicht aus dieser Anwendung, sondern vom Webserver davor:
+  // nginx nimmt im Auslieferungszustand nur 1 MB an. Deshalb hier der
+  // Hinweis an Marian statt eines Rätsels für Martina.
+  if (status === 413) return 'Die Datei ist zu groß für den Server (er nimmt derzeit nur kleine Dateien an). Bitte eine kleinere Datei wählen – oder Marian Bescheid geben, damit er das Limit auf dem Server erhöht.';
   if (status === 429) return 'Zu viele Versuche in kurzer Zeit. Bitte eine Minute warten.';
   if (status === 404) return 'Diese Funktion gibt es auf dem Server nicht. Bitte Marian Bescheid geben.';
   if (status === 502 || status === 503 || status === 504) return 'Der Server antwortet gerade nicht. Bitte in einer Minute noch einmal versuchen.';
